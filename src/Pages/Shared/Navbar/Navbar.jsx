@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faAngleRight, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Link, Outlet } from 'react-router-dom';
-import { MdCallReceived, MdDashboard, MdEventNote, MdOutlineWorkHistory } from "react-icons/md";
+import { MdCallReceived } from "react-icons/md";
 import { FaCircleUser, FaTruck, FaUsers, FaWarehouse } from "react-icons/fa6";
 import { RiLogoutCircleRFill } from "react-icons/ri";
-import { IoIosAddCircle, IoMdSend } from "react-icons/io";
-import { FaListUl } from "react-icons/fa";
+import { IoIosAddCircle } from "react-icons/io";
+import { FaArrowDown, FaArrowUp, FaListUl } from "react-icons/fa";
 
 const Navbar = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -98,10 +98,16 @@ const Navbar = () => {
                                                     <span>List</span>
                                                 </div>
                                             </Link>
-                                            <Link to='/send-depot' className="w-full text-left px-4 text-white flex">
+                                            <Link to='/warehouse-in' className="w-full text-left px-4 text-white flex">
                                                 <div className='flex justify-start items-center cursor:pointer'>
-                                                    <IoMdSend className='me-2' />
-                                                    <span>Send</span>
+                                                    <FaArrowDown className='me-2' />
+                                                    <span>Stock In</span>
+                                                </div>
+                                            </Link>
+                                            <Link to='/warehouse-out' className="w-full text-left px-4 text-white flex">
+                                                <div className='flex justify-start items-center cursor:pointer'>
+                                                    <FaArrowUp className='me-2' />
+                                                    <span>Stock Out</span>
                                                 </div>
                                             </Link>
                                         </>
@@ -212,10 +218,16 @@ const Navbar = () => {
                                                     <span>List</span>
                                                 </div>
                                             </Link>
-                                            <Link to='/send-depot' className="w-full text-left px-4 text-white flex">
+                                            <Link to='/warehouse-in' className="w-full text-left px-4 text-white flex">
                                                 <div className='flex justify-start items-center cursor:pointer'>
-                                                    <IoMdSend className='me-2' />
-                                                    <span>Send</span>
+                                                    <FaArrowDown className='me-2' />
+                                                    <span>Stock In</span>
+                                                </div>
+                                            </Link>
+                                            <Link to='/warehouse-out' className="w-full text-left px-4 text-white flex">
+                                                <div className='flex justify-start items-center cursor:pointer'>
+                                                    <FaArrowUp className='me-2' />
+                                                    <span>Stock Out</span>
                                                 </div>
                                             </Link>
                                         </>
