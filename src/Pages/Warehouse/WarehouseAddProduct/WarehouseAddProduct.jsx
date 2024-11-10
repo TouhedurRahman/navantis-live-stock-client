@@ -1,21 +1,61 @@
-import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 
 const WarehouseAddProduct = () => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
-    const handleAddProduct = data => {
-        console.log(data);
-    }
+    const addProductMutation = useMutation({
+        mutationFn: async (newProduct) => {
+            const response = await axios.post('http://localhost:5000/wh-products', newProduct);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error adding product to warehouse:", error);
+        },
+    });
+
+    const addStockMutation = useMutation({
+        mutationFn: async (newProduct) => {
+            const response = await axios.post('http://localhost:5000/stock-in-wh', newProduct);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error adding stock-in:", error);
+        },
+    });
+
+    const handleAddProduct = async (data) => {
+        const newProduct = {
+            name: data.name + " " + data.subtitle,
+            price: data.price,
+            quantity: data.quantity,
+            addedby: data.addedby,
+            addedemail: data.addedemail
+        };
+
+        try {
+            await Promise.all([
+                addProductMutation.mutateAsync(newProduct),
+                addStockMutation.mutateAsync(newProduct)
+            ]);
+
+            reset();
+            alert('Product added successfully!');
+        } catch (error) {
+            if (error.response?.status === 409) {
+                alert('Product already exists.');
+            } else {
+                console.error("Error adding product:", error);
+                alert("Failed to add product.");
+            }
+        }
+    };
 
     return (
         <div>
-            <PageTitle
-                from={"Products - Warehouse"}
-                to={"Add new product"}
-            />
-
+            <PageTitle from={"Warehouse"} to={"Add new product"} />
             <div className="bg-white">
                 <h1 className="px-6 py-3 font-bold">Add new product</h1>
                 <hr className='text-center border border-gray-500 mb-5' />
@@ -50,7 +90,8 @@ const WarehouseAddProduct = () => {
                         </label>
                         <input
                             type="file"
-                            {...register("image", { required: "Image file is required" })}
+                            {...register("image")}
+                            // {...register("image", { required: "Image file is required" })}
                             className="h-10 file-input file-input-bordered border-gray-500 w-full rounded-none text-sm cursor-pointer"
                         />
                         {errors.image && <p className="text-red-500 text-sm">{errors.image.message}</p>}
@@ -62,11 +103,11 @@ const WarehouseAddProduct = () => {
                                 Price/Unit <span className="text-red-500">*</span>
                             </label>
                             <input
-                                {...register("group", { required: "Group is required" })}
+                                {...register("price", { required: "Price is required" })}
                                 placeholder="Enter price"
                                 className="border-gray-500 bg-white border p-2 text-sm"
                             />
-                            {errors.group && <p className="text-red-500 text-sm">{errors.group.message}</p>}
+                            {errors.price && <p className="text-red-500 text-sm">{errors.price.message}</p>}
                         </div>
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
@@ -74,7 +115,7 @@ const WarehouseAddProduct = () => {
                             </label>
                             <input
                                 type='number'
-                                {...register("quantity", { required: "Group is Quantity" })}
+                                {...register("quantity", { required: "Quantity is Quantity" })}
                                 placeholder="Enter quantity"
                                 className="border-gray-500 bg-white border p-2 text-sm"
                             />
