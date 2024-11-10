@@ -28,9 +28,10 @@ const WarehouseAddProduct = () => {
 
     const handleAddProduct = async (data) => {
         const newProduct = {
-            name: data.name + " " + data.subtitle,
+            name: data.name,
             price: data.price,
             quantity: data.quantity,
+            date: data.date,
             addedby: data.addedby,
             addedemail: data.addedemail
         };
@@ -74,14 +75,14 @@ const WarehouseAddProduct = () => {
                         </div>
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
-                                Subtitle <span className="text-red-500">*</span>
+                                Price/Unit <span className="text-red-500">*</span>
                             </label>
                             <input
-                                {...register("subtitle", { required: "Subtitle is required" })}
-                                placeholder="Enter subtitle"
+                                {...register("price", { required: "Price is required" })}
+                                placeholder="Enter price"
                                 className="border-gray-500 bg-white border p-2 text-sm"
                             />
-                            {errors.subtitle && <p className="text-red-500 text-sm">{errors.subtitle.message}</p>}
+                            {errors.price && <p className="text-red-500 text-sm">{errors.price.message}</p>}
                         </div>
                     </div>
                     <div className="flex flex-col mb-2">
@@ -100,17 +101,6 @@ const WarehouseAddProduct = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
-                                Price/Unit <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                {...register("price", { required: "Price is required" })}
-                                placeholder="Enter price"
-                                className="border-gray-500 bg-white border p-2 text-sm"
-                            />
-                            {errors.price && <p className="text-red-500 text-sm">{errors.price.message}</p>}
-                        </div>
-                        <div className="flex flex-col">
-                            <label className="text-[#6E719A] mb-1 text-sm">
                                 Quantity <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -120,6 +110,18 @@ const WarehouseAddProduct = () => {
                                 className="border-gray-500 bg-white border p-2 text-sm"
                             />
                             {errors.quantity && <p className="text-red-500 text-sm">{errors.quantity.message}</p>}
+                        </div>
+                        <div className="flex flex-col">
+                            <label className="text-[#6E719A] mb-1 text-sm">
+                                Date <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type='date'
+                                {...register("date", { required: "Date is required" })}
+                                placeholder="Enter date"
+                                className="border-gray-500 bg-white border p-2 text-sm"
+                            />
+                            {errors.date && <p className="text-red-500 text-sm">{errors.date.message}</p>}
                         </div>
                     </div>
 
