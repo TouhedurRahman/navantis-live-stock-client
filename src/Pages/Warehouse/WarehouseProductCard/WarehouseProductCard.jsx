@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const WarehouseProductCard = ({ product, refetch }) => {
     return (
         <tr>
-            <td>
+            <td className='flex justify-center items-center'>
                 <div className="flex items-center gap-3">
                     <div className="avatar">
                         <div className="mask mask-squircle h-12 w-12">
@@ -21,14 +21,18 @@ const WarehouseProductCard = ({ product, refetch }) => {
                     <div className="font-bold">{product.name}</div>
                 </div>
             </td>
-            <td>
-                {product.price}
+            <td className='text-center'>
+                {product.lot} <br />
+                {product.expire}
             </td>
-            <td>
+            <td className='text-right'>
+                {product.price}/-
+            </td>
+            <td className='text-center'>
                 {product.quantity}
             </td>
-            <td>
-                {(product.price) * (product.quantity)}
+            <td className='text-right'>
+                {(product.price) * (product.quantity)}/-
             </td>
             {/* <th>
                 <div className="flex justify-center items-center space-x-4 text-md">

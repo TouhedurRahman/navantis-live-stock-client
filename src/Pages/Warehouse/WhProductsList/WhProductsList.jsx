@@ -103,9 +103,10 @@ const WhProductsList = () => {
                                             <tr>
                                                 <th className="text-center">Image</th>
                                                 <th>Name</th>
-                                                <th>Price</th>
-                                                <th>Quantity</th>
-                                                <th>Total Price</th>
+                                                <th className='text-center'>Lot & Exp.</th>
+                                                <th className='text-right'>Price</th>
+                                                <th className='text-center'>Quantity</th>
+                                                <th className='text-right'>Total Price</th>
                                                 <th className="text-center">Action</th>
                                             </tr>
                                         </thead>
