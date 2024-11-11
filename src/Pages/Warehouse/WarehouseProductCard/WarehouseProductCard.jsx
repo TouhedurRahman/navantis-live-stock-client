@@ -1,8 +1,25 @@
 import axios from 'axios';
-import { FaEdit, FaEye, FaTrashAlt } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { FaSyncAlt, FaBox, FaTruck, FaTimes } from "react-icons/fa";
 
 const WarehouseProductCard = ({ product, refetch }) => {
+    const tp = (product.price) * (product.quantity);
+
+    const handleUpdate = () => {
+        console.log("Update product:", product._id);
+    };
+
+    const handleStockIn = () => {
+        console.log("Stock in product:", product._id);
+    };
+
+    const handleSendToDepot = () => {
+        console.log("Send product to depot:", product._id);
+    };
+
+    const handleRemove = () => {
+        console.log("Remove product:", product._id);
+    };
+
     return (
         <tr>
             <td className='flex justify-center items-center'>
@@ -26,34 +43,47 @@ const WarehouseProductCard = ({ product, refetch }) => {
                 {product.expire}
             </td>
             <td className='text-right'>
-                {product.price}/-
+                {product.price.toLocaleString('en-IN')}/-
             </td>
             <td className='text-center'>
                 {product.quantity}
             </td>
             <td className='text-right'>
-                {(product.price) * (product.quantity)}/-
+                {tp.toLocaleString('en-IN')}/-
             </td>
-            {/* <th>
+            <th>
                 <div className="flex justify-center items-center space-x-4 text-md">
-                    <Link to={`/product/${product._id}`}>
-                        <button className="p-2 rounded-[5px] hover:bg-green-100 focus:outline-none">
-                            <FaEye className="text-green-500" />
-                        </button>
-                    </Link>
-                    <Link to={`/update-product/${product._id}`}>
-                        <button className="p-2 rounded-[5px] hover:bg-orange-100 focus:outline-none">
-                            <FaEdit className="text-orange-500" />
-                        </button>
-                    </Link>
                     <button
-                        onClick={() => handleDelete()}
+                        onClick={handleUpdate}
+                        title="Update product"
+                        className="p-2 rounded-[5px] hover:bg-blue-100 focus:outline-none"
+                    >
+                        <FaSyncAlt className="text-blue-500" />
+                    </button>
+                    <button
+                        onClick={handleStockIn}
+                        title="Stock In New Quantity"
+                        className="p-2 rounded-[5px] hover:bg-green-100 focus:outline-none"
+                    >
+                        <FaBox className="text-green-500" />
+                    </button>
+                    <button
+                        onClick={handleSendToDepot}
+                        title="Send product to depot"
+                        className="p-2 rounded-[5px] hover:bg-yellow-100 focus:outline-none"
+                    >
+                        <FaTruck className="text-yellow-500" />
+                    </button>
+                    <button
+                        onClick={handleRemove}
+                        title="Remove product from warehouse"
                         className="p-2 rounded-[5px] hover:bg-red-100 focus:outline-none"
                     >
-                        <FaTrashAlt className="text-red-500" />
+                        <FaTimes className="text-red-500" />
                     </button>
                 </div>
-            </th> */}
+            </th>
+
         </tr>
     );
 };
