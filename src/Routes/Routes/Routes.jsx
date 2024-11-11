@@ -3,6 +3,7 @@ import Main from "../../Layout/Main/Main";
 import Home from "../../Pages/Home/Home/Home";
 import WarehouseAddProduct from "../../Pages/Warehouse/WarehouseAddProduct/WarehouseAddProduct";
 import WhProductsList from "../../Pages/Warehouse/WhProductsList/WhProductsList";
+import StockInList from "../../Pages/Warehouse/StockInList/StockInList";
 
 const router = createBrowserRouter([
     {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
             {
                 path: "/warehouse-list",
                 element: <WhProductsList />
+            },
+            {
+                path: "/warehouse-in",
+                element: <StockInList />
             }
         ],
     },
