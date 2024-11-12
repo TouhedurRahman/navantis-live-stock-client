@@ -72,7 +72,7 @@ const StockInList = () => {
             </div>
             <div className="bg-white pb-1">
                 <div>
-                    <h1 className="px-6 py-3 font-bold">All products list</h1>
+                    <h1 className="px-6 py-3 font-bold">All stock in products list</h1>
                     <hr className='text-center border border-gray-500 mb-5' />
                 </div>
 
@@ -82,7 +82,7 @@ const StockInList = () => {
                         <div className="w-full md:w-[60%] grid grid-cols-1 md:grid-cols-3 gap-1 mb-6">
                             {/* Name Search */}
                             <div>
-                                <label htmlFor="search" className="block font-semibold text-gray-700 mb-1">Search by Name</label>
+                                <label htmlFor="search" className="block font-semibold text-gray-700 mb-1">Search by name</label>
                                 <div className="flex items-center border border-gray-300 rounded-lg px-3 py-2 bg-white shadow-sm">
                                     <ImSearch className="text-gray-400 mr-2" />
                                     <input
@@ -132,7 +132,7 @@ const StockInList = () => {
                             {/* Date Range Filter */}
                             <div className="col-span-1 md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block font-semibold text-gray-700 mb-1">From Date</label>
+                                    <label className="block font-semibold text-gray-700 mb-1">From date</label>
                                     <input
                                         type="date"
                                         value={fromDate}
@@ -141,7 +141,7 @@ const StockInList = () => {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block font-semibold text-gray-700 mb-1">To Date</label>
+                                    <label className="block font-semibold text-gray-700 mb-1">To date</label>
                                     <input
                                         type="date"
                                         value={toDate}
@@ -194,20 +194,21 @@ const StockInList = () => {
                     {/* Products Per Page Selector */}
                     <div className="my-4 flex items-center justify-between">
                         <div>
-                            <label className="font-semibold text-gray-700">Products Per Page: </label>
+                            <label htmlFor="productsPerPage">Show</label>
                             <select
                                 value={productsPerPage}
                                 onChange={(e) => {
                                     setProductsPerPage(Number(e.target.value));
-                                    setCurrentPage(1); // Reset to the first page
+                                    setCurrentPage(1);
                                 }}
-                                className="border border-gray-400 rounded p-2 mt-1 ml-2 focus:outline-none"
+                                className="border border-gray-500 rounded p-1 pointer-cursor mx-2"
                             >
                                 <option value={5}>5</option>
                                 <option value={10}>10</option>
                                 <option value={15}>15</option>
                                 <option value={20}>20</option>
                             </select>
+                            <label htmlFor="productsPerPage">products per page</label>
                         </div>
 
                         {/* Page Indicator */}
@@ -218,8 +219,8 @@ const StockInList = () => {
 
                     {/* Product Table */}
                     <div id="printable-section" className="overflow-x-auto mb-3">
-                        <table className="table-auto w-full bg-[#ffffff]">
-                            <thead className="bg-[#3B82F6] text-white">
+                        <table className="table">
+                            <thead>
                                 <tr>
                                     <th className="text-center">Sl. No.</th>
                                     <th className="text-left">Name</th>
@@ -231,9 +232,13 @@ const StockInList = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {currentProducts.map(product => (
+                                {currentProducts.map((product, idx) => (
                                     <tr key={product._id} className="border-b">
-                                        <th className="text-center">#</th>
+                                        <th className="text-center">
+                                            {
+                                                `${idx + 1}`
+                                            }
+                                        </th>
                                         <td>{product.name}</td>
                                         <td className="text-center">{product.lot} <br /> {product.expire}</td>
                                         <td className="text-center">{product.quantity}</td>
@@ -249,35 +254,39 @@ const StockInList = () => {
                     </div>
 
                     {/* Pagination Controls */}
-                    <div className="flex justify-between items-center mt-4">
-                        <button
-                            onClick={goToPreviousPage}
-                            disabled={currentPage === 1}
-                            className="bg-[#3B82F6] text-white p-2 rounded disabled:opacity-50"
+                    <div className="flex justify-center items-center mb-10">
+                        <div
+                            className={`mx-1 px-3 py-1 rounded-lg flex justify-center items-center ${currentPage === 1 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                            onClick={currentPage !== 1 ? () => changePage(currentPage - 1) : null}
+                            aria-disabled={currentPage === 1}
                         >
-                            <BsArrowLeftCircleFill className="inline mr-2" /> Previous
-                        </button>
-
-                        {/* Page Numbers */}
-                        <div className="flex space-x-2">
-                            {Array.from({ length: totalPages }, (_, i) => (
-                                <button
-                                    key={i}
-                                    onClick={() => goToPage(i + 1)}
-                                    className={`p-2 rounded ${i + 1 === currentPage ? 'bg-[#3B82F6] text-white' : 'bg-gray-200'}`}
-                                >
-                                    {i + 1}
-                                </button>
-                            ))}
+                            <span className='flex justify-between items-center text-black'>
+                                <BsArrowLeftCircleFill className='h-6 w-6' />
+                            </span>
                         </div>
-
-                        <button
-                            onClick={goToNextPage}
-                            disabled={currentPage === totalPages}
-                            className="bg-[#3B82F6] text-white p-2 rounded disabled:opacity-50"
+                        <div className='flex justify-center items-center'>
+                            {
+                                Array.from({ length: totalPages }, (_, index) => (
+                                    <button
+                                        key={index}
+                                        className={`mx-1 flex justify-center items-center w-6 h-6 border border-black rounded-full ${currentPage === index + 1 ? 'bg-[#3B82F6] text-white font-mono font-extrabold border-2 border-green-900' : ''
+                                            }`}
+                                        onClick={() => changePage(index + 1)}
+                                    >
+                                        {index + 1}
+                                    </button>
+                                ))
+                            }
+                        </div>
+                        <div
+                            className={`mx-1 px-3 py-1 rounded-[4px] flex justify-center items-center ${currentPage === totalPages ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                            onClick={currentPage !== totalPages ? () => changePage(currentPage + 1) : null}
+                            aria-disabled={currentPage === totalPages}
                         >
-                            Next <BsArrowRightCircleFill className="inline ml-2" />
-                        </button>
+                            <span className='flex justify-between items-center text-black'>
+                                <BsArrowRightCircleFill className='h-6 w-6' />
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
