@@ -75,93 +75,120 @@ const StockInList = () => {
                     <h1 className="px-6 py-3 font-bold">All products list</h1>
                     <hr className='text-center border border-gray-500 mb-5' />
                 </div>
-                {/* Filters Section */}
+
                 <div className="bg-white p-6 shadow-lg rounded-lg">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
-                        {/* Name Search */}
-                        <div>
-                            <label htmlFor="search" className="font-semibold text-gray-700">Search by Name</label>
-                            <div className="flex items-center border border-gray-400 rounded p-2 mt-1">
-                                <ImSearch className="text-gray-400 mr-2" />
-                                <input
-                                    type="text"
-                                    id="search"
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    placeholder="Search products..."
-                                    className="w-full focus:outline-none"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Year Filter */}
-                        <div>
-                            <label htmlFor="year" className="font-semibold text-gray-700">Year</label>
-                            <select
-                                id="year"
-                                value={year}
-                                onChange={(e) => setYear(e.target.value)}
-                                className="border border-gray-400 rounded w-full p-2 mt-1 focus:outline-none"
-                            >
-                                <option value="">All Years</option>
-                                <option value="2024">2024</option>
-                                <option value="2023">2023</option>
-                            </select>
-                        </div>
-
-                        {/* Month Filter */}
-                        <div>
-                            <label htmlFor="month" className="font-semibold text-gray-700">Month</label>
-                            <select
-                                id="month"
-                                value={month}
-                                onChange={(e) => setMonth(e.target.value)}
-                                className="border border-gray-400 rounded w-full p-2 mt-1 focus:outline-none"
-                            >
-                                <option value="">All Months</option>
-                                {Array.from({ length: 12 }, (_, i) => (
-                                    <option key={i + 1} value={i + 1}>{new Date(0, i).toLocaleString('default', { month: 'long' })}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {/* Date Range Filter */}
-                        <div className="flex space-x-2">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
+                        {/* Filters Section */}
+                        <div className="w-full md:w-[60%] grid grid-cols-1 md:grid-cols-3 gap-1 mb-6">
+                            {/* Name Search */}
                             <div>
-                                <label className="font-semibold text-gray-700">From Date</label>
-                                <input
-                                    type="date"
-                                    value={fromDate}
-                                    onChange={(e) => setFromDate(e.target.value)}
-                                    className="border border-gray-400 rounded w-full p-2 mt-1 focus:outline-none"
-                                />
+                                <label htmlFor="search" className="block font-semibold text-gray-700 mb-1">Search by Name</label>
+                                <div className="flex items-center border border-gray-300 rounded-lg px-3 py-2 bg-white shadow-sm">
+                                    <ImSearch className="text-gray-400 mr-2" />
+                                    <input
+                                        type="text"
+                                        id="search"
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        placeholder="Search products..."
+                                        className="w-full focus:outline-none"
+                                    />
+                                </div>
                             </div>
+
+                            {/* Year Filter */}
                             <div>
-                                <label className="font-semibold text-gray-700">To Date</label>
-                                <input
-                                    type="date"
-                                    value={toDate}
-                                    onChange={(e) => setToDate(e.target.value)}
-                                    className="border border-gray-400 rounded w-full p-2 mt-1 focus:outline-none"
-                                />
+                                <label htmlFor="year" className="block font-semibold text-gray-700 mb-1">Year</label>
+                                <select
+                                    id="year"
+                                    value={year}
+                                    onChange={(e) => setYear(e.target.value)}
+                                    className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm"
+                                >
+                                    <option value="">All Years</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2023">2023</option>
+                                </select>
                             </div>
+
+                            {/* Month Filter */}
+                            <div>
+                                <label htmlFor="month" className="block font-semibold text-gray-700 mb-1">Month</label>
+                                <select
+                                    id="month"
+                                    value={month}
+                                    onChange={(e) => setMonth(e.target.value)}
+                                    className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm"
+                                >
+                                    <option value="">All Months</option>
+                                    {Array.from({ length: 12 }, (_, i) => (
+                                        <option key={i + 1} value={i + 1}>
+                                            {new Date(0, i).toLocaleString('default', { month: 'long' })}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Date Range Filter */}
+                            <div className="col-span-1 md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block font-semibold text-gray-700 mb-1">From Date</label>
+                                    <input
+                                        type="date"
+                                        value={fromDate}
+                                        onChange={(e) => setFromDate(e.target.value)}
+                                        className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block font-semibold text-gray-700 mb-1">To Date</label>
+                                    <input
+                                        type="date"
+                                        value={toDate}
+                                        onChange={(e) => setToDate(e.target.value)}
+                                        className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Clear Filter Button */}
+                            <button
+                                onClick={clearFilters}
+                                className="col-span-1 md:col-span-3 mt-4 bg-blue-500 text-white rounded-lg px-4 py-2 shadow-sm hover:bg-blue-600 transition-colors"
+                            >
+                                Clear Filters
+                            </button>
                         </div>
 
-                        {/* Clear Filter Button */}
-                        <button
-                            onClick={clearFilters}
-                            className="mt-6 bg-[#3B82F6] text-white rounded p-2"
-                        >
-                            Clear Filters
-                        </button>
+                        {/* Invoice Summary Section */}
+                        <div className="w-full md:w-[40%] h-full mt-6 md:mt-0 md:ml-6 p-4 bg-green-100 text-black rounded-lg shadow-sm">
+                            <p className="text-xl text-center font-medium mb-4">Invoice Summary</p>
 
-                        {/* Print Button */}
-                        <button
-                            onClick={handlePrint}
-                            className="mt-6 bg-[#10B981] text-white rounded p-2 flex items-center"
-                        >
-                            <MdPrint className="mr-2" /> Print Invoice
-                        </button>
+
+                            <div className="grid grid-cols-2 gap-y-2">
+                                {/* Total Products */}
+                                <p className="font-semibold">Total Products</p>
+                                <p className="text-right font-bold">{totalProducts}</p>
+
+                                {/* Total Quantity */}
+                                <p className="font-semibold">Total Quantity</p>
+                                <p className="text-right font-bold">{totalQuantity}</p>
+
+                                {/* Total Price */}
+                                <p className="font-semibold">Total Price</p>
+                                <p className="text-right font-bold">{totalPrice.toLocaleString('en-IN')}/-</p>
+                            </div>
+
+                            {/* Print Button */}
+                            <div className="flex justify-center items-center">
+                                <button
+                                    onClick={handlePrint}
+                                    className="col-span-1 md:col-span-3 mt-4 bg-green-500 text-white rounded-lg px-4 py-2 flex items-center justify-center shadow-sm hover:bg-green-600 transition-colors"
+                                >
+                                    <MdPrint className="mr-2" /> Print Invoice
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Products Per Page Selector */}
@@ -251,13 +278,6 @@ const StockInList = () => {
                         >
                             Next <BsArrowRightCircleFill className="inline ml-2" />
                         </button>
-                    </div>
-
-                    {/* invoice summary section */}
-                    <div className="mt-4 p-4 bg-[#80EF80] text-black rounded">
-                        <p>Total Products: <span className="font-bold">{totalProducts}</span></p>
-                        <p>Total Quantity: <span className="font-bold">{totalQuantity}</span></p>
-                        <p>Total Price: <span className="font-bold">{totalPrice.toLocaleString('en-IN')}/-</span></p>
                     </div>
                 </div>
             </div>
