@@ -23,11 +23,11 @@ const StockInCard = ({ product }) => {
                 {product.lot} <br />
                 {product.expire}
             </td>
-            <td className='text-right'>
-                {product.price.toLocaleString('en-IN')}/-
-            </td>
             <td className='text-center'>
                 {product.quantity}
+            </td>
+            <td className='text-right'>
+                {product.price.toLocaleString('en-IN')}/-
             </td>
             <td className='text-right'>
                 {tp.toLocaleString('en-IN')}/-
