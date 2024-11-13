@@ -76,7 +76,7 @@ const StockInList = () => {
                     <hr className='text-center border border-gray-500 mb-5' />
                 </div>
 
-                <div className="bg-white p-6 shadow-lg rounded-lg">
+                <div className="p-6">
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
                         {/* Filters Section */}
                         <div className="w-full md:w-[60%] grid grid-cols-1 md:grid-cols-3 gap-1 mb-6">

@@ -1,17 +1,15 @@
 import { useState } from 'react';
 import { FaSyncAlt, FaBox, FaTruck, FaTimes } from "react-icons/fa";
-import OperationModal from '../../../Components/OperationModal/OperationModal';
+import UpdateProductModal from '../../../Components/UpdateProductModal/UpdateProductModal';
+import StockInModal from '../../../Components/StockInModal/StockInModal';
+import SendToDepotModal from '../../../Components/SendToDepotModal/SendToDepotModal';
 
 const WarehouseProductCard = ({ product, refetch }) => {
-    const [isModalOpen, setModalOpen] = useState(false);
-    const [modalContent, setModalContent] = useState({ title: '', body: '' });
+    const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
+    const [isStockInModalOpen, setStockInModalOpen] = useState(false);
+    const [isSendToDepotModalOpen, setSendToDepotModalOpen] = useState(false);
 
-    const totalPrice = (product.price) * (product.quantity);
-
-    const openModal = (title, body) => {
-        setModalContent({ title, body });
-        setModalOpen(true);
-    };
+    const totalPrice = product.price * product.quantity;
 
     const handleRemove = () => {
         console.log("Remove product:", product._id);
@@ -52,21 +50,21 @@ const WarehouseProductCard = ({ product, refetch }) => {
                 <th>
                     <div className="flex justify-center items-center space-x-4 text-md">
                         <button
-                            onClick={() => openModal("Update Product", `Are you sure you want to update ${product.name}?`)}
+                            onClick={() => setUpdateModalOpen(true)}
                             title="Update product"
                             className="p-2 rounded-[5px] hover:bg-blue-100 focus:outline-none"
                         >
                             <FaSyncAlt className="text-blue-500" />
                         </button>
                         <button
-                            onClick={() => openModal("Stock In", `Add stock for ${product.name}?`)}
+                            onClick={() => setStockInModalOpen(true)}
                             title="Stock In New Quantity"
                             className="p-2 rounded-[5px] hover:bg-green-100 focus:outline-none"
                         >
                             <FaBox className="text-green-500" />
                         </button>
                         <button
-                            onClick={() => openModal("Send to Depot", `Send ${product.name} to depot?`)}
+                            onClick={() => setSendToDepotModalOpen(true)}
                             title="Send product to depot"
                             className="p-2 rounded-[5px] hover:bg-yellow-100 focus:outline-none"
                         >
@@ -83,15 +81,31 @@ const WarehouseProductCard = ({ product, refetch }) => {
                 </th>
             </tr>
 
-            <OperationModal
-                isOpen={isModalOpen}
-                onClose={() => setModalOpen(false)}
-                title={modalContent.title}
-                product={product}
-                refetch={refetch}
-            >
-                <p>{modalContent.body}</p>
-            </OperationModal>
+            {/* Modals for different operations */}
+            {isUpdateModalOpen && (
+                <UpdateProductModal
+                    isOpen={isUpdateModalOpen}
+                    onClose={() => setUpdateModalOpen(false)}
+                    product={product}
+                    refetch={refetch}
+                />
+            )}
+            {isStockInModalOpen && (
+                <StockInModal
+                    isOpen={isStockInModalOpen}
+                    onClose={() => setStockInModalOpen(false)}
+                    product={product}
+                    refetch={refetch}
+                />
+            )}
+            {isSendToDepotModalOpen && (
+                <SendToDepotModal
+                    isOpen={isSendToDepotModalOpen}
+                    onClose={() => setSendToDepotModalOpen(false)}
+                    product={product}
+                    refetch={refetch}
+                />
+            )}
         </>
     );
 };
