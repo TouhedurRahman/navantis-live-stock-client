@@ -1,16 +1,65 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useMutation } from '@tanstack/react-query';
 import { FaTimes } from "react-icons/fa";
+import axios from 'axios';
 
 const StockInModal = ({ isOpen, onClose, product, refetch }) => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
-    const onSubmit = (data) => {
+    const updateProductMutation = useMutation({
+        mutationFn: async (newProduct) => {
+            const response = await axios.put(`http://localhost:5000/wh-products/${product._id}`, newProduct);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error adding product to warehouse:", error);
+        },
+    });
+
+    const addStockMutation = useMutation({
+        mutationFn: async (newProduct) => {
+            const response = await axios.post('http://localhost:5000/stock-in-wh', newProduct);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error adding stock-in:", error);
+        },
+    });
+
+    const onSubmit = async (data) => {
         console.log("Stock In Data:", data);
 
-        refetch();
-        onClose();
-        reset();
+        const newProduct = {
+            name: product.name,
+            price: product.price,
+            lot: product.lot,
+            expire: product.expire,
+            quantity: data.quantity,
+            date: data.date,
+            addedby: product.addedby,
+            addedemail: product.addedemail
+        };
+
+        try {
+            await Promise.all([
+                updateProductMutation.mutateAsync(newProduct),
+                addStockMutation.mutateAsync(newProduct)
+            ]);
+
+            reset();
+            alert('Stock in successful!');
+            refetch();
+            onClose();
+            reset();
+        } catch (error) {
+            if (error.response?.status === 409) {
+                alert('Product already exists.');
+            } else {
+                console.error("Error adding product:", error);
+                alert("Failed to add product.");
+            }
+        }
     };
 
     if (!isOpen) return null;
