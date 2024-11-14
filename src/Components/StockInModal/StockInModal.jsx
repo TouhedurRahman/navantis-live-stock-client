@@ -14,7 +14,7 @@ const StockInModal = ({ isOpen, onClose, product, refetch }) => {
                 price: product.price,
                 lot: product.lot,
                 expire: product.expire,
-                quantity: Number(data.quantity),
+                quantity: Number(product.quantity) + Number(data.quantity),
                 date: data.date,
                 addedby: product.addedby,
                 addedemail: product.addedemail
