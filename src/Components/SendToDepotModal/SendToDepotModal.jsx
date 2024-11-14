@@ -1,16 +1,70 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useMutation } from '@tanstack/react-query';
 import { FaTimes } from "react-icons/fa";
+import axios from 'axios';
 
 const SendToDepotModal = ({ isOpen, onClose, product, refetch }) => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
-    const onSubmit = (data) => {
-        console.log("Stock In Data:", data);
+    const updateProductMutation = useMutation({
+        mutationFn: async (data) => {
+            const updatedProduct = {
+                name: product.name,
+                price: product.price,
+                lot: product.lot,
+                expire: product.expire,
+                quantity: Number(product.quantity) - Number(data.quantity),
+                date: data.date,
+                addedby: product.addedby,
+                addedemail: product.addedemail
+            };
 
-        refetch();
-        onClose();
-        reset();
+            const response = await axios.patch(`http://localhost:5000/wh-product/${product._id}`, updatedProduct);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error updating product to warehouse:", error);
+        },
+    });
+
+    const sendDepotMutation = useMutation({
+        mutationFn: async (data) => {
+            const newProduct = {
+                name: product.name,
+                price: product.price,
+                lot: product.lot,
+                expire: product.expire,
+                quantity: Number(data.quantity),
+                date: data.date,
+                addedby: product.addedby,
+                addedemail: product.addedemail
+            };
+
+            const response = await axios.post('http://localhost:5000/stock-in-depot', newProduct);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error send to depot:", error);
+        },
+    });
+
+    const onSubmit = async (data) => {
+        try {
+            await Promise.all([
+                updateProductMutation.mutateAsync(data),
+                sendDepotMutation.mutateAsync(data)
+            ]);
+
+            reset();
+            alert('Send to depot successful!');
+            refetch();
+            onClose();
+            reset();
+        } catch (error) {
+            console.error("Error adding product:", error);
+            alert("Failed to stock in.");
+        }
     };
 
     if (!isOpen) return null;
