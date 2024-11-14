@@ -8,17 +8,39 @@ const StockInModal = ({ isOpen, onClose, product, refetch }) => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
     const updateProductMutation = useMutation({
-        mutationFn: async (newProduct) => {
-            const response = await axios.put(`http://localhost:5000/wh-products/${product._id}`, newProduct);
+        mutationFn: async (data) => {
+            const updatedProduct = {
+                name: product.name,
+                price: product.price,
+                lot: product.lot,
+                expire: product.expire,
+                quantity: Number(data.quantity),
+                date: data.date,
+                addedby: product.addedby,
+                addedemail: product.addedemail
+            };
+
+            const response = await axios.patch(`http://localhost:5000/wh-product/${product._id}`, updatedProduct);
             return response.data;
         },
         onError: (error) => {
-            console.error("Error adding product to warehouse:", error);
+            console.error("Error updating product to warehouse:", error);
         },
     });
 
     const addStockMutation = useMutation({
-        mutationFn: async (newProduct) => {
+        mutationFn: async (data) => {
+            const newProduct = {
+                name: product.name,
+                price: product.price,
+                lot: product.lot,
+                expire: product.expire,
+                quantity: Number(data.quantity),
+                date: data.date,
+                addedby: product.addedby,
+                addedemail: product.addedemail
+            };
+
             const response = await axios.post('http://localhost:5000/stock-in-wh', newProduct);
             return response.data;
         },
@@ -28,23 +50,10 @@ const StockInModal = ({ isOpen, onClose, product, refetch }) => {
     });
 
     const onSubmit = async (data) => {
-        console.log("Stock In Data:", data);
-
-        const newProduct = {
-            name: product.name,
-            price: product.price,
-            lot: product.lot,
-            expire: product.expire,
-            quantity: data.quantity,
-            date: data.date,
-            addedby: product.addedby,
-            addedemail: product.addedemail
-        };
-
         try {
             await Promise.all([
-                updateProductMutation.mutateAsync(newProduct),
-                addStockMutation.mutateAsync(newProduct)
+                updateProductMutation.mutateAsync(data),
+                addStockMutation.mutateAsync(data)
             ]);
 
             reset();
@@ -53,12 +62,8 @@ const StockInModal = ({ isOpen, onClose, product, refetch }) => {
             onClose();
             reset();
         } catch (error) {
-            if (error.response?.status === 409) {
-                alert('Product already exists.');
-            } else {
-                console.error("Error adding product:", error);
-                alert("Failed to add product.");
-            }
+            console.error("Error adding product:", error);
+            alert("Failed to stock in.");
         }
     };
 

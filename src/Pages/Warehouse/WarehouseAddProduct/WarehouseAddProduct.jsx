@@ -32,7 +32,7 @@ const WarehouseAddProduct = () => {
             price: data.price,
             lot: data.lot,
             expire: data.expire,
-            quantity: data.quantity,
+            quantity: Number(data.quantity),
             date: data.date,
             addedby: data.addedby,
             addedemail: data.addedemail
