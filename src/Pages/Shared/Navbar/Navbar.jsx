@@ -53,7 +53,7 @@ const Navbar = () => {
                                 </Link>
                             </div>
                             <label className='mt-20 font-bold font-playwrite text-xl text-center'>
-                                <p>Dashboard</p>
+                                <p>Live Stock</p>
                             </label>
                             <hr className='text-center w-[25%] border-2 border-white' />
                         </div>
@@ -120,10 +120,10 @@ const Navbar = () => {
                                                     <span>List</span>
                                                 </div>
                                             </Link>
-                                            <Link to='/add-product' className="w-full text-left px-4 text-white flex">
+                                            <Link to='/depot-in' className="w-full text-left px-4 text-white flex">
                                                 <div className='flex justify-start items-center cursor:pointer'>
-                                                    <MdCallReceived className='me-2' />
-                                                    <span>Received</span>
+                                                    <FaArrowDown className='me-2' />
+                                                    <span>Stock In</span>
                                                 </div>
                                             </Link>
                                         </>
@@ -240,10 +240,10 @@ const Navbar = () => {
                                                     <span>List</span>
                                                 </div>
                                             </Link>
-                                            <Link to='/add-product' className="w-full text-left px-4 text-white flex">
+                                            <Link to='/depot-in' className="w-full text-left px-4 text-white flex">
                                                 <div className='flex justify-start items-center cursor:pointer'>
-                                                    <MdCallReceived className='me-2' />
-                                                    <span>Received</span>
+                                                    <FaArrowDown className='me-2' />
+                                                    <span>Stock In</span>
                                                 </div>
                                             </Link>
                                         </>

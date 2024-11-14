@@ -2,11 +2,11 @@ import { useState, useMemo } from "react";
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
 import { ImSearch } from 'react-icons/im';
 import { MdPrint } from 'react-icons/md';
-import useStockInWh from "../../../Hooks/useStockInWh";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
+import useStockInDepot from "../../../Hooks/useStockInDepot";
 
-const StockInList = () => {
-    const [products, loading] = useStockInWh();
+const DepotStockInList = () => {
+    const [products, loading] = useStockInDepot();
     const [searchTerm, setSearchTerm] = useState('');
     const [year, setYear] = useState('');
     const [month, setMonth] = useState('');
@@ -76,13 +76,13 @@ const StockInList = () => {
         <div>
             <div>
                 <PageTitle
-                    from={"Warehouse"}
+                    from={"Depot"}
                     to={"Stock in"}
                 />
             </div>
             <div className="bg-white pb-1">
                 <div>
-                    <h1 className="px-6 py-3 font-bold">Warehouse stock in products list</h1>
+                    <h1 className="px-6 py-3 font-bold">Depot stock in products list</h1>
                     <hr className='text-center border border-gray-500 mb-5' />
                 </div>
 
@@ -304,4 +304,4 @@ const StockInList = () => {
     );
 };
 
-export default StockInList;
+export default DepotStockInList;
