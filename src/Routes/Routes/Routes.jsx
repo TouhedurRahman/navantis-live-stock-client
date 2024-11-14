@@ -6,6 +6,7 @@ import WhProductsList from "../../Pages/Warehouse/WhProductsList/WhProductsList"
 import StockInList from "../../Pages/Warehouse/StockInList/StockInList";
 import StockOutList from "../../Pages/Warehouse/StockOutList/StockOutList";
 import DepotStockInList from "../../Pages/Depot/DepotStockInList/DepotStockInList";
+import DepotProductsList from "../../Pages/Depot/DepotProductsList/DepotProductsList";
 
 const router = createBrowserRouter([
     {
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
             {
                 path: "/warehouse-out",
                 element: <StockOutList />
+            },
+            {
+                path: "/depot-list",
+                element: <DepotProductsList />
             },
             {
                 path: "/depot-in",

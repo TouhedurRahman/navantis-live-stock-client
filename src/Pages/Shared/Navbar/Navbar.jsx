@@ -114,7 +114,7 @@ const Navbar = () => {
                                     )}
                                     {menu === 'depot' && (
                                         <>
-                                            <Link to='/products-list' className="w-full text-left px-4 text-white flex">
+                                            <Link to='/depot-list' className="w-full text-left px-4 text-white flex">
                                                 <div className='flex justify-start items-center cursor:pointer'>
                                                     <FaListUl className='me-2' />
                                                     <span>List</span>
@@ -234,7 +234,7 @@ const Navbar = () => {
                                     )}
                                     {menu === 'depot' && (
                                         <>
-                                            <Link to='/products-list' className="w-full text-left px-4 text-white flex">
+                                            <Link to='/depot-list' className="w-full text-left px-4 text-white flex">
                                                 <div className='flex justify-start items-center cursor:pointer'>
                                                     <FaListUl className='me-2' />
                                                     <span>List</span>
