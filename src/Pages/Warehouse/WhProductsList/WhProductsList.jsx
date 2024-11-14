@@ -24,6 +24,9 @@ const WhProductsList = () => {
 
     const currentProducts = filteredProducts.slice(startIndex, endIndex);
 
+    const totalUnit = filteredProducts.reduce((sum, product) => sum + Number(product.quantity), 0);
+    const totalPrice = filteredProducts.reduce((sum, product) => sum + product.price * product.quantity, 0);
+
     const changePage = (page) => {
         setCurrentPage(page);
     };
@@ -38,20 +41,34 @@ const WhProductsList = () => {
         setCurrentPage(1);
     };
 
-    console.log(currentProducts);
-
     return (
         <>
             <div>
                 <PageTitle
-                    from={"Products"}
+                    from={"Warehouse"}
                     to={"Products list"}
                 />
             </div>
             <div className="bg-white pb-1">
                 <div>
-                    <h1 className="px-6 py-3 font-bold">All products list</h1>
+                    <h1 className="px-6 py-3 font-bold">Warehouse products list</h1>
                     <hr className='text-center border border-gray-500 mb-5' />
+                </div>
+                {/* Product Info */}
+                <div className="m-6 p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-md">
+                    <p className="text-md text-gray-700 text-center mb-4 font-medium">Warehouse Summary</p>
+
+                    <div className="bg-white p-3 rounded-md shadow-sm flex flex-col md:flex-row justify-around items-center text-gray-600">
+                        <p className="text-sm">
+                            Total Products: <span className="font-medium text-blue-700">{filteredProducts.length}</span>
+                        </p>
+                        <p className="text-sm">
+                            Total Unit: <span className="font-medium text-blue-700">{totalUnit}</span>
+                        </p>
+                        <p className="text-sm">
+                            Total Price: <span className="font-medium text-blue-700">{totalPrice.toLocaleString('en-IN')}/-</span>
+                        </p>
+                    </div>
                 </div>
                 {
                     loading
