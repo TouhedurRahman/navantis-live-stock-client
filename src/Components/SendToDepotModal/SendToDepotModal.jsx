@@ -49,11 +49,33 @@ const SendToDepotModal = ({ isOpen, onClose, product, refetch }) => {
         },
     });
 
+    const addDepotListMutation = useMutation({
+        mutationFn: async (data) => {
+            const newProduct = {
+                name: product.name,
+                price: product.price,
+                lot: product.lot,
+                expire: product.expire,
+                quantity: Number(data.quantity),
+                date: data.date,
+                addedby: product.addedby,
+                addedemail: product.addedemail
+            };
+
+            const response = await axios.post('http://localhost:5000/depot-products', newProduct);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error add to depot:", error);
+        },
+    });
+
     const onSubmit = async (data) => {
         try {
             await Promise.all([
                 updateProductMutation.mutateAsync(data),
-                sendDepotMutation.mutateAsync(data)
+                sendDepotMutation.mutateAsync(data),
+                addDepotListMutation.mutateAsync(data),
             ]);
 
             reset();
