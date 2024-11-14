@@ -30,7 +30,17 @@ const StockInList = () => {
     }, [products, year, month, fromDate, toDate, searchTerm]);
 
     const totalProducts = filteredProducts.length;
-    const totalQuantity = filteredProducts.reduce((sum, product) => sum + Number(product.quantity), 0);
+
+    const uniqueProducts = products.filter((product, index, self) =>
+        index === self.findIndex((p) =>
+            p.name === product.name &&
+            p.price === product.price &&
+            p.lot === product.lot &&
+            p.expire === product.expire
+        )
+    );
+    const totalUniqueProducts = uniqueProducts.length;
+    const totalUnit = filteredProducts.reduce((sum, product) => sum + Number(product.quantity), 0);
     const totalPrice = filteredProducts.reduce((sum, product) => sum + product.price * product.quantity, 0);
 
     // Pagination calculations
@@ -168,11 +178,11 @@ const StockInList = () => {
                             <div className="grid grid-cols-2 gap-y-2">
                                 {/* Total Products */}
                                 <p className="font-semibold">Total Products</p>
-                                <p className="text-right font-bold">{totalProducts}</p>
+                                <p className="text-right font-bold">{totalUniqueProducts}</p>
 
                                 {/* Total Quantity */}
-                                <p className="font-semibold">Total Quantity</p>
-                                <p className="text-right font-bold">{totalQuantity}</p>
+                                <p className="font-semibold">Total Unit</p>
+                                <p className="text-right font-bold">{totalUnit}</p>
 
                                 {/* Total Price */}
                                 <p className="font-semibold">Total Price</p>
