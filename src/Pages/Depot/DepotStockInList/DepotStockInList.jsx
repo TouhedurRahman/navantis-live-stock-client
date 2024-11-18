@@ -29,14 +29,15 @@ const DepotStockInList = () => {
         });
     }, [products, year, month, fromDate, toDate, searchTerm]);
 
-    const totalProducts = filteredProducts.length;
-
     const uniqueProducts = filteredProducts.filter((product, index, self) =>
         index === self.findIndex((p) =>
-            p.name === product.name &&
-            p.price === product.price &&
-            p.lot === product.lot &&
-            p.expire === product.expire
+            p.name === product.name
+            /* &&
+            p.price === product.price
+            &&
+            p.lot === product.lot
+            &&
+            p.expire === product.expire */
         )
     );
     const totalUniqueProducts = uniqueProducts.length;
@@ -44,14 +45,16 @@ const DepotStockInList = () => {
     const totalPrice = filteredProducts.reduce((sum, product) => sum + product.price * product.quantity, 0);
 
     // Pagination calculations
-    const totalPages = Math.ceil(totalProducts / productsPerPage);
-    const startIndex = (currentPage - 1) * productsPerPage;
-    const currentProducts = filteredProducts.slice(startIndex, startIndex + productsPerPage);
+    const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
-    // Pagination handlers
-    const goToPage = (page) => setCurrentPage(page);
-    const goToPreviousPage = () => setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
-    const goToNextPage = () => setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
+    const startIndex = (currentPage - 1) * productsPerPage;
+    const endIndex = Math.min(startIndex + productsPerPage, filteredProducts.length);
+
+    const currentProducts = filteredProducts.slice(startIndex, endIndex);
+
+    const changePage = (page) => {
+        setCurrentPage(page);
+    };
 
     // Clear filter inputs
     const clearFilters = () => {
@@ -246,7 +249,7 @@ const DepotStockInList = () => {
                                     <tr key={product._id} className="border-b">
                                         <th className="text-center">
                                             {
-                                                `${idx + 1}`
+                                                `${startIndex + idx + 1}`
                                             }
                                         </th>
                                         <td>{product.name}</td>
