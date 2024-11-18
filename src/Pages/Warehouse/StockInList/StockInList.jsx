@@ -31,7 +31,7 @@ const StockInList = () => {
 
     const totalProducts = filteredProducts.length;
 
-    const uniqueProducts = products.filter((product, index, self) =>
+    const uniqueProducts = filteredProducts.filter((product, index, self) =>
         index === self.findIndex((p) =>
             p.name === product.name &&
             p.price === product.price &&
