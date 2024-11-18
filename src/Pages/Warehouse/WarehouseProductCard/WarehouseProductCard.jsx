@@ -4,12 +4,14 @@ import UpdateProductModal from '../../../Components/UpdateProductModal/UpdatePro
 import StockInModal from '../../../Components/StockInModal/StockInModal';
 import SendToDepotModal from '../../../Components/SendToDepotModal/SendToDepotModal';
 
-const WarehouseProductCard = ({ product, refetch }) => {
+const WarehouseProductCard = ({ idx, product, refetch }) => {
     const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
     const [isStockInModalOpen, setStockInModalOpen] = useState(false);
     const [isSendToDepotModalOpen, setSendToDepotModalOpen] = useState(false);
 
-    const totalPrice = product.price * product.quantity;
+    const totaltActualPrice = product.actualPrice * product.totalQuantity;
+    const totalTradePrice = product.tradePrice * product.totalQuantity;
+    const totaltMRP = product.mrpPrice * product.totalQuantity;
 
     const handleRemove = () => {
         console.log("Remove product:", product._id);
@@ -19,33 +21,25 @@ const WarehouseProductCard = ({ product, refetch }) => {
         <>
             <tr>
                 <td className='flex justify-center items-center'>
-                    <div className="flex items-center gap-3">
-                        <div className="avatar">
-                            <div className="mask mask-squircle h-12 w-12">
-                                <img
-                                    src={"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAUDI3l9CWbO3p3SzSAzGD6rr_pMxbRjs_oA&s"}
-                                    alt="Loading..." />
-                            </div>
-                        </div>
-                    </div>
+                    {idx}
                 </td>
                 <td>
-                    <div>
-                        <div className="font-bold">{product.name}</div>
-                    </div>
+                    <div className="font-bold">{product.productName}</div>
                 </td>
                 <td className='text-center'>
-                    {product.lot} <br />
+                    {product.batch}
+                </td>
+                <td className='text-center'>
                     {product.expire}
                 </td>
                 <td className='text-center'>
-                    {product.quantity}
+                    {product.totalQuantity}
                 </td>
                 <td className='text-right'>
-                    {product.price.toLocaleString('en-IN')}/-
+                    {product.actualPrice.toLocaleString('en-IN')}/-
                 </td>
                 <td className='text-right'>
-                    {totalPrice.toLocaleString('en-IN')}/-
+                    {totaltActualPrice.toLocaleString('en-IN')}/-
                 </td>
                 <th>
                     <div className="flex justify-center items-center space-x-4 text-md">

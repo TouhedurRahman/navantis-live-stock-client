@@ -14,7 +14,7 @@ const WhProductsList = () => {
     const [productsPerPage, setProductsPerPage] = useState(5);
 
     const filteredProducts = products.filter(product =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+        product.productName.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
@@ -24,8 +24,10 @@ const WhProductsList = () => {
 
     const currentProducts = filteredProducts.slice(startIndex, endIndex);
 
-    const totalUnit = filteredProducts.reduce((sum, product) => sum + Number(product.quantity), 0);
-    const totalPrice = filteredProducts.reduce((sum, product) => sum + product.price * product.quantity, 0);
+    const totalUnit = filteredProducts.reduce((sum, product) => sum + Number(product.totalQuantity), 0);
+    const totalActualPrice = filteredProducts.reduce((sum, product) => sum + product.actualPrice * product.totalQuantity, 0);
+    const totalTradePrice = filteredProducts.reduce((sum, product) => sum + product.tradePrice * product.totalQuantity, 0);
+    const totalMRP = filteredProducts.reduce((sum, product) => sum + product.mrpPrice * product.totalQuantity, 0);
 
     const changePage = (page) => {
         setCurrentPage(page);
@@ -65,8 +67,17 @@ const WhProductsList = () => {
                         <p className="text-sm">
                             Total Unit: <span className="font-medium text-blue-700">{totalUnit}</span>
                         </p>
+                    </div>
+
+                    <div className="bg-white p-3 rounded-md shadow-sm flex flex-col md:flex-row justify-around items-center text-gray-600">
                         <p className="text-sm">
-                            Total Price: <span className="font-medium text-blue-700">{totalPrice.toLocaleString('en-IN')}/-</span>
+                            Total Actual Price: <span className="font-medium text-blue-700">{totalActualPrice.toLocaleString('en-IN')}/-</span>
+                        </p>
+                        <p className="text-sm">
+                            Total Trade Price: <span className="font-medium text-blue-700">{totalTradePrice.toLocaleString('en-IN')}/-</span>
+                        </p>
+                        <p className="text-sm">
+                            Total MRP: <span className="font-medium text-blue-700">{totalMRP.toLocaleString('en-IN')}/-</span>
                         </p>
                     </div>
                 </div>
@@ -118,9 +129,10 @@ const WhProductsList = () => {
                                         {/* head */}
                                         <thead>
                                             <tr>
-                                                <th className="text-center">Image</th>
+                                                <th className="text-center">Sl. No.</th>
                                                 <th>Name</th>
-                                                <th className='text-center'>Lot & Exp.</th>
+                                                <th className='text-center'>Lot</th>
+                                                <th className='text-center'>Exp.</th>
                                                 <th className='text-center'>Quantity</th>
                                                 <th className='text-right'>Price/Unit</th>
                                                 <th className='text-right'>Total Price</th>
@@ -129,8 +141,9 @@ const WhProductsList = () => {
                                         </thead>
                                         <tbody>
                                             {
-                                                currentProducts.map(product => (
+                                                currentProducts.map((product, idx) => (
                                                     <WarehouseProductCard
+                                                        idx={startIndex + idx + 1}
                                                         key={product._id}
                                                         product={product}
                                                         refetch={refetch}
