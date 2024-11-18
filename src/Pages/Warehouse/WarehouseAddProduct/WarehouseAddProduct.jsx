@@ -30,7 +30,7 @@ const WarehouseAddProduct = () => {
         const newProduct = {
             productName: data.name,
             productCode: data.psc,
-            lot: data.lot,
+            batch: data.batch,
             expire: data.expire,
             actualPrice: Number(data.ap),
             tradePrice: Number(data.tp),
@@ -38,7 +38,7 @@ const WarehouseAddProduct = () => {
             boxQuantity: Number(data.box),
             productPerBox: Number(data.pbp),
             productWithoutBox: Number(data.pwb),
-            quantity: Number(Number(Number(data.box) * Number(data.pbp)) + Number(data.pwb)),
+            totalQuantity: Number(Number(Number(data.box) * Number(data.pbp)) + Number(data.pwb)),
             date: data.date,
             remarks: data.remarks,
             addedby: data.addedby,
@@ -113,14 +113,14 @@ const WarehouseAddProduct = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
-                                Lot/Batch <span className="text-red-500">*</span>
+                                Batch <span className="text-red-500">*</span>
                             </label>
                             <input
-                                {...register("lot", { required: "Lot/Batch is required" })}
-                                placeholder="Enter product lot/batch no"
+                                {...register("batch", { required: "Batch is required" })}
+                                placeholder="Enter product batch/batch no"
                                 className="border-gray-500 bg-white border p-2 text-sm"
                             />
-                            {errors.lot && <p className="text-red-500 text-sm">{errors.lot.message}</p>}
+                            {errors.batch && <p className="text-red-500 text-sm">{errors.batch.message}</p>}
                         </div>
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
