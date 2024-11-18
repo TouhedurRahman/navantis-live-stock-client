@@ -28,12 +28,19 @@ const WarehouseAddProduct = () => {
 
     const handleAddProduct = async (data) => {
         const newProduct = {
-            name: data.name,
-            price: data.price,
+            productName: data.name,
+            productCode: data.psc,
             lot: data.lot,
             expire: data.expire,
-            quantity: Number(data.quantity),
+            actualPrice: Number(data.ap),
+            tradePrice: Number(data.tp),
+            mrpPrice: Number(data.mrp),
+            boxQuantity: Number(data.box),
+            productPerBox: Number(data.pbp),
+            productWithoutBox: Number(data.pwb),
+            quantity: Number(Number(Number(data.box) * Number(data.pbp)) + Number(data.pwb)),
             date: data.date,
+            remarks: data.remarks,
             addedby: data.addedby,
             addedemail: data.addedemail
         };
@@ -77,16 +84,32 @@ const WarehouseAddProduct = () => {
                         </div>
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
-                                Price/Unit <span className="text-red-500">*</span>
+                                Product Short Code <span className="text-red-500">*</span>
                             </label>
                             <input
-                                {...register("price", { required: "Price is required" })}
-                                placeholder="Enter price"
+                                {...register("psc", { required: "PSC is required" })}
+                                placeholder="Enter product short code"
                                 className="border-gray-500 bg-white border p-2 text-sm"
                             />
-                            {errors.price && <p className="text-red-500 text-sm">{errors.price.message}</p>}
+                            {errors.psc && <p className="text-red-500 text-sm">{errors.psc.message}</p>}
                         </div>
                     </div>
+
+                    {/* <div>
+                        <div className="flex flex-col mb-2">
+                            <label className="text-[#6E719A] mb-1 text-sm">
+                                Image upload <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="file"
+                                {...register("image")}
+                                // {...register("image", { required: "Image file is required" })}
+                                className="h-10 file-input file-input-bordered border-gray-500 w-full rounded-none text-sm cursor-pointer"
+                            />
+                            {errors.image && <p className="text-red-500 text-sm">{errors.image.message}</p>}
+                        </div>
+                    </div> */}
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
@@ -117,32 +140,86 @@ const WarehouseAddProduct = () => {
                             {errors.expire && <p className="text-red-500 text-sm">{errors.expire.message}</p>}
                         </div>
                     </div>
-                    <div className="flex flex-col mb-2">
-                        <label className="text-[#6E719A] mb-1 text-sm">
-                            Image upload <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                            type="file"
-                            {...register("image")}
-                            // {...register("image", { required: "Image file is required" })}
-                            className="h-10 file-input file-input-bordered border-gray-500 w-full rounded-none text-sm cursor-pointer"
-                        />
-                        {errors.image && <p className="text-red-500 text-sm">{errors.image.message}</p>}
-                    </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
-                                Quantity <span className="text-red-500">*</span>
+                                Acual Price (AP) <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type='number'
-                                {...register("quantity", { required: "Quantity is Quantity" })}
-                                placeholder="Enter quantity"
+                                {...register("ap", { required: "Actual price is required" })}
+                                placeholder="Enter actual price"
                                 className="border-gray-500 bg-white border p-2 text-sm"
                             />
-                            {errors.quantity && <p className="text-red-500 text-sm">{errors.quantity.message}</p>}
+                            {errors.ap && <p className="text-red-500 text-sm">{errors.ap.message}</p>}
                         </div>
+                        <div className="flex flex-col">
+                            <label className="text-[#6E719A] mb-1 text-sm">
+                                Trade Price (TP) <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type='number'
+                                {...register("tp", { required: "Trade price is required" })}
+                                placeholder="Enter trade price"
+                                className="border-gray-500 bg-white border p-2 text-sm"
+                            />
+                            {errors.tp && <p className="text-red-500 text-sm">{errors.tp.message}</p>}
+                        </div>
+                        <div className="flex flex-col">
+                            <label className="text-[#6E719A] mb-1 text-sm">
+                                Maximum Retail Price (MRP) <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type='number'
+                                {...register("mrp", { required: "MRP is required" })}
+                                placeholder="Enter MRP"
+                                className="border-gray-500 bg-white border p-2 text-sm"
+                            />
+                            {errors.mrp && <p className="text-red-500 text-sm">{errors.mrp.message}</p>}
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+                        <div className="flex flex-col">
+                            <label className="text-[#6E719A] mb-1 text-sm">
+                                Box Quantity <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type='number'
+                                {...register("box", { required: "Box quantity is required" })}
+                                placeholder="Enter box quantity"
+                                className="border-gray-500 bg-white border p-2 text-sm"
+                            />
+                            {errors.box && <p className="text-red-500 text-sm">{errors.box.message}</p>}
+                        </div>
+                        <div className="flex flex-col">
+                            <label className="text-[#6E719A] mb-1 text-sm">
+                                Per box product <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type='number'
+                                {...register("pbp", { required: "Per box product quantity is required" })}
+                                placeholder="Enter per box product quantity"
+                                className="border-gray-500 bg-white border p-2 text-sm"
+                            />
+                            {errors.pbp && <p className="text-red-500 text-sm">{errors.pbp.message}</p>}
+                        </div>
+                        <div className="flex flex-col">
+                            <label className="text-[#6E719A] mb-1 text-sm">
+                                Product without box <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type='number'
+                                {...register("pwb", { required: "Per box product quantity is required" })}
+                                placeholder="Enter per box product quantity"
+                                className="border-gray-500 bg-white border p-2 text-sm"
+                            />
+                            {errors.pwb && <p className="text-red-500 text-sm">{errors.pwb.message}</p>}
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
                                 Date <span className="text-red-500">*</span>
@@ -151,9 +228,20 @@ const WarehouseAddProduct = () => {
                                 type='date'
                                 {...register("date", { required: "Date is required" })}
                                 placeholder="Enter date"
-                                className="border-gray-500 bg-white border p-2 text-sm"
+                                className="h-10 border-gray-500 bg-white border p-2 text-sm"
                             />
                             {errors.date && <p className="text-red-500 text-sm">{errors.date.message}</p>}
+                        </div>
+                        <div className="flex flex-col">
+                            <label className="text-[#6E719A] mb-1 text-sm">
+                                Remarks <span className="text-red-500">*</span>
+                            </label>
+                            <textarea
+                                {...register("remarks", { required: "Remarks is required" })}
+                                placeholder="Enter remarks"
+                                className="h-10 border-gray-500 bg-white border p-2 text-sm"
+                            />
+                            {errors.remarks && <p className="text-red-500 text-sm">{errors.remarks.message}</p>}
                         </div>
                     </div>
 
