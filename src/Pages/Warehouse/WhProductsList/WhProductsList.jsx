@@ -60,7 +60,7 @@ const WhProductsList = () => {
                 <div className="m-6 p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-md">
                     <p className="text-md text-gray-700 text-center mb-4 font-medium">Warehouse Summary</p>
 
-                    <div className="bg-white p-3 rounded-md shadow-sm flex flex-col md:flex-row justify-around items-center text-gray-600">
+                    <div className="bg-white p-3 rounded-md rounded-b-none shadow-sm flex flex-col md:flex-row justify-around items-center text-gray-600">
                         <p className="text-sm">
                             Total Products: <span className="font-medium text-blue-700">{filteredProducts.length}</span>
                         </p>
@@ -69,7 +69,7 @@ const WhProductsList = () => {
                         </p>
                     </div>
 
-                    <div className="bg-white p-3 rounded-md shadow-sm flex flex-col md:flex-row justify-around items-center text-gray-600">
+                    <div className="bg-white p-3 rounded-md rounded-t-none shadow-sm flex flex-col md:flex-row justify-around items-center text-gray-600">
                         <p className="text-sm">
                             Total Actual Price: <span className="font-medium text-blue-700">{totalActualPrice.toLocaleString('en-IN')}/-</span>
                         </p>
@@ -131,7 +131,7 @@ const WhProductsList = () => {
                                             <tr>
                                                 <th className="text-center">Sl. No.</th>
                                                 <th>Name</th>
-                                                <th className='text-center'>Lot</th>
+                                                <th className='text-center'>Batch</th>
                                                 <th className='text-center'>Exp.</th>
                                                 <th className='text-center'>Quantity</th>
                                                 <th className='text-right'>Price/Unit</th>

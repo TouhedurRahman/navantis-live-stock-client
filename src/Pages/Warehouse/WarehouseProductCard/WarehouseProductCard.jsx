@@ -1,17 +1,19 @@
 import { useState } from 'react';
-import { FaSyncAlt, FaBox, FaTruck, FaTimes } from "react-icons/fa";
+import { FaSyncAlt, FaBox, FaTruck, FaTimes, FaEye } from "react-icons/fa";
 import UpdateProductModal from '../../../Components/UpdateProductModal/UpdateProductModal';
 import StockInModal from '../../../Components/StockInModal/StockInModal';
 import SendToDepotModal from '../../../Components/SendToDepotModal/SendToDepotModal';
+import WarehouseDetailsModal from '../../../Components/WarehouseDetailsModal/WarehouseDetailsModal';
 
 const WarehouseProductCard = ({ idx, product, refetch }) => {
+    const [isdetailsModalOpen, setdetailsModalOpen] = useState(false);
     const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
     const [isStockInModalOpen, setStockInModalOpen] = useState(false);
     const [isSendToDepotModalOpen, setSendToDepotModalOpen] = useState(false);
 
-    const totaltActualPrice = product.actualPrice * product.totalQuantity;
+    // const totaltActualPrice = product.actualPrice * product.totalQuantity;
     const totalTradePrice = product.tradePrice * product.totalQuantity;
-    const totaltMRP = product.mrpPrice * product.totalQuantity;
+    // const totaltMRP = product.mrpPrice * product.totalQuantity;
 
     const handleRemove = () => {
         console.log("Remove product:", product._id);
@@ -36,13 +38,20 @@ const WarehouseProductCard = ({ idx, product, refetch }) => {
                     {product.totalQuantity}
                 </td>
                 <td className='text-right'>
-                    {product.actualPrice.toLocaleString('en-IN')}/-
+                    {product.tradePrice.toLocaleString('en-IN')}/-
                 </td>
                 <td className='text-right'>
-                    {totaltActualPrice.toLocaleString('en-IN')}/-
+                    {totalTradePrice.toLocaleString('en-IN')}/-
                 </td>
                 <th>
                     <div className="flex justify-center items-center space-x-4 text-md">
+                        <button
+                            onClick={() => setdetailsModalOpen(true)}
+                            title="Details"
+                            className="p-2 rounded-[5px] hover:bg-orange-100 focus:outline-none"
+                        >
+                            <FaEye className="text-orange-500" />
+                        </button>
                         <button
                             onClick={() => setUpdateModalOpen(true)}
                             title="Update product"
@@ -76,6 +85,14 @@ const WarehouseProductCard = ({ idx, product, refetch }) => {
             </tr>
 
             {/* Modals for different operations */}
+            {isdetailsModalOpen && (
+                <WarehouseDetailsModal
+                    isOpen={isdetailsModalOpen}
+                    onClose={() => setdetailsModalOpen(false)}
+                    product={product}
+                    refetch={refetch}
+                />
+            )}
             {isUpdateModalOpen && (
                 <UpdateProductModal
                     isOpen={isUpdateModalOpen}
