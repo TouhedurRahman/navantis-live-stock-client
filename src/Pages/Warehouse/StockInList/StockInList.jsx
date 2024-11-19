@@ -4,6 +4,8 @@ import { ImSearch } from 'react-icons/im';
 import { MdPrint } from 'react-icons/md';
 import useStockInWh from "../../../Hooks/useStockInWh";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
+import { FaEye } from "react-icons/fa";
+import WarehouseDetailsModal from "../../../Components/WarehouseDetailsModal/WarehouseDetailsModal";
 
 const StockInList = () => {
     const [products, loading] = useStockInWh();
@@ -14,6 +16,8 @@ const StockInList = () => {
     const [toDate, setToDate] = useState('');
     const [productsPerPage, setProductsPerPage] = useState(5);
     const [currentPage, setCurrentPage] = useState(1);
+    const [isdetailsModalOpen, setdetailsModalOpen] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null);
 
     // Filtered products based on search and filters
     const filteredProducts = useMemo(() => {
@@ -237,11 +241,13 @@ const StockInList = () => {
                                 <tr>
                                     <th className="text-center">Sl. No.</th>
                                     <th className="text-left">Name</th>
-                                    <th className="text-center">Lot & Exp.</th>
+                                    <th className="text-center">Batch</th>
+                                    <th className="text-center">Exp.</th>
                                     <th className="text-center">Quantity</th>
                                     <th className="text-right">Price/Unit</th>
                                     <th className="text-right">Total Price</th>
                                     <th className="text-center">Date</th>
+                                    <th className="text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -253,12 +259,29 @@ const StockInList = () => {
                                             }
                                         </th>
                                         <td>{product.productName}</td>
-                                        <td className="text-center">{product.batch} <br /> {product.expire}</td>
+                                        <td className="text-center">{product.batch}</td>
+                                        <td className="text-center">{product.expire}</td>
                                         <td className="text-center">{product.totalQuantity}</td>
                                         <td className="text-right">{(product.tradePrice).toLocaleString('en-IN')}/-</td>
                                         <td className="text-right">{(product.tradePrice * product.totalQuantity).toLocaleString('en-IN')}/-</td>
                                         <td className="text-center">
                                             {new Date(product.date).toLocaleDateString('en-GB').replace(/\//g, '-')}
+                                        </td>
+                                        <td>
+                                            <div className="flex justify-center items-center space-x-4 text-md">
+                                                <button
+                                                    onClick={
+                                                        () => {
+                                                            setdetailsModalOpen(true)
+                                                            setSelectedProduct(product)
+                                                        }
+                                                    }
+                                                    title="Details"
+                                                    className="p-2 rounded-[5px] hover:bg-orange-100 focus:outline-none"
+                                                >
+                                                    <FaEye className="text-orange-500" />
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -303,6 +326,15 @@ const StockInList = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Modals for different operations */}
+            {isdetailsModalOpen && (
+                <WarehouseDetailsModal
+                    isOpen={isdetailsModalOpen}
+                    onClose={() => setdetailsModalOpen(false)}
+                    product={selectedProduct}
+                />
+            )}
         </div>
     );
 };
