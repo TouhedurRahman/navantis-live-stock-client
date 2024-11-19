@@ -34,11 +34,10 @@ const WarehouseAddProduct = () => {
             expire: data.expire,
             actualPrice: Number(data.ap),
             tradePrice: Number(data.tp),
-            mrpPrice: Number(data.mrp),
             boxQuantity: Number(data.box),
-            productPerBox: Number(data.pbp),
-            productWithoutBox: Number(data.pwb),
-            totalQuantity: Number(Number(Number(data.box) * Number(data.pbp)) + Number(data.pwb)),
+            productWithBox: Number(data.pwb),
+            productWithoutBox: Number(data.pwob),
+            totalQuantity: Number(Number(data.pwb) + Number(data.pwob)),
             date: data.date,
             remarks: data.remarks,
             addedby: data.addedby,
@@ -144,7 +143,46 @@ const WarehouseAddProduct = () => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
-                                Acual Price (AP) <span className="text-red-500">*</span>
+                                Box Quantity <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type='number'
+                                {...register("box", { required: "Box quantity is required" })}
+                                placeholder="Enter box quantity"
+                                className="border-gray-500 bg-white border p-2 text-sm"
+                            />
+                            {errors.box && <p className="text-red-500 text-sm">{errors.box.message}</p>}
+                        </div>
+                        <div className="flex flex-col">
+                            <label className="text-[#6E719A] mb-1 text-sm">
+                                Product Quantity (With Box) <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type='number'
+                                {...register("pwb", { required: "With Box product quantity is required" })}
+                                placeholder="Enter with box product quantity"
+                                className="border-gray-500 bg-white border p-2 text-sm"
+                            />
+                            {errors.pwb && <p className="text-red-500 text-sm">{errors.pwb.message}</p>}
+                        </div>
+                        <div className="flex flex-col">
+                            <label className="text-[#6E719A] mb-1 text-sm">
+                                Product Quantity (Without Box) <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type='number'
+                                {...register("pwob", { required: "Without Box product quantity is required" })}
+                                placeholder="Enter without box product quantity"
+                                className="border-gray-500 bg-white border p-2 text-sm"
+                            />
+                            {errors.pwob && <p className="text-red-500 text-sm">{errors.pwob.message}</p>}
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+                        <div className="flex flex-col">
+                            <label className="text-[#6E719A] mb-1 text-sm">
+                                Actual Price (AP) <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type='number'
@@ -168,70 +206,19 @@ const WarehouseAddProduct = () => {
                         </div>
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
-                                Maximum Retail Price (MRP) <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type='number'
-                                {...register("mrp", { required: "MRP is required" })}
-                                placeholder="Enter MRP"
-                                className="border-gray-500 bg-white border p-2 text-sm"
-                            />
-                            {errors.mrp && <p className="text-red-500 text-sm">{errors.mrp.message}</p>}
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
-                        <div className="flex flex-col">
-                            <label className="text-[#6E719A] mb-1 text-sm">
-                                Box Quantity <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type='number'
-                                {...register("box", { required: "Box quantity is required" })}
-                                placeholder="Enter box quantity"
-                                className="border-gray-500 bg-white border p-2 text-sm"
-                            />
-                            {errors.box && <p className="text-red-500 text-sm">{errors.box.message}</p>}
-                        </div>
-                        <div className="flex flex-col">
-                            <label className="text-[#6E719A] mb-1 text-sm">
-                                Per box product <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type='number'
-                                {...register("pbp", { required: "Per box product quantity is required" })}
-                                placeholder="Enter per box product quantity"
-                                className="border-gray-500 bg-white border p-2 text-sm"
-                            />
-                            {errors.pbp && <p className="text-red-500 text-sm">{errors.pbp.message}</p>}
-                        </div>
-                        <div className="flex flex-col">
-                            <label className="text-[#6E719A] mb-1 text-sm">
-                                Product without box <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type='number'
-                                {...register("pwb", { required: "Per box product quantity is required" })}
-                                placeholder="Enter per box product quantity"
-                                className="border-gray-500 bg-white border p-2 text-sm"
-                            />
-                            {errors.pwb && <p className="text-red-500 text-sm">{errors.pwb.message}</p>}
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
-                        <div className="flex flex-col">
-                            <label className="text-[#6E719A] mb-1 text-sm">
                                 Date <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type='date'
                                 {...register("date", { required: "Date is required" })}
                                 placeholder="Enter date"
-                                className="h-10 border-gray-500 bg-white border p-2 text-sm"
+                                className="border-gray-500 bg-white border p-2 text-sm"
                             />
                             {errors.date && <p className="text-red-500 text-sm">{errors.date.message}</p>}
                         </div>
+                    </div>
+
+                    <div className="mb-2">
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
                                 Remarks <span className="text-red-500">*</span>
@@ -239,7 +226,7 @@ const WarehouseAddProduct = () => {
                             <textarea
                                 {...register("remarks", { required: "Remarks is required" })}
                                 placeholder="Enter remarks"
-                                className="h-10 border-gray-500 bg-white border p-2 text-sm"
+                                className="border-gray-500 bg-white border p-2 text-sm"
                             />
                             {errors.remarks && <p className="text-red-500 text-sm">{errors.remarks.message}</p>}
                         </div>

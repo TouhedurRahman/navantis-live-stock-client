@@ -27,7 +27,6 @@ const WhProductsList = () => {
     const totalUnit = filteredProducts.reduce((sum, product) => sum + Number(product.totalQuantity), 0);
     const totalActualPrice = filteredProducts.reduce((sum, product) => sum + product.actualPrice * product.totalQuantity, 0);
     const totalTradePrice = filteredProducts.reduce((sum, product) => sum + product.tradePrice * product.totalQuantity, 0);
-    const totalMRP = filteredProducts.reduce((sum, product) => sum + product.mrpPrice * product.totalQuantity, 0);
 
     const changePage = (page) => {
         setCurrentPage(page);
@@ -75,9 +74,6 @@ const WhProductsList = () => {
                         </p>
                         <p className="text-sm">
                             Total Trade Price: <span className="font-medium text-blue-700">{totalTradePrice.toLocaleString('en-IN')}/-</span>
-                        </p>
-                        <p className="text-sm">
-                            Total MRP: <span className="font-medium text-blue-700">{totalMRP.toLocaleString('en-IN')}/-</span>
                         </p>
                     </div>
                 </div>

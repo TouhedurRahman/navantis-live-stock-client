@@ -10,12 +10,18 @@ const StockInModal = ({ isOpen, onClose, product, refetch }) => {
     const updateProductMutation = useMutation({
         mutationFn: async (data) => {
             const updatedProduct = {
-                name: product.name,
-                price: product.price,
-                lot: product.lot,
+                productName: product.productName,
+                productCode: product.productCode,
+                batch: product.batch,
                 expire: product.expire,
-                quantity: Number(product.quantity) + Number(data.quantity),
+                actualPrice: Number(product.actualPrice),
+                tradePrice: Number(product.tradePrice),
+                boxQuantity: Number(Number(data.box) + Number(product.boxQuantity)),
+                productWithBox: Number(Number(data.pwb) + Number(product.productWithBox)),
+                productWithoutBox: Number(Number(data.pwob) + Number(product.productWithoutBox)),
+                totalQuantity: Number(Number(Number(Number(data.pwb) + Number(product.productWithBox)) + Number(Number(data.pwob) + Number(product.productWithoutBox)))),
                 date: data.date,
+                remarks: product.remarks,
                 addedby: product.addedby,
                 addedemail: product.addedemail
             };
@@ -31,12 +37,18 @@ const StockInModal = ({ isOpen, onClose, product, refetch }) => {
     const addStockMutation = useMutation({
         mutationFn: async (data) => {
             const newProduct = {
-                name: product.name,
-                price: product.price,
-                lot: product.lot,
+                productName: product.productName,
+                productCode: product.productCode,
+                batch: product.batch,
                 expire: product.expire,
-                quantity: Number(data.quantity),
+                actualPrice: Number(product.actualPrice),
+                tradePrice: Number(product.tradePrice),
+                boxQuantity: Number(data.box),
+                productWithBox: Number(data.pwb),
+                productWithoutBox: Number(data.pwob),
+                totalQuantity: Number(Number(data.pwb) + Number(data.pwob)),
                 date: data.date,
+                remarks: product.remarks,
                 addedby: product.addedby,
                 addedemail: product.addedemail
             };
@@ -71,9 +83,9 @@ const StockInModal = ({ isOpen, onClose, product, refetch }) => {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-60">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md max-h-screen overflow-y-auto">
                 <div className="flex justify-between items-center">
-                    <h2 className="text-2xl font-semibold text-blue-600">Stock in warehouse</h2>
+                    <h2 className="text-2xl font-semibold text-blue-600">Stock in Warehouse</h2>
                     <button onClick={onClose} aria-label="Close modal">
                         <FaTimes className="text-gray-500 hover:text-red-500" size={18} />
                     </button>
@@ -81,15 +93,16 @@ const StockInModal = ({ isOpen, onClose, product, refetch }) => {
 
                 {/* Product Info */}
                 <div className="mt-4 p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-md">
-                    <h3 className="text-xl font-semibold text-blue-800 mb-2">{product.name}</h3>
-                    <p className="text-md text-gray-700 mb-4">Current Quantity: <span className="font-semibold text-blue-600">{product.quantity}</span></p>
-
+                    <h3 className="text-xl font-semibold text-blue-800 mb-2">{product.productName}</h3>
+                    <p className="text-md text-gray-700 mb-4">
+                        Current Quantity: <span className="font-semibold text-blue-600">{product.totalQuantity}</span>
+                    </p>
                     <div className="bg-white p-3 rounded-md shadow-sm flex justify-around items-center text-gray-600">
                         <p className="text-sm">
-                            Price: <span className="font-medium text-blue-700">{product.price.toLocaleString('en-IN')}/-</span>
+                            Price: <span className="font-medium text-blue-700">{product.tradePrice.toLocaleString('en-IN')}/-</span>
                         </p>
                         <p className="text-sm">
-                            Lot: <span className="font-medium text-blue-700">{product.lot}</span>
+                            Lot: <span className="font-medium text-blue-700">{product.batch}</span>
                         </p>
                         <p className="text-sm">
                             Expire: <span className="font-medium text-red-500">{product.expire}</span>
@@ -102,16 +115,45 @@ const StockInModal = ({ isOpen, onClose, product, refetch }) => {
                     {/* Quantity Field */}
                     <div className="mb-5">
                         <label className="block text-sm font-medium text-gray-700">
-                            New arrival Quantity <span className="text-red-500">*</span>
+                            Box <span className="text-red-500">*</span>
                         </label>
                         <input
                             type="number"
-                            {...register('quantity', { required: "Quantity is required", min: 1 })}
+                            {...register('box', { required: "Box Quantity is required", min: 1 })}
                             className="w-full px-4 py-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                            placeholder="Enter new arrival quantity"
+                            placeholder="Enter new arrival box quantity"
                         />
-                        {errors.quantity && (
-                            <p className="mt-1 text-sm text-red-500">{errors.quantity.message}</p>
+                        {errors.box && (
+                            <p className="mt-1 text-sm text-red-500">{errors.box.message}</p>
+                        )}
+                    </div>
+
+                    <div className="mb-5">
+                        <label className="block text-sm font-medium text-gray-700">
+                            Product Quantity (With Box) <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                            type="number"
+                            {...register('pwb', { required: "With box product quantity is required", min: 1 })}
+                            className="w-full px-4 py-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            placeholder="Enter with box product quantity"
+                        />
+                        {errors.pwb && (
+                            <p className="mt-1 text-sm text-red-500">{errors.pwb.message}</p>
+                        )}
+                    </div>
+                    <div className="mb-5">
+                        <label className="block text-sm font-medium text-gray-700">
+                            Product Quantity (Without Box) <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                            type="number"
+                            {...register('pwob', { required: "Without box product quantity is required", min: 1 })}
+                            className="w-full px-4 py-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            placeholder="Enter without box product quantity"
+                        />
+                        {errors.pwob && (
+                            <p className="mt-1 text-sm text-red-500">{errors.pwob.message}</p>
                         )}
                     </div>
 

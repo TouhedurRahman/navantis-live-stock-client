@@ -24,14 +24,14 @@ const StockInList = () => {
             const matchesDateRange = fromDate && toDate
                 ? productDate >= new Date(fromDate) && productDate <= new Date(toDate)
                 : true;
-            const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+            const matchesSearch = product.productName.toLowerCase().includes(searchTerm.toLowerCase());
             return matchesYear && matchesMonth && matchesDateRange && matchesSearch;
         });
     }, [products, year, month, fromDate, toDate, searchTerm]);
 
     const uniqueProducts = filteredProducts.filter((product, index, self) =>
         index === self.findIndex((p) =>
-            p.name === product.name
+            p.productName === product.productName
             /* &&
             p.price === product.price
             &&
@@ -41,8 +41,8 @@ const StockInList = () => {
         )
     );
     const totalUniqueProducts = uniqueProducts.length;
-    const totalUnit = filteredProducts.reduce((sum, product) => sum + Number(product.quantity), 0);
-    const totalPrice = filteredProducts.reduce((sum, product) => sum + product.price * product.quantity, 0);
+    const totalUnit = filteredProducts.reduce((sum, product) => sum + Number(product.totalQuantity), 0);
+    const totalPrice = filteredProducts.reduce((sum, product) => sum + product.tradePrice * product.totalQuantity, 0);
 
     // Pagination calculations
     const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
@@ -252,11 +252,11 @@ const StockInList = () => {
                                                 `${startIndex + idx + 1}`
                                             }
                                         </th>
-                                        <td>{product.name}</td>
-                                        <td className="text-center">{product.lot} <br /> {product.expire}</td>
-                                        <td className="text-center">{product.quantity}</td>
-                                        <td className="text-right">{(product.price).toLocaleString('en-IN')}/-</td>
-                                        <td className="text-right">{(product.price * product.quantity).toLocaleString('en-IN')}/-</td>
+                                        <td>{product.productName}</td>
+                                        <td className="text-center">{product.batch} <br /> {product.expire}</td>
+                                        <td className="text-center">{product.totalQuantity}</td>
+                                        <td className="text-right">{(product.tradePrice).toLocaleString('en-IN')}/-</td>
+                                        <td className="text-right">{(product.tradePrice * product.totalQuantity).toLocaleString('en-IN')}/-</td>
                                         <td className="text-center">
                                             {new Date(product.date).toLocaleDateString('en-GB').replace(/\//g, '-')}
                                         </td>

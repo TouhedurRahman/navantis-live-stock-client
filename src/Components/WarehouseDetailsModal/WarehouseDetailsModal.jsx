@@ -7,7 +7,6 @@ const WarehouseDetailsModal = ({ isOpen, onClose, product }) => {
     // Calculate totals
     const totalActualPrice = product.totalQuantity * product.actualPrice;
     const totalTradePrice = product.totalQuantity * product.tradePrice;
-    const totalMrpPrice = product.totalQuantity * product.mrpPrice;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
@@ -48,8 +47,8 @@ const WarehouseDetailsModal = ({ isOpen, onClose, product }) => {
                                 <p className="text-lg font-bold text-blue-600">{product.boxQuantity}</p>
                             </div>
                             <div className="p-2 bg-white rounded-md shadow-sm">
-                                <p className="text-sm font-medium text-gray-600">Per Box</p>
-                                <p className="text-lg font-bold text-blue-600">{product.productPerBox}</p>
+                                <p className="text-sm font-medium text-gray-600">With Box</p>
+                                <p className="text-lg font-bold text-blue-600">{product.productWithBox}</p>
                             </div>
                             <div className="p-2 bg-white rounded-md shadow-sm">
                                 <p className="text-sm font-medium text-gray-600">Without Box</p>
@@ -84,11 +83,6 @@ const WarehouseDetailsModal = ({ isOpen, onClose, product }) => {
                                         <td className="px-4 py-2 border border-gray-200">Trade Price</td>
                                         <td className="px-4 py-2 border border-gray-200">{product.tradePrice.toLocaleString('en-IN')}/-</td>
                                         <td className="px-4 py-2 border border-gray-200">{totalTradePrice.toLocaleString('en-IN')}/-</td>
-                                    </tr>
-                                    <tr>
-                                        <td className="px-4 py-2 border border-gray-200">MRP Price</td>
-                                        <td className="px-4 py-2 border border-gray-200">{product.mrpPrice.toLocaleString('en-IN')}/-</td>
-                                        <td className="px-4 py-2 border border-gray-200">{totalMrpPrice.toLocaleString('en-IN')}/-</td>
                                     </tr>
                                 </tbody>
                             </table>

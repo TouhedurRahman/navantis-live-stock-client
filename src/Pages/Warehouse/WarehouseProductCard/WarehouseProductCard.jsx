@@ -13,7 +13,6 @@ const WarehouseProductCard = ({ idx, product, refetch }) => {
 
     // const totaltActualPrice = product.actualPrice * product.totalQuantity;
     const totalTradePrice = product.tradePrice * product.totalQuantity;
-    // const totaltMRP = product.mrpPrice * product.totalQuantity;
 
     const handleRemove = () => {
         console.log("Remove product:", product._id);
