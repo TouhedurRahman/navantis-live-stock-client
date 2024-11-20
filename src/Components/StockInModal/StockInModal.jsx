@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
-import { FaTimes } from "react-icons/fa";
+import { FaEdit, FaTimes } from "react-icons/fa";
 import axios from 'axios';
+import { RxCross1 } from 'react-icons/rx';
 
 const StockInModal = ({ isOpen, onClose, product, refetch }) => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
+
+    const [editAP, setEditAP] = useState(false);
+    const [editTP, setEditTP] = useState(false);
 
     const updateProductMutation = useMutation({
         mutationFn: async (data) => {
@@ -14,16 +18,9 @@ const StockInModal = ({ isOpen, onClose, product, refetch }) => {
                 productCode: product.productCode,
                 batch: product.batch,
                 expire: product.expire,
-                actualPrice: Number(product.actualPrice),
-                tradePrice: Number(product.tradePrice),
-                boxQuantity: Number(Number(data.box) + Number(product.boxQuantity)),
-                productWithBox: Number(Number(data.pwb) + Number(product.productWithBox)),
-                productWithoutBox: Number(Number(data.pwob) + Number(product.productWithoutBox)),
-                totalQuantity: Number(Number(Number(Number(data.pwb) + Number(product.productWithBox)) + Number(Number(data.pwob) + Number(product.productWithoutBox)))),
-                date: data.date,
-                remarks: product.remarks,
-                addedby: product.addedby,
-                addedemail: product.addedemail
+                actualPrice: Number(data.ap),
+                tradePrice: Number(data.tp),
+                totalQuantity: Number(data.pwb) + Number(data.pwob) + Number(product.totalQuantity)
             };
 
             const response = await axios.patch(`http://localhost:5000/wh-product/${product._id}`, updatedProduct);
@@ -41,14 +38,14 @@ const StockInModal = ({ isOpen, onClose, product, refetch }) => {
                 productCode: product.productCode,
                 batch: product.batch,
                 expire: product.expire,
-                actualPrice: Number(product.actualPrice),
-                tradePrice: Number(product.tradePrice),
+                actualPrice: Number(data.ap),
+                tradePrice: Number(data.tp),
                 boxQuantity: Number(data.box),
                 productWithBox: Number(data.pwb),
                 productWithoutBox: Number(data.pwob),
                 totalQuantity: Number(Number(data.pwb) + Number(data.pwob)),
                 date: data.date,
-                remarks: product.remarks,
+                remarks: data.remarks || product.remarks,
                 addedby: product.addedby,
                 addedemail: product.addedemail
             };
@@ -89,7 +86,7 @@ const StockInModal = ({ isOpen, onClose, product, refetch }) => {
             >
                 {/* Header */}
                 <div className="flex justify-between items-center p-4 border-b">
-                    <h2 className="text-2xl font-semibold text-blue-600">Warehouse Stock in</h2>
+                    <h2 className="text-2xl font-semibold">Warehouse Stock in</h2>
                     <button onClick={onClose} aria-label="Close modal">
                         <FaTimes className="text-gray-500 hover:text-red-500" size={18} />
                     </button>
@@ -97,7 +94,6 @@ const StockInModal = ({ isOpen, onClose, product, refetch }) => {
 
                 {/* Scrollable Content */}
                 <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(100% - 128px)' }}>
-                    {/* Product Name and Code */}
                     {/* Product Name and Code */}
                     <div className="bg-white p-6 rounded-lg shadow-lg transform transition duration-300">
                         <h3 className="text-2xl font-extrabold text-green-900 mb-4 text-center border-b-2 border-green-300 pb-2">
@@ -126,7 +122,7 @@ const StockInModal = ({ isOpen, onClose, product, refetch }) => {
 
                             {/* Total Unit */}
                             <div className="p-6 bg-white rounded-lg shadow-md text-center">
-                                <p className="text-sm font-medium text-gray-600 uppercase">Total Unit</p>
+                                <p className="text-sm font-medium text-green-700 uppercase">Total Unit</p>
                                 <p className="text-3xl font-extrabold mt-2">{product.totalQuantity}</p>
                             </div>
                         </div>
@@ -134,29 +130,91 @@ const StockInModal = ({ isOpen, onClose, product, refetch }) => {
 
                     {/* update input section */}
                     <form onSubmit={handleSubmit(onSubmit)} className="mt-6">
+                        <div>
+                            {/* Actual Price */}
+                            <div className="flex flex-col mb-4">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Actual Price (AC) <span className="text-red-500">*</span>
+                                </label>
+                                <div className="flex items-center mt-2">
+                                    {editAP ? (
+                                        <input
+                                            type="number"
+                                            {...register("ap", { required: "Actual Price is required", min: 0 })}
+                                            className="h-10 w-full px-4 border border-gray-500 rounded-md text-sm"
+                                            placeholder="Enter Actual Price"
+                                        />
+                                    ) : (
+                                        <input
+                                            value={product.actualPrice}
+                                            {...register("ap")}
+                                            className="h-10 w-full px-4 bg-gray-100 border border-gray-500 text-sm rounded-md cursor-not-allowed"
+                                            readOnly
+                                        />
+                                    )}
+                                    <button
+                                        type="button"
+                                        onClick={() => setEditAP(!editAP)}
+                                        className="ml-2 p-2 h-10 border border-gray-500 bg-white text-gray-700 rounded-md">
+                                        {editAP ? <RxCross1 /> : <FaEdit />}
+                                    </button>
+                                </div>
+                                {errors.ap && <p className="text-red-500 text-sm">{errors.ap.message}</p>}
+                            </div>
+
+                            {/* Trade Price */}
+                            <div className="flex flex-col mb-4">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Trade Price (TP) <span className="text-red-500">*</span>
+                                </label>
+                                <div className="flex items-center mt-2">
+                                    {editTP ? (
+                                        <input
+                                            type="number"
+                                            {...register("tp", { required: "Trade Price is required", min: 0 })}
+                                            className="h-10 w-full px-4 border border-gray-500 rounded-md text-sm"
+                                            placeholder="Enter Trade Price"
+                                        />
+                                    ) : (
+                                        <input
+                                            value={product.tradePrice}
+                                            {...register("tp")}
+                                            className="h-10 w-full px-4 bg-gray-100 border border-gray-500 text-sm rounded-md cursor-not-allowed"
+                                            readOnly
+                                        />
+                                    )}
+                                    <button
+                                        type="button"
+                                        onClick={() => setEditTP(!editTP)}
+                                        className="ml-2 p-2 h-10 border border-gray-500 bg-white text-gray-700 rounded-md">
+                                        {editTP ? <RxCross1 /> : <FaEdit />}
+                                    </button>
+                                </div>
+                                {errors.ac && <p className="text-red-500 text-sm">{errors.ac.message}</p>}
+                            </div>
+                        </div>
 
                         <div className="mb-5">
                             <label className="block text-sm font-medium text-gray-700">
-                                Box <span className="text-red-500">*</span>
+                                Box Quantity (Cartoon) <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="number"
-                                {...register('box', { required: "Box Quantity is required", min: 1 })}
+                                {...register('box', { required: "Box quantity is required", min: 0 })}
                                 className="w-full px-4 py-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                                placeholder="Enter new arrival box quantity"
+                                placeholder="Enter box quantity"
                             />
                             {errors.box && (
                                 <p className="mt-1 text-sm text-red-500">{errors.box.message}</p>
                             )}
                         </div>
-
                         <div className="mb-5">
                             <label className="block text-sm font-medium text-gray-700">
                                 Product Quantity (With Box) <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="number"
-                                {...register('pwb', { required: "With box product quantity is required", min: 1 })}
+                                {...register('pwb', { required: "With box product quantity is required", min: 0 })}
                                 className="w-full px-4 py-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                                 placeholder="Enter with box product quantity"
                             />
@@ -170,7 +228,7 @@ const StockInModal = ({ isOpen, onClose, product, refetch }) => {
                             </label>
                             <input
                                 type="number"
-                                {...register('pwob', { required: "Without box product quantity is required", min: 1 })}
+                                {...register('pwob', { required: "Without box product quantity is required", min: 0 })}
                                 className="w-full px-4 py-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                                 placeholder="Enter without box product quantity"
                             />
@@ -190,6 +248,19 @@ const StockInModal = ({ isOpen, onClose, product, refetch }) => {
                             />
                             {errors.date && (
                                 <p className="mt-1 text-sm text-red-500">{errors.date.message}</p>
+                            )}
+                        </div>
+
+                        <div className="mb-5">
+                            <label className="block text-sm font-medium text-gray-700">
+                                Remarks (Optional)
+                            </label>
+                            <textarea
+                                {...register('remarks')}
+                                className="w-full px-4 py-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            />
+                            {errors.remarks && (
+                                <p className="mt-1 text-sm text-red-500">{errors.remarks.message}</p>
                             )}
                         </div>
                         <button

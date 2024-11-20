@@ -16,7 +16,7 @@ const WarehouseDetailsModal = ({ isOpen, onClose, product }) => {
             >
                 {/* Header */}
                 <div className="flex justify-between items-center p-4 border-b">
-                    <h2 className="text-2xl font-semibold text-blue-600">Product Details</h2>
+                    <h2 className="text-2xl font-semibold">Product Details</h2>
                     <button onClick={onClose} aria-label="Close modal">
                         <FaTimes className="text-gray-500 hover:text-red-500" size={18} />
                     </button>
@@ -52,7 +52,7 @@ const WarehouseDetailsModal = ({ isOpen, onClose, product }) => {
 
                             {/* Total Unit */}
                             <div className="p-6 bg-white rounded-lg shadow-md text-center">
-                                <p className="text-sm font-medium text-gray-600 uppercase">Total Unit</p>
+                                <p className="text-sm font-medium text-green-700 uppercase">Total Unit</p>
                                 <p className="text-3xl font-extrabold mt-2">{product.totalQuantity}</p>
                             </div>
                         </div>

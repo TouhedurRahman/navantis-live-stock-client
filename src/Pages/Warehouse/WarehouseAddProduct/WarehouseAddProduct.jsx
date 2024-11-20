@@ -7,7 +7,16 @@ const WarehouseAddProduct = () => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
     const addProductMutation = useMutation({
-        mutationFn: async (newProduct) => {
+        mutationFn: async (data) => {
+            const newProduct = {
+                productName: data.name,
+                productCode: data.psc,
+                batch: data.batch,
+                expire: data.expire,
+                actualPrice: Number(data.ap),
+                tradePrice: Number(data.tp),
+                totalQuantity: Number(Number(data.pwb) + Number(data.pwob))
+            };
             const response = await axios.post('http://localhost:5000/wh-products', newProduct);
             return response.data;
         },
@@ -17,7 +26,23 @@ const WarehouseAddProduct = () => {
     });
 
     const addStockMutation = useMutation({
-        mutationFn: async (newProduct) => {
+        mutationFn: async (data) => {
+            const newProduct = {
+                productName: data.name,
+                productCode: data.psc,
+                batch: data.batch,
+                expire: data.expire,
+                actualPrice: Number(data.ap),
+                tradePrice: Number(data.tp),
+                boxQuantity: Number(data.box),
+                productWithBox: Number(data.pwb),
+                productWithoutBox: Number(data.pwob),
+                totalQuantity: Number(Number(data.pwb) + Number(data.pwob)),
+                date: data.date,
+                remarks: data.remarks,
+                addedby: data.addedby,
+                addedemail: data.addedemail
+            };
             const response = await axios.post('http://localhost:5000/stock-in-wh', newProduct);
             return response.data;
         },
@@ -27,27 +52,10 @@ const WarehouseAddProduct = () => {
     });
 
     const handleAddProduct = async (data) => {
-        const newProduct = {
-            productName: data.name,
-            productCode: data.psc,
-            batch: data.batch,
-            expire: data.expire,
-            actualPrice: Number(data.ap),
-            tradePrice: Number(data.tp),
-            boxQuantity: Number(data.box),
-            productWithBox: Number(data.pwb),
-            productWithoutBox: Number(data.pwob),
-            totalQuantity: Number(Number(data.pwb) + Number(data.pwob)),
-            date: data.date,
-            remarks: data.remarks,
-            addedby: data.addedby,
-            addedemail: data.addedemail
-        };
-
         try {
             await Promise.all([
-                addProductMutation.mutateAsync(newProduct),
-                addStockMutation.mutateAsync(newProduct)
+                addProductMutation.mutateAsync(data),
+                addStockMutation.mutateAsync(data)
             ]);
 
             reset();
