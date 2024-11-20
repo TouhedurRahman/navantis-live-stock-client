@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaTimes } from 'react-icons/fa';
 
-const WarehouseDetailsModal = ({ isOpen, onClose, product }) => {
+const WhSinDetailsModal = ({ isOpen, onClose, product }) => {
     if (!isOpen) return null;
 
     // Calculate totals
@@ -29,10 +29,10 @@ const WarehouseDetailsModal = ({ isOpen, onClose, product }) => {
                         <h3 className="text-2xl font-extrabold text-green-900 mb-4 text-center border-b-2 border-green-300 pb-2">
                             {product.productName}
                         </h3>
-                        <div className="grid grid-cols-2 gap-6 items-center">
+                        <div className="items-center">
                             {/* Product Details */}
                             <div className="bg-white rounded-lg shadow-md">
-                                <table className="w-full text-left border-collapse">
+                                <table className="w-full text-center border-collapse">
                                     <tbody>
                                         <tr className="border-b">
                                             <th className="py-2 text-green-700 font-semibold">Code</th>
@@ -49,18 +49,35 @@ const WarehouseDetailsModal = ({ isOpen, onClose, product }) => {
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+                    </div>
 
-                            {/* Total Unit */}
-                            <div className="p-6 bg-white rounded-lg shadow-md text-center">
-                                <p className="text-sm font-medium text-gray-600 uppercase">Total Unit</p>
-                                <p className="text-3xl font-extrabold mt-2">{product.totalQuantity}</p>
+                    {/* Total Quantity Section */}
+                    <div className="mt-6 bg-blue-50 p-4 rounded-md shadow-md">
+                        <h4 className="text-lg font-bold mb-4">Quantity Details</h4>
+                        <div className="grid grid-cols-2 gap-4 text-center">
+                            <div className="p-2 bg-white rounded-md shadow-sm">
+                                <p className="text-sm font-medium text-gray-600">Box Quantity</p>
+                                <p className="text-lg font-bold text-blue-600">{product.boxQuantity}</p>
+                            </div>
+                            <div className="p-2 bg-white rounded-md shadow-sm">
+                                <p className="text-sm font-medium text-gray-600">With Box</p>
+                                <p className="text-lg font-bold text-blue-600">{product.productWithBox}</p>
+                            </div>
+                            <div className="p-2 bg-white rounded-md shadow-sm">
+                                <p className="text-sm font-medium text-gray-600">Without Box</p>
+                                <p className="text-lg font-bold text-blue-600">{product.productWithoutBox}</p>
+                            </div>
+                            <div className="p-2 bg-white rounded-md shadow-sm">
+                                <p className="text-sm font-medium text-gray-600">Total Quantity</p>
+                                <p className="text-lg font-bold text-blue-600">{product.totalQuantity}</p>
                             </div>
                         </div>
                     </div>
 
                     {/* Price and Total Price Section */}
                     <div className="mt-6 bg-white p-4 rounded-md shadow-md">
-                        <h4 className="font-bold text-gray-900 mb-4">Price Details</h4>
+                        <h4 className="font-bold mb-4">Price Details</h4>
                         <div className="overflow-x-auto">
                             <table className="table-auto w-full text-left border border-gray-200">
                                 <thead>
@@ -85,6 +102,12 @@ const WarehouseDetailsModal = ({ isOpen, onClose, product }) => {
                             </table>
                         </div>
                     </div>
+
+                    {/* Remarks Section */}
+                    <div className="mt-6 bg-gray-50 p-4 rounded-md shadow-md">
+                        <h4 className="font-bold text-gray-900 mb-2">Remarks</h4>
+                        <p className="text-gray-700">{product.remarks || "No remarks available."}</p>
+                    </div>
                 </div>
 
                 {/* Footer */}
@@ -101,4 +124,4 @@ const WarehouseDetailsModal = ({ isOpen, onClose, product }) => {
     );
 };
 
-export default WarehouseDetailsModal;
+export default WhSinDetailsModal;

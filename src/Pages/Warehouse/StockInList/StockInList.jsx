@@ -5,7 +5,7 @@ import { MdPrint } from 'react-icons/md';
 import useStockInWh from "../../../Hooks/useStockInWh";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import { FaEye } from "react-icons/fa";
-import WarehouseDetailsModal from "../../../Components/WarehouseDetailsModal/WarehouseDetailsModal";
+import WhSinDetailsModal from "../../../Components/WhSinDetailsModal/WhSinDetailsModal";
 
 const StockInList = () => {
     const [products, loading] = useStockInWh();
@@ -329,7 +329,7 @@ const StockInList = () => {
 
             {/* Modals for different operations */}
             {isdetailsModalOpen && (
-                <WarehouseDetailsModal
+                <WhSinDetailsModal
                     isOpen={isdetailsModalOpen}
                     onClose={() => setdetailsModalOpen(false)}
                     product={selectedProduct}
