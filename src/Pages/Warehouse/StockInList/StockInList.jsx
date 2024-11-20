@@ -46,7 +46,8 @@ const StockInList = () => {
     );
     const totalUniqueProducts = uniqueProducts.length;
     const totalUnit = filteredProducts.reduce((sum, product) => sum + Number(product.totalQuantity), 0);
-    const totalPrice = filteredProducts.reduce((sum, product) => sum + product.tradePrice * product.totalQuantity, 0);
+    const totalAP = filteredProducts.reduce((sum, product) => sum + product.actualPrice * product.totalQuantity, 0);
+    const totalTP = filteredProducts.reduce((sum, product) => sum + product.tradePrice * product.totalQuantity, 0);
 
     // Pagination calculations
     const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
@@ -179,21 +180,50 @@ const StockInList = () => {
 
                         {/* Invoice Summary Section */}
                         <div className="w-full md:w-[40%] h-full mt-6 md:mt-0 md:ml-6 p-4 bg-green-100 text-black rounded-lg shadow-sm">
-                            <p className="text-xl text-center font-medium mb-4">Invoice Summary</p>
-
-
-                            <div className="grid grid-cols-2 gap-y-2">
+                            <p className="text-xl text-center font-extrabold">Invoice Summary</p>
+                            <div className="flex justify-between items-center py-4 px-6 rounded-lg">
                                 {/* Total Products */}
-                                <p className="font-semibold">Total Products</p>
-                                <p className="text-right font-bold">{totalUniqueProducts}</p>
+                                <div className="flex flex-col justify-center items-center text-center">
+                                    {/* <div className="bg-green-400 text-white p-2 rounded-full shadow-lg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4" />
+                                        </svg>
+                                    </div> */}
+                                    <p className="font-semibold text-gray-800 mt-2">Total Products</p>
+                                    <p className="font-extrabold text-xl text-green-600">{totalUniqueProducts}</p>
+                                </div>
 
                                 {/* Total Quantity */}
-                                <p className="font-semibold">Total Unit</p>
-                                <p className="text-right font-bold">{totalUnit}</p>
+                                <div className="flex flex-col justify-center items-center text-center">
+                                    {/* <div className="bg-blue-400 text-white p-2 rounded-full shadow-lg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 20v-8m0-4V4m-6 4h12" />
+                                        </svg>
+                                    </div> */}
+                                    <p className="font-semibold text-gray-800 mt-2">Total Unit</p>
+                                    <p className="font-extrabold text-xl text-blue-600">{totalUnit}</p>
+                                </div>
+                            </div>
 
-                                {/* Total Price */}
-                                <p className="font-semibold">Total Price</p>
-                                <p className="text-right font-bold">{totalPrice.toLocaleString('en-IN')}/-</p>
+                            <div className="overflow-x-auto text-sm">
+                                <table className="table-auto w-full text-left border border-gray-200">
+                                    <thead>
+                                        <tr className="bg-blue-100">
+                                            <th className="px-4 py-2 border border-gray-200">Price Type</th>
+                                            <th className="px-4 py-2 border border-gray-200 text-right">Total Price (৳)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td className="px-4 py-2 border border-gray-200">Actual Price (AP)</td>
+                                            <td className="px-4 py-2 border border-gray-200 text-right">{totalAP.toLocaleString('en-IN')}/-</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="px-4 py-2 border border-gray-200">Trade Price (TP)</td>
+                                            <td className="px-4 py-2 border border-gray-200 text-right">{totalTP.toLocaleString('en-IN')}/-</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
 
                             {/* Print Button */}
