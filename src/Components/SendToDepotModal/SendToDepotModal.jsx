@@ -27,6 +27,29 @@ const SendToDepotModal = ({ isOpen, onClose, product, refetch }) => {
         },
     });
 
+    const whSoutProductMutation = useMutation({
+        mutationFn: async (data) => {
+            const newProduct = {
+                productName: product.productName,
+                productCode: product.productCode,
+                batch: product.batch,
+                expire: product.expire,
+                actualPrice: Number(product.actualPrice),
+                tradePrice: Number(product.tradePrice),
+                totalQuantity: Number(data.quantity),
+                date: data.date,
+                addedby: product.addedby,
+                addedemail: product.addedemail
+            };
+
+            const response = await axios.post('http://localhost:5000/stock-out-wh', newProduct);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error stock out from warehouse:", error);
+        },
+    });
+
     const sendDepotMutation = useMutation({
         mutationFn: async (data) => {
             const newProduct = {
@@ -74,6 +97,7 @@ const SendToDepotModal = ({ isOpen, onClose, product, refetch }) => {
         try {
             await Promise.all([
                 updateProductMutation.mutateAsync(data),
+                whSoutProductMutation.mutateAsync(data),
                 sendDepotMutation.mutateAsync(data),
                 addDepotListMutation.mutateAsync(data),
             ]);
