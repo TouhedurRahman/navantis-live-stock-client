@@ -1,7 +1,12 @@
-import { FaTimes } from "react-icons/fa";
+import { useState } from 'react';
+import { FaTimes, FaEye } from "react-icons/fa";
+import DepotDetailsModal from '../../../Components/DepotDetailsModal/DepotDetailsModal';
 
-const DepotProductCard = ({ product, refetch }) => {
-    const totalPrice = product.price * product.quantity;
+const DepotProductCard = ({ idx, product, refetch }) => {
+    const [isdetailsModalOpen, setdetailsModalOpen] = useState(false);
+
+    // const totaltActualPrice = product.actualPrice * product.totalQuantity;
+    const totalTradePrice = product.tradePrice * product.totalQuantity;
 
     const handleRemove = () => {
         console.log("Remove product:", product._id);
@@ -11,36 +16,35 @@ const DepotProductCard = ({ product, refetch }) => {
         <>
             <tr>
                 <td className='flex justify-center items-center'>
-                    <div className="flex items-center gap-3">
-                        <div className="avatar">
-                            <div className="mask mask-squircle h-12 w-12">
-                                <img
-                                    src={"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAUDI3l9CWbO3p3SzSAzGD6rr_pMxbRjs_oA&s"}
-                                    alt="Loading..." />
-                            </div>
-                        </div>
-                    </div>
+                    {idx}
                 </td>
                 <td>
-                    <div>
-                        <div className="font-bold">{product.name}</div>
-                    </div>
+                    <div className="font-bold">{product.productName}</div>
                 </td>
                 <td className='text-center'>
-                    {product.lot} <br />
+                    {product.batch}
+                </td>
+                <td className='text-center'>
                     {product.expire}
                 </td>
                 <td className='text-center'>
-                    {product.quantity}
+                    {product.totalQuantity}
                 </td>
                 <td className='text-right'>
-                    {product.price.toLocaleString('en-IN')}/-
+                    {product.tradePrice.toLocaleString('en-IN')}/-
                 </td>
                 <td className='text-right'>
-                    {totalPrice.toLocaleString('en-IN')}/-
+                    {totalTradePrice.toLocaleString('en-IN')}/-
                 </td>
                 <th>
                     <div className="flex justify-center items-center space-x-4 text-md">
+                        <button
+                            onClick={() => setdetailsModalOpen(true)}
+                            title="Details"
+                            className="p-2 rounded-[5px] hover:bg-orange-100 focus:outline-none"
+                        >
+                            <FaEye className="text-orange-500" />
+                        </button>
                         <button
                             onClick={handleRemove}
                             title="Remove product from warehouse"
@@ -51,6 +55,16 @@ const DepotProductCard = ({ product, refetch }) => {
                     </div>
                 </th>
             </tr>
+
+            {/* Modals for different operations */}
+            {isdetailsModalOpen && (
+                <DepotDetailsModal
+                    isOpen={isdetailsModalOpen}
+                    onClose={() => setdetailsModalOpen(false)}
+                    product={product}
+                    refetch={refetch}
+                />
+            )}
         </>
     );
 };

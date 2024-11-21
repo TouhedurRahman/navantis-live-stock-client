@@ -14,7 +14,7 @@ const DepotProductsList = () => {
     const [productsPerPage, setProductsPerPage] = useState(5);
 
     const filteredProducts = products.filter(product =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+        product.productName.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
@@ -24,8 +24,9 @@ const DepotProductsList = () => {
 
     const currentProducts = filteredProducts.slice(startIndex, endIndex);
 
-    const totalUnit = filteredProducts.reduce((sum, product) => sum + Number(product.quantity), 0);
-    const totalPrice = filteredProducts.reduce((sum, product) => sum + product.price * product.quantity, 0);
+    const totalUnit = filteredProducts.reduce((sum, product) => sum + Number(product.totalQuantity), 0);
+    const totalActualPrice = filteredProducts.reduce((sum, product) => sum + product.actualPrice * product.totalQuantity, 0);
+    const totalTradePrice = filteredProducts.reduce((sum, product) => sum + product.tradePrice * product.totalQuantity, 0);
 
     const changePage = (page) => {
         setCurrentPage(page);
@@ -66,7 +67,7 @@ const DepotProductsList = () => {
                             Total Unit: <span className="font-medium text-blue-700">{totalUnit}</span>
                         </p>
                         <p className="text-sm">
-                            Total Price: <span className="font-medium text-blue-700">{totalPrice.toLocaleString('en-IN')}/-</span>
+                            Total Trade Price: <span className="font-medium text-blue-700">{totalTradePrice.toLocaleString('en-IN')}/-</span>
                         </p>
                     </div>
                 </div>
@@ -118,9 +119,10 @@ const DepotProductsList = () => {
                                         {/* head */}
                                         <thead>
                                             <tr>
-                                                <th className="text-center">Image</th>
+                                                <th className="text-center">Sl. No.</th>
                                                 <th>Name</th>
-                                                <th className='text-center'>Lot & Exp.</th>
+                                                <th className='text-center'>Batch</th>
+                                                <th className='text-center'>Exp.</th>
                                                 <th className='text-center'>Quantity</th>
                                                 <th className='text-right'>Price/Unit</th>
                                                 <th className='text-right'>Total Price</th>
@@ -129,8 +131,9 @@ const DepotProductsList = () => {
                                         </thead>
                                         <tbody>
                                             {
-                                                currentProducts.map(product => (
+                                                currentProducts.map((product, idx) => (
                                                     <DepotProductCard
+                                                        idx={startIndex + idx + 1}
                                                         key={product._id}
                                                         product={product}
                                                         refetch={refetch}
