@@ -2,9 +2,9 @@ import { useState } from "react";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
 import { ImSearch } from 'react-icons/im';
-// import Loader from "../../../Components/Loader/Loader";
 import useDepotProducts from "../../../Hooks/useDepotProducts";
 import DepotProductCard from "../DepotProductCard/DepotProductCard";
+import Loader from "../../../Components/Loader/Loader";
 
 const DepotProductsList = () => {
     const [products, loading, refetch] = useDepotProducts();
@@ -55,31 +55,30 @@ const DepotProductsList = () => {
                     <h1 className="px-6 py-3 font-bold">Depot products list</h1>
                     <hr className='text-center border border-gray-500 mb-5' />
                 </div>
-                {/* Product Info */}
-                <div className="m-6 p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-md">
-                    <p className="text-md text-gray-700 text-center mb-4 font-medium">Depot Summary</p>
-
-                    <div className="bg-white p-3 rounded-md shadow-sm flex flex-col md:flex-row justify-around items-center text-gray-600">
-                        <p className="text-sm">
-                            Total Products: <span className="font-medium text-blue-700">{filteredProducts.length}</span>
-                        </p>
-                        <p className="text-sm">
-                            Total Unit: <span className="font-medium text-blue-700">{totalUnit}</span>
-                        </p>
-                        <p className="text-sm">
-                            Total Trade Price: <span className="font-medium text-blue-700">{totalTradePrice.toLocaleString('en-IN')}/-</span>
-                        </p>
-                    </div>
-                </div>
                 {
                     loading
                         ?
                         <>
-                            {/* <Loader /> */}
-                            "Loading..."
+                            <Loader />
                         </>
                         :
                         <>
+                            {/* Product Info */}
+                            <div className="m-6 p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-md">
+                                <p className="text-md text-gray-700 text-center mb-4 font-medium">Depot Summary</p>
+
+                                <div className="bg-white p-3 rounded-md shadow-sm flex flex-col md:flex-row justify-around items-center text-gray-600">
+                                    <p className="text-sm">
+                                        Total Products: <span className="font-medium text-blue-700">{filteredProducts.length}</span>
+                                    </p>
+                                    <p className="text-sm">
+                                        Total Unit: <span className="font-medium text-blue-700">{totalUnit}</span>
+                                    </p>
+                                    <p className="text-sm">
+                                        Total Trade Price: <span className="font-medium text-blue-700">{totalTradePrice.toLocaleString('en-IN')}/-</span>
+                                    </p>
+                                </div>
+                            </div>
                             <div className="px-6">
                                 <div className="mb-5 flex flex-col-reverse md:flex-row justify-center md:justify-between items-center">
                                     <div className="mt-5 md:mt-0">

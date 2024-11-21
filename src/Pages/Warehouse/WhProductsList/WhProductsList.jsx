@@ -2,9 +2,9 @@ import { useState } from "react";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
 import { ImSearch } from 'react-icons/im';
-// import Loader from "../../../Components/Loader/Loader";
 import useWhProducts from "../../../Hooks/useWhProducts";
 import WarehouseProductCard from "../WarehouseProductCard/WarehouseProductCard";
+import Loader from "../../../Components/Loader/Loader";
 
 const WhProductsList = () => {
     const [products, loading, refetch] = useWhProducts();
@@ -55,37 +55,36 @@ const WhProductsList = () => {
                     <h1 className="px-6 py-3 font-bold">Warehouse products list</h1>
                     <hr className='text-center border border-gray-500 mb-5' />
                 </div>
-                {/* Product Info */}
-                <div className="m-6 p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-md">
-                    <p className="text-md text-gray-700 text-center mb-4 font-medium">Warehouse Summary</p>
-
-                    <div className="bg-white p-3 rounded-md rounded-b-none shadow-sm flex flex-col md:flex-row justify-around items-center text-gray-600">
-                        <p className="text-sm">
-                            Total Products: <span className="font-medium text-blue-700">{filteredProducts.length}</span>
-                        </p>
-                        <p className="text-sm">
-                            Total Unit: <span className="font-medium text-blue-700">{totalUnit}</span>
-                        </p>
-                    </div>
-
-                    <div className="bg-white p-3 rounded-md rounded-t-none shadow-sm flex flex-col md:flex-row justify-around items-center text-gray-600">
-                        <p className="text-sm">
-                            Total Actual Price: <span className="font-medium text-blue-700">{totalActualPrice.toLocaleString('en-IN')}/-</span>
-                        </p>
-                        <p className="text-sm">
-                            Total Trade Price: <span className="font-medium text-blue-700">{totalTradePrice.toLocaleString('en-IN')}/-</span>
-                        </p>
-                    </div>
-                </div>
                 {
                     loading
                         ?
                         <>
-                            {/* <Loader /> */}
-                            "Loading..."
+                            <Loader />
                         </>
                         :
                         <>
+                            {/* Product Info */}
+                            <div className="m-6 p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-md">
+                                <p className="text-md text-gray-700 text-center mb-4 font-medium">Warehouse Summary</p>
+
+                                <div className="bg-white p-3 rounded-md rounded-b-none shadow-sm flex flex-col md:flex-row justify-around items-center text-gray-600">
+                                    <p className="text-sm">
+                                        Total Products: <span className="font-medium text-blue-700">{filteredProducts.length}</span>
+                                    </p>
+                                    <p className="text-sm">
+                                        Total Unit: <span className="font-medium text-blue-700">{totalUnit}</span>
+                                    </p>
+                                </div>
+
+                                <div className="bg-white p-3 rounded-md rounded-t-none shadow-sm flex flex-col md:flex-row justify-around items-center text-gray-600">
+                                    <p className="text-sm">
+                                        Total Actual Price: <span className="font-medium text-blue-700">{totalActualPrice.toLocaleString('en-IN')}/-</span>
+                                    </p>
+                                    <p className="text-sm">
+                                        Total Trade Price: <span className="font-medium text-blue-700">{totalTradePrice.toLocaleString('en-IN')}/-</span>
+                                    </p>
+                                </div>
+                            </div>
                             <div className="px-6">
                                 <div className="mb-5 flex flex-col-reverse md:flex-row justify-center md:justify-between items-center">
                                     <div className="mt-5 md:mt-0">
