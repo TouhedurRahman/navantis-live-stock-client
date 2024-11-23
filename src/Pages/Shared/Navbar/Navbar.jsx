@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faAngleRight, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { Link, Outlet } from 'react-router-dom';
-import { MdCallReceived } from "react-icons/md";
-import { FaCircleUser, FaTruck, FaUsers, FaWarehouse } from "react-icons/fa6";
-import { RiLogoutCircleRFill } from "react-icons/ri";
-import { IoIosAddCircle } from "react-icons/io";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useState } from 'react';
 import { FaArrowDown, FaArrowUp, FaListUl } from "react-icons/fa";
+import { FaCircleUser, FaTruck, FaUsers, FaWarehouse } from "react-icons/fa6";
+import { GiDustCloud } from 'react-icons/gi';
+import { IoIosAddCircle } from "react-icons/io";
+import { RiLogoutCircleRFill } from "react-icons/ri";
+import { Link, Outlet } from 'react-router-dom';
 
 const Navbar = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -108,6 +108,12 @@ const Navbar = () => {
                                                 <div className='flex justify-start items-center cursor:pointer'>
                                                     <FaArrowUp className='me-2' />
                                                     <span>Stock Out</span>
+                                                </div>
+                                            </Link>
+                                            <Link to='/damaged-in-warehouse' className="w-full text-left px-4 text-white flex">
+                                                <div className='flex justify-start items-center cursor:pointer'>
+                                                    <GiDustCloud className='me-2' />
+                                                    <span>Damaged</span>
                                                 </div>
                                             </Link>
                                         </>
@@ -228,6 +234,12 @@ const Navbar = () => {
                                                 <div className='flex justify-start items-center cursor:pointer'>
                                                     <FaArrowUp className='me-2' />
                                                     <span>Stock Out</span>
+                                                </div>
+                                            </Link>
+                                            <Link to='/damaged-in-warehouse' className="w-full text-left px-4 text-white flex">
+                                                <div className='flex justify-start items-center cursor:pointer'>
+                                                    <GiDustCloud className='me-2' />
+                                                    <span>Damaged</span>
                                                 </div>
                                             </Link>
                                         </>
