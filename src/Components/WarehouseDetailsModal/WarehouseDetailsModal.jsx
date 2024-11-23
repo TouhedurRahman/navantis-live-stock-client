@@ -65,19 +65,19 @@ const WarehouseDetailsModal = ({ isOpen, onClose, product }) => {
                             <table className="table-auto w-full text-left border border-gray-200">
                                 <thead>
                                     <tr className="bg-blue-100">
-                                        <th className="px-4 py-2 border border-gray-200">Price Type</th>
+                                        <th className="px-4 py-2 border border-gray-200 text-left">Price Type</th>
                                         <th className="px-4 py-2 border border-gray-200 text-right">Unit Price (৳)</th>
                                         <th className="px-4 py-2 border border-gray-200 text-right">Total Price (৳)</th>
                                     </tr>
                                 </thead>
                                 <tbody className='text-right'>
                                     <tr>
-                                        <td className="px-4 py-2 border border-gray-200">Actual Price</td>
+                                        <td className="px-4 py-2 border border-gray-200 text-left">Actual Price</td>
                                         <td className="px-4 py-2 border border-gray-200">{product.actualPrice.toLocaleString('en-IN')}/-</td>
                                         <td className="px-4 py-2 border border-gray-200">{totalActualPrice.toLocaleString('en-IN')}/-</td>
                                     </tr>
                                     <tr>
-                                        <td className="px-4 py-2 border border-gray-200">Trade Price</td>
+                                        <td className="px-4 py-2 border border-gray-200 text-left">Trade Price</td>
                                         <td className="px-4 py-2 border border-gray-200">{product.tradePrice.toLocaleString('en-IN')}/-</td>
                                         <td className="px-4 py-2 border border-gray-200">{totalTradePrice.toLocaleString('en-IN')}/-</td>
                                     </tr>

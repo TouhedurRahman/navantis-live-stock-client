@@ -1,8 +1,8 @@
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useMutation } from '@tanstack/react-query';
 import { FaEdit, FaTimes } from "react-icons/fa";
-import axios from 'axios';
 import { RxCross1 } from 'react-icons/rx';
 
 const StockInModal = ({ isOpen, onClose, product, refetch }) => {
@@ -103,7 +103,7 @@ const StockInModal = ({ isOpen, onClose, product, refetch }) => {
                             {/* Product Details */}
                             <div className="bg-white rounded-lg shadow-md">
                                 <table className="w-full text-left border-collapse">
-                                    <tbody>
+                                    <tbody className='text-center'>
                                         <tr className="border-b">
                                             <th className="py-2 text-green-700 font-semibold">Code</th>
                                             <td className="py-2 text-gray-700">{product.productCode}</td>
