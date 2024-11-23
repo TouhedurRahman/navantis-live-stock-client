@@ -33,7 +33,7 @@ const WarehouseDetailsModal = ({ isOpen, onClose, product }) => {
                             {/* Product Details */}
                             <div className="bg-white rounded-lg shadow-md">
                                 <table className="w-full text-left border-collapse">
-                                    <tbody>
+                                    <tbody className='text-center'>
                                         <tr className="border-b">
                                             <th className="py-2 text-green-700 font-semibold">Code</th>
                                             <td className="py-2 text-gray-700">{product.productCode}</td>
@@ -66,11 +66,11 @@ const WarehouseDetailsModal = ({ isOpen, onClose, product }) => {
                                 <thead>
                                     <tr className="bg-blue-100">
                                         <th className="px-4 py-2 border border-gray-200">Price Type</th>
-                                        <th className="px-4 py-2 border border-gray-200">Unit Price (৳)</th>
-                                        <th className="px-4 py-2 border border-gray-200">Total Price (৳)</th>
+                                        <th className="px-4 py-2 border border-gray-200 text-right">Unit Price (৳)</th>
+                                        <th className="px-4 py-2 border border-gray-200 text-right">Total Price (৳)</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className='text-right'>
                                     <tr>
                                         <td className="px-4 py-2 border border-gray-200">Actual Price</td>
                                         <td className="px-4 py-2 border border-gray-200">{product.actualPrice.toLocaleString('en-IN')}/-</td>
