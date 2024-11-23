@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { FaSyncAlt, FaBox, FaTruck, FaTimes, FaEye } from "react-icons/fa";
-import UpdateProductModal from '../../../Components/UpdateProductModal/UpdateProductModal';
-import StockInModal from '../../../Components/StockInModal/StockInModal';
+import { FaBox, FaEye, FaSyncAlt, FaTimes, FaTruck } from "react-icons/fa";
+import DamagedStockinModal from '../../../Components/DamagedStockinModal/DamagedStockinModal';
 import SendToDepotModal from '../../../Components/SendToDepotModal/SendToDepotModal';
+import StockInModal from '../../../Components/StockInModal/StockInModal';
 import WarehouseDetailsModal from '../../../Components/WarehouseDetailsModal/WarehouseDetailsModal';
 
 const WarehouseProductCard = ({ idx, product, refetch }) => {
     const [isdetailsModalOpen, setdetailsModalOpen] = useState(false);
-    const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
+    const [isDamagedModalOpen, setDamagedModalOpen] = useState(false);
     const [isStockInModalOpen, setStockInModalOpen] = useState(false);
     const [isSendToDepotModalOpen, setSendToDepotModalOpen] = useState(false);
 
@@ -52,18 +52,18 @@ const WarehouseProductCard = ({ idx, product, refetch }) => {
                             <FaEye className="text-orange-500" />
                         </button>
                         <button
-                            onClick={() => setUpdateModalOpen(true)}
-                            title="Update product"
-                            className="p-2 rounded-[5px] hover:bg-blue-100 focus:outline-none"
-                        >
-                            <FaSyncAlt className="text-blue-500" />
-                        </button>
-                        <button
                             onClick={() => setStockInModalOpen(true)}
                             title="Stock In New Quantity"
                             className="p-2 rounded-[5px] hover:bg-green-100 focus:outline-none"
                         >
                             <FaBox className="text-green-500" />
+                        </button>
+                        <button
+                            onClick={() => setDamagedModalOpen(true)}
+                            title="Damaged product"
+                            className="p-2 rounded-[5px] hover:bg-blue-100 focus:outline-none"
+                        >
+                            <FaSyncAlt className="text-blue-500" />
                         </button>
                         <button
                             onClick={() => setSendToDepotModalOpen(true)}
@@ -92,18 +92,18 @@ const WarehouseProductCard = ({ idx, product, refetch }) => {
                     refetch={refetch}
                 />
             )}
-            {isUpdateModalOpen && (
-                <UpdateProductModal
-                    isOpen={isUpdateModalOpen}
-                    onClose={() => setUpdateModalOpen(false)}
-                    product={product}
-                    refetch={refetch}
-                />
-            )}
             {isStockInModalOpen && (
                 <StockInModal
                     isOpen={isStockInModalOpen}
                     onClose={() => setStockInModalOpen(false)}
+                    product={product}
+                    refetch={refetch}
+                />
+            )}
+            {isDamagedModalOpen && (
+                <DamagedStockinModal
+                    isOpen={isDamagedModalOpen}
+                    onClose={() => setDamagedModalOpen(false)}
                     product={product}
                     refetch={refetch}
                 />
