@@ -122,7 +122,7 @@ const DepotProductCard = ({ idx, product, refetch }) => {
                         </button>
                         <button
                             onClick={handleRemove}
-                            title="Remove product from warehouse"
+                            title="Expired product"
                             className="p-2 rounded-[5px] hover:bg-red-100 focus:outline-none"
                         >
                             <FcExpired className="text-red-500" />

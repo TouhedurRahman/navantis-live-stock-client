@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Main from "../../Layout/Main/Main";
+import DepotExpiredProduct from "../../Pages/Depot/DepotExpiredProduct/DepotExpiredProduct";
 import DepotProductsList from "../../Pages/Depot/DepotProductsList/DepotProductsList";
 import DepotStockInList from "../../Pages/Depot/DepotStockInList/DepotStockInList";
 import Home from "../../Pages/Home/Home/Home";
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
             {
                 path: "/depot-in",
                 element: <DepotStockInList />
+            },
+            {
+                path: "/depot-expired",
+                element: <DepotExpiredProduct />
             }
         ],
     },
