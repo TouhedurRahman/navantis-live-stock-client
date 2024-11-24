@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import { FaArrowDown, FaArrowUp, FaListUl } from "react-icons/fa";
 import { FaCircleUser, FaTruck, FaUsers, FaWarehouse } from "react-icons/fa6";
+import { FcExpired } from 'react-icons/fc';
 import { GiDustCloud } from 'react-icons/gi';
 import { IoIosAddCircle } from "react-icons/io";
 import { RiLogoutCircleRFill } from "react-icons/ri";
@@ -132,6 +133,12 @@ const Navbar = () => {
                                                     <span>Stock In</span>
                                                 </div>
                                             </Link>
+                                            <Link to='/depot-expired' className="w-full text-left px-4 text-white flex">
+                                                <div className='flex justify-start items-center cursor:pointer'>
+                                                    <FcExpired className='me-2' />
+                                                    <span>Expired</span>
+                                                </div>
+                                            </Link>
                                         </>
                                     )}
                                 </div>
@@ -256,6 +263,12 @@ const Navbar = () => {
                                                 <div className='flex justify-start items-center cursor:pointer'>
                                                     <FaArrowDown className='me-2' />
                                                     <span>Stock In</span>
+                                                </div>
+                                            </Link>
+                                            <Link to='/depot-expired' className="w-full text-left px-4 text-white flex">
+                                                <div className='flex justify-start items-center cursor:pointer'>
+                                                    <FcExpired className='me-2' />
+                                                    <span>Expired</span>
                                                 </div>
                                             </Link>
                                         </>

@@ -1,5 +1,9 @@
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 import { useState } from 'react';
-import { FaTimes, FaEye } from "react-icons/fa";
+import { FaEye } from "react-icons/fa";
+import { FcExpired } from 'react-icons/fc';
+import Swal from 'sweetalert2';
 import DepotDetailsModal from '../../../Components/DepotDetailsModal/DepotDetailsModal';
 
 const DepotProductCard = ({ idx, product, refetch }) => {
@@ -8,8 +12,79 @@ const DepotProductCard = ({ idx, product, refetch }) => {
     // const totaltActualPrice = product.actualPrice * product.totalQuantity;
     const totalTradePrice = product.tradePrice * product.totalQuantity;
 
+    const depotExpiredProductMutation = useMutation({
+        mutationFn: async () => {
+            const newProduct = {
+                productName: product.productName,
+                productCode: product.productCode,
+                batch: product.batch,
+                expire: product.expire,
+                actualPrice: Number(product.actualPrice),
+                tradePrice: Number(product.tradePrice),
+                totalQuantity: Number(product.totalQuantity),
+                /* date: data.date,
+                remarks: data.remarks,
+                addedby: product.addedby,
+                addedemail: product.addedemail */
+            };
+
+            const response = await axios.post('http://localhost:5000/expired-in-depot', newProduct);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error stock out from warehouse:", error);
+        },
+    });
+
+    const deleteDepotExpProductMutation = useMutation({
+        mutationFn: async () => {
+            const response = await axios.delete(`http://localhost:5000/depot-product/${product._id}`);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error updating product to depot:", error);
+        },
+    });
+
     const handleRemove = () => {
-        console.log("Remove product:", product._id);
+        Swal.fire({
+            title: "Products are expired?",
+            text: "Stock out from depot. You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, stock out!"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await Promise.all([
+                        depotExpiredProductMutation.mutateAsync(),
+                        deleteDepotExpProductMutation.mutateAsync()
+                    ]);
+
+                    reset();
+                    refetch();
+                    onClose();
+
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Expired product added.",
+                        icon: "success",
+                        confirmButtonColor: "#3B82F6"
+                    });
+                } catch (error) {
+                    console.error("Error adding product:", error);
+
+                    Swal.fire({
+                        title: "Error!",
+                        text: "Failed to stock out the product. Please try again.",
+                        icon: "error",
+                        confirmButtonColor: "#d33"
+                    });
+                }
+            }
+        });
     };
 
     return (
@@ -50,7 +125,7 @@ const DepotProductCard = ({ idx, product, refetch }) => {
                             title="Remove product from warehouse"
                             className="p-2 rounded-[5px] hover:bg-red-100 focus:outline-none"
                         >
-                            <FaTimes className="text-red-500" />
+                            <FcExpired className="text-red-500" />
                         </button>
                     </div>
                 </th>
