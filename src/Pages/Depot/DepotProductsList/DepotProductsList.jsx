@@ -1,13 +1,16 @@
 import { useState } from "react";
-import PageTitle from "../../../Components/PageTitle/PageTitle";
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
 import { ImSearch } from 'react-icons/im';
+import DepotRequestModal from "../../../Components/DepotRequestModal/DepotRequestModal";
+import Loader from "../../../Components/Loader/Loader";
+import PageTitle from "../../../Components/PageTitle/PageTitle";
 import useDepotProducts from "../../../Hooks/useDepotProducts";
 import DepotProductCard from "../DepotProductCard/DepotProductCard";
-import Loader from "../../../Components/Loader/Loader";
 
 const DepotProductsList = () => {
     const [products, loading, refetch] = useDepotProducts();
+
+    const [isRequestModalOpen, setRequestModalOpen] = useState(false);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
@@ -52,9 +55,20 @@ const DepotProductsList = () => {
             </div>
             <div className="bg-white pb-1">
                 <div>
-                    <h1 className="px-6 py-3 font-bold">Depot products list</h1>
-                    <hr className='text-center border border-gray-500 mb-5' />
+                    <div className="flex justify-between items-center">
+                        <h1 className="px-6 py-3 font-bold">Depot products list</h1>
+                        <div className="px-6">
+                            <button
+                                onClick={() => setRequestModalOpen(true)}
+                                title="Request product from depot"
+                                className="bg-[#3B82F6] text-white font-bold px-4 py-2 rounded-md hover:bg-[#2563EB] transition-all"
+                            >
+                                Request Products
+                            </button>
+                        </div>
+                    </div>
                 </div>
+                <hr className='text-center border border-gray-500 mb-5' />
                 {
                     loading
                         ?
@@ -182,6 +196,12 @@ const DepotProductsList = () => {
                         </>
                 }
             </div>
+            {isRequestModalOpen && (
+                <DepotRequestModal
+                    isOpen={isRequestModalOpen}
+                    onClose={() => setRequestModalOpen(false)}
+                />
+            )}
         </>
     );
 };
