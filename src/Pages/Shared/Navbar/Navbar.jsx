@@ -41,7 +41,7 @@ const Navbar = () => {
     return (
         <div className="flex h-screen bg-gray-100">
             <div
-                className={`${isSidebarOpen ? 'w-48' : 'w-16'} bg-blue-500 pt-5 text-white transition-all duration-300 ease-in-out hidden md:block`}
+                className={`${isSidebarOpen ? 'w-64' : 'w-16'} bg-blue-500 pt-5 text-white transition-all duration-300 ease-in-out hidden md:block`}
             >
                 {
                     isSidebarOpen

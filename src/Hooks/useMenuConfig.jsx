@@ -1,10 +1,23 @@
-import { FaArrowDown, FaArrowUp, FaListUl, FaTruck, FaWarehouse } from 'react-icons/fa';
+import {
+    FaArrowDown, FaArrowUp, FaExclamationCircle, FaListUl, FaShoppingCart, FaTrashAlt, FaTruck, FaUserCog, FaWarehouse
+} from 'react-icons/fa';
 import { FcExpired } from 'react-icons/fc';
 import { GiDustCloud } from 'react-icons/gi';
 import { IoIosAddCircle } from 'react-icons/io';
+import { TbCoinTakaFilled } from 'react-icons/tb';
 
 const useMenuConfig = () => {
     const menuConfig = {
+        admin: {
+            icon: <FaUserCog className="mr-2" onClick={() => setSidebarOpen(true)} />,
+            links: [
+                { to: '/admin-po', icon: <FaShoppingCart className='me-2' />, label: 'Purchase Order' },
+                { to: '/order-in', icon: <FaListUl className='me-2' />, label: 'Order In List' },
+                { to: '/missing-products', icon: <FaExclamationCircle className='me-2' />, label: 'Missing Products' },
+                { to: '/price-inc', icon: <TbCoinTakaFilled className='me-2' />, label: 'Price Change' },
+                { to: '/dmg-exp', icon: <FaTrashAlt className='me-2' />, label: 'Damaged & Exp.' },
+            ],
+        },
         warehouse: {
             icon: <FaWarehouse className="mr-2" onClick={() => setSidebarOpen(true)} />,
             links: [
