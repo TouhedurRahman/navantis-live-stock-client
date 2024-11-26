@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Main from "../../Layout/Main/Main";
+import PurchaseOrder from "../../Pages/Admin/PurchaseOrder/PurchaseOrder";
 import DepotExpiredProduct from "../../Pages/Depot/DepotExpiredProduct/DepotExpiredProduct";
 import DepotProductsList from "../../Pages/Depot/DepotProductsList/DepotProductsList";
 import DepotStockInList from "../../Pages/Depot/DepotStockInList/DepotStockInList";
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
             {
                 path: "/",
                 element: <Home />
+            },
+            {
+                path: "/admin-po",
+                element: <PurchaseOrder />
             },
             {
                 path: "/add-product-warehouse",
