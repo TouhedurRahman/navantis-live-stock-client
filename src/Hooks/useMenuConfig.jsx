@@ -12,7 +12,7 @@ const useMenuConfig = () => {
             icon: <FaUserCog className="mr-2" onClick={() => setSidebarOpen(true)} />,
             links: [
                 { to: '/admin-po', icon: <FaShoppingCart className='me-2' />, label: 'Purchase Order' },
-                { to: '/order-in', icon: <FaListUl className='me-2' />, label: 'Order In List' },
+                { to: '/purchase-list', icon: <FaListUl className='me-2' />, label: 'Purchase List' },
                 { to: '/missing-products', icon: <FaExclamationCircle className='me-2' />, label: 'Missing Products' },
                 { to: '/price-inc', icon: <TbCoinTakaFilled className='me-2' />, label: 'Price Change' },
                 { to: '/dmg-exp', icon: <FaTrashAlt className='me-2' />, label: 'Damaged & Exp.' },
