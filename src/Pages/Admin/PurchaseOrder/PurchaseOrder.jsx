@@ -1,13 +1,69 @@
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 
 const PurchaseOrder = () => {
     const { user } = true;
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit, formState: { errors }, reset } = useForm();
+
+    const addNewPrchaseMutation = useMutation({
+        mutationFn: async (data) => {
+            const newProduct = {
+                productName: data.name,
+                actualPrice: Number(data.ap),
+                tradePrice: Number(data.tp),
+                totalQuantity: Number(Number(data.quantity)),
+                orderDate: data.date,
+                addedby: data.addedby,
+                addedemail: data.addedemail
+            };
+            const response = await axios.post('http://localhost:5000/purchase-order', newProduct);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error puchase order:", error);
+        },
+    });
 
     const handleAddProduct = async (data) => {
-        console.log(data);
+        // console.log(data);
+
+        try {
+            await Promise.all([
+                addNewPrchaseMutation.mutateAsync(data)
+            ]);
+
+            reset();
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Order successfully placed",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        } catch (error) {
+            if (error.response?.status === 409) {
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "Product already exist",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            } else {
+                console.error("Error adding product:", error);
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "Faild to add product",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        }
     };
 
     return (
