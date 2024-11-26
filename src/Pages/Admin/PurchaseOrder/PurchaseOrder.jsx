@@ -15,7 +15,7 @@ const PurchaseOrder = () => {
                 productName: data.name,
                 actualPrice: Number(data.ap),
                 tradePrice: Number(data.tp),
-                totalQuantity: Number(Number(data.quantity)),
+                totalQuantity: Number(data.quantity),
                 date: data.date,
                 addedby: data.addedby,
                 addedemail: data.addedemail
@@ -28,12 +28,31 @@ const PurchaseOrder = () => {
         },
     });
 
-    const handleAddProduct = async (data) => {
-        // console.log(data);
+    const purchaseOrderStatusMutation = useMutation({
+        mutationFn: async (data) => {
+            const newProduct = {
+                productName: data.name,
+                actualPrice: Number(data.ap),
+                tradePrice: Number(data.tp),
+                totalQuantity: Number(data.quantity),
+                date: data.date,
+                status: "pending",
+                addedby: data.addedby,
+                addedemail: data.addedemail
+            };
+            const response = await axios.post('http://localhost:5000/pending-stockin-wh', newProduct);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error puchase order:", error);
+        },
+    });
 
+    const handleAddProduct = async (data) => {
         try {
             await Promise.all([
-                addNewPrchaseMutation.mutateAsync(data)
+                addNewPrchaseMutation.mutateAsync(data),
+                purchaseOrderStatusMutation.mutateAsync(data)
             ]);
 
             reset();
