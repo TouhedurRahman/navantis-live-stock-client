@@ -16,7 +16,7 @@ const PurchaseOrder = () => {
                 actualPrice: Number(data.ap),
                 tradePrice: Number(data.tp),
                 totalQuantity: Number(Number(data.quantity)),
-                orderDate: data.date,
+                date: data.date,
                 addedby: data.addedby,
                 addedemail: data.addedemail
             };
@@ -70,7 +70,7 @@ const PurchaseOrder = () => {
         <div>
             <PageTitle
                 from={"Admin"}
-                to={"Purchase Order"}
+                to={"Purchase order"}
             />
 
             <div className="bg-white">
