@@ -1,15 +1,13 @@
 import { faAngleDown, faAngleRight, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
-import { FaArrowDown, FaArrowUp, FaListUl } from "react-icons/fa";
-import { FaCircleUser, FaTruck, FaUsers, FaWarehouse } from "react-icons/fa6";
-import { FcExpired } from 'react-icons/fc';
-import { GiDustCloud } from 'react-icons/gi';
-import { IoIosAddCircle } from "react-icons/io";
+import { FaCircleUser, FaUsers } from "react-icons/fa6";
 import { RiLogoutCircleRFill } from "react-icons/ri";
 import { Link, Outlet } from 'react-router-dom';
+import useMenuConfig from '../../../Hooks/useMenuConfig';
 
 const Navbar = () => {
+    const { menuConfig } = useMenuConfig();
     const [isSidebarOpen, setSidebarOpen] = useState(true);
     const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -69,15 +67,12 @@ const Navbar = () => {
                 }
 
                 <div className='mt-10 mx-2'>
-                    {['warehouse', 'depot'].map((menu, index) => (
-                        <div className="relative inline-block w-full" key={index}>
+                    {Object.entries(menuConfig).map(([menu, { icon, links }]) => (
+                        <div className="relative inline-block w-full" key={menu}>
                             <div onClick={() => toggleDropdown(menu)} className={`flex items-center cursor-pointer ${isSidebarOpen ? 'justify-between' : 'justify-center'}`}>
                                 <div className="flex items-center py-2">
-                                    {menu === 'warehouse' && <FaWarehouse onClick={() => setSidebarOpen(true)} className="mr-2" />}
-                                    {menu === 'depot' && <FaTruck onClick={() => setSidebarOpen(true)} className="mr-2" />}
-                                    {isSidebarOpen && (
-                                        <span>{menu.charAt(0).toUpperCase() + menu.slice(1)}</span>
-                                    )}
+                                    {icon}
+                                    {isSidebarOpen && <span>{menu.charAt(0).toUpperCase() + menu.slice(1)}</span>}
                                 </div>
                                 {isSidebarOpen && (
                                     <FontAwesomeIcon icon={showDropdown[menu] ? faAngleDown : faAngleRight} />
@@ -85,62 +80,14 @@ const Navbar = () => {
                             </div>
                             {showDropdown[menu] && isSidebarOpen && (
                                 <div className="m-2 pl-4">
-                                    {menu === 'warehouse' && (
-                                        <>
-                                            <Link to='/add-product-warehouse' className="w-full text-left px-4 text-white flex">
-                                                <div className='flex justify-start items-center cursor:pointer'>
-                                                    <IoIosAddCircle className='me-2' />
-                                                    <span>Add new</span>
-                                                </div>
-                                            </Link>
-                                            <Link to='/warehouse-list' className="w-full text-left px-4 text-white flex">
-                                                <div className='flex justify-start items-center cursor:pointer'>
-                                                    <FaListUl className='me-2' />
-                                                    <span>List</span>
-                                                </div>
-                                            </Link>
-                                            <Link to='/warehouse-in' className="w-full text-left px-4 text-white flex">
-                                                <div className='flex justify-start items-center cursor:pointer'>
-                                                    <FaArrowDown className='me-2' />
-                                                    <span>Stock In</span>
-                                                </div>
-                                            </Link>
-                                            <Link to='/warehouse-out' className="w-full text-left px-4 text-white flex">
-                                                <div className='flex justify-start items-center cursor:pointer'>
-                                                    <FaArrowUp className='me-2' />
-                                                    <span>Stock Out</span>
-                                                </div>
-                                            </Link>
-                                            <Link to='/damaged-in-warehouse' className="w-full text-left px-4 text-white flex">
-                                                <div className='flex justify-start items-center cursor:pointer'>
-                                                    <GiDustCloud className='me-2' />
-                                                    <span>Damaged</span>
-                                                </div>
-                                            </Link>
-                                        </>
-                                    )}
-                                    {menu === 'depot' && (
-                                        <>
-                                            <Link to='/depot-list' className="w-full text-left px-4 text-white flex">
-                                                <div className='flex justify-start items-center cursor:pointer'>
-                                                    <FaListUl className='me-2' />
-                                                    <span>List</span>
-                                                </div>
-                                            </Link>
-                                            <Link to='/depot-in' className="w-full text-left px-4 text-white flex">
-                                                <div className='flex justify-start items-center cursor:pointer'>
-                                                    <FaArrowDown className='me-2' />
-                                                    <span>Stock In</span>
-                                                </div>
-                                            </Link>
-                                            <Link to='/depot-expired' className="w-full text-left px-4 text-white flex">
-                                                <div className='flex justify-start items-center cursor:pointer'>
-                                                    <FcExpired className='me-2' />
-                                                    <span>Expired</span>
-                                                </div>
-                                            </Link>
-                                        </>
-                                    )}
+                                    {links.map(({ to, icon, label }) => (
+                                        <Link to={to} className="w-full text-left px-4 text-white flex" key={to}>
+                                            <div className="flex justify-start items-center cursor:pointer">
+                                                {icon}
+                                                <span>{label}</span>
+                                            </div>
+                                        </Link>
+                                    ))}
                                 </div>
                             )}
                         </div>
@@ -201,15 +148,12 @@ const Navbar = () => {
 
                 {/* for mobile screen */}
                 <div className={`md:hidden ${isMobileMenuOpen ? 'block w-1/2 h-full absolute mt-[80px] z-10' : 'hidden'} bg-[#1F2937] p-4 text-white`}>
-                    {['warehouse', 'depot'].map((menu, index) => (
-                        <div className="relative inline-block w-full" key={index}>
+                    {Object.entries(menuConfig).map(([menu, { icon, links }]) => (
+                        <div className="relative inline-block w-full" key={menu}>
                             <div onClick={() => toggleDropdown(menu)} className={`flex items-center cursor-pointer ${isSidebarOpen ? 'justify-between' : 'justify-center'}`}>
                                 <div className="flex items-center py-2">
-                                    {menu === 'warehouse' && <FaWarehouse onClick={() => setSidebarOpen(true)} className="mr-2" />}
-                                    {menu === 'depot' && <FaTruck onClick={() => setSidebarOpen(true)} className="mr-2" />}
-                                    {isSidebarOpen && (
-                                        <span>{menu.charAt(0).toUpperCase() + menu.slice(1)}</span>
-                                    )}
+                                    {icon}
+                                    {isSidebarOpen && <span>{menu.charAt(0).toUpperCase() + menu.slice(1)}</span>}
                                 </div>
                                 {isSidebarOpen && (
                                     <FontAwesomeIcon icon={showDropdown[menu] ? faAngleDown : faAngleRight} />
@@ -217,62 +161,14 @@ const Navbar = () => {
                             </div>
                             {showDropdown[menu] && isSidebarOpen && (
                                 <div className="m-2 pl-4">
-                                    {menu === 'warehouse' && (
-                                        <>
-                                            <Link to='/add-product-warehouse' className="w-full text-left px-4 text-white flex">
-                                                <div className='flex justify-start items-center cursor:pointer'>
-                                                    <IoIosAddCircle className='me-2' />
-                                                    <span>Add new</span>
-                                                </div>
-                                            </Link>
-                                            <Link to='/warehouse-list' className="w-full text-left px-4 text-white flex">
-                                                <div className='flex justify-start items-center cursor:pointer'>
-                                                    <FaListUl className='me-2' />
-                                                    <span>List</span>
-                                                </div>
-                                            </Link>
-                                            <Link to='/warehouse-in' className="w-full text-left px-4 text-white flex">
-                                                <div className='flex justify-start items-center cursor:pointer'>
-                                                    <FaArrowDown className='me-2' />
-                                                    <span>Stock In</span>
-                                                </div>
-                                            </Link>
-                                            <Link to='/warehouse-out' className="w-full text-left px-4 text-white flex">
-                                                <div className='flex justify-start items-center cursor:pointer'>
-                                                    <FaArrowUp className='me-2' />
-                                                    <span>Stock Out</span>
-                                                </div>
-                                            </Link>
-                                            <Link to='/damaged-in-warehouse' className="w-full text-left px-4 text-white flex">
-                                                <div className='flex justify-start items-center cursor:pointer'>
-                                                    <GiDustCloud className='me-2' />
-                                                    <span>Damaged</span>
-                                                </div>
-                                            </Link>
-                                        </>
-                                    )}
-                                    {menu === 'depot' && (
-                                        <>
-                                            <Link to='/depot-list' className="w-full text-left px-4 text-white flex">
-                                                <div className='flex justify-start items-center cursor:pointer'>
-                                                    <FaListUl className='me-2' />
-                                                    <span>List</span>
-                                                </div>
-                                            </Link>
-                                            <Link to='/depot-in' className="w-full text-left px-4 text-white flex">
-                                                <div className='flex justify-start items-center cursor:pointer'>
-                                                    <FaArrowDown className='me-2' />
-                                                    <span>Stock In</span>
-                                                </div>
-                                            </Link>
-                                            <Link to='/depot-expired' className="w-full text-left px-4 text-white flex">
-                                                <div className='flex justify-start items-center cursor:pointer'>
-                                                    <FcExpired className='me-2' />
-                                                    <span>Expired</span>
-                                                </div>
-                                            </Link>
-                                        </>
-                                    )}
+                                    {links.map(({ to, icon, label }) => (
+                                        <Link to={to} className="w-full text-left px-4 text-white flex" key={to}>
+                                            <div className="flex justify-start items-center cursor:pointer">
+                                                {icon}
+                                                <span>{label}</span>
+                                            </div>
+                                        </Link>
+                                    ))}
                                 </div>
                             )}
                         </div>
