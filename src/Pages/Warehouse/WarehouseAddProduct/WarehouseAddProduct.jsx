@@ -2,9 +2,30 @@ import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
+import useOrderStockProducts from '../../../Hooks/useOrderStockProducts';
+import { useEffect, useState } from 'react';
 
 const WarehouseAddProduct = () => {
-    const { register, handleSubmit, reset, formState: { errors } } = useForm();
+    const { register, handleSubmit, reset, formState: { errors }, setValue, watch } = useForm();
+
+    // Fetch product data
+    const [products, loading] = useOrderStockProducts();
+
+    // Filter out products where status is not "pending"
+    const filteredProducts = products?.filter(product => product.status === 'pending');
+
+    // Extract unique dates from filtered data
+    const uniqueDates = [...new Set(filteredProducts?.map(product => product.date))];
+
+    // Watch selected date and product name
+    const selectedDate = watch('date');
+    const selectedProductName = watch('name');
+
+    // Filter product names based on selected date
+    const filteredNames = filteredProducts?.filter(product => product.date === selectedDate);
+
+    // Find all info of the selected product
+    const selectedProductDetails = filteredNames?.find(product => product.productName === selectedProductName);
 
     const addProductMutation = useMutation({
         mutationFn: async (data) => {
@@ -77,32 +98,46 @@ const WarehouseAddProduct = () => {
                 <h1 className="px-6 py-3 font-bold">Add new product</h1>
                 <hr className='text-center border border-gray-500 mb-5' />
                 <form onSubmit={handleSubmit(handleAddProduct)} className="p-6 pt-0">
-                    <div className='flex justify-center items-center mb-2'>
+                    <div className="flex justify-center items-center mb-2">
                         <div className="w-full md:w-1/3 flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
                                 Date <span className="text-red-500">*</span>
                             </label>
-                            <input
-                                type='date'
+                            <select
                                 {...register("date", { required: "Date is required" })}
-                                placeholder="Enter date"
                                 className="border-gray-500 bg-white border p-2 text-sm"
-                            />
+                            >
+                                <option value="">Select date</option>
+                                {uniqueDates.map((date, index) => (
+                                    <option key={index} value={date}>
+                                        {date}
+                                    </option>
+                                ))}
+                            </select>
                             {errors.date && <p className="text-red-500 text-sm">{errors.date.message}</p>}
                         </div>
                     </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
                                 Name <span className="text-red-500">*</span>
                             </label>
-                            <input
+                            <select
                                 {...register("name", { required: "Name is required" })}
-                                placeholder="Enter product name"
                                 className="border-gray-500 bg-white border p-2 text-sm"
-                            />
+                                disabled={!selectedDate}
+                            >
+                                <option value="">Select product name</option>
+                                {filteredNames?.map((product, index) => (
+                                    <option key={index} value={product.productName}>
+                                        {product.productName}
+                                    </option>
+                                ))}
+                            </select>
                             {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
                         </div>
+
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
                                 Product Short Code <span className="text-red-500">*</span>
@@ -239,8 +274,8 @@ const WarehouseAddProduct = () => {
                     </div>
                     <button type="submit" className="bg-blue-500 text-white mt-5 p-2 rounded text-sm">Submit</button>
                 </form>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 
