@@ -77,6 +77,20 @@ const WarehouseAddProduct = () => {
                 <h1 className="px-6 py-3 font-bold">Add new product</h1>
                 <hr className='text-center border border-gray-500 mb-5' />
                 <form onSubmit={handleSubmit(handleAddProduct)} className="p-6 pt-0">
+                    <div className='flex justify-center items-center mb-2'>
+                        <div className="w-full md:w-1/3 flex flex-col">
+                            <label className="text-[#6E719A] mb-1 text-sm">
+                                Date <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type='date'
+                                {...register("date", { required: "Date is required" })}
+                                placeholder="Enter date"
+                                className="border-gray-500 bg-white border p-2 text-sm"
+                            />
+                            {errors.date && <p className="text-red-500 text-sm">{errors.date.message}</p>}
+                        </div>
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
@@ -101,21 +115,6 @@ const WarehouseAddProduct = () => {
                             {errors.psc && <p className="text-red-500 text-sm">{errors.psc.message}</p>}
                         </div>
                     </div>
-
-                    {/* <div>
-                        <div className="flex flex-col mb-2">
-                            <label className="text-[#6E719A] mb-1 text-sm">
-                                Image upload <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type="file"
-                                {...register("image")}
-                                // {...register("image", { required: "Image file is required" })}
-                                className="h-10 file-input file-input-bordered border-gray-500 w-full rounded-none text-sm cursor-pointer"
-                            />
-                            {errors.image && <p className="text-red-500 text-sm">{errors.image.message}</p>}
-                        </div>
-                    </div> */}
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                         <div className="flex flex-col">
@@ -184,45 +183,6 @@ const WarehouseAddProduct = () => {
                                 className="border-gray-500 bg-white border p-2 text-sm"
                             />
                             {errors.pwob && <p className="text-red-500 text-sm">{errors.pwob.message}</p>}
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
-                        <div className="flex flex-col">
-                            <label className="text-[#6E719A] mb-1 text-sm">
-                                Actual Price (AP) <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type='number'
-                                {...register("ap", { required: "Actual price is required" })}
-                                placeholder="Enter actual price"
-                                className="border-gray-500 bg-white border p-2 text-sm"
-                            />
-                            {errors.ap && <p className="text-red-500 text-sm">{errors.ap.message}</p>}
-                        </div>
-                        <div className="flex flex-col">
-                            <label className="text-[#6E719A] mb-1 text-sm">
-                                Trade Price (TP) <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type='number'
-                                {...register("tp", { required: "Trade price is required" })}
-                                placeholder="Enter trade price"
-                                className="border-gray-500 bg-white border p-2 text-sm"
-                            />
-                            {errors.tp && <p className="text-red-500 text-sm">{errors.tp.message}</p>}
-                        </div>
-                        <div className="flex flex-col">
-                            <label className="text-[#6E719A] mb-1 text-sm">
-                                Date <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type='date'
-                                {...register("date", { required: "Date is required" })}
-                                placeholder="Enter date"
-                                className="border-gray-500 bg-white border p-2 text-sm"
-                            />
-                            {errors.date && <p className="text-red-500 text-sm">{errors.date.message}</p>}
                         </div>
                     </div>
 

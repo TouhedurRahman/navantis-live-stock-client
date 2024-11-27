@@ -40,7 +40,7 @@ const PurchaseOrder = () => {
                 addedby: data.addedby,
                 addedemail: data.addedemail
             };
-            const response = await axios.post('http://localhost:5000/pending-stockin-wh', newProduct);
+            const response = await axios.post('http://localhost:5000/order-stock-wh', newProduct);
             return response.data;
         },
         onError: (error) => {
