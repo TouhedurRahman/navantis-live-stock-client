@@ -9,7 +9,7 @@ const WarehouseAddProduct = () => {
     const { register, handleSubmit, reset, formState: { errors }, watch } = useForm();
 
     const [products] = useOrderStockProducts();
-    const [seletedProduct, setSelectedProduct] = useState();
+    const [selectedProduct, setSelectedProduct] = useState();
 
     const filteredProducts = products?.filter(product => product.status === 'pending');
 
@@ -28,7 +28,16 @@ const WarehouseAddProduct = () => {
         }
     }, [selectedProductDetails]);
 
-    const addProductMutation = useMutation({
+    const getTodayDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // Add leading zero to month
+        const day = String(today.getDate()).padStart(2, '0'); // Add leading zero to day
+
+        return `${year}-${month}-${day}`;
+    };
+
+    /* const addProductMutation = useMutation({
         mutationFn: async (data) => {
             const newProduct = {
                 productName: data.name,
@@ -45,9 +54,9 @@ const WarehouseAddProduct = () => {
         onError: (error) => {
             console.error("Error adding product to warehouse:", error);
         },
-    });
+    }); */
 
-    const addStockMutation = useMutation({
+    /* const addStockMutation = useMutation({
         mutationFn: async (data) => {
             const newProduct = {
                 productName: data.name,
@@ -71,13 +80,47 @@ const WarehouseAddProduct = () => {
         onError: (error) => {
             console.error("Error adding stock-in:", error);
         },
+    }); */
+
+    const reqWhStockMutation = useMutation({
+        mutationFn: async (data) => {
+            const updatedProduct = {
+                productName: data.name,
+                productCode: data.psc,
+                batch: data.batch,
+                expire: data.expire,
+
+                actualPrice: Number(selectedProduct.actualPrice),
+                tradePrice: Number(selectedProduct.tradePrice),
+
+                boxQuantity: Number(data.box) || 0,
+                productWithBox: Number(data.pwb) || 0,
+                productWithoutBox: Number(data.pwob) || 0,
+
+                orderQuantity: Number(selectedProduct.totalQuantity),
+                totalQuantity: Number(Number(data.pwb) + Number(data.pwob)),
+
+                orderDate: selectedProduct.date,
+                date: getTodayDate(),
+
+                remarks: data.remarks,
+                status: "requested",
+
+                addedby: data.addedby,
+                addedemail: data.addedemail
+            };
+            const response = await axios.patch(`http://localhost:5000/wh-req/${selectedProduct._id}`, updatedProduct);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error adding stock-in:", error);
+        },
     });
 
     const handleAddProduct = async (data) => {
         try {
             await Promise.all([
-                addProductMutation.mutateAsync(data),
-                addStockMutation.mutateAsync(data)
+                reqWhStockMutation.mutateAsync(data)
             ]);
 
             reset();
