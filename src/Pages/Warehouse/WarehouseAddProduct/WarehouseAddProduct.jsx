@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useOrderStockProducts from '../../../Hooks/useOrderStockProducts';
 
@@ -124,13 +125,30 @@ const WarehouseAddProduct = () => {
             ]);
 
             reset();
-            alert('Product added successfully!');
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Requested for stock in",
+                showConfirmButton: false,
+                timer: 1500
+            });
         } catch (error) {
             if (error.response?.status === 409) {
-                alert('Product already exists.');
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "Stock in request faild",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             } else {
-                console.error("Error adding product:", error);
-                alert("Failed to add product.");
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "Stock in request faild",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             }
         }
     };
@@ -188,6 +206,7 @@ const WarehouseAddProduct = () => {
                                     Product Short Code <span className="text-red-500">*</span>
                                 </label>
                                 <input
+                                    defaultValue={selectedProductName && selectedProduct?.productCode}
                                     {...register("psc", { required: "PSC is required" })}
                                     placeholder="Enter product short code"
                                     className="border-gray-500 bg-white border p-2 text-sm"
@@ -204,6 +223,7 @@ const WarehouseAddProduct = () => {
                                 Batch <span className="text-red-500">*</span>
                             </label>
                             <input
+                                defaultValue={selectedProductName && selectedProduct?.batch}
                                 {...register("batch", { required: "Batch is required" })}
                                 placeholder="Enter product batch/batch no"
                                 className="border-gray-500 bg-white border p-2 text-sm"
@@ -216,6 +236,7 @@ const WarehouseAddProduct = () => {
                                 Expire MM/YY <span className="text-red-500">*</span>
                             </label>
                             <input
+                                defaultValue={selectedProductName && selectedProduct?.expire}
                                 {...register("expire", {
                                     required: "Expire date is required",
                                     pattern: {
@@ -238,6 +259,7 @@ const WarehouseAddProduct = () => {
                             </label>
                             <input
                                 type='number'
+                                defaultValue={selectedProductName && selectedProduct?.boxQuantity}
                                 {...register("box")}
                                 placeholder="Enter box quantity"
                                 className="border-gray-500 bg-white border p-2 text-sm"
@@ -252,6 +274,7 @@ const WarehouseAddProduct = () => {
                             </label>
                             <input
                                 type='number'
+                                defaultValue={selectedProductName && selectedProduct?.productWithBox}
                                 {...register("pwb")}
                                 placeholder="Enter with box product quantity"
                                 className="border-gray-500 bg-white border p-2 text-sm"
@@ -266,6 +289,7 @@ const WarehouseAddProduct = () => {
                             </label>
                             <input
                                 type='number'
+                                defaultValue={selectedProductName && selectedProduct?.productWithoutBox}
                                 {...register("pwob")}
                                 placeholder="Enter without box product quantity"
                                 className="border-gray-500 bg-white border p-2 text-sm"
@@ -282,6 +306,7 @@ const WarehouseAddProduct = () => {
                                 Remarks <span className="text-red-500">*</span>
                             </label>
                             <textarea
+                                defaultValue={selectedProductName && selectedProduct?.remarks}
                                 {...register("remarks", { required: "Remarks is required" })}
                                 placeholder="Enter remarks"
                                 className="border-gray-500 bg-white border p-2 text-sm"
