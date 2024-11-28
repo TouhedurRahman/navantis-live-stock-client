@@ -1,31 +1,32 @@
-import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useOrderStockProducts from '../../../Hooks/useOrderStockProducts';
-import { useEffect, useState } from 'react';
 
 const WarehouseAddProduct = () => {
-    const { register, handleSubmit, reset, formState: { errors }, setValue, watch } = useForm();
+    const { register, handleSubmit, reset, formState: { errors }, watch } = useForm();
 
-    // Fetch product data
-    const [products, loading] = useOrderStockProducts();
+    const [products] = useOrderStockProducts();
+    const [seletedProduct, setSelectedProduct] = useState();
 
-    // Filter out products where status is not "pending"
     const filteredProducts = products?.filter(product => product.status === 'pending');
 
-    // Extract unique dates from filtered data
     const uniqueDates = [...new Set(filteredProducts?.map(product => product.date))];
 
-    // Watch selected date and product name
     const selectedDate = watch('date');
     const selectedProductName = watch('name');
 
-    // Filter product names based on selected date
     const filteredNames = filteredProducts?.filter(product => product.date === selectedDate);
 
-    // Find all info of the selected product
     const selectedProductDetails = filteredNames?.find(product => product.productName === selectedProductName);
+
+    useEffect(() => {
+        if (selectedProductDetails) {
+            setSelectedProduct(selectedProductDetails);
+        }
+    }, [selectedProductDetails]);
 
     const addProductMutation = useMutation({
         mutationFn: async (data) => {
@@ -98,6 +99,7 @@ const WarehouseAddProduct = () => {
                 <h1 className="px-6 py-3 font-bold">Add new product</h1>
                 <hr className='text-center border border-gray-500 mb-5' />
                 <form onSubmit={handleSubmit(handleAddProduct)} className="p-6 pt-0">
+                    {/* Date Field */}
                     <div className="flex justify-center items-center mb-2">
                         <div className="w-full md:w-1/3 flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
@@ -137,17 +139,19 @@ const WarehouseAddProduct = () => {
                             </select>
                             {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
                         </div>
-
-                        <div className="flex flex-col">
-                            <label className="text-[#6E719A] mb-1 text-sm">
-                                Product Short Code <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                {...register("psc", { required: "PSC is required" })}
-                                placeholder="Enter product short code"
-                                className="border-gray-500 bg-white border p-2 text-sm"
-                            />
-                            {errors.psc && <p className="text-red-500 text-sm">{errors.psc.message}</p>}
+                        <div>
+                            <div className="flex flex-col">
+                                <label className="text-[#6E719A] mb-1 text-sm">
+                                    Product Short Code <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    {...register("psc", { required: "PSC is required" })}
+                                    placeholder="Enter product short code"
+                                    className="border-gray-500 bg-white border p-2 text-sm"
+                                    disabled={!selectedProductName}
+                                />
+                                {errors.psc && <p className="text-red-500 text-sm">{errors.psc.message}</p>}
+                            </div>
                         </div>
                     </div>
 
@@ -160,6 +164,7 @@ const WarehouseAddProduct = () => {
                                 {...register("batch", { required: "Batch is required" })}
                                 placeholder="Enter product batch/batch no"
                                 className="border-gray-500 bg-white border p-2 text-sm"
+                                disabled={!selectedProductName}
                             />
                             {errors.batch && <p className="text-red-500 text-sm">{errors.batch.message}</p>}
                         </div>
@@ -177,6 +182,7 @@ const WarehouseAddProduct = () => {
                                 })}
                                 placeholder="MM/YY"
                                 className="border-gray-500 bg-white border p-2 text-sm"
+                                disabled={!selectedProductName}
                             />
                             {errors.expire && <p className="text-red-500 text-sm">{errors.expire.message}</p>}
                         </div>
@@ -185,37 +191,43 @@ const WarehouseAddProduct = () => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
-                                Box Quantity <span className="text-red-500">*</span>
+                                Box Quantity
                             </label>
                             <input
                                 type='number'
-                                {...register("box", { required: "Box quantity is required" })}
+                                {...register("box")}
                                 placeholder="Enter box quantity"
                                 className="border-gray-500 bg-white border p-2 text-sm"
+                                disabled={!selectedProductName}
+                                onWheel={(e) => e.target.blur()}
                             />
                             {errors.box && <p className="text-red-500 text-sm">{errors.box.message}</p>}
                         </div>
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
-                                Product Quantity (With Box) <span className="text-red-500">*</span>
+                                Product Quantity (With Box)
                             </label>
                             <input
                                 type='number'
-                                {...register("pwb", { required: "With Box product quantity is required" })}
+                                {...register("pwb")}
                                 placeholder="Enter with box product quantity"
                                 className="border-gray-500 bg-white border p-2 text-sm"
+                                disabled={!selectedProductName}
+                                onWheel={(e) => e.target.blur()}
                             />
                             {errors.pwb && <p className="text-red-500 text-sm">{errors.pwb.message}</p>}
                         </div>
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
-                                Product Quantity (Without Box) <span className="text-red-500">*</span>
+                                Product Quantity (Without Box)
                             </label>
                             <input
                                 type='number'
-                                {...register("pwob", { required: "Without Box product quantity is required" })}
+                                {...register("pwob")}
                                 placeholder="Enter without box product quantity"
                                 className="border-gray-500 bg-white border p-2 text-sm"
+                                disabled={!selectedProductName}
+                                onWheel={(e) => e.target.blur()}
                             />
                             {errors.pwob && <p className="text-red-500 text-sm">{errors.pwob.message}</p>}
                         </div>
@@ -230,6 +242,7 @@ const WarehouseAddProduct = () => {
                                 {...register("remarks", { required: "Remarks is required" })}
                                 placeholder="Enter remarks"
                                 className="border-gray-500 bg-white border p-2 text-sm"
+                                disabled={!selectedProductName}
                             />
                             {errors.remarks && <p className="text-red-500 text-sm">{errors.remarks.message}</p>}
                         </div>
@@ -272,6 +285,7 @@ const WarehouseAddProduct = () => {
                             {errors.addedemail && <p className="text-red-500 text-sm">{errors.addedemail.message}</p>}
                         </div>
                     </div>
+
                     <button type="submit" className="bg-blue-500 text-white mt-5 p-2 rounded text-sm">Submit</button>
                 </form>
             </div >
