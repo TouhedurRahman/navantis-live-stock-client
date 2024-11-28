@@ -3,17 +3,19 @@ import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
 import { ImSearch } from 'react-icons/im';
 import Loader from "../../../Components/Loader/Loader";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
-import useWhProducts from "../../../Hooks/useWhProducts";
-import WarehouseProductCard from "../WarehouseProductCard/WarehouseProductCard";
+import useStockReq from "../../../Hooks/useStockReq";
+import WarehouseRequestProductCard from "../WarehouseRequestProductCard/WarehouseRequestProductCard";
 
-const WhProductsList = () => {
-    const [products, loading, refetch] = useWhProducts();
+const WarehouseStockRequest = () => {
+    const [products, loading, refetch] = useStockReq();
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [productsPerPage, setProductsPerPage] = useState(5);
 
-    const filteredProducts = products.filter(product =>
+    const requestedProducts = products.filter(product => product.status === "requested");
+
+    const filteredProducts = requestedProducts.filter(product =>
         product.productName.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -46,13 +48,13 @@ const WhProductsList = () => {
         <>
             <div>
                 <PageTitle
-                    from={"Warehouse"}
-                    to={"Products list"}
+                    from={"Admin"}
+                    to={"Warehouse request"}
                 />
             </div>
             <div className="bg-white pb-1">
                 <div>
-                    <h1 className="px-6 py-3 font-bold">Warehouse products list</h1>
+                    <h1 className="px-6 py-3 font-bold">Warehouse request list</h1>
                     <hr className='text-center border border-gray-500 mb-5' />
                 </div>
                 {
@@ -65,7 +67,7 @@ const WhProductsList = () => {
                         <>
                             {/* Product Info */}
                             <div className="m-6 p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-md">
-                                <p className="text-md text-gray-700 text-center mb-4 font-medium">Warehouse Summary</p>
+                                <p className="text-md text-gray-700 text-center mb-4 font-medium">Warehouse Request Summary</p>
 
                                 <div className="bg-white p-3 rounded-md rounded-b-none shadow-sm flex flex-col md:flex-row justify-around items-center text-gray-600">
                                     <p className="text-sm">
@@ -128,16 +130,18 @@ const WhProductsList = () => {
                                                 <th>Name</th>
                                                 <th className='text-center'>Batch</th>
                                                 <th className='text-center'>Exp.</th>
-                                                <th className='text-center'>Quantity</th>
-                                                <th className='text-right'>Price/Unit</th>
-                                                <th className='text-right'>Total Price</th>
-                                                <th className="text-center">Action</th>
+                                                <th className='text-center'>Order Quantity</th>
+                                                <th className='text-center'>Stock Quantity</th>
+                                                <th className='text-center'>Missing Quantity</th>
+                                                <th className="text-center">Details</th>
+                                                <th className="text-center">Approve</th>
+                                                <th className="text-center">Deny</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {
                                                 currentProducts.map((product, idx) => (
-                                                    <WarehouseProductCard
+                                                    <WarehouseRequestProductCard
                                                         idx={startIndex + idx + 1}
                                                         key={product._id}
                                                         product={product}
@@ -192,4 +196,4 @@ const WhProductsList = () => {
     );
 };
 
-export default WhProductsList;
+export default WarehouseStockRequest;

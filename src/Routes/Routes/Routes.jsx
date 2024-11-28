@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Main from "../../Layout/Main/Main";
 import PurchaseList from "../../Pages/Admin/PurchaseList/PurchaseList";
 import PurchaseOrder from "../../Pages/Admin/PurchaseOrder/PurchaseOrder";
+import WarehouseStockRequest from "../../Pages/Admin/WarehouseStockRequest/WarehouseStockRequest";
 import DepotExpiredProduct from "../../Pages/Depot/DepotExpiredProduct/DepotExpiredProduct";
 import DepotProductsList from "../../Pages/Depot/DepotProductsList/DepotProductsList";
 import DepotStockInList from "../../Pages/Depot/DepotStockInList/DepotStockInList";
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
             {
                 path: "/purchase-list",
                 element: <PurchaseList />
+            },
+            {
+                path: "/warehouse-request",
+                element: <WarehouseStockRequest />
             },
             {
                 path: "/add-product-warehouse",
