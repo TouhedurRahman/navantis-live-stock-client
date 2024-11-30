@@ -125,6 +125,7 @@ const WarehouseAddProduct = () => {
             ]);
 
             reset();
+
             Swal.fire({
                 position: "center",
                 icon: "success",
@@ -132,24 +133,16 @@ const WarehouseAddProduct = () => {
                 showConfirmButton: false,
                 timer: 1500
             });
+
+            window.location.reload();
         } catch (error) {
-            if (error.response?.status === 409) {
-                Swal.fire({
-                    position: "center",
-                    icon: "error",
-                    title: "Stock in request faild",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            } else {
-                Swal.fire({
-                    position: "center",
-                    icon: "error",
-                    title: "Stock in request faild",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }
+            Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Stock in request faild",
+                showConfirmButton: false,
+                timer: 1500
+            });
         }
     };
 
@@ -255,12 +248,12 @@ const WarehouseAddProduct = () => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
-                                Box Quantity
+                                Box Quantity <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type='number'
                                 defaultValue={selectedProductName && selectedProduct?.boxQuantity}
-                                {...register("box")}
+                                {...register("box", { required: "Box quantity is required" })}
                                 placeholder="Enter box quantity"
                                 className="border-gray-500 bg-white border p-2 text-sm"
                                 disabled={!selectedProductName}
@@ -270,12 +263,12 @@ const WarehouseAddProduct = () => {
                         </div>
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
-                                Product Quantity (With Box)
+                                Product Quantity (With Box) <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type='number'
                                 defaultValue={selectedProductName && selectedProduct?.productWithBox}
-                                {...register("pwb")}
+                                {...register("pwb", { required: "Product with box is required" })}
                                 placeholder="Enter with box product quantity"
                                 className="border-gray-500 bg-white border p-2 text-sm"
                                 disabled={!selectedProductName}
@@ -285,12 +278,12 @@ const WarehouseAddProduct = () => {
                         </div>
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
-                                Product Quantity (Without Box)
+                                Product Quantity (Without Box) <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type='number'
                                 defaultValue={selectedProductName && selectedProduct?.productWithoutBox}
-                                {...register("pwob")}
+                                {...register("pwob", { required: "Product without box is required" })}
                                 placeholder="Enter without box product quantity"
                                 className="border-gray-500 bg-white border p-2 text-sm"
                                 disabled={!selectedProductName}
