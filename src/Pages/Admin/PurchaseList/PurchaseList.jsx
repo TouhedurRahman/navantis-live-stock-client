@@ -293,14 +293,15 @@ const PurchaseList = () => {
                                                     <td className="text-right">{(product.actualPrice).toLocaleString('en-IN')}/-</td>
                                                     <td className="text-right">{(product.tradePrice).toLocaleString('en-IN')}/-</td>
                                                     <td className="text-right">
-                                                        <tr className="flex justify-end">
-                                                            {/* <td>AP</td> */}
-                                                            <td className="text-right">{(product.actualPrice * product.totalQuantity).toLocaleString('en-IN')}/- (AP)</td>
-                                                        </tr>
-                                                        <tr className="flex justify-end">
-                                                            {/* <td>TP</td> */}
-                                                            <td className="text-right">{(product.tradePrice * product.totalQuantity).toLocaleString('en-IN')}/- (TP)</td>
-                                                        </tr>
+                                                        <div className="flex flex-col justify-center items-end">
+                                                            <p>
+                                                                {(product.actualPrice * product.totalQuantity).toLocaleString('en-IN')}/- (AP)
+                                                            </p>
+                                                            <div className="w-full border-t my-2"></div>
+                                                            <p>
+                                                                {(product.tradePrice * product.totalQuantity).toLocaleString('en-IN')}/- (TP)
+                                                            </p>
+                                                        </div>
                                                     </td>
                                                     <td className="text-center">
                                                         {new Date(product.date).toLocaleDateString('en-GB').replace(/\//g, '-')}
