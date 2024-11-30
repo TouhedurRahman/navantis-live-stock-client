@@ -8,11 +8,78 @@ import WarehouseDetailsModal from '../../../Components/WarehouseDetailsModal/War
 const WarehouseRequestProductCard = ({ idx, product, refetch }) => {
     const [isdetailsModalOpen, setdetailsModalOpen] = useState(false);
 
-    const reqDeniedMutation = useMutation({
+    const addProductMutation = useMutation({
         mutationFn: async () => {
+            const newProduct = {
+                productName: product.productName,
+                productCode: product.productCode,
+                batch: product.batch,
+                expire: product.expire,
+                actualPrice: Number(product.actualPrice),
+                tradePrice: Number(product.tradePrice),
+                totalQuantity: Number(product.totalQuantity)
+            };
+            const response = await axios.post('http://localhost:5000/wh-products', newProduct);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error adding product to warehouse:", error);
+        },
+    });
+
+    const addStockMutation = useMutation({
+        mutationFn: async () => {
+            const newProduct = {
+                productName: product.productName,
+                productCode: product.productCode,
+                batch: product.batch,
+                expire: product.expire,
+                actualPrice: Number(product.actualPrice),
+                tradePrice: Number(product.tradePrice),
+                boxQuantity: Number(product.boxQuantity),
+                productWithBox: Number(product.productWithBox),
+                productWithoutBox: Number(product.productWithoutBox),
+                totalQuantity: Number(product.totalQuantity),
+                date: product.date,
+                remarks: product.remarks,
+                addedby: product.addedby,
+                addedemail: product.addedemail
+            };
+            const response = await axios.post('http://localhost:5000/stock-in-wh', newProduct);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error adding stock-in:", error);
+        },
+    });
+
+    const updateStatusMutation = useMutation({
+        mutationFn: async (updatedStatus) => {
             const updatedProduct = {
-                ...product,
-                status: "pending",
+                productName: product.productName,
+                productCode: product.productCode,
+                batch: product.batch,
+                expire: product.expire,
+
+                actualPrice: Number(product.actualPrice),
+                tradePrice: Number(product.tradePrice),
+
+                boxQuantity: Number(product.boxQuantity),
+                productWithBox: Number(product.productWithBox),
+                productWithoutBox: Number(product.productWithoutBox),
+
+                orderQuantity: Number(product.orderQuantity),
+                totalQuantity: updatedStatus === "pending" ? Number(product.orderQuantity) : Number(product.totalQuantity),
+
+
+                orderDate: product.orderDate,
+                date: updatedStatus === "pending" ? product.orderDate : product.date,
+
+                remarks: product.remarks,
+                status: updatedStatus,
+
+                addedby: product.addedby,
+                addedemail: product.addedemail
             };
             const response = await axios.patch(`http://localhost:5000/wh-req/${product._id}`, updatedProduct);
             return response.data;
@@ -21,6 +88,45 @@ const WarehouseRequestProductCard = ({ idx, product, refetch }) => {
             console.error("Error denied stock-in:", error);
         },
     });
+
+    const handleWhStockin = () => {
+        Swal.fire({
+            title: "Sure to stock in warehouse?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, stock in!"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await Promise.all([
+                        updateStatusMutation.mutateAsync("approved"),
+                        addProductMutation.mutateAsync(),
+                        addStockMutation.mutateAsync()
+                    ]);
+
+                    refetch();
+
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Request Denied.",
+                        icon: "success",
+                        confirmButtonColor: "#3B82F6"
+                    });
+                } catch (error) {
+                    // console.error("Error adding product:", error);
+                    Swal.fire({
+                        title: "Error!",
+                        text: "Failed to stock out the product. Please try again.",
+                        icon: "error",
+                        confirmButtonColor: "#d33"
+                    });
+                }
+            }
+        });
+    };
 
     const handleDeny = () => {
         Swal.fire({
@@ -35,7 +141,7 @@ const WarehouseRequestProductCard = ({ idx, product, refetch }) => {
             if (result.isConfirmed) {
                 try {
                     await Promise.all([
-                        reqDeniedMutation.mutateAsync(),
+                        updateStatusMutation.mutateAsync("pending"),
                     ]);
 
                     refetch();
@@ -94,7 +200,7 @@ const WarehouseRequestProductCard = ({ idx, product, refetch }) => {
                 </td>
                 <td className='text-center'>
                     <button
-                        // onClick={handleRemove}
+                        onClick={handleWhStockin}
                         title="Remove product from warehouse"
                         className="p-2 rounded-[5px] hover:bg-green-100 focus:outline-none"
                     >
@@ -112,7 +218,7 @@ const WarehouseRequestProductCard = ({ idx, product, refetch }) => {
                 </td>
             </tr >
 
-            {/* Modals for different operations */}
+            {/* Details Modals */}
             {
                 isdetailsModalOpen && (
                     <WarehouseDetailsModal
