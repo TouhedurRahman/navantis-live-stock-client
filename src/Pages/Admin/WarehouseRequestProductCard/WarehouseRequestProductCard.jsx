@@ -11,29 +11,8 @@ const WarehouseRequestProductCard = ({ idx, product, refetch }) => {
     const reqDeniedMutation = useMutation({
         mutationFn: async () => {
             const updatedProduct = {
-                productName: product.productName,
-                productCode: product.productCode,
-                batch: product.batch,
-                expire: product.expire,
-
-                actualPrice: Number(product.actualPrice),
-                tradePrice: Number(product.tradePrice),
-
-                boxQuantity: Number(product.boxQuantity),
-                productWithBox: Number(product.productWithBox),
-                productWithoutBox: Number(product.productWithoutBox),
-
-                orderQuantity: Number(product.orderQuantity),
-                totalQuantity: Number(product.totalQuantity),
-
-                orderDate: product.orderDate,
-                date: product.date,
-
-                remarks: product.remarks,
+                ...product,
                 status: "pending",
-
-                addedby: product.addedby,
-                addedemail: product.addedemail
             };
             const response = await axios.patch(`http://localhost:5000/wh-req/${product._id}`, updatedProduct);
             return response.data;
