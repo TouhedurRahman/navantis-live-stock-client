@@ -32,56 +32,11 @@ const WarehouseAddProduct = () => {
     const getTodayDate = () => {
         const today = new Date();
         const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0'); // Add leading zero to month
-        const day = String(today.getDate()).padStart(2, '0'); // Add leading zero to day
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
 
         return `${year}-${month}-${day}`;
     };
-
-    /* const addProductMutation = useMutation({
-        mutationFn: async (data) => {
-            const newProduct = {
-                productName: data.name,
-                productCode: data.psc,
-                batch: data.batch,
-                expire: data.expire,
-                actualPrice: Number(data.ap),
-                tradePrice: Number(data.tp),
-                totalQuantity: Number(Number(data.pwb) + Number(data.pwob))
-            };
-            const response = await axios.post('http://localhost:5000/wh-products', newProduct);
-            return response.data;
-        },
-        onError: (error) => {
-            console.error("Error adding product to warehouse:", error);
-        },
-    }); */
-
-    /* const addStockMutation = useMutation({
-        mutationFn: async (data) => {
-            const newProduct = {
-                productName: data.name,
-                productCode: data.psc,
-                batch: data.batch,
-                expire: data.expire,
-                actualPrice: Number(data.ap),
-                tradePrice: Number(data.tp),
-                boxQuantity: Number(data.box),
-                productWithBox: Number(data.pwb),
-                productWithoutBox: Number(data.pwob),
-                totalQuantity: Number(Number(data.pwb) + Number(data.pwob)),
-                date: data.date,
-                remarks: data.remarks,
-                addedby: data.addedby,
-                addedemail: data.addedemail
-            };
-            const response = await axios.post('http://localhost:5000/stock-in-wh', newProduct);
-            return response.data;
-        },
-        onError: (error) => {
-            console.error("Error adding stock-in:", error);
-        },
-    }); */
 
     const reqWhStockMutation = useMutation({
         mutationFn: async (data) => {
@@ -219,8 +174,9 @@ const WarehouseAddProduct = () => {
                                 defaultValue={selectedProductName && selectedProduct?.batch}
                                 {...register("batch", { required: "Batch is required" })}
                                 placeholder="Enter product batch/batch no"
-                                className="border-gray-500 bg-white border p-2 text-sm"
+                                className="border-gray-500 bg-white border p-2 cursor-not-allowed text-sm"
                                 disabled={!selectedProductName}
+                                readOnly
                             />
                             {errors.batch && <p className="text-red-500 text-sm">{errors.batch.message}</p>}
                         </div>
@@ -238,8 +194,9 @@ const WarehouseAddProduct = () => {
                                     }
                                 })}
                                 placeholder="MM/YY"
-                                className="border-gray-500 bg-white border p-2 text-sm"
+                                className="border-gray-500 bg-white border p-2 cursor-not-allowed text-sm"
                                 disabled={!selectedProductName}
+                                readOnly
                             />
                             {errors.expire && <p className="text-red-500 text-sm">{errors.expire.message}</p>}
                         </div>

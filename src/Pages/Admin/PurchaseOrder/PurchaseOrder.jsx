@@ -13,6 +13,8 @@ const PurchaseOrder = () => {
         mutationFn: async (data) => {
             const newProduct = {
                 productName: data.name,
+                batch: data.batch,
+                expire: data.expire,
                 actualPrice: Number(data.ap),
                 tradePrice: Number(data.tp),
                 totalQuantity: Number(data.quantity),
@@ -32,6 +34,8 @@ const PurchaseOrder = () => {
         mutationFn: async (data) => {
             const newProduct = {
                 productName: data.name,
+                batch: data.batch,
+                expire: data.expire,
                 actualPrice: Number(data.ap),
                 tradePrice: Number(data.tp),
                 totalQuantity: Number(data.quantity),
@@ -120,6 +124,37 @@ const PurchaseOrder = () => {
                                 onWheel={(e) => e.target.blur()}
                             />
                             {errors.quantity && <p className="text-red-500 text-sm">{errors.quantity.message}</p>}
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+                        <div className="flex flex-col">
+                            <label className="text-[#6E719A] mb-1 text-sm">
+                                Batch <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                {...register("batch", { required: "Batch is required" })}
+                                placeholder="Enter product batch/batch no"
+                                className="border-gray-500 bg-white border p-2 text-sm"
+                            />
+                            {errors.batch && <p className="text-red-500 text-sm">{errors.batch.message}</p>}
+                        </div>
+                        <div className="flex flex-col">
+                            <label className="text-[#6E719A] mb-1 text-sm">
+                                Expire MM/YY <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                {...register("expire", {
+                                    required: "Expire date is required",
+                                    pattern: {
+                                        value: /^(0[1-9]|1[0-2])\/\d{2}$/, // Matches MM/YY format
+                                        message: "Invalid date format. Use MM/YY"
+                                    }
+                                })}
+                                placeholder="MM/YY"
+                                className="border-gray-500 bg-white border p-2 text-sm"
+                            />
+                            {errors.expire && <p className="text-red-500 text-sm">{errors.expire.message}</p>}
                         </div>
                     </div>
 
