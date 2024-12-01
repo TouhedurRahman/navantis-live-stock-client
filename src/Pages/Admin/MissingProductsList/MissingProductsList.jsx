@@ -15,8 +15,6 @@ const MissingProductsList = () => {
     const [toDate, setToDate] = useState('');
     const [productsPerPage, setProductsPerPage] = useState(5);
     const [currentPage, setCurrentPage] = useState(1);
-    const [isdetailsModalOpen, setdetailsModalOpen] = useState(false);
-    const [selectedProduct, setSelectedProduct] = useState(null);
 
     /* const approvedProducts = products.filter(product => product.status === "approved");
 
