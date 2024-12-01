@@ -20,7 +20,7 @@ const MissingProductsList = () => {
     const [isdetailsModalOpen, setdetailsModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
 
-    const approvedProducts = products.filter(product => product.status === "approved");
+    /* const approvedProducts = products.filter(product => product.status === "approved");
 
     // Filtered products based on search and filters
     const filteredProducts = useMemo(() => {
@@ -34,7 +34,48 @@ const MissingProductsList = () => {
             const matchesSearch = product.productName.toLowerCase().includes(searchTerm.toLowerCase());
             return matchesYear && matchesMonth && matchesDateRange && matchesSearch;
         });
-    }, [products, year, month, fromDate, toDate, searchTerm]);
+    }, [products, year, month, fromDate, toDate, searchTerm]); */
+
+    const approvedProducts = useMemo(
+        () => products.filter((product) => product.status === "approved"),
+        [products]
+    );
+
+    const mergedProducts = useMemo(() => {
+        const resultMap = new Map();
+
+        approvedProducts.forEach((product) => {
+            const key = `${product.productName}-${product.batch || ''}-${product.expire || ''}-${product.orderDate || ''}`;
+
+            if (resultMap.has(key)) {
+                const existing = resultMap.get(key);
+                existing.orderQuantity += product.orderQuantity || 0;
+                existing.totalQuantity += product.totalQuantity || 0;
+            } else {
+                resultMap.set(key, { ...product });
+            }
+        });
+
+        return Array.from(resultMap.values());
+    }, [approvedProducts]);
+
+    const filteredProducts = useMemo(() => {
+        return mergedProducts.filter((product) => {
+            const productDate = product.date ? new Date(product.date) : null;
+
+            const matchesYear = year ? productDate?.getFullYear() === parseInt(year) : true;
+            const matchesMonth = month ? productDate?.getMonth() + 1 === parseInt(month) : true;
+            const matchesDateRange =
+                fromDate && toDate
+                    ? productDate >= new Date(fromDate) && productDate <= new Date(toDate)
+                    : true;
+            const matchesSearch = product.productName
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase());
+
+            return matchesYear && matchesMonth && matchesDateRange && matchesSearch;
+        });
+    }, [mergedProducts, year, month, fromDate, toDate, searchTerm]);
 
     const uniqueProducts = filteredProducts.filter((product, index, self) =>
         index === self.findIndex((p) =>
