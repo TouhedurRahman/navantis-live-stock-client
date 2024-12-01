@@ -273,6 +273,8 @@ const PurchaseList = () => {
                                             <tr>
                                                 <th className="text-center">Sl. No.</th>
                                                 <th className="text-left">Name</th>
+                                                <th className="text-center">Batch</th>
+                                                <th className="text-center">Expire</th>
                                                 <th className="text-center">Quantity</th>
                                                 <th className="text-right">Price/Unit(AP)</th>
                                                 <th className="text-right">Price/Unit(TP)</th>
@@ -289,6 +291,8 @@ const PurchaseList = () => {
                                                         }
                                                     </th>
                                                     <td>{product.productName}</td>
+                                                    <td className="text-center">{product.batch}</td>
+                                                    <td className="text-center">{product.expire}</td>
                                                     <td className="text-center">{product.totalQuantity}</td>
                                                     <td className="text-right">{(product.actualPrice).toLocaleString('en-IN')}/-</td>
                                                     <td className="text-right">{(product.tradePrice).toLocaleString('en-IN')}/-</td>
