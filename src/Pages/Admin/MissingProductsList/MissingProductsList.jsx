@@ -1,11 +1,9 @@
 import { useMemo, useState } from "react";
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
-import { FaEye } from "react-icons/fa";
 import { ImSearch } from 'react-icons/im';
 import { MdPrint } from 'react-icons/md';
 import Loader from "../../../Components/Loader/Loader";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
-import WhSinDetailsModal from "../../../Components/WhSinDetailsModal/WhSinDetailsModal";
 import useStockReq from "../../../Hooks/useStockReq";
 
 const MissingProductsList = () => {
@@ -322,15 +320,15 @@ const MissingProductsList = () => {
                                                 <th className="text-left">Name</th>
                                                 <th className="text-center">Batch</th>
                                                 <th className="text-center">Exp.</th>
+                                                <th className="text-center">Order Quantity</th>
                                                 <th className="text-center">Missing Quantity</th>
                                                 <th className="text-center">Price Type</th>
                                                 <th className="text-right">Price/Unit</th>
                                                 <th className="text-right">Total Price</th>
                                                 <th className="text-center">
-                                                    Date <br />
-                                                    Order(O)/Stock in (S)
+                                                    Order Date
+                                                    {/* Order(O)/Stock in (S) */}
                                                 </th>
-                                                <th className="text-center">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -344,6 +342,9 @@ const MissingProductsList = () => {
                                                     <td>{product.productName}</td>
                                                     <td className="text-center">{product.batch}</td>
                                                     <td className="text-center">{product.expire}</td>
+                                                    <td className="text-center">
+                                                        {product.orderQuantity}
+                                                    </td>
                                                     <td className="text-center">
                                                         {(product.orderQuantity) - (product.totalQuantity)}
                                                     </td>
@@ -387,29 +388,12 @@ const MissingProductsList = () => {
                                                     <td className="text-center">
                                                         <div className="flex flex-col items-center">
                                                             <div>
-                                                                {new Date(product.orderDate).toLocaleDateString('en-GB').replace(/\//g, '-')} (O)
+                                                                {new Date(product.orderDate).toLocaleDateString('en-GB').replace(/\//g, '-')}
                                                             </div>
-                                                            <div className="w-full border-t my-2"></div>
+                                                            {/* <div className="w-full border-t my-2"></div>
                                                             <div>
                                                                 {new Date(product.date).toLocaleDateString('en-GB').replace(/\//g, '-')} (S)
-                                                            </div>
-                                                        </div>
-                                                    </td>
-
-                                                    <td>
-                                                        <div className="flex justify-center items-center space-x-4 text-md">
-                                                            <button
-                                                                onClick={
-                                                                    () => {
-                                                                        setdetailsModalOpen(true)
-                                                                        setSelectedProduct(product)
-                                                                    }
-                                                                }
-                                                                title="Details"
-                                                                className="p-2 rounded-[5px] hover:bg-orange-100 focus:outline-none"
-                                                            >
-                                                                <FaEye className="text-orange-500" />
-                                                            </button>
+                                                            </div> */}
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -457,15 +441,6 @@ const MissingProductsList = () => {
                         </>
                 }
             </div>
-
-            {/* Modals for different operations */}
-            {isdetailsModalOpen && (
-                <WhSinDetailsModal
-                    isOpen={isdetailsModalOpen}
-                    onClose={() => setdetailsModalOpen(false)}
-                    product={selectedProduct}
-                />
-            )}
         </div>
     );
 };
