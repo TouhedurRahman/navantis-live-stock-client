@@ -1,12 +1,13 @@
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
+import { FaEye } from "react-icons/fa";
 import { ImSearch } from 'react-icons/im';
 import { MdPrint } from 'react-icons/md';
-import useStockInWh from "../../../Hooks/useStockInWh";
-import PageTitle from "../../../Components/PageTitle/PageTitle";
-import { FaEye } from "react-icons/fa";
-import WhSinDetailsModal from "../../../Components/WhSinDetailsModal/WhSinDetailsModal";
+import { useLocation } from "react-router-dom";
 import Loader from "../../../Components/Loader/Loader";
+import PageTitle from "../../../Components/PageTitle/PageTitle";
+import WhSinDetailsModal from "../../../Components/WhSinDetailsModal/WhSinDetailsModal";
+import useStockInWh from "../../../Hooks/useStockInWh";
 
 const StockInList = () => {
     const [products, loading] = useStockInWh();
@@ -19,6 +20,9 @@ const StockInList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [isdetailsModalOpen, setdetailsModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
+
+    const location = useLocation();
+    const adminPath = location.pathname.includes('/admin-warehouse-in');
 
     // Filtered products based on search and filters
     const filteredProducts = useMemo(() => {
@@ -220,10 +224,14 @@ const StockInList = () => {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td className="px-4 py-2 border border-gray-200">Actual Price (AP)</td>
-                                                        <td className="px-4 py-2 border border-gray-200 text-right">{totalAP.toLocaleString('en-IN')}/-</td>
-                                                    </tr>
+                                                    {
+                                                        adminPath
+                                                        &&
+                                                        <tr>
+                                                            <td className="px-4 py-2 border border-gray-200">Actual Price (AP)</td>
+                                                            <td className="px-4 py-2 border border-gray-200 text-right">{totalAP.toLocaleString('en-IN')}/-</td>
+                                                        </tr>
+                                                    }
                                                     <tr>
                                                         <td className="px-4 py-2 border border-gray-200">Trade Price (TP)</td>
                                                         <td className="px-4 py-2 border border-gray-200 text-right">{totalTP.toLocaleString('en-IN')}/-</td>

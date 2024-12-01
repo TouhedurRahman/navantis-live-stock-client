@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaTimes } from 'react-icons/fa';
+import { useLocation } from 'react-router-dom';
 
 const WhSinDetailsModal = ({ isOpen, onClose, product }) => {
     if (!isOpen) return null;
@@ -7,6 +8,9 @@ const WhSinDetailsModal = ({ isOpen, onClose, product }) => {
     // Calculate totals
     const totalActualPrice = product.totalQuantity * product.actualPrice;
     const totalTradePrice = product.totalQuantity * product.tradePrice;
+
+    const location = useLocation();
+    const adminPath = location.pathname.includes('/admin-warehouse-in');
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
@@ -88,11 +92,16 @@ const WhSinDetailsModal = ({ isOpen, onClose, product }) => {
                                     </tr>
                                 </thead>
                                 <tbody className='text-right'>
-                                    <tr>
-                                        <td className="px-4 py-2 border border-gray-200 text-left">Actual Price</td>
-                                        <td className="px-4 py-2 border border-gray-200">{product.actualPrice.toLocaleString('en-IN')}/-</td>
-                                        <td className="px-4 py-2 border border-gray-200">{totalActualPrice.toLocaleString('en-IN')}/-</td>
-                                    </tr>
+                                    {
+                                        adminPath
+                                        &&
+                                        <tr>
+                                            <td className="px-4 py-2 border border-gray-200 text-left">Actual Price</td>
+                                            <td className="px-4 py-2 border border-gray-200">{product.actualPrice.toLocaleString('en-IN')}/-</td>
+                                            <td className="px-4 py-2 border border-gray-200">{totalActualPrice.toLocaleString('en-IN')}/-</td>
+                                        </tr>
+
+                                    }
                                     <tr>
                                         <td className="px-4 py-2 border border-gray-200 text-left">Trade Price</td>
                                         <td className="px-4 py-2 border border-gray-200">{product.tradePrice.toLocaleString('en-IN')}/-</td>

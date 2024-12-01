@@ -40,6 +40,10 @@ const router = createBrowserRouter([
                 element: <MissingProductsList />
             },
             {
+                path: "/admin-warehouse-in",
+                element: <StockInList />
+            },
+            {
                 path: "/add-product-warehouse",
                 element: <WarehouseAddProduct />
             },

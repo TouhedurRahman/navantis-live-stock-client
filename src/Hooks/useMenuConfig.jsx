@@ -16,6 +16,8 @@ const useMenuConfig = () => {
                 { to: '/purchase-list', icon: <FaListUl className='me-2' />, label: 'Purchase List' },
                 { to: '/warehouse-request', icon: <VscGitPullRequestGoToChanges className='me-2' />, label: 'Warehouse Request' },
                 { to: '/missing-products', icon: <FaExclamationCircle className='me-2' />, label: 'Missing Products' },
+                { to: '/admin-warehouse-in', icon: <FaArrowDown className='me-2' />, label: 'Warehouse In' },
+                { to: '/admin-warehouse-out', icon: <FaArrowUp className='me-2' />, label: 'Warehouse Out' },
                 { to: '/price-inc', icon: <TbCoinTakaFilled className='me-2' />, label: 'Price Change' },
                 { to: '/dmg-exp', icon: <FaTrashAlt className='me-2' />, label: 'Damaged & Exp.' },
             ],
