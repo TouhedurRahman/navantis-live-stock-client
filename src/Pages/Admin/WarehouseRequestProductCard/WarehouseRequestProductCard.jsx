@@ -27,6 +27,26 @@ const WarehouseRequestProductCard = ({ idx, product, refetch }) => {
         },
     });
 
+    const updateProductMutation = useMutation({
+        mutationFn: async () => {
+            const updatedProduct = {
+                productName: product.productName,
+                productCode: product.productCode,
+                batch: product.batch,
+                expire: product.expire,
+                actualPrice: Number(product.actualPrice),
+                tradePrice: Number(product.tradePrice),
+                totalQuantity: Number(product.totalQuantity)
+            };
+
+            const response = await axios.patch(`http://localhost:5000/wh-product/${product._id}`, updatedProduct);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error updating product to warehouse:", error);
+        },
+    });
+
     const addStockMutation = useMutation({
         mutationFn: async () => {
             const newProduct = {
@@ -104,6 +124,7 @@ const WarehouseRequestProductCard = ({ idx, product, refetch }) => {
                     await Promise.all([
                         updateStatusMutation.mutateAsync("approved"),
                         addProductMutation.mutateAsync(),
+                        updateProductMutation.mutateAsync(),
                         addStockMutation.mutateAsync()
                     ]);
 
