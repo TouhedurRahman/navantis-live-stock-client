@@ -8,14 +8,31 @@ import WarehouseDetailsModal from '../../../Components/WarehouseDetailsModal/War
 const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
     const [isdetailsModalOpen, setdetailsModalOpen] = useState(false);
 
-    const existingProducts = whProducts.filter(existingProduct =>
-        existingProduct.productName === product.productName
-        &&
-        existingProduct.batch === product.batch
-        &&
-        existingProduct.expire === product.expire
+    const existingSameBatchProducts = whProducts.filter(
+        existingSameBatchProduct =>
+            existingSameBatchProduct.productName === product.productName
+            &&
+            existingSameBatchProduct.batch === product.batch
+            &&
+            existingSameBatchProduct.expire === product.expire
     );
-    // console.log(existingProducts.length);
+
+    const matchingProducts = whProducts.filter(
+        matchingProduct =>
+            matchingProduct.productName === product.productName
+    );
+
+    const initialQuantity = matchingProducts.reduce((sum, product) => sum + (product.totalQuantity), 0);
+    // console.log(initialQuantity);
+
+    const matchingProductName = whProducts.find(
+        existingProduct =>
+            existingProduct.productName === product.productName
+    );
+
+    const initialActualPrice = matchingProductName?.actualPrice ?? null;
+    const initialTradePrice = matchingProductName?.tradePrice ?? null;
+    // console.log(initialActualPrice, initialTradePrice);
 
     const addProductMutation = useMutation({
         mutationFn: async () => {
@@ -79,6 +96,30 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
         },
         onError: (error) => {
             console.error("Error adding stock-in:", error);
+        },
+    });
+
+    const addPriceChangeMutation = useMutation({
+        mutationFn: async () => {
+            const newProduct = {
+                productName: product.productName,
+
+                actualPrice: Number(product.actualPrice),
+                initialActualPrice: Number(initialActualPrice),
+
+                tradePrice: Number(product.tradePrice),
+                initialTradePrice: Number(initialTradePrice),
+
+                initialQuantity: Number(initialQuantity),
+                newQuantity: Number(product.totalQuantity),
+
+                date: product.date
+            };
+            const response = await axios.post('http://localhost:5000/price-update', newProduct);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error price change:", error);
         },
     });
 
@@ -151,9 +192,12 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
                         addStockMutation.mutateAsync(),
                     ];
 
-                    if (existingProducts.length > 0) {
+                    if (existingSameBatchProducts.length > 0)
                         mutations.push(updateProductMutation.mutateAsync());
-                    }
+
+
+                    if (initialActualPrice !== product.actualPrice || initialTradePrice !== product.tradePrice)
+                        mutations.push(addPriceChangeMutation.mutateAsync());
 
                     await Promise.all(mutations);
 
