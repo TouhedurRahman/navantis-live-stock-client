@@ -4,10 +4,14 @@ import { ImSearch } from 'react-icons/im';
 import Loader from "../../../Components/Loader/Loader";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import useStockReq from "../../../Hooks/useStockReq";
+import useWhProducts from "../../../Hooks/useWhProducts";
 import WarehouseRequestProductCard from "../WarehouseRequestProductCard/WarehouseRequestProductCard";
 
 const WarehouseStockRequest = () => {
     const [products, loading, refetch] = useStockReq();
+    const [whProducts, whProductsLoading] = useWhProducts();
+
+    // console.log(whProducts);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
@@ -146,6 +150,7 @@ const WarehouseStockRequest = () => {
                                                         key={product._id}
                                                         product={product}
                                                         refetch={refetch}
+                                                        whProducts={whProducts}
                                                     />
                                                 ))
                                             }

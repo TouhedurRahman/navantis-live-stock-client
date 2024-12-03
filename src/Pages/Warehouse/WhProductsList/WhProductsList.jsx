@@ -7,13 +7,13 @@ import useWhProducts from "../../../Hooks/useWhProducts";
 import WarehouseProductCard from "../WarehouseProductCard/WarehouseProductCard";
 
 const WhProductsList = () => {
-    const [products, loading, refetch] = useWhProducts();
+    const [whProducts, whProductsLoading, refetch] = useWhProducts();
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [productsPerPage, setProductsPerPage] = useState(5);
 
-    const filteredProducts = products.filter(product =>
+    const filteredProducts = whProducts.filter(product =>
         product.productName.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -56,7 +56,7 @@ const WhProductsList = () => {
                     <hr className='text-center border border-gray-500 mb-5' />
                 </div>
                 {
-                    loading
+                    whProductsLoading
                         ?
                         <>
                             <Loader />

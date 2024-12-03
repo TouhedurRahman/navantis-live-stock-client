@@ -5,8 +5,17 @@ import { FaCheck, FaEye, FaTimes } from "react-icons/fa";
 import Swal from 'sweetalert2';
 import WarehouseDetailsModal from '../../../Components/WarehouseDetailsModal/WarehouseDetailsModal';
 
-const WarehouseRequestProductCard = ({ idx, product, refetch }) => {
+const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
     const [isdetailsModalOpen, setdetailsModalOpen] = useState(false);
+
+    const existingProducts = whProducts.filter(existingProduct =>
+        existingProduct.productName === product.productName
+        &&
+        existingProduct.batch === product.batch
+        &&
+        existingProduct.expire === product.expire
+    );
+    // console.log(existingProducts.length);
 
     const addProductMutation = useMutation({
         mutationFn: async () => {
@@ -121,12 +130,32 @@ const WarehouseRequestProductCard = ({ idx, product, refetch }) => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await Promise.all([
+                    /* if (existingProducts.length === 0) {
+                        await Promise.all([
+                            updateStatusMutation.mutateAsync("approved"),
+                            addProductMutation.mutateAsync(),
+                            addStockMutation.mutateAsync()
+                        ]);
+                    } else {
+                        await Promise.all([
+                            updateStatusMutation.mutateAsync("approved"),
+                            addProductMutation.mutateAsync(),
+                            updateProductMutation.mutateAsync(),
+                            addStockMutation.mutateAsync()
+                        ]);
+                    } */
+
+                    const mutations = [
                         updateStatusMutation.mutateAsync("approved"),
                         addProductMutation.mutateAsync(),
-                        updateProductMutation.mutateAsync(),
-                        addStockMutation.mutateAsync()
-                    ]);
+                        addStockMutation.mutateAsync(),
+                    ];
+
+                    if (existingProducts.length > 0) {
+                        mutations.push(updateProductMutation.mutateAsync());
+                    }
+
+                    await Promise.all(mutations);
 
                     refetch();
 
