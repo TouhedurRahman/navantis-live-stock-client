@@ -35,6 +35,8 @@ const MissingProductsList = () => {
     const approvedProducts = useMemo(
         () => products.filter((product) =>
             product.status === "approved"
+            &&
+            product.missingQuantity !== 0
         ),
         [products]
     );
