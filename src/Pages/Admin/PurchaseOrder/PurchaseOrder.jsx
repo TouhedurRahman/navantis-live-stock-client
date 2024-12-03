@@ -18,7 +18,7 @@ const PurchaseOrder = () => {
                 actualPrice: Number(data.ap),
                 tradePrice: Number(data.tp),
                 totalQuantity: Number(data.quantity),
-                date: data.date,
+                orderDate: data.date,
                 addedby: data.addedby,
                 addedemail: data.addedemail
             };

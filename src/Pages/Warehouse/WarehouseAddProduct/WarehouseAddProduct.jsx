@@ -14,12 +14,12 @@ const WarehouseAddProduct = () => {
 
     const filteredProducts = products?.filter(product => product.status === 'pending');
 
-    const uniqueDates = [...new Set(filteredProducts?.map(product => product.date))];
+    const uniqueDates = [...new Set(filteredProducts?.map(product => product.orderDate))];
 
     const selectedDate = watch('date');
     const selectedProductName = watch('name');
 
-    const filteredNames = filteredProducts?.filter(product => product.date === selectedDate);
+    const filteredNames = filteredProducts?.filter(product => product.orderDate === selectedDate);
 
     const selectedProductDetails = filteredNames?.find(product => product.productName === selectedProductName);
 
@@ -56,7 +56,7 @@ const WarehouseAddProduct = () => {
                 orderQuantity: Number(selectedProduct.totalQuantity),
                 totalQuantity: Number(Number(data.pwb) + Number(data.pwob)),
 
-                orderDate: selectedProduct.date,
+                orderDate: selectedProduct.orderDate,
                 date: getTodayDate(),
 
                 remarks: data.remarks,

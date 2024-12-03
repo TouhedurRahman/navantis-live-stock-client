@@ -19,7 +19,7 @@ const PurchaseList = () => {
     // Filtered products based on search and filters
     const filteredProducts = useMemo(() => {
         return products.filter(product => {
-            const productDate = new Date(product.date);
+            const productDate = new Date(product.orderDate);
             const matchesYear = year ? productDate.getFullYear() === parseInt(year) : true;
             const matchesMonth = month ? productDate.getMonth() + 1 === parseInt(month) : true;
             const matchesDateRange = fromDate && toDate
@@ -308,7 +308,7 @@ const PurchaseList = () => {
                                                         </div>
                                                     </td>
                                                     <td className="text-center">
-                                                        {new Date(product.date).toLocaleDateString('en-GB').replace(/\//g, '-')}
+                                                        {new Date(product.orderDate).toLocaleDateString('en-GB').replace(/\//g, '-')}
                                                     </td>
                                                 </tr>
                                             ))}
