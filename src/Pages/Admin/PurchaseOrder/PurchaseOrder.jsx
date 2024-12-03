@@ -39,7 +39,7 @@ const PurchaseOrder = () => {
                 actualPrice: Number(data.ap),
                 tradePrice: Number(data.tp),
                 totalQuantity: Number(data.quantity),
-                date: data.date,
+                orderDate: data.date,
                 status: "pending",
                 addedby: data.addedby,
                 addedemail: data.addedemail

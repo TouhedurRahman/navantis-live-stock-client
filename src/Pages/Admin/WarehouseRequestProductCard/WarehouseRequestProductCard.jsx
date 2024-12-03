@@ -99,7 +99,7 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
 
                 orderQuantity: Number(product.orderQuantity),
                 totalQuantity: updatedStatus === "pending" ? Number(product.orderQuantity) : Number(product.totalQuantity),
-
+                missingQuantity: Number(product.missingQuantity),
 
                 orderDate: product.orderDate,
                 date: updatedStatus === "pending" ? product.orderDate : product.date,
@@ -161,17 +161,21 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
 
                     Swal.fire({
                         title: "Success!",
-                        text: "Request Denied.",
+                        text: "Stock in successful.",
                         icon: "success",
-                        confirmButtonColor: "#3B82F6"
+                        showConfirmButton: false,
+                        confirmButtonColor: "#3B82F6",
+                        timer: 1500
                     });
                 } catch (error) {
-                    // console.error("Error adding product:", error);
+                    console.error("Error adding product:", error);
                     Swal.fire({
                         title: "Error!",
-                        text: "Failed to stock out the product. Please try again.",
+                        text: "Faild to Stock in. Please try again.",
                         icon: "error",
-                        confirmButtonColor: "#d33"
+                        showConfirmButton: false,
+                        confirmButtonColor: "#d33",
+                        timer: 1500
                     });
                 }
             }
@@ -200,15 +204,19 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
                         title: "Success!",
                         text: "Request Denied.",
                         icon: "success",
-                        confirmButtonColor: "#3B82F6"
+                        showConfirmButton: false,
+                        confirmButtonColor: "#3B82F6",
+                        timer: 1500
                     });
                 } catch (error) {
                     // console.error("Error adding product:", error);
                     Swal.fire({
                         title: "Error!",
-                        text: "Failed to stock out the product. Please try again.",
+                        text: "Failed to denied request. Please try again.",
                         icon: "error",
-                        confirmButtonColor: "#d33"
+                        showConfirmButton: false,
+                        confirmButtonColor: "#d33",
+                        timer: 1500
                     });
                 }
             }

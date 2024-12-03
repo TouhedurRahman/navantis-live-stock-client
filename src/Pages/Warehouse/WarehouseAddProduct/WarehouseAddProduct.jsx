@@ -55,6 +55,7 @@ const WarehouseAddProduct = () => {
 
                 orderQuantity: Number(selectedProduct.totalQuantity),
                 totalQuantity: Number(Number(data.pwb) + Number(data.pwob)),
+                missingQuantity: Number(Number(selectedProduct.totalQuantity) - (Number(Number(data.pwb) + Number(data.pwob)))),
 
                 orderDate: selectedProduct.orderDate,
                 date: getTodayDate(),

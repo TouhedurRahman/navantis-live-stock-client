@@ -33,7 +33,9 @@ const MissingProductsList = () => {
     }, [products, year, month, fromDate, toDate, searchTerm]); */
 
     const approvedProducts = useMemo(
-        () => products.filter((product) => product.status === "approved"),
+        () => products.filter((product) =>
+            product.status === "approved"
+        ),
         [products]
     );
 
@@ -85,9 +87,9 @@ const MissingProductsList = () => {
         )
     );
     const totalUniqueProducts = uniqueProducts.length;
-    const totalUnit = filteredProducts.reduce((sum, product) => sum + ((product.orderQuantity - product.totalQuantity)), 0);
-    const totalAP = filteredProducts.reduce((sum, product) => sum + (product.actualPrice * ((product.orderQuantity) - (product.totalQuantity))), 0);
-    const totalTP = filteredProducts.reduce((sum, product) => sum + (product.tradePrice * ((product.orderQuantity) - (product.totalQuantity))), 0);
+    const totalUnit = filteredProducts.reduce((sum, product) => sum + (product.missingQuantity), 0);
+    const totalAP = filteredProducts.reduce((sum, product) => sum + (product.actualPrice * (product.missingQuantity)), 0);
+    const totalTP = filteredProducts.reduce((sum, product) => sum + (product.tradePrice * (product.missingQuantity)), 0);
 
     // Pagination calculations
     const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
@@ -344,7 +346,7 @@ const MissingProductsList = () => {
                                                         {product.orderQuantity}
                                                     </td>
                                                     <td className="text-center">
-                                                        {(product.orderQuantity) - (product.totalQuantity)}
+                                                        {product.missingQuantity}
                                                     </td>
                                                     <td className="text-center">
                                                         <div className="flex flex-col items-center">
@@ -372,13 +374,13 @@ const MissingProductsList = () => {
                                                         <div className="flex flex-col justify-center items-end">
                                                             <p>
                                                                 {
-                                                                    (product.actualPrice * ((product.orderQuantity) - (product.totalQuantity))).toLocaleString('en-IN')
+                                                                    ((product.actualPrice) * (product.missingQuantity)).toLocaleString('en-IN')
                                                                 }/-
                                                             </p>
                                                             <div className="w-full border-t my-2"></div>
                                                             <p>
                                                                 {
-                                                                    (product.tradePrice * ((product.orderQuantity) - (product.totalQuantity))).toLocaleString('en-IN')
+                                                                    ((product.tradePrice) * (product.missingQuantity)).toLocaleString('en-IN')
                                                                 }/-
                                                             </p>
                                                         </div>
