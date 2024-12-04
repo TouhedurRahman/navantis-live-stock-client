@@ -309,15 +309,22 @@ const PriceUpdateList = () => {
                                                     </td>
                                                     <td className="text-right">
                                                         <div className="flex flex-col justify-center items-end">
+                                                            {/* Actual Price */}
                                                             <p>
-                                                                {((product.actualPrice) - (product.initialActualPrice)).toLocaleString('en-IN')}/-
+                                                                {Math.abs(product.actualPrice - product.initialActualPrice).toLocaleString('en-IN')} /-
+                                                                {product.actualPrice > product.initialActualPrice ? " (Inc)" : " (Dec)"}
                                                             </p>
+
                                                             <div className="w-full border-t my-2"></div>
+
+                                                            {/* Trade Price */}
                                                             <p>
-                                                                {((product.tradePrice) - (product.initialTradePrice)).toLocaleString('en-IN')}/-
+                                                                {Math.abs(product.tradePrice - product.initialTradePrice).toLocaleString('en-IN')} /-
+                                                                {product.tradePrice > product.initialTradePrice ? " (Inc)" : " (Dec)"}
                                                             </p>
                                                         </div>
                                                     </td>
+
                                                     <td className="text-center">
                                                         {new Date(product.date).toLocaleDateString('en-GB').replace(/\//g, '-')}
                                                     </td>
