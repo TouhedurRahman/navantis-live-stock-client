@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import Main from "../../Layout/Main/Main";
 import MissingProductsList from "../../Pages/Admin/MissingProductsList/MissingProductsList";
+import PriceUpdateList from "../../Pages/Admin/PriceUpdateList/PriceUpdateList";
 import PurchaseList from "../../Pages/Admin/PurchaseList/PurchaseList";
 import PurchaseOrder from "../../Pages/Admin/PurchaseOrder/PurchaseOrder";
 import WarehouseStockRequest from "../../Pages/Admin/WarehouseStockRequest/WarehouseStockRequest";
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
             {
                 path: "/admin-warehouse-in",
                 element: <StockInList />
+            },
+            {
+                path: "/price-update",
+                element: <PriceUpdateList />
             },
             {
                 path: "/add-product-warehouse",
