@@ -18,7 +18,7 @@ const useMenuConfig = () => {
                 { to: '/missing-products', icon: <FaExclamationCircle className='me-2' />, label: 'Missing Products' },
                 { to: '/admin-warehouse-in', icon: <FaArrowDown className='me-2' />, label: 'Warehouse In' },
                 { to: '/admin-warehouse-out', icon: <FaArrowUp className='me-2' />, label: 'Warehouse Out' },
-                { to: '/price-inc', icon: <TbCoinTakaFilled className='me-2' />, label: 'Price Change' },
+                { to: '/price-update', icon: <TbCoinTakaFilled className='me-2' />, label: 'Price Update' },
                 { to: '/dmg-exp', icon: <FaTrashAlt className='me-2' />, label: 'Damaged & Exp.' },
             ],
         },
