@@ -16,12 +16,14 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
             &&
             existingSameBatchProduct.expire === product.expire
     );
+    const existingSameBatchProductQuantity = existingSameBatchProducts.reduce((sum, product) => sum + product.totalQuantity, 0);
+
+    // console.log("Total Quantity:", existingSameBatchProductQuantity);
 
     const matchingProducts = whProducts.filter(
         matchingProduct =>
             matchingProduct.productName === product.productName
     );
-
     const initialQuantity = matchingProducts.reduce((sum, product) => sum + (product.totalQuantity), 0);
     // console.log(initialQuantity);
 
@@ -29,7 +31,6 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
         existingProduct =>
             existingProduct.productName === product.productName
     );
-
     const initialActualPrice = matchingProductName?.actualPrice ?? null;
     const initialTradePrice = matchingProductName?.tradePrice ?? null;
     // console.log(initialActualPrice, initialTradePrice);
@@ -62,7 +63,7 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
                 expire: product.expire,
                 actualPrice: Number(product.actualPrice),
                 tradePrice: Number(product.tradePrice),
-                totalQuantity: Number(product.totalQuantity)
+                totalQuantity: Number(existingSameBatchProductQuantity) + Number(product.totalQuantity)
             };
 
             const response = await axios.patch(`http://localhost:5000/wh-product/${product._id}`, updatedProduct);

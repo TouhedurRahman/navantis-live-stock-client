@@ -39,6 +39,7 @@ const DamagedStockinModal = ({ isOpen, onClose, product, refetch }) => {
                 totalQuantity: Number(data.quantity),
                 date: data.date,
                 remarks: data.remarks,
+                status: "pending",
                 addedby: product.addedby,
                 addedemail: product.addedemail
             };
