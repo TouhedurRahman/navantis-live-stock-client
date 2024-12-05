@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Main from "../../Layout/Main/Main";
+import DamageRequest from "../../Pages/Admin/DamageRequest/DamageRequest";
 import MissingProductsList from "../../Pages/Admin/MissingProductsList/MissingProductsList";
 import PriceUpdateList from "../../Pages/Admin/PriceUpdateList/PriceUpdateList";
 import PurchaseList from "../../Pages/Admin/PurchaseList/PurchaseList";
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
             {
                 path: "/warehouse-request",
                 element: <WarehouseStockRequest />
+            },
+            {
+                path: "/damage-request",
+                element: <DamageRequest />
             },
             {
                 path: "/missing-products",
