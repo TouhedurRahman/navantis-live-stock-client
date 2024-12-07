@@ -16,6 +16,7 @@ const useMenuConfig = () => {
                 { to: '/purchase-list', icon: <FaListUl className='me-2' />, label: 'Purchase List' },
                 { to: '/warehouse-request', icon: <VscGitPullRequestGoToChanges className='me-2' />, label: 'Warehouse Request' },
                 { to: '/damage-request', icon: <VscGitPullRequestGoToChanges className='me-2' />, label: 'Damage Request' },
+                { to: '/depot-request', icon: <VscGitPullRequestGoToChanges className='me-2' />, label: 'Depot Request' },
                 { to: '/missing-products', icon: <FaExclamationCircle className='me-2' />, label: 'Missing Products' },
                 { to: '/admin-warehouse-in', icon: <FaArrowDown className='me-2' />, label: 'Warehouse In' },
                 { to: '/admin-warehouse-out', icon: <FaArrowUp className='me-2' />, label: 'Warehouse Out' },

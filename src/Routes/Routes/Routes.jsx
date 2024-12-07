@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import Main from "../../Layout/Main/Main";
 import DamageRequest from "../../Pages/Admin/DamageRequest/DamageRequest";
+import DepotRequest from "../../Pages/Admin/DepotRequest/DepotRequest";
 import MissingProductsList from "../../Pages/Admin/MissingProductsList/MissingProductsList";
 import PriceUpdateList from "../../Pages/Admin/PriceUpdateList/PriceUpdateList";
 import PurchaseList from "../../Pages/Admin/PurchaseList/PurchaseList";
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
             {
                 path: "/damage-request",
                 element: <DamageRequest />
+            },
+            {
+                path: "/depot-request",
+                element: <DepotRequest />
             },
             {
                 path: "/missing-products",
