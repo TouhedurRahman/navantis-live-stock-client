@@ -1,14 +1,15 @@
 import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 import { useState } from 'react';
 import { FaCheck, FaEye, FaTimes } from "react-icons/fa";
 import Swal from 'sweetalert2';
 import WarehouseDetailsModal from '../../../Components/WarehouseDetailsModal/WarehouseDetailsModal';
 
-const DamageRequestProductCard = ({ idx, product, refetch, whProducts }) => {
+const DamageRequestProductCard = ({ idx, product, refetch }) => {
     const [isdetailsModalOpen, setdetailsModalOpen] = useState(false);
 
     const whDamagedProductMutation = useMutation({
-        mutationFn: async (data) => {
+        mutationFn: async () => {
             const newProduct = {
                 ...product,
                 status: "approved",
@@ -22,17 +23,33 @@ const DamageRequestProductCard = ({ idx, product, refetch, whProducts }) => {
         },
     });
 
-    const deniedDamagedProductMutation = useMutation({
+    const updateProductMutation = useMutation({
         mutationFn: async () => {
-            const newProduct = {
-                ...product,
-                status: "approved",
+            const updatedProduct = {
+                productName: product.productName,
+                productCode: product.productCode,
+                batch: product.batch,
+                expire: product.expire,
+                actualPrice: Number(product.actualPrice),
+                tradePrice: Number(product.tradePrice),
+                totalQuantity: Number(product.totalQuantity) - Number(product.damageQuantity)
             };
-            const response = await axios.post('http://localhost:5000/damaged-in-wh');
+
+            const response = await axios.patch(`http://localhost:5000/wh-product/${product._id}`, updatedProduct);
             return response.data;
         },
         onError: (error) => {
-            console.error("Error stock damage:", error);
+            console.error("Error updating product to warehouse:", error);
+        },
+    });
+
+    const deniedDamagedProductMutation = useMutation({
+        mutationFn: async () => {
+            const response = await axios.delete(`http://localhost:5000/damaged-in-wh/${product._id}`);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Delete damage request:", error);
         },
     });
 
@@ -49,7 +66,8 @@ const DamageRequestProductCard = ({ idx, product, refetch, whProducts }) => {
             if (result.isConfirmed) {
                 try {
                     await Promise.all([
-                        whDamagedProductMutation.mutateAsync()
+                        whDamagedProductMutation.mutateAsync(),
+                        updateProductMutation.mutateAsync()
                     ]);
 
                     refetch();

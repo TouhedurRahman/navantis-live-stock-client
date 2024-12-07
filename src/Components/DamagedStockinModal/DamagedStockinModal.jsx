@@ -7,26 +7,6 @@ import { FaTimes } from "react-icons/fa";
 const DamagedStockinModal = ({ isOpen, onClose, product, refetch }) => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
-    const updateProductMutation = useMutation({
-        mutationFn: async (data) => {
-            const updatedProduct = {
-                productName: product.productName,
-                productCode: product.productCode,
-                batch: product.batch,
-                expire: product.expire,
-                actualPrice: Number(product.actualPrice),
-                tradePrice: Number(product.tradePrice),
-                totalQuantity: Number(product.totalQuantity) - Number(data.quantity)
-            };
-
-            const response = await axios.patch(`http://localhost:5000/wh-product/${product._id}`, updatedProduct);
-            return response.data;
-        },
-        onError: (error) => {
-            console.error("Error updating product to warehouse:", error);
-        },
-    });
-
     const whDamagedProductMutation = useMutation({
         mutationFn: async (data) => {
             const newProduct = {
@@ -56,7 +36,6 @@ const DamagedStockinModal = ({ isOpen, onClose, product, refetch }) => {
     const onSubmit = async (data) => {
         try {
             await Promise.all([
-                updateProductMutation.mutateAsync(data),
                 whDamagedProductMutation.mutateAsync(data)
             ]);
 
@@ -134,6 +113,7 @@ const DamagedStockinModal = ({ isOpen, onClose, product, refetch }) => {
                                 {...register('quantity', { required: "Quantity is required", min: 0 })}
                                 className="w-full px-4 py-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                                 placeholder="Enter damaged product quantity"
+                                onWheel={(e) => e.target.blur()}
                             />
                             {errors.quantity && (
                                 <p className="mt-1 text-sm text-red-500">{errors.quantity.message}</p>
