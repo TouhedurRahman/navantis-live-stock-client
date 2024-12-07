@@ -20,9 +20,11 @@ const WhDamagedProduct = () => {
     const [isdetailsModalOpen, setdetailsModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
 
+    const approvedDamagedProducts = products.filter(product => product.status === "approved");
+
     // Filtered products based on search and filters
     const filteredProducts = useMemo(() => {
-        return products.filter(product => {
+        return approvedDamagedProducts.filter(product => {
             const productDate = new Date(product.date);
             const matchesYear = year ? productDate.getFullYear() === parseInt(year) : true;
             const matchesMonth = month ? productDate.getMonth() + 1 === parseInt(month) : true;
@@ -32,7 +34,7 @@ const WhDamagedProduct = () => {
             const matchesSearch = product.productName.toLowerCase().includes(searchTerm.toLowerCase());
             return matchesYear && matchesMonth && matchesDateRange && matchesSearch;
         });
-    }, [products, year, month, fromDate, toDate, searchTerm]);
+    }, [approvedDamagedProducts, year, month, fromDate, toDate, searchTerm]);
 
     const uniqueProducts = filteredProducts.filter((product, index, self) =>
         index === self.findIndex((p) =>
@@ -297,9 +299,9 @@ const WhDamagedProduct = () => {
                                                     <td>{product.productName}</td>
                                                     <td className="text-center">{product.batch}</td>
                                                     <td className="text-center">{product.expire}</td>
-                                                    <td className="text-center">{product.totalQuantity}</td>
+                                                    <td className="text-center">{product.damageQuantity}</td>
                                                     <td className="text-right">{(product.tradePrice).toLocaleString('en-IN')}/-</td>
-                                                    <td className="text-right">{(product.tradePrice * product.totalQuantity).toLocaleString('en-IN')}/-</td>
+                                                    <td className="text-right">{(product.tradePrice * product.damageQuantity).toLocaleString('en-IN')}/-</td>
                                                     <td className="text-center">
                                                         {new Date(product.date).toLocaleDateString('en-GB').replace(/\//g, '-')}
                                                     </td>
