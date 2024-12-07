@@ -3,11 +3,13 @@ import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
 import { ImSearch } from 'react-icons/im';
 import Loader from "../../../Components/Loader/Loader";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
+import useDamagedProductsWh from "../../../Hooks/useDamagedProductsWh";
 import useWhProducts from "../../../Hooks/useWhProducts";
 import WarehouseProductCard from "../WarehouseProductCard/WarehouseProductCard";
 
 const WhProductsList = () => {
     const [whProducts, whProductsLoading, refetch] = useWhProducts();
+    const [products] = useDamagedProductsWh();
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
@@ -142,6 +144,7 @@ const WhProductsList = () => {
                                                         key={product._id}
                                                         product={product}
                                                         refetch={refetch}
+                                                        damagedProducts={products}
                                                     />
                                                 ))
                                             }

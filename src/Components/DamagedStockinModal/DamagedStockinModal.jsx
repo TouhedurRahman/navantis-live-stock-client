@@ -4,8 +4,15 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { FaTimes } from "react-icons/fa";
 
-const DamagedStockinModal = ({ isOpen, onClose, product, refetch }) => {
+const DamagedStockinModal = ({ isOpen, onClose, product, refetch, damagedProducts }) => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
+
+    const matchingProducts = damagedProducts.find(damagedProduct =>
+        damagedProduct.productName === product.productName &&
+        damagedProduct.batch === product.batch &&
+        damagedProduct.expire === product.expire &&
+        damagedProduct.status === "pending"
+    );
 
     const whDamagedProductMutation = useMutation({
         mutationFn: async (data) => {
@@ -43,6 +50,7 @@ const DamagedStockinModal = ({ isOpen, onClose, product, refetch }) => {
             alert('Damaged product added!');
             refetch();
             onClose();
+            window.location.reload();
             reset();
         } catch (error) {
             console.error("Error adding product:", error);
@@ -101,7 +109,14 @@ const DamagedStockinModal = ({ isOpen, onClose, product, refetch }) => {
                             </div>
                         </div>
                     </div>
-
+                    {
+                        matchingProducts?.damageQuantity > 0
+                        &&
+                        <div className="mt-2 p-6 bg-white rounded-lg shadow-md text-center">
+                            <p className="text-sm font-medium text-green-700 uppercase">Already Request Pending</p>
+                            <p className="text-3xl font-extrabold mt-2 text-red-500">{matchingProducts?.damageQuantity}</p>
+                        </div>
+                    }
                     {/* update input section */}
                     <form onSubmit={handleSubmit(onSubmit)} className="mt-6">
                         <div className="mb-5">

@@ -5,7 +5,7 @@ import SendToDepotModal from '../../../Components/SendToDepotModal/SendToDepotMo
 import StockInModal from '../../../Components/StockInModal/StockInModal';
 import WarehouseDetailsModal from '../../../Components/WarehouseDetailsModal/WarehouseDetailsModal';
 
-const WarehouseProductCard = ({ idx, product, refetch }) => {
+const WarehouseProductCard = ({ idx, product, refetch, damagedProducts }) => {
     const [isdetailsModalOpen, setdetailsModalOpen] = useState(false);
     const [isDamagedModalOpen, setDamagedModalOpen] = useState(false);
     const [isStockInModalOpen, setStockInModalOpen] = useState(false);
@@ -106,6 +106,7 @@ const WarehouseProductCard = ({ idx, product, refetch }) => {
                     onClose={() => setDamagedModalOpen(false)}
                     product={product}
                     refetch={refetch}
+                    damagedProducts={damagedProducts}
                 />
             )}
             {isSendToDepotModalOpen && (
