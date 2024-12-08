@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -18,6 +19,15 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
         reset,
         formState: { errors },
     } = useForm();
+
+    const getTodayDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    };
 
     const uniqueWhProductNames = [
         ...new Set(
@@ -59,7 +69,8 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
         mutationFn: async (data) => {
             const newProduct = {
                 productName: data.productName,
-                reqQuantity: data.requestedQuantity,
+                requestedQuantity: Number(data.requestedQuantity),
+                requestedDate: getTodayDate(),
                 status: "requested",
                 addedby: user?.displayName || "Navantis Pharma Limited",
                 addedemail: user?.email || "info@navantispharma.com"
