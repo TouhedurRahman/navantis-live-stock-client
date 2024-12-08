@@ -6,7 +6,7 @@ import useWhProducts from '../../Hooks/useWhProducts';
 
 const DepotRequestModal = ({ isOpen, onClose }) => {
     const [whProducts, whProductsLoading] = useWhProducts();
-    const [products, loading] = useDepotProducts();
+    const [products] = useDepotProducts();
     const [selectedProduct, setSelectedProduct] = useState(null);
 
     const {
@@ -32,13 +32,25 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
         setSelectedProduct(product || null);
     };
 
-    const selectedProductQuantity = selectedProduct
+    const selectedProQinDepot = selectedProduct
         ?
         products
             .filter((product) => product.productName === selectedProduct.productName)
             .reduce((sum, product) => sum + product.totalQuantity, 0)
         :
         0;
+
+    // console.log(selectedProQinDepot)
+
+    const selectedProQinWh = selectedProduct
+        ?
+        whProducts
+            .filter(product => product.productName === selectedProduct.productName)
+            .reduce((sum, product) => sum + product.totalQuantity, 0)
+        :
+        0
+
+    // console.log(selectedProQinWh);
 
     const onSubmit = (data) => {
         console.log(data);
@@ -108,7 +120,7 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
                                     <div className="w-full grid grid-cols md: grid-cols-2 gap-4">
                                         <div className="p-6 bg-white rounded-lg shadow-md text-center">
                                             <p className="text-sm font-medium text-green-700 uppercase">Available in Depot</p>
-                                            <p className="text-3xl font-extrabold mt-2">{selectedProductQuantity}</p>
+                                            <p className="text-3xl font-extrabold mt-2">{selectedProQinDepot}</p>
                                         </div>
                                         <div className="p-6 bg-white rounded-lg shadow-md text-center">
                                             <p className="text-sm font-medium text-green-700 uppercase">Requested</p>
@@ -131,14 +143,15 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
                                             message: 'Requested quantity must be at least 1.',
                                         },
                                         max: {
-                                            value: selectedProduct?.depotQuantity || 0,
-                                            message: 'Requested quantity exceeds depot stock.',
+                                            value: selectedProQinWh,
+                                            message: 'Requested quantity exceeds warehouse stock.',
                                         },
                                     })}
                                     type="number"
                                     className="w-full px-3 py-2 bg-white text-gray-700 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     placeholder="Enter requested quantity"
                                     disabled={!selectedProduct}
+                                    onWheel={(e) => e.target.blur()}
                                 />
                                 {errors.requestedQuantity && (
                                     <p className="mt-1 text-sm text-red-500">{errors.requestedQuantity.message}</p>
