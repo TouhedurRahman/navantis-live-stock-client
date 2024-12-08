@@ -5,12 +5,14 @@ import { useForm } from 'react-hook-form';
 import { FaTimes } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import useDepotProducts from '../../Hooks/useDepotProducts';
+import useDepotRequest from '../../Hooks/useDepotRequest';
 import useWhProducts from '../../Hooks/useWhProducts';
 
 const DepotRequestModal = ({ isOpen, onClose }) => {
     const { user } = true;
     const [whProducts, whProductsLoading] = useWhProducts();
     const [products] = useDepotProducts();
+    const [depotReqProducts] = useDepotRequest();
     const [selectedProduct, setSelectedProduct] = useState(null);
 
     const {
@@ -46,29 +48,36 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
     };
 
     const selectedProQinDepot = selectedProduct
-        ?
-        products
+        ? products
             .filter((product) => product.productName === selectedProduct.productName)
             .reduce((sum, product) => sum + product.totalQuantity, 0)
-        :
-        0;
+        : 0;
 
     // console.log(selectedProQinDepot)
 
     const selectedProQinWh = selectedProduct
-        ?
-        whProducts
+        ? whProducts
             .filter(product => product.productName === selectedProduct.productName)
             .reduce((sum, product) => sum + product.totalQuantity, 0)
-        :
-        0
+        : 0;
 
     // console.log(selectedProQinWh);
+
+    const depotRequestQuantity = selectedProduct
+        ? depotReqProducts
+            .filter(product =>
+                product.productName === selectedProduct.productName &&
+                product.status === "requested"
+            )
+            .find(product => product.requestedQuantity)?.requestedQuantity || 0
+        : 0;
+
+    // console.log(depotRequestQuantity);
 
     const addDptReqMutation = useMutation({
         mutationFn: async (data) => {
             const newProduct = {
-                productName: data.productName,
+                productName: selectedProduct.productName,
                 requestedQuantity: Number(data.requestedQuantity),
                 requestedDate: getTodayDate(),
                 status: "requested",
@@ -179,7 +188,7 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
                                         </div>
                                         <div className="p-6 bg-white rounded-lg shadow-md text-center">
                                             <p className="text-sm font-medium text-green-700 uppercase">Requested</p>
-                                            <p className="text-3xl font-extrabold mt-2">0</p>
+                                            <p className="text-3xl font-extrabold mt-2">{depotRequestQuantity}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -198,7 +207,7 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
                                             message: 'Requested quantity must be at least 1.',
                                         },
                                         max: {
-                                            value: selectedProQinWh,
+                                            value: (selectedProQinWh - depotRequestQuantity),
                                             message: 'Requested quantity exceeds warehouse stock.',
                                         },
                                     })}
