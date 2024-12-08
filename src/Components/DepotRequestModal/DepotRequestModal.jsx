@@ -1,10 +1,13 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaTimes } from 'react-icons/fa';
+import Swal from 'sweetalert2';
 import useDepotProducts from '../../Hooks/useDepotProducts';
 import useWhProducts from '../../Hooks/useWhProducts';
 
 const DepotRequestModal = ({ isOpen, onClose }) => {
+    const { user } = true;
     const [whProducts, whProductsLoading] = useWhProducts();
     const [products] = useDepotProducts();
     const [selectedProduct, setSelectedProduct] = useState(null);
@@ -52,9 +55,50 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
 
     // console.log(selectedProQinWh);
 
-    const onSubmit = (data) => {
-        console.log(data);
-        reset();
+    const addDptReqMutation = useMutation({
+        mutationFn: async (data) => {
+            const newProduct = {
+                productName: data.productName,
+                reqQuantity: data.requestedQuantity,
+                status: "requested",
+                addedby: user?.displayName || "Navantis Pharma Limited",
+                addedemail: user?.email || "info@navantispharma.com"
+            };
+
+            const response = await axios.post('http://localhost:5000/dpot-request', newProduct);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error depot request:", error);
+        },
+    });
+
+    const onSubmit = async (data) => {
+        try {
+            await Promise.all([
+                addDptReqMutation.mutateAsync(data)
+            ]);
+
+            reset();
+
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Depot request done",
+                showConfirmButton: false,
+                timer: 1500
+            });
+
+            window.location.reload();
+        } catch (error) {
+            Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Depot request faild",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
     };
 
     useEffect(() => {
