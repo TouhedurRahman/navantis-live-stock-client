@@ -55,10 +55,13 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
-            <div className="bg-white rounded-lg shadow-lg w-full max-w-lg" style={{ maxHeight: '90%' }}>
+            <div
+                className={`bg-white rounded-lg shadow-lg w-full max-w-lg ${selectedProduct && 'h-4/5'}`}
+                style={{ maxHeight: '90%' }}
+            >
                 {/* Header */}
                 <div className="flex justify-between items-center px-5 py-4 border-b border-gray-200">
-                    <h2 className="text-xl font-semibold">Request From Warehouse</h2>
+                    <h2 className="text-xl font-semibold">Request from Warehouse</h2>
                     <button
                         onClick={onClose}
                         aria-label="Close modal"
@@ -98,28 +101,27 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
 
                             {/* Selected Product Details */}
                             {selectedProduct && (
-                                <div className="p-4 bg-gray-100 text-gray-800 rounded-md shadow-sm">
-                                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                                <div className="felx justify-center items-center bg-white p-6 rounded-lg shadow-lg transform transition duration-300">
+                                    <h3 className="text-2xl font-extrabold text-green-900 mb-4 text-center border-b-2 border-green-300 pb-2">
                                         {selectedProduct.productName}
                                     </h3>
-                                    <p className="text-sm">
-                                        <strong>Depot Quantity:</strong>{' '}
-                                        {selectedProductQuantity}
-                                    </p>
-                                    <p className="text-sm">
-                                        <strong>Trade Price:</strong> ${selectedProduct.tradePrice}
-                                    </p>
-                                    <p className="text-sm">
-                                        <strong>Description:</strong>{' '}
-                                        {selectedProduct.description || 'No description available.'}
-                                    </p>
+                                    <div className="w-full grid grid-cols md: grid-cols-2 gap-4">
+                                        <div className="p-6 bg-white rounded-lg shadow-md text-center">
+                                            <p className="text-sm font-medium text-green-700 uppercase">Available in Depot</p>
+                                            <p className="text-3xl font-extrabold mt-2">{selectedProductQuantity}</p>
+                                        </div>
+                                        <div className="p-6 bg-white rounded-lg shadow-md text-center">
+                                            <p className="text-sm font-medium text-green-700 uppercase">Requested</p>
+                                            <p className="text-3xl font-extrabold mt-2">0</p>
+                                        </div>
+                                    </div>
                                 </div>
                             )}
 
                             {/* Requested Quantity */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Requested Quantity <span className="text-red-500">*</span>
+                                    Request Quantity <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     {...register('requestedQuantity', {
