@@ -203,18 +203,23 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
                                             <p className="text-3xl font-extrabold mt-2">{depotRequestQuantity}</p>
                                         </div>
                                     </div>
-                                    <div className="p-6 bg-white rounded-lg shadow-md text-center">
-                                        <p className="text-sm font-medium text-green-700">
-                                            <span className="processing-text">Processing<span className="dots"></span></span>
-                                        </p>
-                                        <div className="mt-4 text-sm text-center font-medium text-gray-800 flex justify-center items-center">
-                                            You will receive
-                                            <span className="text-xl text-green-700 mx-2">
-                                                {dptReqApprovedQuantity}
-                                            </span>
-                                            products in a short while.
+                                    {
+                                        dptReqApprovedQuantity > 0
+                                        &&
+                                        <div className="p-6 bg-white rounded-lg shadow-md text-center">
+                                            <p className="text-sm font-medium text-green-700">
+                                                <span className="processing-text">Processing<span className="dots"></span></span>
+                                            </p>
+                                            <div className="mt-4 text-sm text-center font-medium text-gray-800 flex justify-center items-center">
+                                                You will receive
+                                                <span className="text-xl text-green-700 mx-2">
+                                                    {dptReqApprovedQuantity}
+                                                </span>
+                                                products in a short while.
+                                            </div>
                                         </div>
-                                    </div>
+
+                                    }
                                 </div>
                             )}
 
