@@ -1,3 +1,5 @@
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { FaTimes } from "react-icons/fa";
@@ -5,37 +7,28 @@ import { FaTimes } from "react-icons/fa";
 const DepotReqVaAModal = ({ isOpen, onClose, product, productQinWarehouse, productQinDepot, refetch }) => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
-    /* const whDamagedProductMutation = useMutation({
+    const approvedDptReqMutation = useMutation({
         mutationFn: async (data) => {
-            const newProduct = {
-                productName: product.productName,
-                productCode: product.productCode,
-                batch: product.batch,
-                expire: product.expire,
-                actualPrice: Number(product.actualPrice),
-                tradePrice: Number(product.tradePrice),
-                totalQuantity: Number(product.totalQuantity),
-                damageQuantity: Number(data.quantity),
-                date: data.date,
-                remarks: data.remarks,
-                status: "pending",
-                addedby: product.addedby,
-                addedemail: product.addedemail
+            const { _id, ...productWithoutId } = product;
+            const updatedProduct = {
+                ...productWithoutId,
+                approvedQuantity: data.quantity,
+                status: "approved"
             };
 
-            const response = await axios.post('http://localhost:5000/damaged-in-wh', newProduct);
+            const response = await axios.patch(`http://localhost:5000/depot-request/${product._id}`, updatedProduct);
             return response.data;
         },
         onError: (error) => {
             console.error("Error stock out from warehouse:", error);
         },
-    }); */
+    });
 
     const onSubmit = async (data) => {
         try {
-            /* await Promise.all([
-                whDamagedProductMutation.mutateAsync(data)
-            ]); */
+            await Promise.all([
+                approvedDptReqMutation.mutateAsync(data)
+            ]);
 
             reset();
             alert('Damaged product added!');
@@ -59,7 +52,7 @@ const DepotReqVaAModal = ({ isOpen, onClose, product, productQinWarehouse, produ
             >
                 {/* Header */}
                 <div className="flex justify-between items-center p-4 border-b">
-                    <h2 className="text-2xl font-semibold">Damaged Product</h2>
+                    <h2 className="text-2xl font-semibold">Depot Request</h2>
                     <button onClick={onClose} aria-label="Close modal">
                         <FaTimes className="text-gray-500 hover:text-red-500" size={18} />
                     </button>
