@@ -1,16 +1,16 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useState } from 'react';
-import { FaCheck, FaEye, FaTimes } from "react-icons/fa";
+import { FaEye, FaTimes } from "react-icons/fa";
 import Swal from 'sweetalert2';
-import WarehouseDetailsModal from '../../../Components/WarehouseDetailsModal/WarehouseDetailsModal';
+import DepotReqVaAModal from '../../../Components/DepotReqVaAModal/DepotReqVaAModal';
 import useDepotProducts from '../../../Hooks/useDepotProducts';
 import useWhProducts from '../../../Hooks/useWhProducts';
 
 const DepotReqProductCard = ({ idx, product, refetch }) => {
     const [whProducts, whProductsLoading] = useWhProducts();
     const [depotProducts] = useDepotProducts();
-    const [isdetailsModalOpen, setdetailsModalOpen] = useState(false);
+    const [isapproveModalOpen, setapproveModalOpen] = useState(false);
 
     const productQinWarehouse = whProducts
         .filter(product => product.productName === product.productName)
@@ -90,21 +90,15 @@ const DepotReqProductCard = ({ idx, product, refetch }) => {
                     {product.requestedQuantity}
                 </td>
                 <td className='text-center'>
+                    {new Date(product.requestedDate).toISOString().split('T')[0].split('-').reverse().join('-')}
+                </td>
+                <td className='text-center'>
                     <button
-                        onClick={() => setdetailsModalOpen(true)}
+                        onClick={() => setapproveModalOpen(true)}
                         title="Details"
                         className="p-2 rounded-[5px] hover:bg-orange-100 focus:outline-none"
                     >
                         <FaEye className="text-orange-500" />
-                    </button>
-                </td>
-                <td className='text-center'>
-                    <button
-                        // onClick={ }
-                        title="Remove product from warehouse"
-                        className="p-2 rounded-[5px] hover:bg-green-100 focus:outline-none"
-                    >
-                        <FaCheck className="text-green-500" />
                     </button>
                 </td>
                 <td className='text-center'>
@@ -120,11 +114,13 @@ const DepotReqProductCard = ({ idx, product, refetch }) => {
 
             {/* Details Modals */}
             {
-                isdetailsModalOpen && (
-                    <WarehouseDetailsModal
-                        isOpen={isdetailsModalOpen}
-                        onClose={() => setdetailsModalOpen(false)}
+                isapproveModalOpen && (
+                    <DepotReqVaAModal
+                        isOpen={isapproveModalOpen}
+                        onClose={() => setapproveModalOpen(false)}
                         product={product}
+                        productQinWarehouse={productQinWarehouse}
+                        productQinDepot={productQinDepot}
                         refetch={refetch}
                     />
                 )

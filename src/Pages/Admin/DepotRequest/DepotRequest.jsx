@@ -132,8 +132,11 @@ const DepotRequest = () => {
                                                 <th className='text-center'>Warehouse Quantity</th>
                                                 <th className='text-center'>Depot Quantity</th>
                                                 <th className='text-center'>Requested Quantity</th>
-                                                <th className="text-center">Details</th>
-                                                <th className="text-center">Approve</th>
+                                                <th className='text-center'>Date</th>
+                                                <th className="text-center">
+                                                    View & <br />
+                                                    Approve
+                                                </th>
                                                 <th className="text-center">Deny</th>
                                             </tr>
                                         </thead>
