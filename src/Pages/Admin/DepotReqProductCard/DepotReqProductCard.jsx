@@ -20,9 +20,9 @@ const DepotReqProductCard = ({ idx, product, refetch }) => {
         .filter(product => product.productName === product.productName)
         .reduce((sum, product) => sum + product.totalQuantity, 0) || 0;
 
-    const deniedDamagedProductMutation = useMutation({
+    const deniedDptReqMutation = useMutation({
         mutationFn: async () => {
-            const response = await axios.delete(`http://localhost:5000/damaged-in-wh/${product._id}`);
+            const response = await axios.delete(`http://localhost:5000/depot-request/${product._id}`);
             return response.data;
         },
         onError: (error) => {
@@ -32,7 +32,7 @@ const DepotReqProductCard = ({ idx, product, refetch }) => {
 
     const handleDeny = () => {
         Swal.fire({
-            title: "Sure to denied stock?",
+            title: "Sure to denied request?",
             text: "You won't be able to revert this!",
             icon: "warning",
             showCancelButton: true,
@@ -43,7 +43,7 @@ const DepotReqProductCard = ({ idx, product, refetch }) => {
             if (result.isConfirmed) {
                 try {
                     await Promise.all([
-                        deniedDamagedProductMutation.mutateAsync(),
+                        deniedDptReqMutation.mutateAsync(),
                     ]);
 
                     refetch();
