@@ -28,6 +28,7 @@ const useMenuConfig = () => {
             icon: <FaWarehouse className="mr-2" onClick={() => setSidebarOpen(true)} />,
             links: [
                 { to: '/add-product-warehouse', icon: <IoIosAddCircle className='me-2' />, label: 'Add new' },
+                { to: '/depot-delivery', icon: <FaTruck className='me-2' />, label: 'Depot Delivery' },
                 { to: '/warehouse-list', icon: <FaListUl className='me-2' />, label: 'List' },
                 { to: '/warehouse-in', icon: <FaArrowDown className='me-2' />, label: 'Stock In' },
                 { to: '/warehouse-out', icon: <FaArrowUp className='me-2' />, label: 'Stock Out' },

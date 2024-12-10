@@ -11,6 +11,7 @@ import DepotExpiredProduct from "../../Pages/Depot/DepotExpiredProduct/DepotExpi
 import DepotProductsList from "../../Pages/Depot/DepotProductsList/DepotProductsList";
 import DepotStockInList from "../../Pages/Depot/DepotStockInList/DepotStockInList";
 import Home from "../../Pages/Home/Home/Home";
+import DepotDelivery from "../../Pages/Warehouse/DepotDelivery/DepotDelivery";
 import StockInList from "../../Pages/Warehouse/StockInList/StockInList";
 import StockOutList from "../../Pages/Warehouse/StockOutList/StockOutList";
 import WarehouseAddProduct from "../../Pages/Warehouse/WarehouseAddProduct/WarehouseAddProduct";
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
             {
                 path: "/add-product-warehouse",
                 element: <WarehouseAddProduct />
+            },
+            {
+                path: "/depot-delivery",
+                element: <DepotDelivery />
             },
             {
                 path: "/warehouse-list",
