@@ -5,11 +5,13 @@ import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useDepotRequest from '../../../Hooks/useDepotRequest';
+import useWhProducts from '../../../Hooks/useWhProducts';
 
 const DepotDelivery = () => {
     const { register, handleSubmit, reset, formState: { errors }, watch } = useForm();
 
     const [products] = useDepotRequest();
+    const [whProducts, whProductsLoading] = useWhProducts();
     const [selectedProduct, setSelectedProduct] = useState();
 
     const filteredProducts = products?.filter(product => product.status === 'approved');
@@ -28,6 +30,12 @@ const DepotDelivery = () => {
             setSelectedProduct(selectedProductDetails);
         }
     }, [selectedProductDetails]);
+
+    const whProductsByName = selectedProductName
+        && whProducts
+            .filter(product => product.productName === selectedProductName)
+            .sort((a, b) => new Date(a.expire) - new Date(b.expire));
+
 
     const getTodayDate = () => {
         const today = new Date();
@@ -57,16 +65,13 @@ const DepotDelivery = () => {
 
     const handleAddProduct = async (data) => {
         try {
-            await Promise.all([
-                updateDptReqMutation.mutateAsync(data)
-            ]);
-
+            await Promise.all([updateDptReqMutation.mutateAsync(data)]);
             reset();
 
             Swal.fire({
                 position: "center",
                 icon: "success",
-                title: "Depot delivery successfull",
+                title: "Depot delivery successful",
                 showConfirmButton: false,
                 timer: 1500
             });
@@ -76,7 +81,7 @@ const DepotDelivery = () => {
             Swal.fire({
                 position: "center",
                 icon: "error",
-                title: "Depot delivery faild",
+                title: "Depot delivery failed",
                 showConfirmButton: false,
                 timer: 1500
             });
@@ -111,6 +116,7 @@ const DepotDelivery = () => {
                         </div>
                     </div>
 
+                    {/* Product Name Selection */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
@@ -130,6 +136,8 @@ const DepotDelivery = () => {
                             </select>
                             {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
                         </div>
+
+                        {/* Approved Quantity */}
                         <div>
                             <div className="flex flex-col">
                                 <label className="text-[#6E719A] mb-1 text-sm">
@@ -137,21 +145,67 @@ const DepotDelivery = () => {
                                 </label>
                                 <input
                                     defaultValue={selectedProductName && selectedProduct?.approvedQuantity}
-                                    {...register("psc", { required: "PSC is required" })}
+                                    {...register("approvedQuantity", { required: "Approved is required" })}
                                     placeholder="Enter product short code"
                                     className="border-gray-500 bg-white border p-2 text-sm cursor-not-allowed"
                                     disabled={!selectedProductName}
                                     readOnly
                                 />
-                                {errors.psc && <p className="text-red-500 text-sm">{errors.psc.message}</p>}
+                                {errors.approvedQuantity && <p className="text-red-500 text-sm">{errors.approvedQuantity.message}</p>}
                             </div>
                         </div>
                     </div>
 
+                    {/* Show Selected Product Details */}
+                    {whProductsByName && whProductsByName.length > 0 && (
+                        <div className="mt-4">
+                            <h3 className="font-bold text-lg">Selected Product Details</h3>
+                            {whProductsByName.map((product, index) => (
+                                <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                    <div className="flex flex-col">
+                                        <label className="text-[#6E719A] mb-1 text-sm">Lot</label>
+                                        <input
+                                            value={product.batch || "N/A"}
+                                            className="border-gray-500 bg-white border p-2 text-sm"
+                                            readOnly
+                                        />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <label className="text-[#6E719A] mb-1 text-sm">Expiry Date</label>
+                                        <input
+                                            value={product.expire || "N/A"}
+                                            className="border-gray-500 bg-white border p-2 text-sm"
+                                            readOnly
+                                        />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <label className="text-[#6E719A] mb-1 text-sm">Available Quantity</label>
+                                        <input
+                                            value={product.totalQuantity || "N/A"}
+                                            className="border-gray-500 bg-white border p-2 text-sm"
+                                            readOnly
+                                        />
+                                    </div>
+                                    {/* Input for Delivered Quantity */}
+                                    <div className="flex flex-col">
+                                        <label className="text-[#6E719A] mb-1 text-sm">Deliver Quantity</label>
+                                        <input
+                                            type="number"
+                                            {...register(`deliverQuantity${index}`, { required: "Deliver Quantity is required" })}
+                                            className="border-gray-500 bg-white border p-2 text-sm"
+                                            onWheel={(e) => e.target.blur()}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Submit Button */}
                     <button type="submit" className="bg-blue-500 text-white mt-5 p-2 rounded text-sm">Submit</button>
                 </form>
-            </div >
-        </div >
+            </div>
+        </div>
     );
 };
 
