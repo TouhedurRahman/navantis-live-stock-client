@@ -7,12 +7,22 @@ import { FaTimes } from "react-icons/fa";
 const DepotReqVaAModal = ({ isOpen, onClose, product, productQinWarehouse, productQinDepot, refetch }) => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
+    const getTodayDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    };
+
     const approvedDptReqMutation = useMutation({
         mutationFn: async (data) => {
             const { _id, ...productWithoutId } = product;
             const updatedProduct = {
                 ...productWithoutId,
                 approvedQuantity: data.quantity,
+                approvedDate: getTodayDate(),
                 status: "approved"
             };
 
