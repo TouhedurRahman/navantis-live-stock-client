@@ -174,42 +174,64 @@ const DepotDelivery = () => {
                     {/* Show Selected Product Details */}
                     {whProductsByName && whProductsByName.length > 0 && (
                         <div className="mt-4">
-                            <h3 className="font-bold text-lg">Selected Product Details</h3>
+                            <h3 className="text-xl font-extrabold mb-4 text-center border-b-2 border--gray-500 pb-2">
+                                {selectedProductName}
+                            </h3>
                             {whProductsByName.map((product, index) => (
-                                <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                                    <div className="flex flex-col">
-                                        <label className="text-[#6E719A] mb-1 text-sm">Lot</label>
-                                        <input
-                                            value={product.batch || "N/A"}
-                                            className="border-gray-500 bg-white border p-2 text-sm"
-                                            readOnly
-                                        />
+                                <div key={index} className="bg-white rounded-lg shadow-sm p-4 mb-4 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+                                    {/* Batch Section */}
+                                    <div className="flex flex-col items-center w-full md:w-1/4">
+                                        <div className="flex items-center space-x-1">
+                                            <label className="mb-1 text-[#6E719A] font-medium text-xs">Batch</label>
+                                        </div>
+                                        <div className="bg-[#F4F5F7] rounded-md p-3 w-full text-center">
+                                            <input
+                                                value={product.batch || "N/A"}
+                                                className="bg-transparent text-center border-none text-[#2A2A72] w-full text-sm focus:outline-none"
+                                                readOnly
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="flex flex-col">
-                                        <label className="text-[#6E719A] mb-1 text-sm">Expiry Date</label>
-                                        <input
-                                            value={product.expire || "N/A"}
-                                            className="border-gray-500 bg-white border p-2 text-sm"
-                                            readOnly
-                                        />
+                                    {/* Expiry Date Section */}
+                                    <div className="flex flex-col items-center w-full md:w-1/4">
+                                        <div className="flex items-center space-x-1">
+                                            <label className="mb-1 text-[#6E719A] font-medium text-xs">Expire Date</label>
+                                        </div>
+                                        <div className="bg-[#F4F5F7] rounded-md p-3 w-full text-center">
+                                            <input
+                                                value={product.expire || "N/A"}
+                                                className="bg-transparent text-center border-none text-[#2A2A72] w-full text-sm focus:outline-none"
+                                                readOnly
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="flex flex-col">
-                                        <label className="text-[#6E719A] mb-1 text-sm">Available Quantity</label>
-                                        <input
-                                            value={product.totalQuantity || "N/A"}
-                                            className="border-gray-500 bg-white border p-2 text-sm"
-                                            readOnly
-                                        />
+                                    {/* Available Quantity Section */}
+                                    <div className="flex flex-col items-center w-full md:w-1/4">
+                                        <div className="flex items-center space-x-1">
+                                            <label className="mb-1 text-[#6E719A] font-medium text-xs">Available Quantity</label>
+                                        </div>
+                                        <div className="bg-[#F4F5F7] rounded-md p-3 w-full text-center">
+                                            <input
+                                                value={product.totalQuantity || "N/A"}
+                                                className="bg-transparent text-center border-none text-[#2A2A72] w-full text-sm focus:outline-none"
+                                                readOnly
+                                            />
+                                        </div>
                                     </div>
-                                    {/* Input for Delivered Quantity */}
-                                    <div className="flex flex-col">
-                                        <label className="text-[#6E719A] mb-1 text-sm">Deliver Quantity</label>
-                                        <input
-                                            type="number"
-                                            {...register(`deliverQuantity${index}`, { required: "Deliver Quantity is required" })}
-                                            className="border-gray-500 bg-white border p-2 text-sm"
-                                            onWheel={(e) => e.target.blur()}
-                                        />
+                                    {/* Delivered Quantity Input Section */}
+                                    <div className="flex flex-col items-center w-full md:w-1/4">
+                                        <div className="flex items-center space-x-1">
+                                            <label className="mb-1 text-[#6E719A] font-medium text-xs">Deliver Quantity</label>
+                                        </div>
+                                        <div className="bg-[#F4F5F7] rounded-md p-3 w-full text-center">
+                                            <input
+                                                type="number"
+                                                placeholder='Enter deliver quantity'
+                                                {...register(`deliverQuantity${index}`, { required: "Deliver Quantity is required" })}
+                                                className="bg-transparent text-center border-none text-[#2A2A72] w-full text-sm focus:outline-none"
+                                                onWheel={(e) => e.target.blur()}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             ))}
