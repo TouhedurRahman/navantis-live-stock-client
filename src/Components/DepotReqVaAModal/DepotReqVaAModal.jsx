@@ -21,7 +21,7 @@ const DepotReqVaAModal = ({ isOpen, onClose, product, productQinWarehouse, produ
             const { _id, ...productWithoutId } = product;
             const updatedProduct = {
                 ...productWithoutId,
-                approvedQuantity: data.quantity,
+                approvedQuantity: Number(data.quantity),
                 approvedDate: getTodayDate(),
                 status: "approved"
             };

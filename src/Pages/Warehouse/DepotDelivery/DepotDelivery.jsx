@@ -47,11 +47,11 @@ const DepotDelivery = () => {
     };
 
     const updateDptReqMutation = useMutation({
-        mutationFn: async (data) => {
+        mutationFn: async (totalDeliveryQuantity) => {
             const { _id, ...productWithoutId } = selectedProduct;
             const updatedProduct = {
                 ...productWithoutId,
-                deliveredQuantity: selectedProduct.approvedQuantity,
+                deliveredQuantity: Number(totalDeliveryQuantity),
                 deliveredDate: getTodayDate(),
                 status: "delivered"
             };
@@ -64,19 +64,34 @@ const DepotDelivery = () => {
     });
 
     const handleAddProduct = async (data) => {
+        const totalDeliveryQuantity = Object.keys(data)
+            .filter(key => key.startsWith("deliverQuantity"))
+            .reduce((total, key) => total + Number(data[key]), 0);
+
         try {
-            await Promise.all([updateDptReqMutation.mutateAsync(data)]);
-            reset();
+            if (selectedProduct.approvedQuantity === totalDeliveryQuantity) {
+                await Promise.all([updateDptReqMutation.mutateAsync(totalDeliveryQuantity)]);
 
-            Swal.fire({
-                position: "center",
-                icon: "success",
-                title: "Depot delivery successful",
-                showConfirmButton: false,
-                timer: 1500
-            });
+                reset();
 
-            window.location.reload();
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "Depot delivery successful",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+                window.location.reload();
+            } else {
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "Please deliver approved quantity",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
         } catch (error) {
             Swal.fire({
                 position: "center",
