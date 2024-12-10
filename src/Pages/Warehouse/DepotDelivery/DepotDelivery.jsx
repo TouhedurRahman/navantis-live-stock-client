@@ -172,6 +172,8 @@ const DepotDelivery = () => {
                     </div>
 
                     {/* Show Selected Product Details */}
+                    {/*
+                    // Show Selected Product Details
                     {whProductsByName && whProductsByName.length > 0 && (
                         <div className="mt-4">
                             <h3 className="text-xl font-extrabold mb-4 text-center border-b-2 border--gray-500 pb-2">
@@ -179,7 +181,7 @@ const DepotDelivery = () => {
                             </h3>
                             {whProductsByName.map((product, index) => (
                                 <div key={index} className="bg-white rounded-lg shadow-sm p-4 mb-4 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-                                    {/* Batch Section */}
+                                    
                                     <div className="flex flex-col items-center w-full md:w-1/4">
                                         <div className="flex items-center space-x-1">
                                             <label className="mb-1 text-[#6E719A] font-medium text-xs">Batch</label>
@@ -192,7 +194,7 @@ const DepotDelivery = () => {
                                             />
                                         </div>
                                     </div>
-                                    {/* Expiry Date Section */}
+                                    
                                     <div className="flex flex-col items-center w-full md:w-1/4">
                                         <div className="flex items-center space-x-1">
                                             <label className="mb-1 text-[#6E719A] font-medium text-xs">Expire Date</label>
@@ -205,7 +207,7 @@ const DepotDelivery = () => {
                                             />
                                         </div>
                                     </div>
-                                    {/* Available Quantity Section */}
+                                    
                                     <div className="flex flex-col items-center w-full md:w-1/4">
                                         <div className="flex items-center space-x-1">
                                             <label className="mb-1 text-[#6E719A] font-medium text-xs">Available Quantity</label>
@@ -218,7 +220,7 @@ const DepotDelivery = () => {
                                             />
                                         </div>
                                     </div>
-                                    {/* Delivered Quantity Input Section */}
+                                    
                                     <div className="flex flex-col items-center w-full md:w-1/4">
                                         <div className="flex items-center space-x-1">
                                             <label className="mb-1 text-[#6E719A] font-medium text-xs">Deliver Quantity</label>
@@ -235,6 +237,85 @@ const DepotDelivery = () => {
                                     </div>
                                 </div>
                             ))}
+                        </div>
+                    )}
+                    */}
+
+                    {/* Show Selected Product Details */}
+                    {whProductsByName && whProductsByName.length > 0 && (
+                        <div className="mt-4">
+                            <h3 className="text-xl font-extrabold mb-4 text-center border-b-2 border-gray-500 pb-2">
+                                {selectedProductName}
+                            </h3>
+                            {(() => {
+                                let cumulativeQuantity = 0;
+                                const filteredBatches = whProductsByName.filter(product => {
+                                    if (cumulativeQuantity >= selectedProduct?.approvedQuantity) {
+                                        return false;
+                                    }
+                                    cumulativeQuantity += product.totalQuantity;
+                                    return true;
+                                });
+
+                                return filteredBatches.map((product, index) => (
+                                    <div key={index} className="bg-white rounded-lg shadow-sm p-4 mb-4 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+                                        {/* Batch Section */}
+                                        <div className="flex flex-col items-center w-full md:w-1/4">
+                                            <div className="flex items-center space-x-1">
+                                                <label className="mb-1 text-[#6E719A] font-medium text-xs">Batch</label>
+                                            </div>
+                                            <div className="bg-[#F4F5F7] rounded-md p-3 w-full text-center">
+                                                <input
+                                                    value={product.batch}
+                                                    className="bg-transparent text-center border-none text-[#2A2A72] w-full text-sm focus:outline-none"
+                                                    readOnly
+                                                />
+                                            </div>
+                                        </div>
+                                        {/* Expiry Date Section */}
+                                        <div className="flex flex-col items-center w-full md:w-1/4">
+                                            <div className="flex items-center space-x-1">
+                                                <label className="mb-1 text-[#6E719A] font-medium text-xs">Expire Date</label>
+                                            </div>
+                                            <div className="bg-[#F4F5F7] rounded-md p-3 w-full text-center">
+                                                <input
+                                                    value={product.expire}
+                                                    className="bg-transparent text-center border-none text-[#2A2A72] w-full text-sm focus:outline-none"
+                                                    readOnly
+                                                />
+                                            </div>
+                                        </div>
+                                        {/* Available Quantity Section */}
+                                        <div className="flex flex-col items-center w-full md:w-1/4">
+                                            <div className="flex items-center space-x-1">
+                                                <label className="mb-1 text-[#6E719A] font-medium text-xs">Available Quantity</label>
+                                            </div>
+                                            <div className="bg-[#F4F5F7] rounded-md p-3 w-full text-center">
+                                                <input
+                                                    value={product.totalQuantity}
+                                                    className="bg-transparent text-center border-none text-[#2A2A72] w-full text-sm focus:outline-none"
+                                                    readOnly
+                                                />
+                                            </div>
+                                        </div>
+                                        {/* Delivered Quantity Input Section */}
+                                        <div className="flex flex-col items-center w-full md:w-1/4">
+                                            <div className="flex items-center space-x-1">
+                                                <label className="mb-1 text-[#6E719A] font-medium text-xs">Deliver Quantity</label>
+                                            </div>
+                                            <div className="bg-[#F4F5F7] rounded-md p-3 w-full text-center">
+                                                <input
+                                                    type="number"
+                                                    placeholder="Enter deliver quantity"
+                                                    {...register(`deliverQuantity${index}`, { required: "Deliver Quantity is required" })}
+                                                    className="bg-transparent text-center border-none text-[#2A2A72] w-full text-sm focus:outline-none"
+                                                    onWheel={(e) => e.target.blur()}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ));
+                            })()}
                         </div>
                     )}
 
