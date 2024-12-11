@@ -307,11 +307,20 @@ const DepotDelivery = () => {
                                                 <input
                                                     type="number"
                                                     placeholder="Enter deliver quantity"
-                                                    {...register(`deliverQuantity${index}`, { required: "Deliver Quantity is required" })}
+                                                    {...register(`deliverQuantity${index}`, {
+                                                        required: "Deliver Quantity is required",
+                                                        validate: (value) =>
+                                                            index === filteredBatches.length - 1 || value == product.totalQuantity ||
+                                                            "Deliver Quantity must match Available Quantity for all except the last"
+                                                    })}
                                                     className="bg-transparent text-center border-none text-[#2A2A72] w-full text-sm focus:outline-none"
                                                     onWheel={(e) => e.target.blur()}
                                                 />
                                             </div>
+                                            {/* Show error if validation fails */}
+                                            {errors[`deliverQuantity${index}`] && (
+                                                <p className="text-red-500 text-xs mt-1">{errors[`deliverQuantity${index}`]?.message}</p>
+                                            )}
                                         </div>
                                     </div>
                                 ));
