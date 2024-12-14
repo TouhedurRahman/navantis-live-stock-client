@@ -62,6 +62,24 @@ const DepotDelivery = () => {
         },
     });
 
+    const updateWhProductMutation = useMutation({
+        mutationFn: async (deliveredProducts) => {
+            const responses = await Promise.all(
+                deliveredProducts.map(async (updatedProduct) => {
+                    const response = await axios.patch(
+                        `http://localhost:5000/wh-product/${updatedProduct._id}`,
+                        updatedProduct
+                    );
+                    return response.data;
+                })
+            );
+            return responses;
+        },
+        onError: (error) => {
+            console.error("Error adding stock-in:", error);
+        },
+    });
+
     const handleAddProduct = async (data) => {
         const deliveredProducts = [];
 
@@ -77,19 +95,26 @@ const DepotDelivery = () => {
 
             if (deliveredQuantity > 0) {
                 deliveredProducts.push({
+                    _id: data[`id${i}`],
                     productName: selectedProductName,
                     batch: data[`batch${i}`],
                     expire: data[`expire${i}`],
-                    totalQuantity: Number(data[`totalQuantity${i}`]),
-                    deliveredQuantity: deliveredQuantity,
+                    actualPrice: data[`ap${i}`],
+                    tradePrice: data[`tp${i}`],
+                    totalQuantity: Number(Number(data[`totalQuantity${i}`]) - deliveredQuantity)
+                    // totalQuantity: Number(data[`totalQuantity${i}`]),
+                    // deliveredQuantity: deliveredQuantity,
                 });
             }
         }
-        console.log("Delivered Products:", deliveredProducts);
+        // console.log("Delivered Products:", deliveredProducts);
 
         try {
             if (selectedProduct.approvedQuantity === totalDeliveryQuantity) {
-                await Promise.all([updateDptReqMutation.mutateAsync(totalDeliveryQuantity)]);
+                await Promise.all([
+                    updateDptReqMutation.mutateAsync(totalDeliveryQuantity),
+                    updateWhProductMutation.mutateAsync(deliveredProducts)
+                ]);
 
                 reset();
 
@@ -278,6 +303,20 @@ const DepotDelivery = () => {
 
                                 return filteredBatches.map((product, index) => (
                                     <div key={index} className="bg-white rounded-lg shadow-sm p-4 mb-4 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+                                        {/* ID Section */}
+                                        <div className="hidden w-full md:w-1/4">
+                                            <div className="flex items-center space-x-1">
+                                                <label className="mb-1 text-[#6E719A] font-medium text-xs">ID</label>
+                                            </div>
+                                            <div className="bg-[#F4F5F7] rounded-md p-3 w-full text-center">
+                                                <input
+                                                    value={product._id}
+                                                    {...register(`id${index}`)}
+                                                    className="bg-transparent text-center border-none text-[#2A2A72] w-full text-sm focus:outline-none"
+                                                    readOnly
+                                                />
+                                            </div>
+                                        </div>
                                         {/* Batch Section */}
                                         <div className="flex flex-col items-center w-full md:w-1/4">
                                             <div className="flex items-center space-x-1">
@@ -301,6 +340,34 @@ const DepotDelivery = () => {
                                                 <input
                                                     value={product.expire}
                                                     {...register(`expire${index}`)}
+                                                    className="bg-transparent text-center border-none text-[#2A2A72] w-full text-sm focus:outline-none"
+                                                    readOnly
+                                                />
+                                            </div>
+                                        </div>
+                                        {/* Actual Price Section */}
+                                        <div className="hidden w-full md:w-1/4">
+                                            <div className="flex items-center space-x-1">
+                                                <label className="mb-1 text-[#6E719A] font-medium text-xs">Actual Price</label>
+                                            </div>
+                                            <div className="bg-[#F4F5F7] rounded-md p-3 w-full text-center">
+                                                <input
+                                                    value={product.actualPrice}
+                                                    {...register(`ap${index}`)}
+                                                    className="bg-transparent text-center border-none text-[#2A2A72] w-full text-sm focus:outline-none"
+                                                    readOnly
+                                                />
+                                            </div>
+                                        </div>
+                                        {/* Trade Price Section */}
+                                        <div className="hidden w-full md:w-1/4">
+                                            <div className="flex items-center space-x-1">
+                                                <label className="mb-1 text-[#6E719A] font-medium text-xs"></label>
+                                            </div>
+                                            <div className="bg-[#F4F5F7] rounded-md p-3 w-full text-center">
+                                                <input
+                                                    value={product.tradePrice}
+                                                    {...register(`tp${index}`)}
                                                     className="bg-transparent text-center border-none text-[#2A2A72] w-full text-sm focus:outline-none"
                                                     readOnly
                                                 />
