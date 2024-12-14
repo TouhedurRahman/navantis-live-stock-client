@@ -77,6 +77,7 @@ const DepotDelivery = () => {
 
             if (deliveredQuantity > 0) {
                 deliveredProducts.push({
+                    productName: selectedProductName,
                     batch: data[`batch${i}`],
                     expire: data[`expire${i}`],
                     totalQuantity: Number(data[`totalQuantity${i}`]),
