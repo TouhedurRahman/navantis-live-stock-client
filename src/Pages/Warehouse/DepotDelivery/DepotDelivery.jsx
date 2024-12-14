@@ -69,18 +69,20 @@ const DepotDelivery = () => {
             .filter(key => key.startsWith("deliverQuantity"))
             .reduce((total, key) => total + Number(data[key]), 0);
 
-        // Find the number of products based on the deliverQuantity keys
-        const deliverKeys = Object.keys(data).filter(key => key.startsWith("totalQuantity"));
+        const deliverKeys = Object.keys(data).filter(key => key.startsWith("deliverQuantity"));
         const productCount = deliverKeys.length;
 
         for (let i = 0; i < productCount; i++) {
-            deliveredProducts.push({
-                productName: selectedProductName,
-                batch: data[`batch${i}`],
-                expire: data[`expire${i}`],
-                totalQuantity: Number(data[`totalQuantity${i}`]),
-                deliveredQuantity: Number(data[`deliverQuantity${i}`]),
-            });
+            const deliveredQuantity = Number(data[`deliverQuantity${i}`]);
+
+            if (deliveredQuantity > 0) {
+                deliveredProducts.push({
+                    batch: data[`batch${i}`],
+                    expire: data[`expire${i}`],
+                    totalQuantity: Number(data[`totalQuantity${i}`]),
+                    deliveredQuantity: deliveredQuantity,
+                });
+            }
         }
         console.log("Delivered Products:", deliveredProducts);
 
