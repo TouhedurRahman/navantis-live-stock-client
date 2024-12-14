@@ -2,7 +2,6 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useDepotRequest from '../../../Hooks/useDepotRequest';
 import useWhProducts from '../../../Hooks/useWhProducts';
@@ -64,9 +63,26 @@ const DepotDelivery = () => {
     });
 
     const handleAddProduct = async (data) => {
+        const deliveredProducts = [];
+
         const totalDeliveryQuantity = Object.keys(data)
             .filter(key => key.startsWith("deliverQuantity"))
             .reduce((total, key) => total + Number(data[key]), 0);
+
+        // Find the number of products based on the deliverQuantity keys
+        const deliverKeys = Object.keys(data).filter(key => key.startsWith("totalQuantity"));
+        const productCount = deliverKeys.length;
+
+        for (let i = 0; i < productCount; i++) {
+            deliveredProducts.push({
+                productName: selectedProductName,
+                batch: data[`batch${i}`],
+                expire: data[`expire${i}`],
+                totalQuantity: Number(data[`totalQuantity${i}`]),
+                deliveredQuantity: Number(data[`deliverQuantity${i}`]),
+            });
+        }
+        console.log("Delivered Products:", deliveredProducts);
 
         try {
             if (selectedProduct.approvedQuantity === totalDeliveryQuantity) {
@@ -267,6 +283,7 @@ const DepotDelivery = () => {
                                             <div className="bg-[#F4F5F7] rounded-md p-3 w-full text-center">
                                                 <input
                                                     value={product.batch}
+                                                    {...register(`batch${index}`)}
                                                     className="bg-transparent text-center border-none text-[#2A2A72] w-full text-sm focus:outline-none"
                                                     readOnly
                                                 />
@@ -280,6 +297,7 @@ const DepotDelivery = () => {
                                             <div className="bg-[#F4F5F7] rounded-md p-3 w-full text-center">
                                                 <input
                                                     value={product.expire}
+                                                    {...register(`expire${index}`)}
                                                     className="bg-transparent text-center border-none text-[#2A2A72] w-full text-sm focus:outline-none"
                                                     readOnly
                                                 />
@@ -293,6 +311,7 @@ const DepotDelivery = () => {
                                             <div className="bg-[#F4F5F7] rounded-md p-3 w-full text-center">
                                                 <input
                                                     value={product.totalQuantity}
+                                                    {...register(`totalQuantity${index}`)}
                                                     className="bg-transparent text-center border-none text-[#2A2A72] w-full text-sm focus:outline-none"
                                                     readOnly
                                                 />
