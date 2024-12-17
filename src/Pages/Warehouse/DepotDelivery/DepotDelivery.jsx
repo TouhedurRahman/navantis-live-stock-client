@@ -8,6 +8,7 @@ import useDepotRequest from '../../../Hooks/useDepotRequest';
 import useWhProducts from '../../../Hooks/useWhProducts';
 
 const DepotDelivery = () => {
+    const { user } = true;
     const { register, handleSubmit, reset, formState: { errors }, watch } = useForm();
 
     const [products] = useDepotRequest();
@@ -79,8 +80,8 @@ const DepotDelivery = () => {
                         productCode: data[`psc${i}`],
                         batch: data[`batch${i}`],
                         expire: data[`expire${i}`],
-                        actualPrice: data[`ap${i}`],
-                        tradePrice: data[`tp${i}`],
+                        actualPrice: Number(data[`ap${i}`]),
+                        tradePrice: Number(data[`tp${i}`]),
                         totalQuantity: Number(Number(data[`totalQuantity${i}`]) - deliveredQuantity)
                         // totalQuantity: Number(data[`totalQuantity${i}`]),
                         // deliveredQuantity: deliveredQuantity,
@@ -104,6 +105,47 @@ const DepotDelivery = () => {
         },
     });
 
+    const whSoutProductMutation = useMutation({
+        mutationFn: async (data) => {
+            const stockOutWhProducts = [];
+            const deliverKeys = Object.keys(data).filter(key => key.startsWith("deliverQuantity"));
+            const productCount = deliverKeys.length;
+
+            for (let i = 0; i < productCount; i++) {
+                const deliveredQuantity = Number(data[`deliverQuantity${i}`]);
+
+                if (deliveredQuantity > 0) {
+                    stockOutWhProducts.push({
+                        productName: selectedProductName,
+                        productCode: data[`psc${i}`],
+                        batch: data[`batch${i}`],
+                        expire: data[`expire${i}`],
+                        actualPrice: Number(data[`ap${i}`]),
+                        tradePrice: Number(data[`tp${i}`]),
+                        totalQuantity: deliveredQuantity,
+                        date: getTodayDate(),
+                        addedby: user?.displayName || "Navantis Pharma Limited",
+                        addedemail: user?.email || "info@navantispharma.com"
+                    });
+                }
+            }
+
+            const responses = await Promise.all(
+                stockOutWhProducts.map(async (newProduct) => {
+                    const response = await axios.post(
+                        'http://localhost:5000/stock-out-wh',
+                        newProduct
+                    );
+                    return response.data;
+                })
+            );
+            return responses;
+        },
+        onError: (error) => {
+            console.error("Error adding stock-in:", error);
+        },
+    });
+
     const handleAddProduct = async (data) => {
         const totalDeliveryQuantity = Object.keys(data)
             .filter(key => key.startsWith("deliverQuantity"))
@@ -113,7 +155,8 @@ const DepotDelivery = () => {
             if (selectedProduct.approvedQuantity === totalDeliveryQuantity) {
                 await Promise.all([
                     updateDptReqMutation.mutateAsync(totalDeliveryQuantity),
-                    updateWhProductMutation.mutateAsync(data)
+                    updateWhProductMutation.mutateAsync(data),
+                    whSoutProductMutation.mutateAsync(data)
                 ]);
 
                 reset();
