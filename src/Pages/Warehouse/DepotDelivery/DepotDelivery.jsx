@@ -165,8 +165,8 @@ const DepotDelivery = () => {
                         tradePrice: Number(data[`tp${i}`]),
                         totalQuantity: deliveredQuantity,
                         date: getTodayDate(),
-                        receivedBy: user?.displayName || "Navantis Pharma Limited",
-                        receivedEmail: user?.email || "info@navantispharma.com"
+                        deliveredBy: user?.displayName || "Navantis Pharma Limited",
+                        deliveredEmail: user?.email || "info@navantispharma.com"
                     });
                 }
             }
