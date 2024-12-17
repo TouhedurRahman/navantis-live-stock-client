@@ -9,6 +9,7 @@ import PurchaseOrder from "../../Pages/Admin/PurchaseOrder/PurchaseOrder";
 import WarehouseStockRequest from "../../Pages/Admin/WarehouseStockRequest/WarehouseStockRequest";
 import DepotExpiredProduct from "../../Pages/Depot/DepotExpiredProduct/DepotExpiredProduct";
 import DepotProductsList from "../../Pages/Depot/DepotProductsList/DepotProductsList";
+import DepotRecieveReq from "../../Pages/Depot/DepotRecieveReq/DepotRecieveReq";
 import DepotStockInList from "../../Pages/Depot/DepotStockInList/DepotStockInList";
 import Home from "../../Pages/Home/Home/Home";
 import DepotDelivery from "../../Pages/Warehouse/DepotDelivery/DepotDelivery";
@@ -82,6 +83,10 @@ const router = createBrowserRouter([
             {
                 path: "/damaged-in-warehouse",
                 element: <WhDamagedProduct />
+            },
+            {
+                path: "/depot-receive-request",
+                element: <DepotRecieveReq />
             },
             {
                 path: "/depot-list",
