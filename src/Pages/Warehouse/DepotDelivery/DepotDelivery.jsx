@@ -146,6 +146,47 @@ const DepotDelivery = () => {
         },
     });
 
+    const depotReceiveReqMutation = useMutation({
+        mutationFn: async (data) => {
+            const depotReceivedProducts = [];
+            const deliverKeys = Object.keys(data).filter(key => key.startsWith("deliverQuantity"));
+            const productCount = deliverKeys.length;
+
+            for (let i = 0; i < productCount; i++) {
+                const deliveredQuantity = Number(data[`deliverQuantity${i}`]);
+
+                if (deliveredQuantity > 0) {
+                    depotReceivedProducts.push({
+                        productName: selectedProductName,
+                        productCode: data[`psc${i}`],
+                        batch: data[`batch${i}`],
+                        expire: data[`expire${i}`],
+                        actualPrice: Number(data[`ap${i}`]),
+                        tradePrice: Number(data[`tp${i}`]),
+                        totalQuantity: deliveredQuantity,
+                        date: getTodayDate(),
+                        receivedBy: user?.displayName || "Navantis Pharma Limited",
+                        receivedEmail: user?.email || "info@navantispharma.com"
+                    });
+                }
+            }
+
+            const responses = await Promise.all(
+                depotReceivedProducts.map(async (newProduct) => {
+                    const response = await axios.post(
+                        'http://localhost:5000/depot-receive-req',
+                        newProduct
+                    );
+                    return response.data;
+                })
+            );
+            return responses;
+        },
+        onError: (error) => {
+            console.error("Error depot receive:", error);
+        },
+    });
+
     const handleAddProduct = async (data) => {
         const totalDeliveryQuantity = Object.keys(data)
             .filter(key => key.startsWith("deliverQuantity"))
@@ -156,7 +197,8 @@ const DepotDelivery = () => {
                 await Promise.all([
                     updateDptReqMutation.mutateAsync(totalDeliveryQuantity),
                     updateWhProductMutation.mutateAsync(data),
-                    whSoutProductMutation.mutateAsync(data)
+                    whSoutProductMutation.mutateAsync(data),
+                    depotReceiveReqMutation.mutateAsync(data)
                 ]);
 
                 reset();
