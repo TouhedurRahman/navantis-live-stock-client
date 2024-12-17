@@ -6,7 +6,17 @@ import Swal from 'sweetalert2';
 import WarehouseDetailsModal from '../../../Components/WarehouseDetailsModal/WarehouseDetailsModal';
 
 const DamageRequestProductCard = ({ idx, product, refetch }) => {
+    const { user } = true;
     const [isdetailsModalOpen, setdetailsModalOpen] = useState(false);
+
+    const getTodayDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    };
 
     const whDamagedProductMutation = useMutation({
         mutationFn: async () => {
@@ -53,6 +63,29 @@ const DamageRequestProductCard = ({ idx, product, refetch }) => {
         },
     });
 
+    const whSoutProductMutation = useMutation({
+        mutationFn: async () => {
+            const newProduct = {
+                productName: product.productName,
+                productCode: product.productCode,
+                batch: product.batch,
+                expire: product.expire,
+                actualPrice: Number(product.actualPrice),
+                tradePrice: Number(product.tradePrice),
+                totalQuantity: Number(product.damageQuantity),
+                date: getTodayDate(),
+                addedby: user?.displayName || "Navantis Pharma Limited",
+                addedemail: user?.email || "info@navantispharma.com"
+            };
+
+            const response = await axios.post('http://localhost:5000/stock-out-wh', newProduct);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error stock out from warehouse:", error);
+        },
+    });
+
     const handleDamageStock = () => {
         Swal.fire({
             title: "Sure to stock Damae?",
@@ -67,7 +100,8 @@ const DamageRequestProductCard = ({ idx, product, refetch }) => {
                 try {
                     await Promise.all([
                         whDamagedProductMutation.mutateAsync(),
-                        updateProductMutation.mutateAsync()
+                        updateProductMutation.mutateAsync(),
+                        whSoutProductMutation.mutateAsync()
                     ]);
 
                     refetch();

@@ -16,7 +16,7 @@ const WhProductsList = () => {
     const [productsPerPage, setProductsPerPage] = useState(5);
 
     const filteredProducts = whProducts.filter(product =>
-        product.productName.toLowerCase().includes(searchTerm.toLowerCase())
+        product?.productName?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
