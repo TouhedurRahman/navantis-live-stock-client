@@ -64,7 +64,30 @@ const DepotDelivery = () => {
     });
 
     const updateWhProductMutation = useMutation({
-        mutationFn: async (deliveredProducts) => {
+        mutationFn: async (data) => {
+            const deliveredProducts = [];
+            const deliverKeys = Object.keys(data).filter(key => key.startsWith("deliverQuantity"));
+            const productCount = deliverKeys.length;
+
+            for (let i = 0; i < productCount; i++) {
+                const deliveredQuantity = Number(data[`deliverQuantity${i}`]);
+
+                if (deliveredQuantity > 0) {
+                    deliveredProducts.push({
+                        _id: data[`id${i}`],
+                        productName: selectedProductName,
+                        productCode: data[`psc${i}`],
+                        batch: data[`batch${i}`],
+                        expire: data[`expire${i}`],
+                        actualPrice: data[`ap${i}`],
+                        tradePrice: data[`tp${i}`],
+                        totalQuantity: Number(Number(data[`totalQuantity${i}`]) - deliveredQuantity)
+                        // totalQuantity: Number(data[`totalQuantity${i}`]),
+                        // deliveredQuantity: deliveredQuantity,
+                    });
+                }
+            }
+
             const responses = await Promise.all(
                 deliveredProducts.map(async (updatedProduct) => {
                     const response = await axios.patch(
@@ -82,39 +105,15 @@ const DepotDelivery = () => {
     });
 
     const handleAddProduct = async (data) => {
-        const deliveredProducts = [];
-
         const totalDeliveryQuantity = Object.keys(data)
             .filter(key => key.startsWith("deliverQuantity"))
             .reduce((total, key) => total + Number(data[key]), 0);
-
-        const deliverKeys = Object.keys(data).filter(key => key.startsWith("deliverQuantity"));
-        const productCount = deliverKeys.length;
-
-        for (let i = 0; i < productCount; i++) {
-            const deliveredQuantity = Number(data[`deliverQuantity${i}`]);
-
-            if (deliveredQuantity > 0) {
-                deliveredProducts.push({
-                    _id: data[`id${i}`],
-                    productName: selectedProductName,
-                    batch: data[`batch${i}`],
-                    expire: data[`expire${i}`],
-                    actualPrice: data[`ap${i}`],
-                    tradePrice: data[`tp${i}`],
-                    totalQuantity: Number(Number(data[`totalQuantity${i}`]) - deliveredQuantity)
-                    // totalQuantity: Number(data[`totalQuantity${i}`]),
-                    // deliveredQuantity: deliveredQuantity,
-                });
-            }
-        }
-        // console.log("Delivered Products:", deliveredProducts);
 
         try {
             if (selectedProduct.approvedQuantity === totalDeliveryQuantity) {
                 await Promise.all([
                     updateDptReqMutation.mutateAsync(totalDeliveryQuantity),
-                    updateWhProductMutation.mutateAsync(deliveredProducts)
+                    updateWhProductMutation.mutateAsync(data)
                 ]);
 
                 reset();
@@ -205,7 +204,7 @@ const DepotDelivery = () => {
                                 </label>
                                 <input
                                     defaultValue={selectedProductName && selectedProduct?.approvedQuantity}
-                                    {...register("approvedQuantity", { required: "Approved is required" })}
+                                    {...register("approvedQuantity")}
                                     placeholder="Enter product short code"
                                     className="border-gray-500 bg-white border p-2 text-sm cursor-not-allowed"
                                     disabled={!selectedProductName}
@@ -313,6 +312,20 @@ const DepotDelivery = () => {
                                                 <input
                                                     value={product._id}
                                                     {...register(`id${index}`)}
+                                                    className="bg-transparent text-center border-none text-[#2A2A72] w-full text-sm focus:outline-none"
+                                                    readOnly
+                                                />
+                                            </div>
+                                        </div>
+                                        {/* Product Code Section */}
+                                        <div className="hidden w-full md:w-1/4">
+                                            <div className="flex items-center space-x-1">
+                                                <label className="mb-1 text-[#6E719A] font-medium text-xs">Product Code</label>
+                                            </div>
+                                            <div className="bg-[#F4F5F7] rounded-md p-3 w-full text-center">
+                                                <input
+                                                    value={product.productCode}
+                                                    {...register(`psc${index}`)}
                                                     className="bg-transparent text-center border-none text-[#2A2A72] w-full text-sm focus:outline-none"
                                                     readOnly
                                                 />
