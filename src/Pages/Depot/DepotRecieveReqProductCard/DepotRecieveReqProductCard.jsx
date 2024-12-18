@@ -15,6 +15,25 @@ const DepotRecieveReqProductCard = ({ idx, product, refetch }) => {
         return `${year}-${month}-${day}`;
     };
 
+    const addDepotProductMutation = useMutation({
+        mutationFn: async () => {
+            const newProduct = {
+                productName: product.productName,
+                productCode: product.productCode,
+                batch: product.batch,
+                expire: product.expire,
+                actualPrice: Number(product.actualPrice),
+                tradePrice: Number(product.tradePrice),
+                totalQuantity: Number(product.totalQuantity)
+            };
+            const response = await axios.post('http://localhost:5000/depot-products', newProduct);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error adding product to depot:", error);
+        },
+    });
+
     const deleteRecReqProductMutation = useMutation({
         mutationFn: async () => {
             const response = await axios.delete(`http://localhost:5000/depot-receive-req/${product._id}`);
@@ -33,11 +52,12 @@ const DepotRecieveReqProductCard = ({ idx, product, refetch }) => {
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, damage!"
+            confirmButtonText: "Yes, receive!"
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
                     await Promise.all([
+                        addDepotProductMutation.mutateAsync(),
                         deleteRecReqProductMutation.mutateAsync()
                     ]);
 
