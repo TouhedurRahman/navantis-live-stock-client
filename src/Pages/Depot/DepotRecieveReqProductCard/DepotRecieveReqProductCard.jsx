@@ -1,3 +1,5 @@
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import { FaCheck } from "react-icons/fa";
 import Swal from "sweetalert2";
 
@@ -13,6 +15,16 @@ const DepotRecieveReqProductCard = ({ idx, product, refetch }) => {
         return `${year}-${month}-${day}`;
     };
 
+    const deleteRecReqProductMutation = useMutation({
+        mutationFn: async () => {
+            const response = await axios.delete(`http://localhost:5000/depot-receive-req/${product._id}`);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Delete damage request:", error);
+        },
+    });
+
     const handleReceive = () => {
         Swal.fire({
             title: "Sure to Receive?",
@@ -25,6 +37,10 @@ const DepotRecieveReqProductCard = ({ idx, product, refetch }) => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
+                    await Promise.all([
+                        deleteRecReqProductMutation.mutateAsync()
+                    ]);
+
                     refetch();
 
                     Swal.fire({
