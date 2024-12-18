@@ -2,9 +2,22 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { FaCheck } from "react-icons/fa";
 import Swal from "sweetalert2";
+import useDepotProducts from "../../../Hooks/useDepotProducts";
 
 const DepotRecieveReqProductCard = ({ idx, product, refetch }) => {
     const { user } = true;
+    const [depotProducts] = useDepotProducts();
+
+    const existingSameBatchProducts = depotProducts.filter(
+        existingSameBatchProduct =>
+            existingSameBatchProduct.productName === product.productName
+            &&
+            existingSameBatchProduct.batch === product.batch
+            &&
+            existingSameBatchProduct.expire === product.expire
+    );
+    const existingSameBatchProductQuantity = existingSameBatchProducts.reduce((sum, product) => sum + product.totalQuantity, 0);
+    console.log(existingSameBatchProductQuantity);
 
     const getTodayDate = () => {
         const today = new Date();
