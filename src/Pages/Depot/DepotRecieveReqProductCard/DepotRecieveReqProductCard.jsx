@@ -2,22 +2,9 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { FaCheck } from "react-icons/fa";
 import Swal from "sweetalert2";
-import useDepotProducts from "../../../Hooks/useDepotProducts";
 
 const DepotRecieveReqProductCard = ({ idx, product, refetch }) => {
     const { user } = true;
-    const [depotProducts] = useDepotProducts();
-
-    const existingSameBatchProducts = depotProducts.filter(
-        existingSameBatchProduct =>
-            existingSameBatchProduct.productName === product.productName
-            &&
-            existingSameBatchProduct.batch === product.batch
-            &&
-            existingSameBatchProduct.expire === product.expire
-    );
-    const existingSameBatchProductQuantity = existingSameBatchProducts.reduce((sum, product) => sum + product.totalQuantity, 0);
-    console.log(existingSameBatchProductQuantity);
 
     const getTodayDate = () => {
         const today = new Date();
@@ -27,25 +14,6 @@ const DepotRecieveReqProductCard = ({ idx, product, refetch }) => {
 
         return `${year}-${month}-${day}`;
     };
-
-    const addDepotProductMutation = useMutation({
-        mutationFn: async () => {
-            const newProduct = {
-                productName: product.productName,
-                productCode: product.productCode,
-                batch: product.batch,
-                expire: product.expire,
-                actualPrice: Number(product.actualPrice),
-                tradePrice: Number(product.tradePrice),
-                totalQuantity: Number(product.totalQuantity)
-            };
-            const response = await axios.post('http://localhost:5000/depot-products', newProduct);
-            return response.data;
-        },
-        onError: (error) => {
-            console.error("Error adding product to depot:", error);
-        },
-    });
 
     const deleteRecReqProductMutation = useMutation({
         mutationFn: async () => {
@@ -70,7 +38,6 @@ const DepotRecieveReqProductCard = ({ idx, product, refetch }) => {
             if (result.isConfirmed) {
                 try {
                     await Promise.all([
-                        addDepotProductMutation.mutateAsync(),
                         deleteRecReqProductMutation.mutateAsync()
                     ]);
 
