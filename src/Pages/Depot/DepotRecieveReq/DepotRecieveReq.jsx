@@ -3,11 +3,13 @@ import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
 import { ImSearch } from 'react-icons/im';
 import Loader from "../../../Components/Loader/Loader";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
+import useDepotProducts from "../../../Hooks/useDepotProducts";
 import useRecieveRequest from "../../../Hooks/useRecieveRequest";
 import DepotRecieveReqProductCard from "../DepotRecieveReqProductCard/DepotRecieveReqProductCard";
 
 const DepotRecieveReq = () => {
     const [products, loading, refetch] = useRecieveRequest();
+    const [depotProducts] = useDepotProducts();
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
@@ -141,6 +143,7 @@ const DepotRecieveReq = () => {
                                                         key={product._id}
                                                         product={product}
                                                         refetch={refetch}
+                                                        depotProducts={depotProducts}
                                                     />
                                                 ))
                                             }
