@@ -193,7 +193,7 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
                         addStockMutation.mutateAsync(),
                     ];
 
-                    if (existingSameBatchProducts.length > 0)
+                    if (matchingProducts.length > 0)
                         mutations.push(updateProductMutation.mutateAsync());
 
 
