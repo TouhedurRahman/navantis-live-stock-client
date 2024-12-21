@@ -34,6 +34,26 @@ const DepotRecieveReqProductCard = ({ idx, product, refetch }) => {
         },
     });
 
+    const stockInDepotProductMutation = useMutation({
+        mutationFn: async () => {
+            const newProduct = {
+                productName: product.productName,
+                productCode: product.productCode,
+                batch: product.batch,
+                expire: product.expire,
+                actualPrice: Number(product.actualPrice),
+                tradePrice: Number(product.tradePrice),
+                totalQuantity: Number(product.totalQuantity),
+                date: getTodayDate()
+            };
+            const response = await axios.post('http://localhost:5000/stock-in-depot', newProduct);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error stock in product to depot:", error);
+        },
+    });
+
     const deleteRecReqProductMutation = useMutation({
         mutationFn: async () => {
             const response = await axios.delete(`http://localhost:5000/depot-receive-req/${product._id}`);
@@ -58,6 +78,7 @@ const DepotRecieveReqProductCard = ({ idx, product, refetch }) => {
                 try {
                     await Promise.all([
                         addDepotProductMutation.mutateAsync(),
+                        stockInDepotProductMutation.mutateAsync(),
                         deleteRecReqProductMutation.mutateAsync()
                     ]);
 
