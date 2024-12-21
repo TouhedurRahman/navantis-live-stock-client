@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Main from "../../Layout/Main/Main";
 import DamageRequest from "../../Pages/Admin/DamageRequest/DamageRequest";
 import DepotRequest from "../../Pages/Admin/DepotRequest/DepotRequest";
+import ExpireRequest from "../../Pages/Admin/ExpireRequest/ExpireRequest";
 import MissingProductsList from "../../Pages/Admin/MissingProductsList/MissingProductsList";
 import PriceUpdateList from "../../Pages/Admin/PriceUpdateList/PriceUpdateList";
 import PurchaseList from "../../Pages/Admin/PurchaseList/PurchaseList";
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
             {
                 path: "/depot-request",
                 element: <DepotRequest />
+            },
+            {
+                path: "/expire-request",
+                element: <ExpireRequest />
             },
             {
                 path: "/missing-products",
