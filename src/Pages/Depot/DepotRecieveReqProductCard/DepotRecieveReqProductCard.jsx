@@ -3,23 +3,8 @@ import axios from "axios";
 import { FaCheck } from "react-icons/fa";
 import Swal from "sweetalert2";
 
-const DepotRecieveReqProductCard = ({ idx, product, refetch, depotProducts }) => {
+const DepotRecieveReqProductCard = ({ idx, product, refetch }) => {
     const { user } = true;
-
-    const existingSameBatchProducts = depotProducts.filter(
-        existingSameBatchProduct =>
-            existingSameBatchProduct.productName === product.productName
-            &&
-            existingSameBatchProduct.batch === product.batch
-            &&
-            existingSameBatchProduct.expire === product.expire
-    );
-    const existingSameBatchProductQuantity = existingSameBatchProducts.reduce((sum, product) => sum + product.totalQuantity, 0);
-
-    const matchingProducts = depotProducts.filter(
-        matchingProduct =>
-            matchingProduct.productName === product.productName
-    );
 
     const getTodayDate = () => {
         const today = new Date();
@@ -49,26 +34,6 @@ const DepotRecieveReqProductCard = ({ idx, product, refetch, depotProducts }) =>
         },
     });
 
-    const updateDepotProductMutation = useMutation({
-        mutationFn: async () => {
-            const updatedProduct = {
-                productName: product.productName,
-                productCode: product.productCode,
-                batch: product.batch,
-                expire: product.expire,
-                actualPrice: Number(product.actualPrice),
-                tradePrice: Number(product.tradePrice),
-                totalQuantity: Number(existingSameBatchProductQuantity) + Number(product.totalQuantity)
-            };
-
-            const response = await axios.patch(`http://localhost:5000/depot-product/${product._id}`, updatedProduct);
-            return response.data;
-        },
-        onError: (error) => {
-            console.error("Error updating product to depot:", error);
-        },
-    });
-
     const deleteRecReqProductMutation = useMutation({
         mutationFn: async () => {
             const response = await axios.delete(`http://localhost:5000/depot-receive-req/${product._id}`);
@@ -91,17 +56,10 @@ const DepotRecieveReqProductCard = ({ idx, product, refetch, depotProducts }) =>
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    const mutations = [];
-
-                    if (matchingProducts.length > 0) {
-                        mutations.push(updateDepotProductMutation.mutateAsync());
-                    } else {
-                        mutations.push(addDepotProductMutation.mutateAsync());
-                    }
-
-                    mutations.push(deleteRecReqProductMutation.mutateAsync());
-
-                    await Promise.all(mutations);
+                    await Promise.all([
+                        addDepotProductMutation.mutateAsync(),
+                        deleteRecReqProductMutation.mutateAsync()
+                    ]);
 
                     refetch();
 

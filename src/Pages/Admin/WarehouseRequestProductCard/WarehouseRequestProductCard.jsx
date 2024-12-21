@@ -172,21 +172,6 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    /* if (existingProducts.length === 0) {
-                        await Promise.all([
-                            updateStatusMutation.mutateAsync("approved"),
-                            addProductMutation.mutateAsync(),
-                            addStockMutation.mutateAsync()
-                        ]);
-                    } else {
-                        await Promise.all([
-                            updateStatusMutation.mutateAsync("approved"),
-                            addProductMutation.mutateAsync(),
-                            updateProductMutation.mutateAsync(),
-                            addStockMutation.mutateAsync()
-                        ]);
-                    } */
-
                     const mutations = [
                         updateStatusMutation.mutateAsync("approved"),
                         addProductMutation.mutateAsync(),
