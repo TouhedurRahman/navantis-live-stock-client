@@ -60,9 +60,7 @@ const DepotProductCard = ({ idx, product, refetch }) => {
                         depotExpiredProductMutation.mutateAsync()
                     ]);
 
-                    reset();
                     refetch();
-                    onClose();
 
                     Swal.fire({
                         title: "Success!",
