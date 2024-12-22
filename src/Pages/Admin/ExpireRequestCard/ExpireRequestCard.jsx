@@ -12,7 +12,7 @@ const ExpireRequestCard = ({ idx, product, refetch }) => {
                 status: "expired",
             };
 
-            const response = await axios.post('http://localhost:5000/expired-in-depot', newProduct);
+            const response = await axios.post('http://localhost:5000/expire-request', newProduct);
             return response.data;
         },
         onError: (error) => {
@@ -32,7 +32,7 @@ const ExpireRequestCard = ({ idx, product, refetch }) => {
 
     const deniedExpiredProductMutation = useMutation({
         mutationFn: async () => {
-            const response = await axios.delete(`http://localhost:5000/expired-in-depot/${product._id}`);
+            const response = await axios.delete(`http://localhost:5000/expire-request/${product._id}`);
             return response.data;
         },
         onError: (error) => {

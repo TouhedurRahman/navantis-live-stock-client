@@ -36,7 +36,7 @@ const DepotProductCard = ({ idx, product, refetch }) => {
                 date: getTodayDate()
             };
 
-            const response = await axios.post('http://localhost:5000/expired-in-depot', newProduct);
+            const response = await axios.post('http://localhost:5000/expire-request', newProduct);
             return response.data;
         },
         onError: (error) => {
