@@ -22,7 +22,7 @@ const ExpireRequestCard = ({ idx, product, refetch }) => {
 
     const deleteDepotExpProductMutation = useMutation({
         mutationFn: async () => {
-            const response = await axios.delete(`http://localhost:5000/depot-product/${product._id}`);
+            const response = await axios.delete(`http://localhost:5000/depot-product/${product.dptProductId}`);
             return response.data;
         },
         onError: (error) => {

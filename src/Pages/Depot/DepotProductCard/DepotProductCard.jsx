@@ -24,6 +24,7 @@ const DepotProductCard = ({ idx, product, refetch }) => {
     const depotExpiredProductMutation = useMutation({
         mutationFn: async () => {
             const newProduct = {
+                dptProductId: product._id,
                 productName: product.productName,
                 productCode: product.productCode,
                 batch: product.batch,
