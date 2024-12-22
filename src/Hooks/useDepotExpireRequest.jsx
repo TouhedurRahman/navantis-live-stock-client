@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-const useDepotExpired = () => {
+const useDepotExpireRequest = () => {
     const { data: products = [], isLoading: loading, refetch } = useQuery({
         queryKey: ['products'],
         queryFn: async () => {
@@ -13,4 +13,4 @@ const useDepotExpired = () => {
     return [products, loading, refetch];
 };
 
-export default useDepotExpired;
+export default useDepotExpireRequest;

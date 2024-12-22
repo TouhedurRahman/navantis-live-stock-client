@@ -3,11 +3,11 @@ import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
 import { ImSearch } from 'react-icons/im';
 import Loader from "../../../Components/Loader/Loader";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
-import useDepotExpired from "../../../Hooks/useDepotExpired";
+import useDepotExpireRequest from "../../../Hooks/useDepotExpireRequest";
 import ExpireRequestCard from "../ExpireRequestCard/ExpireRequestCard";
 
 const ExpireRequest = () => {
-    const [products, loading, refetch] = useDepotExpired();
+    const [products, loading, refetch] = useDepotExpireRequest();
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');

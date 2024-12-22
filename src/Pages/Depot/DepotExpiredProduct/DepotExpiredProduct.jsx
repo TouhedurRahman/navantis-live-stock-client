@@ -6,10 +6,10 @@ import { MdPrint } from 'react-icons/md';
 import DepotDetailsModal from "../../../Components/DepotDetailsModal/DepotDetailsModal";
 import Loader from "../../../Components/Loader/Loader";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
-import useDepotExpired from "../../../Hooks/useDepotExpired";
+import useDepotExpireRequest from "../../../Hooks/useDepotExpireRequest";
 
 const DepotExpiredProduct = () => {
-    const [products, loading] = useDepotExpired();
+    const [products, loading] = useDepotExpireRequest();
     const [searchTerm, setSearchTerm] = useState('');
     const [year, setYear] = useState('');
     const [month, setMonth] = useState('');
