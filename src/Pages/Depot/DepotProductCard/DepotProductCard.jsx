@@ -9,7 +9,6 @@ import DepotDetailsModal from '../../../Components/DepotDetailsModal/DepotDetail
 const DepotProductCard = ({ idx, product, refetch }) => {
     const [isdetailsModalOpen, setdetailsModalOpen] = useState(false);
 
-    // const totaltActualPrice = product.actualPrice * product.totalQuantity;
     const totalTradePrice = product.tradePrice * product.totalQuantity;
 
     const getTodayDate = () => {
@@ -24,7 +23,6 @@ const DepotProductCard = ({ idx, product, refetch }) => {
     const depotExpiredProductMutation = useMutation({
         mutationFn: async () => {
             const newProduct = {
-                dptProductId: product._id,
                 productName: product.productName,
                 productCode: product.productCode,
                 batch: product.batch,
@@ -44,7 +42,17 @@ const DepotProductCard = ({ idx, product, refetch }) => {
         },
     });
 
-    const handleRemove = () => {
+    const deleteDepotExpProductMutation = useMutation({
+        mutationFn: async () => {
+            const response = await axios.delete(`http://localhost:5000/depot-product/${product._id}`);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error updating product to depot:", error);
+        },
+    });
+
+    const handleExpired = () => {
         Swal.fire({
             title: "Products are expired?",
             text: "Stock out from depot. You won't be able to revert this!",
@@ -57,7 +65,8 @@ const DepotProductCard = ({ idx, product, refetch }) => {
             if (result.isConfirmed) {
                 try {
                     await Promise.all([
-                        depotExpiredProductMutation.mutateAsync()
+                        depotExpiredProductMutation.mutateAsync(),
+                        deleteDepotExpProductMutation.mutateAsync()
                     ]);
 
                     refetch();
@@ -116,7 +125,7 @@ const DepotProductCard = ({ idx, product, refetch }) => {
                             <FaEye className="text-orange-500" />
                         </button>
                         <button
-                            onClick={handleRemove}
+                            onClick={handleExpired}
                             title="Expired product"
                             className="p-2 rounded-[5px] hover:bg-red-100 focus:outline-none"
                         >
@@ -126,7 +135,7 @@ const DepotProductCard = ({ idx, product, refetch }) => {
                 </th>
             </tr>
 
-            {/* Modals for different operations */}
+            {/* Modal */}
             {isdetailsModalOpen && (
                 <DepotDetailsModal
                     isOpen={isdetailsModalOpen}

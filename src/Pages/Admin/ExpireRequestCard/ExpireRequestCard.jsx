@@ -4,22 +4,6 @@ import { FaCheck, FaTimes } from "react-icons/fa";
 import Swal from 'sweetalert2';
 
 const ExpireRequestCard = ({ idx, product, refetch }) => {
-    const updateExpStatusMutation = useMutation({
-        mutationFn: async () => {
-            const newProduct = {
-                ...product,
-                totalQuantity: 0,
-                status: "expired",
-            };
-
-            const response = await axios.post('http://localhost:5000/expire-request', newProduct);
-            return response.data;
-        },
-        onError: (error) => {
-            console.error("Error update expired status:", error);
-        },
-    });
-
     const addDepotExpiredMutation = useMutation({
         mutationFn: async () => {
             const newProduct = {
@@ -40,23 +24,32 @@ const ExpireRequestCard = ({ idx, product, refetch }) => {
         },
     });
 
-    const deleteDepotExpProductMutation = useMutation({
-        mutationFn: async () => {
-            const response = await axios.delete(`http://localhost:5000/depot-product/${product.dptProductId}`);
-            return response.data;
-        },
-        onError: (error) => {
-            console.error("Error updating product to depot:", error);
-        },
-    });
-
-    const deniedExpiredProductMutation = useMutation({
+    const deleteExpireRequestMutation = useMutation({
         mutationFn: async () => {
             const response = await axios.delete(`http://localhost:5000/expire-request/${product._id}`);
             return response.data;
         },
         onError: (error) => {
             console.error("Delete expire request:", error);
+        },
+    });
+
+    const addDepotProductMutation = useMutation({
+        mutationFn: async () => {
+            const newProduct = {
+                productName: product.productName,
+                productCode: product.productCode,
+                batch: product.batch,
+                expire: product.expire,
+                actualPrice: Number(product.actualPrice),
+                tradePrice: Number(product.tradePrice),
+                totalQuantity: Number(product.totalQuantity)
+            };
+            const response = await axios.post('http://localhost:5000/depot-products', newProduct);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error adding product to depot:", error);
         },
     });
 
@@ -74,8 +67,7 @@ const ExpireRequestCard = ({ idx, product, refetch }) => {
                 try {
                     await Promise.all([
                         addDepotExpiredMutation.mutateAsync(),
-                        updateExpStatusMutation.mutateAsync(),
-                        deleteDepotExpProductMutation.mutateAsync()
+                        deleteExpireRequestMutation.mutateAsync()
                     ]);
 
                     refetch();
@@ -115,7 +107,8 @@ const ExpireRequestCard = ({ idx, product, refetch }) => {
             if (result.isConfirmed) {
                 try {
                     await Promise.all([
-                        deniedExpiredProductMutation.mutateAsync(),
+                        addDepotProductMutation.mutateAsync(),
+                        deleteExpireRequestMutation.mutateAsync(),
                     ]);
 
                     refetch();
@@ -129,7 +122,6 @@ const ExpireRequestCard = ({ idx, product, refetch }) => {
                         timer: 1500
                     });
                 } catch (error) {
-                    // console.error("Error adding product:", error);
                     Swal.fire({
                         title: "Error!",
                         text: "Failed to denied request. Please try again.",
