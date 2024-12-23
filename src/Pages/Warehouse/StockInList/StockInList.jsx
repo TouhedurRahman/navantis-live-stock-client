@@ -133,7 +133,23 @@ const StockInList = () => {
             </table>
         `;
 
-        const currentDateTime = new Date().toLocaleString('en-GB');
+        const currentDateTime = new Date();
+        const formattedDateTime = currentDateTime.toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true,
+        });
+
+        const formattedDateTimeWithAt = formattedDateTime.replace(', ', ', ');
+        const finalFormattedDateTime = formattedDateTimeWithAt.replace(
+            ", ",
+            ", "
+        );
+
         const newWindow = window.open();
         const styles = [...document.querySelectorAll('link[rel="stylesheet"], style')].map(
             (style) => style.outerHTML
@@ -178,7 +194,7 @@ const StockInList = () => {
                                 margin: 15mm 15mm 5mm;
                             }
                             body::after {
-                                content: "Printed on ${currentDateTime}";
+                                content: "Printed on ${finalFormattedDateTime}";
                                 position: fixed;
                                 bottom: 0;
                                 left: 0;
