@@ -76,13 +76,127 @@ const StockInList = () => {
         setCurrentPage(1);
     };
 
-    // Print filtered product list
     const handlePrint = () => {
-        const printContent = document.getElementById("printable-section").innerHTML;
+        const companyHeader = `
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h1 style="margin: 0; font-size: 16px;  font-weight: bold;">Navantis Pharma Limited</h1>
+                <p style="margin: 0; font-size: 10px;">
+                    Haque Villa, House No - 4, Block - C, Road No - 3, Section - 1, Kolwalapara, Mirpur - 1, Dhaka - 1216.
+                </p>
+                <p style="margin: 0; font-size: 10px;">Hotline: +880 1322-852183</p>
+            </div>
+            <div style="text-align: left; margin-bottom: 20px;">
+                <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>Warehouse Stock In List</u></h3>
+                <p style="margin: 5px 0; font-size: 14px; text-align: center;">Date from <b>${"01-01-24"}</b> to <b>${"31-12-24"}</b></p>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <p style="margin: 5px 0; font-size: 14px;">Total Items ${totalUniqueProducts}</p>
+                <p style="margin: 5px 0; font-size: 14px;">Total Quantity ${totalUnit}</p>
+                <p style="margin: 5px 0; font-size: 14px;">Total Trade Price ${totalTP}/-</p>
+            </div>
+        `;
+
+        // Generate the filtered table content
+        const filteredTableContent = `
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th style="text-align: center;">Sl. No.</th>
+                        <th style="text-align: left;">Name</th>
+                        <th style="text-align: center;">Batch</th>
+                        <th style="text-align: center;">Exp.</th>
+                        <th style="text-align: center;">Quantity</th>
+                        <th style="text-align: right;">Price/Unit</th>
+                        <th style="text-align: right;">Total Price</th>
+                        <th style="text-align: center;">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${filteredProducts.map(
+            (product, idx) => `
+                            <tr>
+                                <td style="text-align: center;">${idx + 1}</td>
+                                <td>${product.productName}</td>
+                                <td style="text-align: center;">${product.batch}</td>
+                                <td style="text-align: center;">${product.expire}</td>
+                                <td style="text-align: center;">${product.totalQuantity}</td>
+                                <td style="text-align: right;">${product.tradePrice.toLocaleString('en-IN')}/-</td>
+                                <td style="text-align: right;">${(product.tradePrice * product.totalQuantity).toLocaleString('en-IN')}/-</td>
+                                <td style="text-align: center; white-space: nowrap;">${new Date(product.date).toLocaleDateString('en-GB').replace(/\//g, '-')}</td>
+                            </tr>
+                        `
+        ).join('')}
+                </tbody>
+            </table>
+        `;
+
+        const currentDateTime = new Date().toLocaleString('en-GB');
         const newWindow = window.open();
-        newWindow.document.write(`<html><head><title>Invoice</title></head><body>${printContent}</body></html>`);
+        const styles = [...document.querySelectorAll('link[rel="stylesheet"], style')].map(
+            (style) => style.outerHTML
+        ).join('');
+
+        newWindow.document.write(`
+            <html>
+                <head>
+                    <title>Invoice</title>
+                    ${styles}
+                    <style>
+                        @media print {
+                            @page {
+                                size: A4;
+                                margin: 15mm;
+                            }
+                            body {
+                                margin: 0;
+                                padding: 0;
+                                font-family: Arial, sans-serif;
+                                position: relative;
+                            }
+                            table {
+                                width: 100%;
+                                border-collapse: collapse;
+                            }
+                            th, td {
+                                border: 1px solid black;
+                                padding: 8px;
+                                text-align: left;
+                                vertical-align: middle;
+                                font-size: 10px;
+                            }
+                            th {
+                                background-color: #f0f0f0;
+                            }
+                            td.date-column {
+                                white-space: nowrap;
+                            }
+                            /* Footer styles for all pages */
+                            @page {
+                                margin: 15mm 15mm 5mm;
+                            }
+                            body::after {
+                                content: "Printed on ${currentDateTime}";
+                                position: fixed;
+                                bottom: 0;
+                                left: 0;
+                                width: 100%;
+                                text-align: center;
+                                font-size: 12px;
+                                font-style: italic;
+                                color: #555;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${companyHeader}
+                    ${filteredTableContent}
+                </body>
+            </html>
+        `);
+
+        newWindow.document.close();
         newWindow.print();
-        newWindow.close();
     };
 
     return (
@@ -194,22 +308,12 @@ const StockInList = () => {
                                         <div className="flex justify-between items-center py-4 px-6 rounded-lg">
                                             {/* Total Products */}
                                             <div className="flex flex-col justify-center items-center text-center">
-                                                {/* <div className="bg-green-400 text-white p-2 rounded-full shadow-lg">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4" />
-                                        </svg>
-                                    </div> */}
                                                 <p className="font-semibold text-gray-800 mt-2">Total Products</p>
                                                 <p className="font-extrabold text-xl text-green-600">{totalUniqueProducts}</p>
                                             </div>
 
                                             {/* Total Quantity */}
                                             <div className="flex flex-col justify-center items-center text-center">
-                                                {/* <div className="bg-blue-400 text-white p-2 rounded-full shadow-lg">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 20v-8m0-4V4m-6 4h12" />
-                                        </svg>
-                                    </div> */}
                                                 <p className="font-semibold text-gray-800 mt-2">Total Unit</p>
                                                 <p className="font-extrabold text-xl text-blue-600">{totalUnit}</p>
                                             </div>
@@ -279,7 +383,7 @@ const StockInList = () => {
                                 </div>
 
                                 {/* Product Table */}
-                                <div id="printable-section" className="overflow-x-auto mb-3">
+                                <div className="overflow-x-auto mb-3">
                                     <table className="table">
                                         <thead>
                                             <tr>
