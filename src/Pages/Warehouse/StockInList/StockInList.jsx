@@ -7,6 +7,7 @@ import { useLocation } from "react-router-dom";
 import Loader from "../../../Components/Loader/Loader";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import WhSinDetailsModal from "../../../Components/WhSinDetailsModal/WhSinDetailsModal";
+import findDateRange from "../../../Hooks/findDateRange";
 import useStockInWh from "../../../Hooks/useStockInWh";
 
 const StockInList = () => {
@@ -37,6 +38,8 @@ const StockInList = () => {
             return matchesYear && matchesMonth && matchesDateRange && matchesSearch;
         });
     }, [products, year, month, fromDate, toDate, searchTerm]);
+
+    const { firstDate, lastDate } = findDateRange(filteredProducts);
 
     const uniqueProducts = filteredProducts.filter((product, index, self) =>
         index === self.findIndex((p) =>
@@ -86,8 +89,8 @@ const StockInList = () => {
                 <p style="margin: 0; font-size: 10px;">Hotline: +880 1322-852183</p>
             </div>
             <div style="text-align: left; margin-bottom: 20px;">
-                <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>Warehouse Stock In List</u></h3>
-                <p style="margin: 5px 0; font-size: 14px; text-align: center;">Date from <b>${"01-01-24"}</b> to <b>${"31-12-24"}</b></p>
+                <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>Warehouse Stock in List</u></h3>
+                <p style="margin: 5px 0; font-size: 14px; text-align: center;">Date from <b>${firstDate}</b> to <b>${lastDate}</b></p>
             </div>
             <div style="margin-bottom: 20px;">
                 <p style="margin: 5px 0; font-size: 14px;">Total Items ${totalUniqueProducts}</p>
@@ -101,8 +104,8 @@ const StockInList = () => {
             <table style="width: 100%; border-collapse: collapse;">
                 <thead>
                     <tr>
-                        <th style="text-align: center;">Sl. No.</th>
-                        <th style="text-align: left;">Name</th>
+                        <th style="text-align: center;">Sl.</th>
+                        <th style="text-align: left;">Product Name</th>
                         <th style="text-align: center;">Batch</th>
                         <th style="text-align: center;">Exp.</th>
                         <th style="text-align: center;">Quantity</th>
