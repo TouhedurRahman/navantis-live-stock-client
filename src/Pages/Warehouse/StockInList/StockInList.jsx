@@ -81,25 +81,30 @@ const StockInList = () => {
 
     const handlePrint = () => {
         const companyHeader = `
-            <div style="text-align: center; margin-bottom: 20px;">
-                <h1 style="margin: 0; font-size: 16px;  font-weight: bold;">Navantis Pharma Limited</h1>
-                <p style="margin: 0; font-size: 10px;">
-                    Haque Villa, House No - 4, Block - C, Road No - 3, Section - 1, Kolwalapara, Mirpur - 1, Dhaka - 1216.
-                </p>
-                <p style="margin: 0; font-size: 10px;">Hotline: +880 1322-852183</p>
-            </div>
-            <div style="text-align: left; margin-bottom: 20px;">
-                <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>Warehouse Stock in List</u></h3>
-                <p style="margin: 5px 0; font-size: 14px; text-align: center;">Date from <b>${firstDate}</b> to <b>${lastDate}</b></p>
-            </div>
-            <div style="margin-bottom: 20px;">
-                <p style="margin: 5px 0; font-size: 14px;">Total Items ${totalUniqueProducts}</p>
-                <p style="margin: 5px 0; font-size: 14px;">Total Quantity ${totalUnit}</p>
-                <p style="margin: 5px 0; font-size: 14px;">Total Trade Price ${totalTP}/-</p>
-            </div>
-        `;
+        <div style="position: relative; text-align: center; margin-bottom: 20px;">
+            <!-- Picture at the top left -->
+            <img 
+                src="https://i.ibb.co.com/VSsxs33/NPL-Updated-Logo.png" 
+                alt="Company Logo" 
+                style="left: 0; width: 150px; height: auto;"
+            />
+            <h1 style="margin: 0; font-size: 16px; font-weight: bold;">Navantis Pharma Limited</h1>
+            <p style="margin: 0; font-size: 10px;">
+                Haque Villa, House No - 4, Block - C, Road No - 3, Section - 1, Kolwalapara, Mirpur - 1, Dhaka - 1216.
+            </p>
+            <p style="margin: 0; font-size: 10px;">Hotline: +880 1322-852183</p>
+        </div>
+        <div style="text-align: left; margin-bottom: 20px;">
+            <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>Warehouse Stock in List</u></h3>
+            <p style="margin: 5px 0; font-size: 14px; text-align: center;">Date from <b>${firstDate}</b> to <b>${lastDate}</b></p>
+        </div>
+        <div style="margin-bottom: 20px;">
+            <p style="margin: 5px 0; font-size: 14px;">Total Items ${totalUniqueProducts}</p>
+            <p style="margin: 5px 0; font-size: 14px;">Total Quantity ${totalUnit}</p>
+            <p style="margin: 5px 0; font-size: 14px;">Total Trade Price ${totalTP}/-</p>
+        </div>
+    `;
 
-        // Generate the filtered table content
         const filteredTableContent = `
             <table style="width: 100%; border-collapse: collapse;">
                 <thead>
@@ -129,6 +134,16 @@ const StockInList = () => {
                             </tr>
                         `
         ).join('')}
+                </tbody>
+                <tbody>
+                    <tr>
+                        <!-- Merged first four columns -->
+                        <td colspan="4" style="text-align: center; font-weight: bold;">Total</td>
+                        <td style="text-align: center;">${totalUnit}</td>
+                        <td style="text-align: right;"></td>
+                        <td style="text-align: right;">${totalTP.toLocaleString('en-IN')}/-</td>
+                        <td style="text-align: center; white-space: nowrap;"></td>
+                    </tr>
                 </tbody>
             </table>
         `;
@@ -191,7 +206,7 @@ const StockInList = () => {
                             }
                             /* Footer styles for all pages */
                             @page {
-                                margin: 15mm 15mm 5mm;
+                                margin: 5mm;
                             }
                             body::after {
                                 content: "Printed on ${finalFormattedDateTime}";
