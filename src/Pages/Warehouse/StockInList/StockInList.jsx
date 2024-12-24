@@ -81,27 +81,41 @@ const StockInList = () => {
 
     const handlePrint = () => {
         const companyHeader = `
-        <div style="position: relative; text-align: center; margin-bottom: 20px;">
-            <!-- Picture at the top left -->
-            <img 
-                src="https://i.ibb.co.com/VSsxs33/NPL-Updated-Logo.png" 
-                alt="Company Logo" 
-                style="left: 0; width: 150px; height: auto;"
-            />
-            <h1 style="margin: 0; font-size: 16px; font-weight: bold;">Navantis Pharma Limited</h1>
-            <p style="margin: 0; font-size: 10px;">
-                Haque Villa, House No - 4, Block - C, Road No - 3, Section - 1, Kolwalapara, Mirpur - 1, Dhaka - 1216.
-            </p>
-            <p style="margin: 0; font-size: 10px;">Hotline: +880 1322-852183</p>
-        </div>
-        <div style="text-align: left; margin-bottom: 20px;">
-            <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>Warehouse Stock in List</u></h3>
-            <p style="margin: 5px 0; font-size: 14px; text-align: center;">Date from <b>${firstDate}</b> to <b>${lastDate}</b></p>
-        </div>
-        <div style="margin-bottom: 20px;">
-            <p style="margin: 5px 0; font-size: 14px;">Total Items ${totalUniqueProducts}</p>
-            <p style="margin: 5px 0; font-size: 14px;">Total Quantity ${totalUnit}</p>
-            <p style="margin: 5px 0; font-size: 14px;">Total Trade Price ${totalTP}/-</p>
+        <div>
+            <div style="position: relative; text-align: center; margin-bottom: 20px;">
+                <!-- Picture at the top left -->
+                <img 
+                    src="https://i.ibb.co.com/VSsxs33/NPL-Updated-Logo.png" 
+                    alt="Company Logo" 
+                    style="left: 0; width: 150px; height: auto;"
+                />
+                <h1 style="margin: 0; font-size: 16px; font-weight: bold;">Navantis Pharma Limited</h1>
+                <p style="margin: 0; font-size: 10px;">
+                    Haque Villa, House No - 4, Block - C, Road No - 3, Section - 1, Kolwalapara, Mirpur - 1, Dhaka - 1216.
+                </p>
+                <p style="margin: 0; font-size: 10px;">Hotline: +880 1322-852183</p>
+            </div>
+            <div style="text-align: left; margin-bottom: 20px;">
+                <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>Warehouse Stock in List</u></h3>
+                <p style="margin: 5px 0; font-size: 14px; text-align: center;">Date from <b>${firstDate}</b> to <b>${lastDate}</b></p>
+            </div>
+            <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #B2BEB5; border-radius: 3px;">
+                <p style="margin: 10px 0; font-size: 16px; font-weight: bold; text-align: center; text-transform: uppercase; color: #333;">
+                    Summary
+                </p>
+                <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #B2BEB5;">
+                    <span style="font-size: 14px; font-weight: 600; color: #555;">Total Items</span>
+                    <span style="font-size: 14px; font-weight: 700;">${totalUniqueProducts}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #B2BEB5;">
+                    <span style="font-size: 14px; font-weight: 600; color: #555;">Total Quantity</span>
+                    <span style="font-size: 14px; font-weight: 700;">${totalUnit}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                    <span style="font-size: 14px; font-weight: 600; color: #555;">Total Trade Price</span>
+                    <span style="font-size: 14px; font-weight: 700;">${totalTP.toLocaleString('en-IN')}/-</span>
+                </div>
+            </div>
         </div>
     `;
 
@@ -113,7 +127,7 @@ const StockInList = () => {
                         <th style="text-align: left;">Product Name</th>
                         <th style="text-align: center;">Batch</th>
                         <th style="text-align: center;">Exp.</th>
-                        <th style="text-align: center;">Quantity</th>
+                        <th style="text-align: right;">Quantity</th>
                         <th style="text-align: right;">Price/Unit</th>
                         <th style="text-align: right;">Total Price</th>
                         <th style="text-align: center;">Date</th>
@@ -127,7 +141,7 @@ const StockInList = () => {
                                 <td>${product.productName}</td>
                                 <td style="text-align: center;">${product.batch}</td>
                                 <td style="text-align: center;">${product.expire}</td>
-                                <td style="text-align: center;">${product.totalQuantity}</td>
+                                <td style="text-align: right;">${product.totalQuantity}</td>
                                 <td style="text-align: right;">${product.tradePrice.toLocaleString('en-IN')}/-</td>
                                 <td style="text-align: right;">${(product.tradePrice * product.totalQuantity).toLocaleString('en-IN')}/-</td>
                                 <td style="text-align: center; white-space: nowrap;">${new Date(product.date).toLocaleDateString('en-GB').replace(/\//g, '-')}</td>
@@ -139,7 +153,7 @@ const StockInList = () => {
                     <tr>
                         <!-- Merged first four columns -->
                         <td colspan="4" style="text-align: center; font-weight: bold;">Total</td>
-                        <td style="text-align: center;">${totalUnit}</td>
+                        <td style="text-align: right;">${totalUnit}</td>
                         <td style="text-align: right;"></td>
                         <td style="text-align: right;">${totalTP.toLocaleString('en-IN')}/-</td>
                         <td style="text-align: center; white-space: nowrap;"></td>
