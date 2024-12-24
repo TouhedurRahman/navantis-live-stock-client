@@ -100,7 +100,7 @@ const StockInList = () => {
                 <p style="margin: 5px 0; font-size: 14px; text-align: center;">Date from <b>${firstDate}</b> to <b>${lastDate}</b></p>
             </div>
             <div style="margin-bottom: 20px; padding: 5px 15px; border: 1px solid #B2BEB5; border-radius: 3px;">
-                <p style="margin: 0; font-size: 14px; font-weight: bold; text-align: center; text-transform: uppercase;">
+                <p style="font-size: 11px; font-weight: bold; text-align: center; text-transform: uppercase;">
                     Summary
                 </p>
                 <div style="display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #B2BEB5;">
@@ -193,7 +193,7 @@ const StockInList = () => {
                         @media print {
                             @page {
                                 size: A4;
-                                margin: 15mm;
+                                margin: 5mm;
                             }
                             body {
                                 margin: 0;
@@ -219,9 +219,6 @@ const StockInList = () => {
                                 white-space: nowrap;
                             }
                             /* Footer styles for all pages */
-                            @page {
-                                margin: 5mm;
-                            }
                             body::after {
                                 content: "Printed on ${finalFormattedDateTime}";
                                 position: fixed;
