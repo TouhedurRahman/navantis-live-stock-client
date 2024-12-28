@@ -19,7 +19,7 @@ import StockOutList from "../../Pages/Warehouse/StockOutList/StockOutList";
 import WarehouseAddProduct from "../../Pages/Warehouse/WarehouseAddProduct/WarehouseAddProduct";
 import WhDamagedProduct from "../../Pages/Warehouse/WhDamagedProduct/WhDamagedProduct";
 import WhProductsList from "../../Pages/Warehouse/WhProductsList/WhProductsList";
-import Registration from "./LoginAndRegistration/Registration/Registrattion";
+import Registration from "./LoginAndRegistration/Registration/Registration";
 
 const router = createBrowserRouter([
     {
