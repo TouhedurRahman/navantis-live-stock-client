@@ -19,6 +19,7 @@ import StockOutList from "../../Pages/Warehouse/StockOutList/StockOutList";
 import WarehouseAddProduct from "../../Pages/Warehouse/WarehouseAddProduct/WarehouseAddProduct";
 import WhDamagedProduct from "../../Pages/Warehouse/WhDamagedProduct/WhDamagedProduct";
 import WhProductsList from "../../Pages/Warehouse/WhProductsList/WhProductsList";
+import Login from "./LoginAndRegistration/Login/Login";
 import Registration from "./LoginAndRegistration/Registration/Registration";
 
 const router = createBrowserRouter([
@@ -107,6 +108,10 @@ const router = createBrowserRouter([
                 element: <DepotExpiredProduct />
             }
         ],
+    },
+    {
+        path: '/login',
+        element: <Login />
     },
     {
         path: '/registration',
