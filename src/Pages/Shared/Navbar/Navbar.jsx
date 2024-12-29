@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { FaCircleUser, FaUsers } from "react-icons/fa6";
 import { RiLogoutCircleRFill } from "react-icons/ri";
 import { Link, Outlet } from 'react-router-dom';
+import useLogOut from '../../../Hooks/useLogOut';
 import useMenuConfig from '../../../Hooks/useMenuConfig';
 
 const Navbar = () => {
@@ -13,6 +14,8 @@ const Navbar = () => {
 
     const today = new Date();
     const year = today.getFullYear();
+
+    const handleLogOut = useLogOut();
 
     const user = true;
     const loadingSingleUser = false;
