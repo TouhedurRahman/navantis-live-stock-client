@@ -80,7 +80,7 @@ const StockInList = () => {
         setCurrentPage(1);
     };
 
-    const handlePrint = WarehouseStockInInvoice({ firstDate, lastDate, totalUniqueProducts, totalUnit, totalTP, filteredProducts });
+    const handlePrint = WarehouseStockInInvoice({ firstDate, lastDate, totalUniqueProducts, totalUnit, totalTP, totalAP, filteredProducts });
 
     return (
         <div>

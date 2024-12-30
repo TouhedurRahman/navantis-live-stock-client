@@ -1,5 +1,6 @@
+const WarehouseStockInInvoice = ({ firstDate, lastDate, totalUniqueProducts, totalUnit, totalTP, totalAP, filteredProducts }) => {
+    const user = true;
 
-const WarehouseStockInInvoice = ({ firstDate, lastDate, totalUniqueProducts, totalUnit, totalTP, filteredProducts }) => {
     const handlePrint = () => {
         const companyHeader = `
         <div>
@@ -32,10 +33,16 @@ const WarehouseStockInInvoice = ({ firstDate, lastDate, totalUniqueProducts, tot
                     <span style="font-size: 11px; font-weight: 600;">Total Quantity</span>
                     <span style="font-size: 11px; font-weight: 700;">${totalUnit}</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; padding: 5px 0;">
+                <div style="display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #B2BEB5;">
                     <span style="font-size: 11px; font-weight: 600;">Total Trade Price</span>
                     <span style="font-size: 11px; font-weight: 700;">${totalTP.toLocaleString('en-IN')}/-</span>
                 </div>
+                ${user && `
+                    <div style="display: flex; justify-content: space-between; padding: 5px 0;">
+                        <span style="font-size: 11px; font-weight: 600;">Total Actual Price</span>
+                        <span style="font-size: 11px; font-weight: 700;">${totalAP.toLocaleString('en-IN')}/-</span>
+                    </div>
+                `}
             </div>
         </div>
     `;
@@ -49,8 +56,12 @@ const WarehouseStockInInvoice = ({ firstDate, lastDate, totalUniqueProducts, tot
                         <th style="text-align: center;">Batch</th>
                         <th style="text-align: center;">Exp.</th>
                         <th style="text-align: right;">Quantity</th>
-                        <th style="text-align: right;">Price/Unit</th>
-                        <th style="text-align: right;">Total Price</th>
+                        <th style="text-align: right;">Price/Unit (TP)</th>
+                        <th style="text-align: right;">Total Price (TP)</th>
+                        ${user && `
+                            <th style="text-align: right;">Price/Unit (AP)</th>
+                            <th style="text-align: right;">Total Price (AP)</th>
+                        `}                        
                         <th style="text-align: center;">Date</th>
                     </tr>
                 </thead>
@@ -65,12 +76,30 @@ const WarehouseStockInInvoice = ({ firstDate, lastDate, totalUniqueProducts, tot
                                 <td style="text-align: right;">${product.totalQuantity}</td>
                                 <td style="text-align: right;">${product.tradePrice.toLocaleString('en-IN')}/-</td>
                                 <td style="text-align: right;">${(product.tradePrice * product.totalQuantity).toLocaleString('en-IN')}/-</td>
+                                ${user && `
+                                    <td style="text-align: right;">${product.actualPrice.toLocaleString('en-IN')}/-</td>
+                                    <td style="text-align: right;">${(product.actualPrice * product.totalQuantity).toLocaleString('en-IN')}/-</td>
+                                `}
                                 <td style="text-align: center; white-space: nowrap;">${new Date(product.date).toLocaleDateString('en-GB').replace(/\//g, '-')}</td>
                             </tr>
                         `
         ).join('')}
                 </tbody>
                 <tbody>
+                ${user ? `
+                    <tr>
+                        <!-- Merged first four columns -->
+                        <td colspan="4" style="text-align: center; font-weight: bold;">Total</td>
+                        <td style="text-align: right;">${totalUnit}</td>
+                        <td style="text-align: right;"></td>
+                        <td style="text-align: right;">${totalTP.toLocaleString('en-IN')}/-</td>
+                        <td style="text-align: right;"></td>
+                        ${user && `
+                            <td style="text-align: right;">${totalAP.toLocaleString('en-IN')}/-</td>
+                        `}
+                        <td style="text-align: center; white-space: nowrap;"></td>
+                    </tr>
+                    ` : `
                     <tr>
                         <!-- Merged first four columns -->
                         <td colspan="4" style="text-align: center; font-weight: bold;">Total</td>
@@ -79,6 +108,8 @@ const WarehouseStockInInvoice = ({ firstDate, lastDate, totalUniqueProducts, tot
                         <td style="text-align: right;">${totalTP.toLocaleString('en-IN')}/-</td>
                         <td style="text-align: center; white-space: nowrap;"></td>
                     </tr>
+                    `
+            }
                 </tbody>
             </table>
         `;
