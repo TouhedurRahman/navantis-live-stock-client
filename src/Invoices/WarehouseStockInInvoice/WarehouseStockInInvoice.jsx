@@ -1,5 +1,5 @@
-const WarehouseStockInInvoice = ({ firstDate, lastDate, totalUniqueProducts, totalUnit, totalTP, totalAP, filteredProducts }) => {
-    const user = true;
+const WarehouseStockInInvoice = ({ invoiceWithAP, firstDate, lastDate, totalUniqueProducts, totalUnit, totalTP, totalAP, filteredProducts }) => {
+    const accessAP = invoiceWithAP ?? false;
 
     const handlePrint = () => {
         const companyHeader = `
@@ -25,24 +25,24 @@ const WarehouseStockInInvoice = ({ firstDate, lastDate, totalUniqueProducts, tot
                 <p style="font-size: 11px; font-weight: bold; text-align: center; text-transform: uppercase;">
                     Summary
                 </p>
-                <div style="display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #B2BEB5;">
+                <div style="display: flex; justify-content: space-between; padding: 5px 0;">
                     <span style="font-size: 11px; font-weight: 600;">Total Items</span>
                     <span style="font-size: 11px; font-weight: 700;">${totalUniqueProducts}</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #B2BEB5;">
+                <div style="display: flex; justify-content: space-between; padding: 5px 0; border-top: 1px solid #B2BEB5;">
                     <span style="font-size: 11px; font-weight: 600;">Total Quantity</span>
                     <span style="font-size: 11px; font-weight: 700;">${totalUnit}</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #B2BEB5;">
+                <div style="display: flex; justify-content: space-between; padding: 5px 0; border-top: 1px solid #B2BEB5;">
                     <span style="font-size: 11px; font-weight: 600;">Total Trade Price</span>
                     <span style="font-size: 11px; font-weight: 700;">${totalTP.toLocaleString('en-IN')}/-</span>
                 </div>
-                ${user && `
-                    <div style="display: flex; justify-content: space-between; padding: 5px 0;">
+                ${accessAP ? `
+                    <div style="display: flex; justify-content: space-between; padding: 5px 0; border-top: 1px solid #B2BEB5;">
                         <span style="font-size: 11px; font-weight: 600;">Total Actual Price</span>
                         <span style="font-size: 11px; font-weight: 700;">${totalAP.toLocaleString('en-IN')}/-</span>
                     </div>
-                `}
+                ` : ''}
             </div>
         </div>
     `;
@@ -58,10 +58,10 @@ const WarehouseStockInInvoice = ({ firstDate, lastDate, totalUniqueProducts, tot
                         <th style="text-align: right;">Quantity</th>
                         <th style="text-align: right;">Price/Unit (TP)</th>
                         <th style="text-align: right;">Total Price (TP)</th>
-                        ${user && `
+                        ${accessAP ? `
                             <th style="text-align: right;">Price/Unit (AP)</th>
                             <th style="text-align: right;">Total Price (AP)</th>
-                        `}                        
+                        ` : ''}                        
                         <th style="text-align: center;">Date</th>
                     </tr>
                 </thead>
@@ -76,17 +76,17 @@ const WarehouseStockInInvoice = ({ firstDate, lastDate, totalUniqueProducts, tot
                                 <td style="text-align: right;">${product.totalQuantity}</td>
                                 <td style="text-align: right;">${product.tradePrice.toLocaleString('en-IN')}/-</td>
                                 <td style="text-align: right;">${(product.tradePrice * product.totalQuantity).toLocaleString('en-IN')}/-</td>
-                                ${user && `
+                                ${accessAP ? `
                                     <td style="text-align: right;">${product.actualPrice.toLocaleString('en-IN')}/-</td>
                                     <td style="text-align: right;">${(product.actualPrice * product.totalQuantity).toLocaleString('en-IN')}/-</td>
-                                `}
+                                ` : ''}
                                 <td style="text-align: center; white-space: nowrap;">${new Date(product.date).toLocaleDateString('en-GB').replace(/\//g, '-')}</td>
                             </tr>
                         `
         ).join('')}
                 </tbody>
                 <tbody>
-                ${user ? `
+                ${accessAP ? `
                     <tr>
                         <!-- Merged first four columns -->
                         <td colspan="4" style="text-align: center; font-weight: bold;">Total</td>
@@ -94,9 +94,9 @@ const WarehouseStockInInvoice = ({ firstDate, lastDate, totalUniqueProducts, tot
                         <td style="text-align: right;"></td>
                         <td style="text-align: right;">${totalTP.toLocaleString('en-IN')}/-</td>
                         <td style="text-align: right;"></td>
-                        ${user && `
+                        ${accessAP ? `
                             <td style="text-align: right;">${totalAP.toLocaleString('en-IN')}/-</td>
-                        `}
+                        ` : ''}
                         <td style="text-align: center; white-space: nowrap;"></td>
                     </tr>
                     ` : `

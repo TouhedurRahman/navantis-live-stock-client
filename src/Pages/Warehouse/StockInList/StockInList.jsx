@@ -12,6 +12,10 @@ import useStockInWh from "../../../Hooks/useStockInWh";
 import WarehouseStockInInvoice from "../../../Invoices/WarehouseStockInInvoice/WarehouseStockInInvoice";
 
 const StockInList = () => {
+    const user = true;
+
+    const invoiceWithAP = 1;
+
     const [products, loading] = useStockInWh();
     const [searchTerm, setSearchTerm] = useState('');
     const [year, setYear] = useState('');
@@ -79,6 +83,8 @@ const StockInList = () => {
         setToDate('');
         setCurrentPage(1);
     };
+
+    const handlePrintWithAP = WarehouseStockInInvoice({ invoiceWithAP, firstDate, lastDate, totalUniqueProducts, totalUnit, totalTP, totalAP, filteredProducts });
 
     const handlePrint = WarehouseStockInInvoice({ firstDate, lastDate, totalUniqueProducts, totalUnit, totalTP, totalAP, filteredProducts });
 
@@ -229,12 +235,35 @@ const StockInList = () => {
 
                                         {/* Print Button */}
                                         <div className="flex justify-center items-center">
-                                            <button
-                                                onClick={handlePrint}
-                                                className="col-span-1 md:col-span-3 mt-4 bg-green-500 text-white rounded-lg px-4 py-2 flex items-center justify-center shadow-sm hover:bg-green-600 transition-colors"
-                                            >
-                                                <MdPrint className="mr-2" /> Print Invoice
-                                            </button>
+                                            {
+                                                user
+                                                    ?
+                                                    <>
+                                                        <div className="flex justify-around items-center space-x-2">
+                                                            <button
+                                                                onClick={handlePrintWithAP}
+                                                                className="col-span-1 md:col-span-3 mt-4 bg-green-500 text-white rounded-lg px-4 py-2 flex items-center justify-center shadow-sm hover:bg-green-600 transition-colors"
+                                                            >
+                                                                <MdPrint className="mr-2" /> Invoice (With AP)
+                                                            </button>
+                                                            <button
+                                                                onClick={handlePrint}
+                                                                className="col-span-1 md:col-span-3 mt-4 bg-green-500 text-white rounded-lg px-4 py-2 flex items-center justify-center shadow-sm hover:bg-green-600 transition-colors"
+                                                            >
+                                                                <MdPrint className="mr-2" /> Invoice (Without AP)
+                                                            </button>
+                                                        </div>
+                                                    </>
+                                                    :
+                                                    <>
+                                                        <button
+                                                            onClick={handlePrint}
+                                                            className="col-span-1 md:col-span-3 mt-4 bg-green-500 text-white rounded-lg px-4 py-2 flex items-center justify-center shadow-sm hover:bg-green-600 transition-colors"
+                                                        >
+                                                            <MdPrint className="mr-2" /> Print Invoice
+                                                        </button>
+                                                    </>
+                                            }
                                         </div>
                                     </div>
                                 </div>
