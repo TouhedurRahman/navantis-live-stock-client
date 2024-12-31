@@ -19,7 +19,13 @@ const WarehouseStockInInvoice = ({ invoiceWithAP, firstDate, lastDate, totalUniq
             </div>
             <div style="text-align: left; margin-bottom: 20px;">
                 <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>Warehouse Stock In List</u></h3>
-                <p style="margin: 5px 0; font-size: 14px; text-align: center;">Date from <b>${firstDate}</b> to <b>${lastDate}</b></p>
+                <p style="margin: 5px 0; font-size: 14px; text-align: center;">
+                    ${(firstDate !== lastDate)
+                ?
+                `Date from <b>${firstDate}</b> to <b>${lastDate}</b>`
+                :
+                `Date <b>${firstDate}</b>`
+            }</p>
             </div>
             <div style="margin-bottom: 20px; padding: 5px 15px; border: 1px solid #B2BEB5; border-radius: 3px;">
                 <p style="font-size: 11px; font-weight: bold; text-align: center; text-transform: uppercase;">
