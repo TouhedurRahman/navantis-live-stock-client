@@ -28,7 +28,6 @@ const StockInList = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
 
     const location = useLocation();
-    const adminPath = location.pathname.includes('/admin-warehouse-in');
 
     // Filtered products based on search and filters
     const filteredProducts = useMemo(() => {
@@ -218,7 +217,7 @@ const StockInList = () => {
                                                 </thead>
                                                 <tbody>
                                                     {
-                                                        adminPath
+                                                        user.role === 'Managing Director'
                                                         &&
                                                         <tr>
                                                             <td className="px-4 py-2 border border-gray-200">Actual Price (AP)</td>
