@@ -19,8 +19,6 @@ const useMenuConfig = () => {
                 { to: '/depot-request', icon: <VscGitPullRequestGoToChanges className='me-2' />, label: 'Depot Request' },
                 { to: '/expire-request', icon: <VscGitPullRequestGoToChanges className='me-2' />, label: 'Expire Request' },
                 { to: '/missing-products', icon: <FaExclamationCircle className='me-2' />, label: 'Missing Products' },
-                { to: '/admin-warehouse-in', icon: <FaArrowDown className='me-2' />, label: 'Warehouse In' },
-                { to: '/admin-warehouse-out', icon: <FaArrowUp className='me-2' />, label: 'Warehouse Out' },
                 { to: '/price-update', icon: <TbCoinTakaFilled className='me-2' />, label: 'Price Update' },
                 { to: '/dmg-exp', icon: <FaTrashAlt className='me-2' />, label: 'Damaged & Exp.' },
             ],
