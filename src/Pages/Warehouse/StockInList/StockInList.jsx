@@ -9,7 +9,7 @@ import PageTitle from "../../../Components/PageTitle/PageTitle";
 import WhSinDetailsModal from "../../../Components/WhSinDetailsModal/WhSinDetailsModal";
 import findDateRange from "../../../Hooks/findDateRange";
 import useStockInWh from "../../../Hooks/useStockInWh";
-import WarehouseStockInInvoice from "../../../Invoices/WarehouseStockInInvoice/WarehouseStockInInvoice";
+import WarehouseStockInInvoice from "../../../Invoices/WarehouseStockInInvoice";
 
 const StockInList = () => {
     const user = true;
