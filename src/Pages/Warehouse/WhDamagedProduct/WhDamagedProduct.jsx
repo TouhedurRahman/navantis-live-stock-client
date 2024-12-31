@@ -6,9 +6,15 @@ import { MdPrint } from 'react-icons/md';
 import Loader from "../../../Components/Loader/Loader";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import WarehouseDetailsModal from "../../../Components/WarehouseDetailsModal/WarehouseDetailsModal";
+import findDateRange from "../../../Hooks/findDateRange";
 import useDamagedProductsWh from "../../../Hooks/useDamagedProductsWh";
+import WarehouseDamagedProductsInvoice from "../../../Invoices/WarehouseDamagedProductsInvoice";
 
 const WhDamagedProduct = () => {
+    const user = { role: 'Managing Director' };
+
+    const invoiceWithAP = 1;
+
     const [products, loading] = useDamagedProductsWh();
     const [searchTerm, setSearchTerm] = useState('');
     const [year, setYear] = useState('');
@@ -35,6 +41,8 @@ const WhDamagedProduct = () => {
             return matchesYear && matchesMonth && matchesDateRange && matchesSearch;
         });
     }, [approvedDamagedProducts, year, month, fromDate, toDate, searchTerm]);
+
+    const { firstDate, lastDate } = findDateRange(filteredProducts);
 
     const uniqueProducts = filteredProducts.filter((product, index, self) =>
         index === self.findIndex((p) =>
@@ -75,13 +83,17 @@ const WhDamagedProduct = () => {
     };
 
     // Print filtered product list
-    const handlePrint = () => {
+    /* const handlePrint = () => {
         const printContent = document.getElementById("printable-section").innerHTML;
         const newWindow = window.open();
         newWindow.document.write(`<html><head><title>Invoice</title></head><body>${printContent}</body></html>`);
         newWindow.print();
         newWindow.close();
-    };
+    }; */
+
+    const handlePrintWithAP = WarehouseDamagedProductsInvoice({ invoiceWithAP, firstDate, lastDate, totalUniqueProducts, totalUnit, totalTP, totalAP, filteredProducts });
+
+    const handlePrint = WarehouseDamagedProductsInvoice({ firstDate, lastDate, totalUniqueProducts, totalUnit, totalTP, totalAP, filteredProducts });
 
     return (
         <div>
@@ -222,10 +234,14 @@ const WhDamagedProduct = () => {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td className="px-4 py-2 border border-gray-200">Actual Price (AP)</td>
-                                                        <td className="px-4 py-2 border border-gray-200 text-right">{totalAP.toLocaleString('en-IN')}/-</td>
-                                                    </tr>
+                                                    {
+                                                        user.role === 'Managing Director'
+                                                        &&
+                                                        <tr>
+                                                            <td className="px-4 py-2 border border-gray-200">Actual Price (AP)</td>
+                                                            <td className="px-4 py-2 border border-gray-200 text-right">{totalAP.toLocaleString('en-IN')}/-</td>
+                                                        </tr>
+                                                    }
                                                     <tr>
                                                         <td className="px-4 py-2 border border-gray-200">Trade Price (TP)</td>
                                                         <td className="px-4 py-2 border border-gray-200 text-right">{totalTP.toLocaleString('en-IN')}/-</td>
@@ -236,12 +252,35 @@ const WhDamagedProduct = () => {
 
                                         {/* Print Button */}
                                         <div className="flex justify-center items-center">
-                                            <button
-                                                onClick={handlePrint}
-                                                className="col-span-1 md:col-span-3 mt-4 bg-green-500 text-white rounded-lg px-4 py-2 flex items-center justify-center shadow-sm hover:bg-green-600 transition-colors"
-                                            >
-                                                <MdPrint className="mr-2" /> Print Invoice
-                                            </button>
+                                            {
+                                                user.role === 'Managing Director'
+                                                    ?
+                                                    <>
+                                                        <div className="flex justify-around items-center space-x-2">
+                                                            <button
+                                                                onClick={handlePrintWithAP}
+                                                                className="col-span-1 md:col-span-3 mt-4 bg-green-500 text-white rounded-lg px-4 py-2 flex items-center justify-center shadow-sm hover:bg-green-600 transition-colors"
+                                                            >
+                                                                <MdPrint className="mr-2" /> Invoice (With AP)
+                                                            </button>
+                                                            <button
+                                                                onClick={handlePrint}
+                                                                className="col-span-1 md:col-span-3 mt-4 bg-green-500 text-white rounded-lg px-4 py-2 flex items-center justify-center shadow-sm hover:bg-green-600 transition-colors"
+                                                            >
+                                                                <MdPrint className="mr-2" /> Invoice (Without AP)
+                                                            </button>
+                                                        </div>
+                                                    </>
+                                                    :
+                                                    <>
+                                                        <button
+                                                            onClick={handlePrint}
+                                                            className="col-span-1 md:col-span-3 mt-4 bg-green-500 text-white rounded-lg px-4 py-2 flex items-center justify-center shadow-sm hover:bg-green-600 transition-colors"
+                                                        >
+                                                            <MdPrint className="mr-2" /> Print Invoice
+                                                        </button>
+                                                    </>
+                                            }
                                         </div>
                                     </div>
                                 </div>
