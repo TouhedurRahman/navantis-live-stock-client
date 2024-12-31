@@ -12,7 +12,7 @@ import useStockInWh from "../../../Hooks/useStockInWh";
 import WarehouseStockInInvoice from "../../../Invoices/WarehouseStockInInvoice";
 
 const StockInList = () => {
-    const user = true;
+    const user = { role: 'Managing Director' };
 
     const invoiceWithAP = 1;
 
@@ -236,7 +236,7 @@ const StockInList = () => {
                                         {/* Print Button */}
                                         <div className="flex justify-center items-center">
                                             {
-                                                user
+                                                user.role === 'Managing Director'
                                                     ?
                                                     <>
                                                         <div className="flex justify-around items-center space-x-2">

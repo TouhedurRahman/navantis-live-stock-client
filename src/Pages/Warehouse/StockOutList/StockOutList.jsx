@@ -1,14 +1,20 @@
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
+import { FaEye } from "react-icons/fa";
 import { ImSearch } from 'react-icons/im';
 import { MdPrint } from 'react-icons/md';
-import PageTitle from "../../../Components/PageTitle/PageTitle";
-import { FaEye } from "react-icons/fa";
-import useStockOutWh from "../../../Hooks/useStockOutWh";
 import Loader from "../../../Components/Loader/Loader";
+import PageTitle from "../../../Components/PageTitle/PageTitle";
 import WarehouseDetailsModal from "../../../Components/WarehouseDetailsModal/WarehouseDetailsModal";
+import findDateRange from "../../../Hooks/findDateRange";
+import useStockOutWh from "../../../Hooks/useStockOutWh";
+import WarehouseStockOutInvoice from "../../../Invoices/WarehouseStockOutInvoice";
 
 const StockOutList = () => {
+    const user = { role: 'Managing Director' };
+
+    const invoiceWithAP = 1;
+
     const [products, loading] = useStockOutWh();
     const [searchTerm, setSearchTerm] = useState('');
     const [year, setYear] = useState('');
@@ -33,6 +39,8 @@ const StockOutList = () => {
             return matchesYear && matchesMonth && matchesDateRange && matchesSearch;
         });
     }, [products, year, month, fromDate, toDate, searchTerm]);
+
+    const { firstDate, lastDate } = findDateRange(filteredProducts);
 
     const uniqueProducts = filteredProducts.filter((product, index, self) =>
         index === self.findIndex((p) =>
@@ -73,13 +81,17 @@ const StockOutList = () => {
     };
 
     // Print filtered product list
-    const handlePrint = () => {
+    /* const handlePrint = () => {
         const printContent = document.getElementById("printable-section").innerHTML;
         const newWindow = window.open();
         newWindow.document.write(`<html><head><title>Invoice</title></head><body>${printContent}</body></html>`);
         newWindow.print();
         newWindow.close();
-    };
+    }; */
+
+    const handlePrintWithAP = WarehouseStockOutInvoice({ invoiceWithAP, firstDate, lastDate, totalUniqueProducts, totalUnit, totalTP, totalAP, filteredProducts });
+
+    const handlePrint = WarehouseStockOutInvoice({ firstDate, lastDate, totalUniqueProducts, totalUnit, totalTP, totalAP, filteredProducts });
 
     return (
         <div>
@@ -234,12 +246,35 @@ const StockOutList = () => {
 
                                         {/* Print Button */}
                                         <div className="flex justify-center items-center">
-                                            <button
-                                                onClick={handlePrint}
-                                                className="col-span-1 md:col-span-3 mt-4 bg-green-500 text-white rounded-lg px-4 py-2 flex items-center justify-center shadow-sm hover:bg-green-600 transition-colors"
-                                            >
-                                                <MdPrint className="mr-2" /> Print Invoice
-                                            </button>
+                                            {
+                                                user.role === 'Managing Director'
+                                                    ?
+                                                    <>
+                                                        <div className="flex justify-around items-center space-x-2">
+                                                            <button
+                                                                onClick={handlePrintWithAP}
+                                                                className="col-span-1 md:col-span-3 mt-4 bg-green-500 text-white rounded-lg px-4 py-2 flex items-center justify-center shadow-sm hover:bg-green-600 transition-colors"
+                                                            >
+                                                                <MdPrint className="mr-2" /> Invoice (With AP)
+                                                            </button>
+                                                            <button
+                                                                onClick={handlePrint}
+                                                                className="col-span-1 md:col-span-3 mt-4 bg-green-500 text-white rounded-lg px-4 py-2 flex items-center justify-center shadow-sm hover:bg-green-600 transition-colors"
+                                                            >
+                                                                <MdPrint className="mr-2" /> Invoice (Without AP)
+                                                            </button>
+                                                        </div>
+                                                    </>
+                                                    :
+                                                    <>
+                                                        <button
+                                                            onClick={handlePrint}
+                                                            className="col-span-1 md:col-span-3 mt-4 bg-green-500 text-white rounded-lg px-4 py-2 flex items-center justify-center shadow-sm hover:bg-green-600 transition-colors"
+                                                        >
+                                                            <MdPrint className="mr-2" /> Print Invoice
+                                                        </button>
+                                                    </>
+                                            }
                                         </div>
                                     </div>
                                 </div>
