@@ -128,13 +128,13 @@ const MissingProductsList = () => {
         <div>
             <div>
                 <PageTitle
-                    from={"Warehouse"}
-                    to={"Stock in"}
+                    from={"Admin"}
+                    to={"Missing Products"}
                 />
             </div>
             <div className="bg-white pb-1">
                 <div>
-                    <h1 className="px-6 py-3 font-bold">Warehouse stock in products list</h1>
+                    <h1 className="px-6 py-3 font-bold">Missing products list</h1>
                     <hr className='text-center border border-gray-500 mb-5' />
                 </div>
                 {
