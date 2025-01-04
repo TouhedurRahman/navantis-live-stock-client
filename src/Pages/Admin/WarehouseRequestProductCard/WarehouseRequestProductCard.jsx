@@ -182,7 +182,7 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
                         mutations.push(updateProductMutation.mutateAsync());
 
 
-                    if (initialActualPrice !== product.actualPrice || initialTradePrice !== product.tradePrice)
+                    if ((initialActualPrice !== null || initialTradePrice !== null) && (initialActualPrice !== product.actualPrice || initialTradePrice !== product.tradePrice))
                         mutations.push(addPriceChangeMutation.mutateAsync());
 
                     await Promise.all(mutations);
