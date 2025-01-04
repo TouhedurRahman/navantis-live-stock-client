@@ -4,9 +4,15 @@ import { ImSearch } from 'react-icons/im';
 import { MdPrint } from 'react-icons/md';
 import Loader from "../../../Components/Loader/Loader";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
+import findDateRange from "../../../Hooks/findDateRange";
 import useStockReq from "../../../Hooks/useStockReq";
+import AdminMissingProductsInvoice from "../../../Invoices/AdminMissingProductsInvoice";
 
 const MissingProductsList = () => {
+    const user = { role: 'Managing Director' };
+
+    const invoiceWithAP = 1;
+
     const [products, loading] = useStockReq();
     const [searchTerm, setSearchTerm] = useState('');
     const [year, setYear] = useState('');
@@ -77,6 +83,8 @@ const MissingProductsList = () => {
         });
     }, [mergedProducts, year, month, fromDate, toDate, searchTerm]);
 
+    const { firstDate, lastDate } = findDateRange(filteredProducts);
+
     const uniqueProducts = filteredProducts.filter((product, index, self) =>
         index === self.findIndex((p) =>
             p.productName === product.productName
@@ -116,13 +124,17 @@ const MissingProductsList = () => {
     };
 
     // Print filtered product list
-    const handlePrint = () => {
+    /* const handlePrint = () => {
         const printContent = document.getElementById("printable-section").innerHTML;
         const newWindow = window.open();
         newWindow.document.write(`<html><head><title>Invoice</title></head><body>${printContent}</body></html>`);
         newWindow.print();
         newWindow.close();
-    };
+    }; */
+
+    const handlePrintWithAP = AdminMissingProductsInvoice({ invoiceWithAP, firstDate, lastDate, totalUniqueProducts, totalUnit, totalTP, totalAP, filteredProducts });
+
+    const handlePrint = AdminMissingProductsInvoice({ firstDate, lastDate, totalUniqueProducts, totalUnit, totalTP, totalAP, filteredProducts });
 
     return (
         <div>
@@ -233,22 +245,12 @@ const MissingProductsList = () => {
                                         <div className="flex justify-between items-center py-4 px-6 rounded-lg">
                                             {/* Total Products */}
                                             <div className="flex flex-col justify-center items-center text-center">
-                                                {/* <div className="bg-green-400 text-white p-2 rounded-full shadow-lg">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4" />
-                                        </svg>
-                                    </div> */}
                                                 <p className="font-semibold text-gray-800 mt-2">Total Products</p>
                                                 <p className="font-extrabold text-xl text-green-600">{totalUniqueProducts}</p>
                                             </div>
 
                                             {/* Total Quantity */}
                                             <div className="flex flex-col justify-center items-center text-center">
-                                                {/* <div className="bg-blue-400 text-white p-2 rounded-full shadow-lg">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 20v-8m0-4V4m-6 4h12" />
-                                        </svg>
-                                    </div> */}
                                                 <p className="font-semibold text-gray-800 mt-2">Total Unit</p>
                                                 <p className="font-extrabold text-xl text-blue-600">{totalUnit}</p>
                                             </div>
@@ -263,10 +265,14 @@ const MissingProductsList = () => {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td className="px-4 py-2 border border-gray-200">Actual Price (AP)</td>
-                                                        <td className="px-4 py-2 border border-gray-200 text-right">{totalAP.toLocaleString('en-IN')}/-</td>
-                                                    </tr>
+                                                    {
+                                                        user.role === 'Managing Director'
+                                                        &&
+                                                        <tr>
+                                                            <td className="px-4 py-2 border border-gray-200">Actual Price (AP)</td>
+                                                            <td className="px-4 py-2 border border-gray-200 text-right">{totalAP.toLocaleString('en-IN')}/-</td>
+                                                        </tr>
+                                                    }
                                                     <tr>
                                                         <td className="px-4 py-2 border border-gray-200">Trade Price (TP)</td>
                                                         <td className="px-4 py-2 border border-gray-200 text-right">{totalTP.toLocaleString('en-IN')}/-</td>
@@ -277,12 +283,35 @@ const MissingProductsList = () => {
 
                                         {/* Print Button */}
                                         <div className="flex justify-center items-center">
-                                            <button
-                                                onClick={handlePrint}
-                                                className="col-span-1 md:col-span-3 mt-4 bg-green-500 text-white rounded-lg px-4 py-2 flex items-center justify-center shadow-sm hover:bg-green-600 transition-colors"
-                                            >
-                                                <MdPrint className="mr-2" /> Print Invoice
-                                            </button>
+                                            {
+                                                user.role === 'Managing Director'
+                                                    ?
+                                                    <>
+                                                        <div className="flex justify-around items-center space-x-2">
+                                                            <button
+                                                                onClick={handlePrintWithAP}
+                                                                className="col-span-1 md:col-span-3 mt-4 bg-green-500 text-white rounded-lg px-4 py-2 flex items-center justify-center shadow-sm hover:bg-green-600 transition-colors"
+                                                            >
+                                                                <MdPrint className="mr-2" /> Invoice (With AP)
+                                                            </button>
+                                                            <button
+                                                                onClick={handlePrint}
+                                                                className="col-span-1 md:col-span-3 mt-4 bg-green-500 text-white rounded-lg px-4 py-2 flex items-center justify-center shadow-sm hover:bg-green-600 transition-colors"
+                                                            >
+                                                                <MdPrint className="mr-2" /> Invoice (Without AP)
+                                                            </button>
+                                                        </div>
+                                                    </>
+                                                    :
+                                                    <>
+                                                        <button
+                                                            onClick={handlePrint}
+                                                            className="col-span-1 md:col-span-3 mt-4 bg-green-500 text-white rounded-lg px-4 py-2 flex items-center justify-center shadow-sm hover:bg-green-600 transition-colors"
+                                                        >
+                                                            <MdPrint className="mr-2" /> Print Invoice
+                                                        </button>
+                                                    </>
+                                            }
                                         </div>
                                     </div>
                                 </div>
