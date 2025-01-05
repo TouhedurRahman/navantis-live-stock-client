@@ -4,6 +4,17 @@ import { FaCheck, FaTimes } from "react-icons/fa";
 import Swal from 'sweetalert2';
 
 const ExpireRequestCard = ({ idx, product, refetch }) => {
+    const { user } = true;
+
+    const getTodayDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    };
+
     const addDepotExpiredMutation = useMutation({
         mutationFn: async () => {
             const newProduct = {
@@ -21,6 +32,29 @@ const ExpireRequestCard = ({ idx, product, refetch }) => {
         },
         onError: (error) => {
             console.error("Error update expired status:", error);
+        },
+    });
+
+    const addStockOutDepotMutation = useMutation({
+        mutationFn: async () => {
+            const newProduct = {
+                productName: product.productName,
+                productCode: product.productCode,
+                batch: product.batch,
+                expire: product.expire,
+                actualPrice: Number(product.actualPrice),
+                tradePrice: Number(product.tradePrice),
+                totalQuantity: Number(product.totalQuantity),
+                date: getTodayDate(),
+                addedby: user?.displayName || "Navantis Pharma Limited",
+                addedemail: user?.email || "info@navantispharma.com"
+            };
+
+            const response = await axios.post('http://localhost:5000/stock-out-depot', newProduct);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error stock out depot:", error);
         },
     });
 
@@ -67,6 +101,7 @@ const ExpireRequestCard = ({ idx, product, refetch }) => {
                 try {
                     await Promise.all([
                         addDepotExpiredMutation.mutateAsync(),
+                        addStockOutDepotMutation.mutateAsync(),
                         deleteExpireRequestMutation.mutateAsync()
                     ]);
 
