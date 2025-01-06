@@ -86,6 +86,30 @@ const DamageRequestProductCard = ({ idx, product, refetch }) => {
         },
     });
 
+    const addDamagedExpiredMutation = useMutation({
+        mutationFn: async () => {
+            const newProduct = {
+                productName: product.productName,
+                productCode: product.productCode,
+                batch: product.batch,
+                expire: product.expire,
+                actualPrice: Number(product.actualPrice),
+                tradePrice: Number(product.tradePrice),
+                totalQuantity: Number(product.totalQuantity),
+                status: 'damaged',
+                date: getTodayDate(),
+                addedby: user?.displayName || "Navantis Pharma Limited",
+                addedemail: user?.email || "info@navantispharma.com"
+            };
+
+            const response = await axios.post('http://localhost:5000/damaged-expired', newProduct);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error stock damaged products:", error);
+        },
+    });
+
     const handleDamageStock = () => {
         Swal.fire({
             title: "Sure to stock Damae?",
@@ -101,7 +125,8 @@ const DamageRequestProductCard = ({ idx, product, refetch }) => {
                     await Promise.all([
                         whDamagedProductMutation.mutateAsync(),
                         updateProductMutation.mutateAsync(),
-                        whSoutProductMutation.mutateAsync()
+                        whSoutProductMutation.mutateAsync(),
+                        addDamagedExpiredMutation.mutateAsync()
                     ]);
 
                     refetch();
