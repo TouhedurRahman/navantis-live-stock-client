@@ -40,6 +40,7 @@ const useMenuConfig = () => {
                 { to: '/depot-receive-request', icon: <VscGitPullRequestGoToChanges className='me-2' />, label: 'Receive Request' },
                 { to: '/depot-list', icon: <FaListUl className='me-2' />, label: 'List' },
                 { to: '/depot-in', icon: <FaArrowDown className='me-2' />, label: 'Stock In' },
+                { to: '/depot-out', icon: <FaArrowUp className='me-2' />, label: 'Stock Out' },
                 { to: '/depot-expired', icon: <FcExpired className='me-2' />, label: 'Expired' },
             ],
         },
