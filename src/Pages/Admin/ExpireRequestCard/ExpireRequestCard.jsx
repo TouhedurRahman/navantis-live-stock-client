@@ -58,6 +58,30 @@ const ExpireRequestCard = ({ idx, product, refetch }) => {
         },
     });
 
+    const addDamagedExpiredMutation = useMutation({
+        mutationFn: async () => {
+            const newProduct = {
+                productName: product.productName,
+                productCode: product.productCode,
+                batch: product.batch,
+                expire: product.expire,
+                actualPrice: Number(product.actualPrice),
+                tradePrice: Number(product.tradePrice),
+                totalQuantity: Number(product.totalQuantity),
+                status: 'expired',
+                date: getTodayDate(),
+                addedby: user?.displayName || "Navantis Pharma Limited",
+                addedemail: user?.email || "info@navantispharma.com"
+            };
+
+            const response = await axios.post('http://localhost:5000/damaged-expired', newProduct);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error stock expired products:", error);
+        },
+    });
+
     const deleteExpireRequestMutation = useMutation({
         mutationFn: async () => {
             const response = await axios.delete(`http://localhost:5000/expire-request/${product._id}`);
@@ -102,6 +126,7 @@ const ExpireRequestCard = ({ idx, product, refetch }) => {
                     await Promise.all([
                         addDepotExpiredMutation.mutateAsync(),
                         addStockOutDepotMutation.mutateAsync(),
+                        addDamagedExpiredMutation.mutateAsync(),
                         deleteExpireRequestMutation.mutateAsync()
                     ]);
 
