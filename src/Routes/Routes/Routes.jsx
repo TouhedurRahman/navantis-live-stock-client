@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Main from "../../Layout/Main/Main";
+import AdminDamagedExpiredList from "../../Pages/Admin/AdminDamagedExpiredList/AdminDamagedExpiredList";
 import DamageRequest from "../../Pages/Admin/DamageRequest/DamageRequest";
 import DepotRequest from "../../Pages/Admin/DepotRequest/DepotRequest";
 import ExpireRequest from "../../Pages/Admin/ExpireRequest/ExpireRequest";
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
             {
                 path: "/price-update",
                 element: <PriceUpdateList />
+            },
+            {
+                path: "/dmg-exp",
+                element: <AdminDamagedExpiredList />
             },
             {
                 path: "/add-product-warehouse",
