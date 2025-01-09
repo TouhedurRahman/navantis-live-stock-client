@@ -3,7 +3,6 @@ import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
 import { FaEye } from "react-icons/fa";
 import { ImSearch } from 'react-icons/im';
 import { MdPrint } from 'react-icons/md';
-import { useLocation } from "react-router-dom";
 import Loader from "../../../Components/Loader/Loader";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import WhSinDetailsModal from "../../../Components/WhSinDetailsModal/WhSinDetailsModal";
@@ -30,8 +29,6 @@ const StockInList = () => {
     const currentYear = new Date().getFullYear();
 
     const years = Array.from({ length: currentYear - 1999 }, (_, i) => currentYear - i);
-
-    const location = useLocation();
 
     // Filtered products based on search and filters
     const filteredProducts = useMemo(() => {
