@@ -9,7 +9,7 @@ import useStockReq from "../../../Hooks/useStockReq";
 import AdminMissingProductsInvoice from "../../../Invoices/AdminMissingProductsInvoice";
 
 const MissingProductsList = () => {
-    const user = { role: 'Managing Director' };
+    const user = { designation: 'Managing Director' };
 
     const invoiceWithAP = 1;
 
@@ -266,7 +266,7 @@ const MissingProductsList = () => {
                                                 </thead>
                                                 <tbody>
                                                     {
-                                                        user.role === 'Managing Director'
+                                                        user?.designation === 'Managing Director'
                                                         &&
                                                         <tr>
                                                             <td className="px-4 py-2 border border-gray-200">Actual Price (AP)</td>
@@ -284,7 +284,7 @@ const MissingProductsList = () => {
                                         {/* Print Button */}
                                         <div className="flex justify-center items-center">
                                             {
-                                                user.role === 'Managing Director'
+                                                user?.designation === 'Managing Director'
                                                     ?
                                                     <>
                                                         <div className="flex justify-around items-center space-x-2">
