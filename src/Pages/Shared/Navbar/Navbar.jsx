@@ -4,8 +4,10 @@ import { useState } from 'react';
 import { FaCircleUser, FaUsers } from "react-icons/fa6";
 import { RiLogoutCircleRFill } from "react-icons/ri";
 import { Link, Outlet } from 'react-router-dom';
+import useAuth from '../../../Hooks/useAuth';
 import useLogOut from '../../../Hooks/useLogOut';
 import useMenuConfig from '../../../Hooks/useMenuConfig';
+import useSingleUser from '../../../Hooks/useSingleUser';
 
 const Navbar = () => {
     const { menuConfig } = useMenuConfig();
@@ -17,9 +19,8 @@ const Navbar = () => {
 
     const handleLogOut = useLogOut();
 
-    const user = true;
-    const loadingSingleUser = false;
-    const singleUser = false;
+    const { user } = useAuth();
+    const [singleUser, loadingSingleUser] = useSingleUser();
 
     const toggleSidebar = () => {
         setSidebarOpen(!isSidebarOpen);
@@ -107,7 +108,7 @@ const Navbar = () => {
                         <FontAwesomeIcon icon={isMobileMenuOpen ? faTimes : faBars} />
                     </button>
                     <div className='flex justify-center items-center'>
-                        <button className="btn btn-ghost text-white">Hi, {user.displayName}</button>
+                        <button className="btn btn-ghost text-white">Hi, {user?.displayName}</button>
                         {/***** Login & profile section *****/}
                         {
                             user
@@ -126,7 +127,7 @@ const Navbar = () => {
                                                             src={
                                                                 singleUser.profilePicture
                                                                     ?
-                                                                    `${singleUser.profilePicture}`
+                                                                    `${singleUser?.profilePicture}`
                                                                     :
                                                                     "https://i.ibb.co/6r3zmMg/user.jpg"
                                                             }
@@ -137,7 +138,11 @@ const Navbar = () => {
                                     </div>
                                     <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-[#1F2937] rounded-lg w-52 rounded-t-none shadow-0">
                                         <li><Link to="my-profile" className='text-white' onClick={() => document.activeElement.blur()}><FaCircleUser />Profile</Link></li>
-                                        <li><Link to="all-users" className='text-white' onClick={() => document.activeElement.blur()}><FaUsers />All Users</Link></li>
+                                        {
+                                            singleUser?.designation === 'IT Officer'
+                                            &&
+                                            <li><Link to="all-users" className='text-white' onClick={() => document.activeElement.blur()}><FaUsers />All Users</Link></li>
+                                        }
                                         <li><Link onClick={() => { handleLogOut(); document.activeElement.blur(); }} className='text-white'><RiLogoutCircleRFill />Log Out</Link></li>
                                     </ul>
                                 </div>
