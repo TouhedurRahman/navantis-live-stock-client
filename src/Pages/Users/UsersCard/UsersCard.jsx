@@ -20,7 +20,7 @@ const UsersCard = ({ user, idx, refetch }) => {
             confirmButtonText: "Yes, Make Admin!"
         }).then((result) => {
             if (result.isConfirmed) {
-                const url = `https://api.navantispharma.com/users/admin/${user._id}`;
+                const url = `http://localhost:5000/users/admin/${user._id}`;
                 fetch(url, {
                     method: 'PATCH'
                 })
@@ -46,7 +46,7 @@ const UsersCard = ({ user, idx, refetch }) => {
             confirmButtonText: "Yes, delete it!"
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.delete(`https://api.navantispharma.com/user/${user._id}`)
+                axios.delete(`http://localhost:5000/user/${user._id}`)
                     .then(response => {
                         if (response.data.deletedCount > 0) {
                             refetch();
