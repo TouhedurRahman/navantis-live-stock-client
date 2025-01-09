@@ -29,8 +29,7 @@ const UserDetailsModal = ({ user, onClose }) => {
                     <p className="">{user.designation && user.designation}</p>
                     <p className="text-sm text-gray-500 mt-3">✉ {user.email}</p>
                     <p className="text-sm text-gray-500">{user.mobile && `✆ ${user.mobile}`}</p>
-                    <p className="mt-3">{user.role === 'admin' ? 'Admin' : 'Requested for admin approval'}</p>
-                    {/* Add more user details here as needed */}
+                    <p className="mt-3">{!user?.designation && 'Requested to assign designation'}</p>
                 </div>
             </div>
         </div>

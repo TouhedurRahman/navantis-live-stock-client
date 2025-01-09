@@ -8,29 +8,55 @@ import UserDetailsModal from "../../../Components/UserDetailsModal/UserDetailsMo
 
 const UsersCard = ({ user, idx, refetch }) => {
     const [selectedUser, setSelectedUser] = useState(null);
+    const [showRolePopup, setShowRolePopup] = useState(false);
+    const [newRole, setNewRole] = useState("");
 
-    const handleMakeAdmin = user => {
+    const handleUpdateDesignation = () => {
+        if (!newRole.trim()) {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Designation cannot be empty!",
+            });
+            return;
+        }
+
         Swal.fire({
             title: "Are you sure?",
-            // text: "You won't be able to revert this!",
+            text: `Update designation to "${newRole}"?`,
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, Make Admin!"
+            confirmButtonText: "Yes, update role!",
         }).then((result) => {
             if (result.isConfirmed) {
-                const url = `http://localhost:5000/users/admin/${user._id}`;
-                fetch(url, {
-                    method: 'PATCH'
-                })
-                    .then(res => res.json())
-                    .then(data => {
-                        console.log(data);
-                        if (data.modifiedCount) {
+                const updatedDesignation = {
+                    designation: newRole
+                }
+                axios
+                    .patch(`http://localhost:5000/users/admin/${user._id}`, updatedDesignation)
+                    .then((response) => {
+                        if (response.data.modifiedCount > 0) {
                             refetch();
+                            Swal.fire({
+                                title: "Success!",
+                                text: "User role updated successfully.",
+                                icon: "success",
+                                confirmButtonText: "OK",
+                            });
                         }
+                        setShowRolePopup(false);
+                        setNewRole("");
                     })
+                    .catch((err) => {
+                        console.error(err);
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: "Failed to update role!",
+                        });
+                    });
             }
         });
     };
@@ -43,11 +69,12 @@ const UsersCard = ({ user, idx, refetch }) => {
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
+            confirmButtonText: "Yes, delete it!",
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.delete(`http://localhost:5000/user/${user._id}`)
-                    .then(response => {
+                axios
+                    .delete(`http://localhost:5000/user/${user._id}`)
+                    .then((response) => {
                         if (response.data.deletedCount > 0) {
                             refetch();
                             Swal.fire({
@@ -55,13 +82,13 @@ const UsersCard = ({ user, idx, refetch }) => {
                                 text: "User has been deleted.",
                                 icon: "success",
                                 confirmButtonText: "OK",
-                                confirmButtonColor: "#3B82F6"
+                                confirmButtonColor: "#3B82F6",
                             });
                         }
-                    })
+                    });
             }
         });
-    }
+    };
 
     const handleViewDetails = (user) => {
         setSelectedUser(user);
@@ -69,16 +96,9 @@ const UsersCard = ({ user, idx, refetch }) => {
 
     return (
         <>
-
             <tr>
                 <td className="text-center">
-                    {
-                        (idx < 10)
-                            ?
-                            `0${idx + 1}`
-                            :
-                            `${idx + 1}`
-                    }
+                    {idx < 10 ? `0${idx + 1}` : `${idx + 1}`}
                 </td>
                 <td className="flex justify-center items-center">
                     <div className="flex items-center gap-3">
@@ -87,12 +107,11 @@ const UsersCard = ({ user, idx, refetch }) => {
                                 <img
                                     src={
                                         user.profilePicture
-                                            ?
-                                            `${user.profilePicture}`
-                                            :
-                                            "https://i.ibb.co/6r3zmMg/user.jpg"
+                                            ? `${user.profilePicture}`
+                                            : "https://i.ibb.co/6r3zmMg/user.jpg"
                                     }
-                                    alt="Loading..." />
+                                    alt="Loading..."
+                                />
                             </div>
                         </div>
                     </div>
@@ -100,35 +119,29 @@ const UsersCard = ({ user, idx, refetch }) => {
                 <td>
                     <div>
                         <div className="font-bold">{user.name}</div>
-                        <div className="text-sm opacity-80">{user.designation && user.designation}</div>
+                        <div className="text-sm opacity-80">{user.designation}</div>
                     </div>
                 </td>
                 <td>
-                    <p>
-                        {user.email}
-                    </p>
+                    <p>{user.email}</p>
                 </td>
                 <td>
-                    {
-                        user.role === 'admin'
-                            ?
-                            <div className="text-center">Admin</div>
-                            :
-                            <div className="flex justify-center items-center">
-                                <button
-                                    onClick={() => handleMakeAdmin(user)}
-                                    className="p-2 rounded-[5px] hover:bg-orange-100 focus:outline-none">
-                                    <FaUserShield className="text-orange-500" />
-                                </button>
-                            </div>
-                    }
+                    <div className="flex justify-center items-center">
+                        <button
+                            onClick={() => setShowRolePopup(true)} // Show popup
+                            className="p-2 rounded-[5px] hover:bg-orange-100 focus:outline-none"
+                        >
+                            <FaUserShield className="text-orange-500" />
+                        </button>
+                    </div>
                 </td>
                 <th>
                     <div className="flex justify-center items-center space-x-4 text-md">
                         <Link>
                             <button
                                 onClick={() => handleViewDetails(user)}
-                                className="p-2 rounded-[5px] hover:bg-green-100 focus:outline-none">
+                                className="p-2 rounded-[5px] hover:bg-green-100 focus:outline-none"
+                            >
                                 <FaEye className="text-green-500" />
                             </button>
                         </Link>
@@ -141,6 +154,53 @@ const UsersCard = ({ user, idx, refetch }) => {
                     </div>
                 </th>
             </tr>
+
+            {/* Role Update Popup */}
+            {showRolePopup && (
+                <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+                    <div className="relative bg-white p-8 rounded-2xl shadow-2xl transform transition-transform duration-300 scale-105">
+                        {/* Close Icon */}
+                        <button
+                            onClick={() => setShowRolePopup(false)}
+                            className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 transition"
+                        >
+                            ✖
+                        </button>
+
+                        {/* Title */}
+                        <h2 className="text-xl font-medium mb-6 text-gray-800 text-center">
+                            Update Designation
+                        </h2>
+
+                        {/* Input */}
+                        <input
+                            type="text"
+                            value={newRole}
+                            onChange={(e) => setNewRole(e.target.value)}
+                            className="border-2 border-gray-300 rounded-lg px-4 py-3 w-full mb-6 focus:ring-4 focus:ring-blue-300 focus:outline-none shadow-md transition"
+                            placeholder="Enter desination"
+                        />
+
+                        {/* Action Buttons */}
+                        <div className="flex justify-end space-x-4">
+                            <button
+                                onClick={() => setShowRolePopup(false)}
+                                className="px-5 py-2 bg-gray-300 text-gray-700 rounded-lg shadow hover:bg-gray-400 hover:shadow-md transition duration-300"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleUpdateDesignation}
+                                className="px-5 py-2 bg-[#3B82F6] text-white rounded-lg shadow-lg hover:shadow-xl hover:from-blue-600 hover:to-blue-800 transition duration-300"
+                            >
+                                Update
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* User Details Modal */}
             {selectedUser && (
                 <UserDetailsModal
                     user={selectedUser}

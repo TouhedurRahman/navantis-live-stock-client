@@ -182,7 +182,8 @@ const MyProfile = () => {
                                         <hr></hr>
                                         <p className="mb-5 text-sm font-bold">
                                             {
-                                                (singleUser?.designation) ? "✓ Admin" : "✓ User"
+                                                // (singleUser?.designation) ? "✓ Admin" : "✓ User"
+                                                singleUser?.designation
                                             }
                                         </p>
                                         {/* <p className='text font-bold my-2 text-gray-600'>Designation</p>
