@@ -16,6 +16,7 @@ import DepotStockInList from "../../Pages/Depot/DepotStockInList/DepotStockInLis
 import DepotStockOutList from "../../Pages/Depot/DepotStockOutList/DepotStockOutList";
 import Home from "../../Pages/Home/Home/Home";
 import MyProfile from "../../Pages/Profile/MyProfile/MyProfile";
+import AllUsers from "../../Pages/Users/AllUsers/AllUsers";
 import DepotDelivery from "../../Pages/Warehouse/DepotDelivery/DepotDelivery";
 import StockInList from "../../Pages/Warehouse/StockInList/StockInList";
 import StockOutList from "../../Pages/Warehouse/StockOutList/StockOutList";
@@ -117,6 +118,10 @@ const router = createBrowserRouter([
             {
                 path: '/my-profile',
                 element: <MyProfile />
+            },
+            {
+                path: '/all-users',
+                element: <AllUsers />
             },
         ],
     },
