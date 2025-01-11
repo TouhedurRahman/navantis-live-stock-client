@@ -22,6 +22,10 @@ const MissingProductsList = () => {
     const [productsPerPage, setProductsPerPage] = useState(5);
     const [currentPage, setCurrentPage] = useState(1);
 
+    const currentYear = new Date().getFullYear();
+
+    const years = Array.from({ length: currentYear - 1999 }, (_, i) => currentYear - i);
+
     /* const approvedProducts = products.filter(product => product.status === "approved");
 
     // Filtered products based on search and filters
@@ -185,8 +189,11 @@ const MissingProductsList = () => {
                                                 className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm"
                                             >
                                                 <option value="">All Years</option>
-                                                <option value="2024">2024</option>
-                                                <option value="2023">2023</option>
+                                                {years.map((y) => (
+                                                    <option key={y} value={y}>
+                                                        {y}
+                                                    </option>
+                                                ))}
                                             </select>
                                         </div>
 
