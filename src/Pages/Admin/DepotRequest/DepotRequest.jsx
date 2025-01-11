@@ -3,12 +3,15 @@ import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
 import { ImSearch } from 'react-icons/im';
 import Loader from "../../../Components/Loader/Loader";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
+import useDepotProducts from "../../../Hooks/useDepotProducts";
 import useDepotRequest from "../../../Hooks/useDepotRequest";
+import useWhProducts from "../../../Hooks/useWhProducts";
 import DepotReqProductCard from "../DepotReqProductCard/DepotReqProductCard";
 
 const DepotRequest = () => {
     const [depotReqProducts, dptReqLoading, dptReqRefetch] = useDepotRequest();
-    // const [whProducts, whProductsLoading] = useWhProducts();
+    const [whProducts] = useWhProducts();
+    const [depotProducts] = useDepotProducts();
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
@@ -148,6 +151,8 @@ const DepotRequest = () => {
                                                         key={product._id}
                                                         product={product}
                                                         refetch={dptReqRefetch}
+                                                        whProducts={whProducts}
+                                                        depotProducts={depotProducts}
                                                     // whProducts={whProducts}
                                                     />
                                                 ))

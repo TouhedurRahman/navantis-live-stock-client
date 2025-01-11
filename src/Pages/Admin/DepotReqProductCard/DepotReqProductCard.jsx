@@ -4,21 +4,19 @@ import { useState } from 'react';
 import { FaEye, FaTimes } from "react-icons/fa";
 import Swal from 'sweetalert2';
 import DepotReqVaAModal from '../../../Components/DepotReqVaAModal/DepotReqVaAModal';
-import useDepotProducts from '../../../Hooks/useDepotProducts';
-import useWhProducts from '../../../Hooks/useWhProducts';
 
-const DepotReqProductCard = ({ idx, product, refetch }) => {
-    const [whProducts, whProductsLoading] = useWhProducts();
-    const [depotProducts] = useDepotProducts();
+const DepotReqProductCard = ({ idx, product, refetch, whProducts, depotProducts }) => {
     const [isapproveModalOpen, setapproveModalOpen] = useState(false);
 
     const productQinWarehouse = whProducts
-        .filter(product => product.productName === product.productName)
-        .reduce((sum, product) => sum + product.totalQuantity, 0) || 0;
+        .filter(whProduct => whProduct.productName === product.productName)
+        .reduce((sum, whProduct) => sum + whProduct.totalQuantity, 0) || 0;
+    console.log(productQinWarehouse);
 
     const productQinDepot = depotProducts
-        .filter(product => product.productName === product.productName)
-        .reduce((sum, product) => sum + product.totalQuantity, 0) || 0;
+        .filter(depotProduct => depotProduct.productName === product.productName)
+        .reduce((sum, depotProduct) => sum + depotProduct.totalQuantity, 0) || 0;
+    console.log(productQinDepot);
 
     const deniedDptReqMutation = useMutation({
         mutationFn: async () => {
@@ -57,7 +55,6 @@ const DepotReqProductCard = ({ idx, product, refetch }) => {
                         timer: 1500
                     });
                 } catch (error) {
-                    // console.error("Error adding product:", error);
                     Swal.fire({
                         title: "Error!",
                         text: "Failed to denied request. Please try again.",
