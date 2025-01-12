@@ -139,7 +139,10 @@ const Navbar = () => {
                                     <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-[#1F2937] rounded-lg w-52 rounded-t-none shadow-0">
                                         <li><Link to="my-profile" className='text-white' onClick={() => document.activeElement.blur()}><FaCircleUser />Profile</Link></li>
                                         {
-                                            singleUser?.designation === 'IT Officer'
+                                            [
+                                                'Managing Director',
+                                                'IT Officer'
+                                            ].includes(singleUser?.designation)
                                             &&
                                             <li><Link to="all-users" className='text-white' onClick={() => document.activeElement.blur()}><FaUsers />All Users</Link></li>
                                         }
