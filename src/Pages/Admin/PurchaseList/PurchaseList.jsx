@@ -5,10 +5,11 @@ import { MdPrint } from 'react-icons/md';
 import Loader from "../../../Components/Loader/Loader";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import usePurchaseOrder from "../../../Hooks/usePurchaseOrder";
+import useSingleUser from "../../../Hooks/useSingleUser";
 import AdminPurchaseInvoice from "../../../Invoices/AdminPurchaseInvoice";
 
 const PurchaseList = () => {
-    const user = { designation: 'Managing Director' };
+    const [singleUser] = useSingleUser();
 
     const invoiceWithAP = 1;
 
@@ -240,7 +241,7 @@ const PurchaseList = () => {
                                                 </thead>
                                                 <tbody>
                                                     {
-                                                        user?.designation === 'Managing Director'
+                                                        singleUser?.designation === 'Managing Director'
                                                         &&
                                                         <tr>
                                                             <td className="px-4 py-2 border border-gray-200">Actual Price (AP)</td>
@@ -258,7 +259,7 @@ const PurchaseList = () => {
                                         {/* Print Button */}
                                         <div className="flex justify-center items-center">
                                             {
-                                                user?.designation === 'Managing Director'
+                                                singleUser?.designation === 'Managing Director'
                                                     ?
                                                     <>
                                                         <div className="flex justify-around items-center space-x-2">
