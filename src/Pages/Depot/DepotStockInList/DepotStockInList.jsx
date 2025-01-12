@@ -7,11 +7,12 @@ import DepotDetailsModal from "../../../Components/DepotDetailsModal/DepotDetail
 import Loader from "../../../Components/Loader/Loader";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import findDateRange from "../../../Hooks/findDateRange";
+import useSingleUser from "../../../Hooks/useSingleUser";
 import useStockInDepot from "../../../Hooks/useStockInDepot";
 import DepotStockInInvoice from "../../../Invoices/DepotStockInInvoice";
 
 const DepotStockInList = () => {
-    const user = { designation: 'Managing Director' };
+    const [singleUser] = useSingleUser();
 
     const invoiceWithAP = 1;
 
@@ -231,7 +232,7 @@ const DepotStockInList = () => {
                                                 </thead>
                                                 <tbody>
                                                     {
-                                                        user?.designation === 'Managing Director'
+                                                        singleUser?.designation === 'Managing Director'
                                                         &&
                                                         <tr>
                                                             <td className="px-4 py-2 border border-gray-200">Actual Price (AP)</td>
@@ -249,7 +250,7 @@ const DepotStockInList = () => {
                                         {/* Print Button */}
                                         <div className="flex justify-center items-center">
                                             {
-                                                user?.designation === 'Managing Director'
+                                                singleUser?.designation === 'Managing Director'
                                                     ?
                                                     <>
                                                         <div className="flex justify-around items-center space-x-2">
