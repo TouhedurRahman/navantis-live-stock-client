@@ -5,8 +5,11 @@ import { FaEye, FaUserShield } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import UserDetailsModal from "../../../Components/UserDetailsModal/UserDetailsModal";
+import useSingleUser from "../../../Hooks/useSingleUser";
 
 const UsersCard = ({ user, idx, refetch }) => {
+    const [singleUser] = useSingleUser();
+
     const [selectedUser, setSelectedUser] = useState(null);
     const [showRolePopup, setShowRolePopup] = useState(false);
     const [newRole, setNewRole] = useState("");
@@ -125,16 +128,20 @@ const UsersCard = ({ user, idx, refetch }) => {
                 <td>
                     <p>{user.email}</p>
                 </td>
-                <td>
-                    <div className="flex justify-center items-center">
-                        <button
-                            onClick={() => setShowRolePopup(true)} // Show popup
-                            className="p-2 rounded-[5px] hover:bg-orange-100 focus:outline-none"
-                        >
-                            <FaUserShield className="text-orange-500" />
-                        </button>
-                    </div>
-                </td>
+                {
+                    singleUser?.designation === 'IT Officer'
+                    &&
+                    <td>
+                        <div className="flex justify-center items-center">
+                            <button
+                                onClick={() => setShowRolePopup(true)} // Show popup
+                                className="p-2 rounded-[5px] hover:bg-orange-100 focus:outline-none"
+                            >
+                                <FaUserShield className="text-orange-500" />
+                            </button>
+                        </div>
+                    </td>
+                }
                 <th>
                     <div className="flex justify-center items-center space-x-4 text-md">
                         <Link>

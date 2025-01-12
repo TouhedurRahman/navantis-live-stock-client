@@ -4,10 +4,12 @@ import { ImSearch } from "react-icons/im";
 import Loader from "../../../Components/Loader/Loader";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import useAllUsers from "../../../Hooks/useAllUsers";
+import useSingleUser from "../../../Hooks/useSingleUser";
 import UsersCard from "../UsersCard/UsersCard";
 
 const AllUsers = () => {
     const [allUsers, loading, refetch] = useAllUsers();
+    const [singleUser] = useSingleUser();
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
@@ -102,7 +104,11 @@ const AllUsers = () => {
                                                 <th className="text-center">Image</th>
                                                 <th>Name</th>
                                                 <th>Email</th>
-                                                <th className="text-center">Update Designation</th>
+                                                {
+                                                    singleUser?.designation === 'IT Officer'
+                                                    &&
+                                                    <th className="text-center">Update Designation</th>
+                                                }
                                                 <th className="text-center">Action</th>
                                             </tr>
                                         </thead>
