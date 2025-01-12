@@ -8,10 +8,11 @@ import PageTitle from "../../../Components/PageTitle/PageTitle";
 import WarehouseDetailsModal from "../../../Components/WarehouseDetailsModal/WarehouseDetailsModal";
 import findDateRange from "../../../Hooks/findDateRange";
 import useDamagedProductsWh from "../../../Hooks/useDamagedProductsWh";
+import useSingleUser from "../../../Hooks/useSingleUser";
 import WarehouseDamagedProductsInvoice from "../../../Invoices/WarehouseDamagedProductsInvoice";
 
 const WhDamagedProduct = () => {
-    const user = { designation: 'Managing Director' };
+    const [singleUser] = useSingleUser();
 
     const invoiceWithAP = 1;
 
@@ -242,7 +243,7 @@ const WhDamagedProduct = () => {
                                                 </thead>
                                                 <tbody>
                                                     {
-                                                        user?.designation === 'Managing Director'
+                                                        singleUser?.designation === 'Managing Director'
                                                         &&
                                                         <tr>
                                                             <td className="px-4 py-2 border border-gray-200">Actual Price (AP)</td>
@@ -260,7 +261,7 @@ const WhDamagedProduct = () => {
                                         {/* Print Button */}
                                         <div className="flex justify-center items-center">
                                             {
-                                                user?.designation === 'Managing Director'
+                                                singleUser?.designation === 'Managing Director'
                                                     ?
                                                     <>
                                                         <div className="flex justify-around items-center space-x-2">
