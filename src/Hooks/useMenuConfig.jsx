@@ -1,9 +1,10 @@
 import {
-    FaArrowDown, FaArrowUp, FaExclamationCircle, FaListUl, FaShoppingCart, FaTrashAlt, FaTruck, FaUserCog, FaWarehouse
+    FaArrowDown, FaArrowUp, FaCartPlus, FaExclamationCircle, FaListUl, FaShoppingCart, FaTrashAlt, FaTruck, FaUserCog, FaWarehouse
 } from 'react-icons/fa';
 import { FcExpired } from 'react-icons/fc';
 import { GiDustCloud } from 'react-icons/gi';
 import { IoIosAddCircle } from 'react-icons/io';
+import { MdOutlineShoppingBag } from 'react-icons/md';
 import { TbCoinTakaFilled } from 'react-icons/tb';
 import { VscGitPullRequestGoToChanges } from 'react-icons/vsc';
 import useSingleUser from './useSingleUser';
@@ -15,6 +16,7 @@ const useMenuConfig = () => {
         admin: ["Managing Director"],
         warehouse: ["Managing Director", "Warehouse Incharge"],
         depot: ["Managing Director", "Depot Incharge"],
+        order: ["Managing Director", "IT Officer", "Warehouse Incharge", "Depot Incharge"]
     };
 
     const baseMenuConfig = {};
@@ -59,6 +61,15 @@ const useMenuConfig = () => {
                 { to: '/depot-in', icon: <FaArrowDown className='me-2' />, label: 'Stock In' },
                 { to: '/depot-out', icon: <FaArrowUp className='me-2' />, label: 'Stock Out' },
                 { to: '/depot-expired', icon: <FcExpired className='me-2' />, label: 'Expired' },
+            ],
+        };
+    }
+
+    if (allowedDesignations.order.includes(singleUser?.designation)) {
+        baseMenuConfig.order = {
+            icon: <MdOutlineShoppingBag className="mr-2" onClick={() => setSidebarOpen(true)} />,
+            links: [
+                { to: '/place-order', icon: <FaCartPlus className='me-2' />, label: 'Place Order' },
             ],
         };
     }
