@@ -12,6 +12,8 @@ const Main = () => {
     const { user } = useAuth();
     const [singleUser, loadingSingleUser] = useSingleUser();
 
+    const userDesignation = singleUser?.designation ?? null;
+
     if (!user) {
         return <Login />;
     }
@@ -31,7 +33,7 @@ const Main = () => {
                     :
                     <>
                         {
-                            singleUser?.designation !== ''
+                            userDesignation !== null
                                 ?
                                 <Navbar />
                                 :
