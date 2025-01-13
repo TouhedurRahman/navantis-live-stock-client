@@ -1,0 +1,156 @@
+[
+  {
+    "id": 1,
+    "name": "Ratan Banik",
+    "designation": "Managing Director",
+    "parentId": null,
+    "grandParentId": null
+  },
+  {
+    "id": 2,
+    "name": "Zonal Manager - 01",
+    "designation": "Zonal Manager",
+    "parentId": 1,
+    "grandParentId": null
+  },
+  {
+    "id": 3,
+    "name": "Area Manager - 01",
+    "designation": "Area Manager",
+    "parentId": 2,
+    "grandParentId": 1
+  },
+  {
+    "id": 4,
+    "name": "Area Manager - 02",
+    "designation": "Area Manager",
+    "parentId": 2,
+    "grandParentId": 1
+  },
+  {
+    "id": 5,
+    "name": "Area Manager - 03",
+    "designation": "Area Manager",
+    "parentId": 2,
+    "grandParentId": 1
+  },
+  {
+    "id": 6,
+    "name": "Area Manager - 04",
+    "designation": "Area Manager",
+    "parentId": 2,
+    "grandParentId": 1
+  },
+  {
+    "id": 7,
+    "name": "MPO - 01",
+    "designation": "Medical Promotion Officer",
+    "parentId": 3,
+    "grandParentId": 2
+  },
+  {
+    "id": 8,
+    "name": "SCC - 01",
+    "designation": "Screen Care Coordinator",
+    "parentId": 3,
+    "grandParentId": 2
+  },
+  {
+    "id": 9,
+    "name": "MPO - 02",
+    "designation": "Medical Promotion Officer",
+    "parentId": 3,
+    "grandParentId": 2
+  },
+  {
+    "id": 10,
+    "name": "MPO - 03",
+    "designation": "Sr. Medical Promotion Officer",
+    "parentId": 3,
+    "grandParentId": 2
+  },
+  {
+    "id": 11,
+    "name": "SCC - 02",
+    "designation": "Screen Care Coordinator",
+    "parentId": 4,
+    "grandParentId": 2
+  },
+  {
+    "id": 12,
+    "name": "MPO - 04",
+    "designation": "Medical Promotion Officer",
+    "parentId": 4,
+    "grandParentId": 2
+  },
+  {
+    "id": 13,
+    "name": "MPO - 05",
+    "designation": "Sr. Medical Promotion Officer",
+    "parentId": 4,
+    "grandParentId": 2
+  },
+  {
+    "id": 14,
+    "name": "MPO - 06",
+    "designation": "Medical Promotion Officer",
+    "parentId": 4,
+    "grandParentId": 2
+  },
+  {
+    "id": 15,
+    "name": "MPO - 07",
+    "designation": "Medical Promotion Officer",
+    "parentId": 5,
+    "grandParentId": 2
+  },
+  {
+    "id": 16,
+    "name": "MPO - 08",
+    "designation": "Medical Promotion Officer",
+    "parentId": 5,
+    "grandParentId": 2
+  },
+  {
+    "id": 17,
+    "name": "SCC - 03",
+    "designation": "Screen Care Coordinator",
+    "parentId": 5,
+    "grandParentId": 2
+  },
+  {
+    "id": 18,
+    "name": "MPO - 09",
+    "designation": "Sr. Medical Promotion Officer",
+    "parentId": 5,
+    "grandParentId": 2
+  },
+  {
+    "id": 19,
+    "name": "MPO - 10",
+    "designation": "Medical Promotion Officer",
+    "parentId": 6,
+    "grandParentId": 2
+  },
+  {
+    "id": 20,
+    "name": "MPO - 11",
+    "designation": "Medical Promotion Officer",
+    "parentId": 6,
+    "grandParentId": 2
+  },
+  {
+    "id": 21,
+    "name": "MPO - 12",
+    "designation": "Sr. Medical Promotion Officer",
+    "parentId": 6,
+    "grandParentId": 2
+  },
+  {
+    "id": 22,
+    "name": "SCC - 04",
+    "designation": "Screen Care Coordinator",
+    "parentId": 6,
+    "grandParentId": 2
+  }
+]
