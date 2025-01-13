@@ -15,6 +15,7 @@ import DepotRecieveReq from "../../Pages/Depot/DepotRecieveReq/DepotRecieveReq";
 import DepotStockInList from "../../Pages/Depot/DepotStockInList/DepotStockInList";
 import DepotStockOutList from "../../Pages/Depot/DepotStockOutList/DepotStockOutList";
 import Home from "../../Pages/Home/Home/Home";
+import PlaceOrder from "../../Pages/Order/PlaceOrder/PlaceOrder";
 import MyProfile from "../../Pages/Profile/MyProfile/MyProfile";
 import AllUsers from "../../Pages/Users/AllUsers/AllUsers";
 import DepotDelivery from "../../Pages/Warehouse/DepotDelivery/DepotDelivery";
@@ -114,6 +115,10 @@ const router = createBrowserRouter([
             {
                 path: "/depot-expired",
                 element: <DepotExpiredProduct />
+            },
+            {
+                path: "/place-order",
+                element: <PlaceOrder />
             },
             {
                 path: '/my-profile',
