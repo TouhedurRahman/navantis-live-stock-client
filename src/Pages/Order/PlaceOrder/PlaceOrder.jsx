@@ -27,15 +27,20 @@ const PlaceOrder = () => {
         setFilteredPharmacies([]);
         setSelectedPharmacy('');
         const selectedUser = tempUsers.find(user => user.name === userName);
+        console.log(selectedUser);
+
+        const amName = tempUsers.find(tuser => tuser._id === selectedUser.parentId)?.name ?? null;
+        const zmName = tempUsers.find(tuser => tuser._id === selectedUser.grandParentId)?.name ?? null;
 
         if (selectedUser) {
             const userPharmacies = pharmacies.filter(pharmacy => pharmacy.parentId === selectedUser._id);
             setFilteredPharmacies(userPharmacies);
+            setAreaManager(amName);
+            setZonalManager(zmName);
         }
     };
 
-    // Handle product quantity change
-    const handleProductQuantityChange = (id, productName, value) => {
+    const handleProductQuantityChange = (id, value) => {
         setProductQuantities(prevState => ({
             ...prevState,
             [id]: parseInt(value) || 0,
@@ -47,16 +52,6 @@ const PlaceOrder = () => {
         if (!selectedPharmacy) {
             alert("Please select a pharmacy.");
             return;
-        }
-
-        const selectedPharmacyData = filteredPharmacies.find(pharmacy => pharmacy.name === selectedPharmacy);
-
-        if (selectedPharmacyData) {
-            const areaManagerData = tempUsers.find(user => user._id === selectedPharmacyData.parentId);
-            const zonalManagerData = tempUsers.find(user => user._id === selectedPharmacyData.grandParentId);
-
-            setAreaManager(areaManagerData ? areaManagerData.name : 'N/A');
-            setZonalManager(zonalManagerData ? zonalManagerData.name : 'N/A');
         }
 
         const orderDetails = {
@@ -78,7 +73,6 @@ const PlaceOrder = () => {
 
         console.log('Order Details:', orderDetails);
 
-        // Reset the form and close the modal
         reset();
         setProductQuantities({});
         setIsModalOpen(false);
@@ -161,7 +155,7 @@ const PlaceOrder = () => {
                                                     max={product.totalQuantity}
                                                     placeholder="Enter quantity"
                                                     className="border border-gray-400 p-2 w-24"
-                                                    onChange={(e) => handleProductQuantityChange(product._id, product.productName, e.target.value)}
+                                                    onChange={(e) => handleProductQuantityChange(product._id, e.target.value)}
                                                 />
                                             </div>
                                         </div>
