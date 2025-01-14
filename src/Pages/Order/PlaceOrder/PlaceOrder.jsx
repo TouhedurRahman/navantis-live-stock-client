@@ -10,13 +10,28 @@ const PlaceOrder = () => {
     const [pharmacies] = usePharmacies();
     const [tempUsers] = useTempUsers();
 
+    const [filteredPharmacies, setFilteredPharmacies] = useState([]);
     const [selectedPharmacy, setSelectedPharmacy] = useState('');
     const [areaManager, setAreaManager] = useState('N/A');
     const [zonalManager, setZonalManager] = useState('N/A');
 
-    const onSubmit = (data) => {
-        console.log(data);
-        reset();
+    const handleUserChange = (e) => {
+        const userName = e.target.value;
+
+        // Reset pharmacy and managers
+        setFilteredPharmacies([]);
+        setSelectedPharmacy('');
+        setAreaManager('N/A');
+        setZonalManager('N/A');
+
+        // Find the selected user
+        const selectedUser = tempUsers.find(user => user.name === userName);
+
+        if (selectedUser) {
+            // Filter pharmacies based on the selected user's ID
+            const userPharmacies = pharmacies.filter(pharmacy => pharmacy.parentId === selectedUser._id);
+            setFilteredPharmacies(userPharmacies);
+        }
     };
 
     const handlePharmacyChange = (e) => {
@@ -26,7 +41,7 @@ const PlaceOrder = () => {
         setAreaManager('N/A');
         setZonalManager('N/A');
 
-        const selected = pharmacies.find(pharmacy => pharmacy.name === pharmacyName);
+        const selected = filteredPharmacies.find(pharmacy => pharmacy.name === pharmacyName);
 
         if (selected) {
             const areaManagerData = tempUsers.find(user => user._id === selected.parentId);
@@ -37,6 +52,11 @@ const PlaceOrder = () => {
         }
     };
 
+    const onSubmit = (data) => {
+        console.log(data);
+        reset();
+    };
+
     return (
         <div>
             <PageTitle from={"Order"} to={"Place order"} />
@@ -44,22 +64,30 @@ const PlaceOrder = () => {
                 <h1 className="px-6 py-3 font-bold">Make order</h1>
                 <hr className='text-center border border-gray-500 mb-5' />
                 <form onSubmit={handleSubmit(onSubmit)} className="p-6 pt-0 space-y-4">
-                    {/* Date Field */}
+                    {/* User Dropdown */}
                     <div className="flex flex-col">
                         <label className="text-[#6E719A] mb-1 text-sm">
-                            Date <span className="text-red-500">*</span>
+                            User Name <span className="text-red-500">*</span>
                         </label>
-                        <input
-                            type="date"
-                            {...register("date", { required: "Date is required" })}
-                            placeholder="Enter date"
+                        <select
+                            {...register('user', { required: 'Please select a user' })}
+                            onChange={handleUserChange}
                             className="border-gray-500 bg-white border p-2 text-sm"
-                        />
-                        {errors.date && <p className="text-red-500 text-sm">{errors.date.message}</p>}
+                        >
+                            <option value="">-- Select a User --</option>
+                            {tempUsers
+                                .filter(user => !['Managing Director', 'Zonal Manager', 'Area Manager'].includes(user.designation))
+                                .map(user => (
+                                    <option key={user._id} value={user.name}>
+                                        {user.name}
+                                    </option>
+                                ))}
+                        </select>
+                        {errors.user && <p className="text-red-500 text-sm">{errors.user.message}</p>}
                     </div>
 
+                    {/* Pharmacy Dropdown */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
-                        {/* Pharmacy Dropdown */}
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
                                 Pharmacy <span className="text-red-500">*</span>
@@ -68,9 +96,10 @@ const PlaceOrder = () => {
                                 {...register('pharmacy', { required: 'Please select a pharmacy' })}
                                 onChange={handlePharmacyChange}
                                 className="border-gray-500 bg-white border p-2 text-sm"
+                                disabled={filteredPharmacies.length === 0}
                             >
                                 <option value="">-- Select a Pharmacy --</option>
-                                {pharmacies.map((pharmacy) => (
+                                {filteredPharmacies.map(pharmacy => (
                                     <option key={pharmacy.id} value={pharmacy.name}>
                                         {pharmacy.name}
                                     </option>
