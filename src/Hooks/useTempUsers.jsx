@@ -4,7 +4,7 @@ const useTempUsers = () => {
     const { data: tempUsers = [], isLoading: loading, refetch } = useQuery({
         queryKey: ['tempUsers'],
         queryFn: async () => {
-            const url = '/users';
+            const url = '/users.json';
             // const url = 'http://localhost:5000/users';
             const result = await fetch(url);
             return result.json();

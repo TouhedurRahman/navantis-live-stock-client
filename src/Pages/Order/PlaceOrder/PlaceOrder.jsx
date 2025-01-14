@@ -1,16 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import usePharmacies from '../../../Hooks/usePharmacies';
+import useTempUsers from '../../../Hooks/useTempUsers';
 
 const PlaceOrder = () => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
     const [pharmacies] = usePharmacies();
+    const [tempUsers] = useTempUsers();
+
+    const [selectedPharmacy, setSelectedPharmacy] = useState('');
+    const [areaManager, setAreaManager] = useState('N/A');
+    const [zonalManager, setZonalManager] = useState('N/A');
 
     const onSubmit = (data) => {
         console.log(data);
         reset();
+    };
+
+    const handlePharmacyChange = (e) => {
+        const pharmacyName = e.target.value;
+        setSelectedPharmacy(pharmacyName);
+
+        setAreaManager('N/A');
+        setZonalManager('N/A');
+
+        const selected = pharmacies.find(pharmacy => pharmacy.name === pharmacyName);
+
+        if (selected) {
+            const areaManagerData = tempUsers.find(user => user._id === selected.parentId);
+            const zonalManagerData = tempUsers.find(user => user._id === selected.grandParentId);
+
+            setAreaManager(areaManagerData ? areaManagerData.name : 'N/A');
+            setZonalManager(zonalManagerData ? zonalManagerData.name : 'N/A');
+        }
     };
 
     return (
@@ -35,14 +59,15 @@ const PlaceOrder = () => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+                        {/* Pharmacy Dropdown */}
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
                                 Pharmacy <span className="text-red-500">*</span>
                             </label>
                             <select
                                 {...register('pharmacy', { required: 'Please select a pharmacy' })}
+                                onChange={handlePharmacyChange}
                                 className="border-gray-500 bg-white border p-2 text-sm"
-                            // disabled={!selectedDate}
                             >
                                 <option value="">-- Select a Pharmacy --</option>
                                 {pharmacies.map((pharmacy) => (
@@ -51,8 +76,32 @@ const PlaceOrder = () => {
                                     </option>
                                 ))}
                             </select>
-                            {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+                            {errors.pharmacy && <p className="text-red-500 text-sm">{errors.pharmacy.message}</p>}
                         </div>
+
+                        {/* Area Manager and Zonal Manager */}
+                        {selectedPharmacy && (
+                            <div className="flex flex-col space-y-2">
+                                <div className="flex flex-col">
+                                    <label className="text-[#6E719A] mb-1 text-sm">Area Manager</label>
+                                    <input
+                                        type="text"
+                                        value={areaManager}
+                                        disabled
+                                        className="border-gray-500 bg-white border p-2 text-sm"
+                                    />
+                                </div>
+                                <div className="flex flex-col">
+                                    <label className="text-[#6E719A] mb-1 text-sm">Zonal Manager</label>
+                                    <input
+                                        type="text"
+                                        value={zonalManager}
+                                        disabled
+                                        className="border-gray-500 bg-white border p-2 text-sm"
+                                    />
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Submit Button */}
