@@ -8,149 +8,233 @@
   },
   {
     "_id": 2,
-    "name": "Zonal Manager - 01",
+    "name": "Golam Mostafa",
     "designation": "Zonal Manager",
     "parentId": 1,
     "grandParentId": null
   },
   {
     "_id": 3,
-    "name": "Area Manager - 01",
+    "name": "Subir Sarker",
     "designation": "Area Manager",
     "parentId": 2,
-    "grandParentId": 1
+    "grandParentId": 1,
+    "territory": "Gulshan"
   },
   {
     "_id": 4,
-    "name": "Area Manager - 02",
+    "name": "Salahuddin",
     "designation": "Area Manager",
     "parentId": 2,
-    "grandParentId": 1
+    "grandParentId": 1,
+    "territory": "Mirpur"
   },
   {
     "_id": 5,
-    "name": "Area Manager - 03",
+    "name": "Samsuddin",
     "designation": "Area Manager",
     "parentId": 2,
-    "grandParentId": 1
+    "grandParentId": 1,
+    "territory": "Dhanmondi"
   },
   {
     "_id": 6,
-    "name": "Area Manager - 04",
+    "name": "Mohiuddin",
     "designation": "Area Manager",
     "parentId": 2,
-    "grandParentId": 1
+    "grandParentId": 1,
+    "territory": "Uttara"
   },
   {
     "_id": 7,
-    "name": "MPO - 01",
-    "designation": "Medical Promotion Officer",
+    "name": "Brohmmanda Saha",
+    "designation": "Skin Care Coordinator",
     "parentId": 3,
-    "grandParentId": 2
+    "grandParentId": 2,
+    "territory": "Gulshan - 1"
   },
   {
     "_id": 8,
-    "name": "SCC - 01",
+    "name": "Sananda Debnath",
     "designation": "Screen Care Coordinator",
     "parentId": 3,
-    "grandParentId": 2
+    "grandParentId": 2,
+    "territory": "Shantinagar"
   },
   {
     "_id": 9,
-    "name": "MPO - 02",
+    "name": "Haridash Chandra Ray",
     "designation": "Medical Promotion Officer",
     "parentId": 3,
-    "grandParentId": 2
+    "grandParentId": 2,
+    "territory": "Jatrabari"
   },
   {
     "_id": 10,
-    "name": "MPO - 03",
-    "designation": "Sr. Medical Promotion Officer",
+    "name": "Shuva Mondal",
+    "designation": "Medical Promotion Officer",
     "parentId": 3,
-    "grandParentId": 2
+    "grandParentId": 2,
+    "territory": "Barishal"
   },
   {
     "_id": 11,
-    "name": "SCC - 02",
-    "designation": "Screen Care Coordinator",
-    "parentId": 4,
-    "grandParentId": 2
+    "name": "Morshed Ali",
+    "designation": "Medical Promotion Officer",
+    "parentId": 3,
+    "grandParentId": 2,
+    "territory": "Narayanganj"
   },
   {
     "_id": 12,
-    "name": "MPO - 04",
+    "name": "Kripesh Chandra",
     "designation": "Medical Promotion Officer",
     "parentId": 4,
-    "grandParentId": 2
+    "grandParentId": 2,
+    "territory": "Sylhet - 2"
   },
   {
     "_id": 13,
-    "name": "MPO - 05",
+    "name": "Sadd Ali",
     "designation": "Sr. Medical Promotion Officer",
     "parentId": 4,
-    "grandParentId": 2
+    "grandParentId": 2,
+    "territory": "B. Baria"
   },
   {
     "_id": 14,
-    "name": "MPO - 06",
+    "name": "Onibesh",
     "designation": "Medical Promotion Officer",
     "parentId": 4,
-    "grandParentId": 2
+    "grandParentId": 2,
+    "territory": "Sylhet - 1"
   },
   {
     "_id": 15,
-    "name": "MPO - 07",
-    "designation": "Medical Promotion Officer",
-    "parentId": 5,
-    "grandParentId": 2
+    "name": "Prem Gopal Datta",
+    "designation": "Skin Care Coordinator",
+    "parentId": 4,
+    "grandParentId": 2,
+    "territory": "Shyamoli"
   },
   {
     "_id": 16,
-    "name": "MPO - 08",
+    "name": "Mominur Rahman",
     "designation": "Medical Promotion Officer",
-    "parentId": 5,
-    "grandParentId": 2
+    "parentId": 4,
+    "grandParentId": 2,
+    "territory": "Khulna"
   },
   {
     "_id": 17,
-    "name": "SCC - 03",
+    "name": "Saidur Rahman",
     "designation": "Screen Care Coordinator",
-    "parentId": 5,
-    "grandParentId": 2
+    "parentId": 4,
+    "grandParentId": 2,
+    "territory": "Mirpur"
   },
   {
     "_id": 18,
-    "name": "MPO - 09",
+    "name": "Md maidul Islam",
     "designation": "Sr. Medical Promotion Officer",
     "parentId": 5,
-    "grandParentId": 2
+    "grandParentId": 2,
+    "territory": "Mymensingh"
   },
   {
     "_id": 19,
-    "name": "MPO - 10",
+    "name": "Sayed Asif Ali",
     "designation": "Medical Promotion Officer",
-    "parentId": 6,
-    "grandParentId": 2
+    "parentId": 5,
+    "grandParentId": 2,
+    "territory": "Dhanmondi - 1"
   },
   {
     "_id": 20,
-    "name": "MPO - 11",
+    "name": "Farhad Hossain",
     "designation": "Medical Promotion Officer",
-    "parentId": 6,
-    "grandParentId": 2
+    "parentId": 5,
+    "grandParentId": 2,
+    "territory": "Dhanmondi - 2"
   },
   {
     "_id": 21,
-    "name": "MPO - 12",
+    "name": "Festal Hossain",
     "designation": "Sr. Medical Promotion Officer",
-    "parentId": 6,
-    "grandParentId": 2
+    "parentId": 5,
+    "grandParentId": 2,
+    "territory": "BSMMU"
   },
   {
     "_id": 22,
-    "name": "SCC - 04",
-    "designation": "Screen Care Coordinator",
+    "name": "Samsul Alam",
+    "designation": "Medical Promotion Officer",
+    "parentId": 5,
+    "grandParentId": 2,
+    "territory": "Rajshahi"
+  },
+  {
+    "_id": 23,
+    "name": "Rubel Haque",
+    "designation": "Medical Promotion Officer",
+    "parentId": 5,
+    "grandParentId": 2,
+    "territory": "Bogura"
+  },
+  {
+    "_id": 24,
+    "name": "Kawsar Hosen",
+    "designation": "Medical Promotion Officer",
     "parentId": 6,
-    "grandParentId": 2
+    "grandParentId": 2,
+    "territory": "Savar"
+  },
+  {
+    "_id": 25,
+    "name": "",
+    "designation": "Medical Promotion Officer",
+    "parentId": 6,
+    "grandParentId": 2,
+    "territory": ""
+  },
+  {
+    "_id": 26,
+    "name": "Kaisar Ferdous",
+    "designation": "Medical Promotion Officer",
+    "parentId": 6,
+    "grandParentId": 2,
+    "territory": "Uttara - 2"
+  },
+  {
+    "_id": 27,
+    "name": "Humayun",
+    "designation": "Medical Promotion Officer",
+    "parentId": 6,
+    "grandParentId": 2,
+    "territory": "Gazipur"
+  },
+  {
+    "_id": 28,
+    "name": "Aynal Haque",
+    "designation": "Medical Promotion Officer",
+    "parentId": 6,
+    "grandParentId": 2,
+    "territory": "Uttara - 1"
+  },
+  {
+    "_id": 29,
+    "name": "Abdul Aziz",
+    "designation": "Medical Promotion Officer",
+    "parentId": 6,
+    "grandParentId": 2,
+    "territory": "CTG - 1"
+  },
+  {
+    "_id": 30,
+    "name": "Shamim Hossain",
+    "designation": "Medical Promotion Officer",
+    "parentId": 6,
+    "grandParentId": 2,
+    "territory": "CTG - 2"
   }
 ]
