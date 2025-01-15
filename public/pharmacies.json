@@ -3,70 +3,90 @@
     "_id": 1,
     "name": "Lazz Pharma",
     "address": "Mirpur-1, Dhaka",
-    "parentId": 7,
-    "grandParentId": 3
+    "territory": "Mirpur"
   },
   {
     "_id": 2,
     "name": "Dhka Pharmacy",
     "address": "Mirpur-2, Dhaka",
-    "parentId": 12,
-    "grandParentId": 4
+    "territory": "Mirpur"
   },
   {
     "_id": 3,
-    "name": "Bonik Medicine Corner",
-    "address": "Savar, Dhaka",
-    "parentId": 17,
-    "grandParentId": 5
+    "name": "Digital Medicine Corner",
+    "address": "Gulshan, Dhaka",
+    "territory": "Gulshan - 1"
   },
   {
     "_id": 4,
     "name": "National Pharmacy",
-    "address": "Dhanmondi, Dhaka",
-    "parentId": 22,
-    "grandParentId": 6
+    "address": "Gulshan, Dhaka",
+    "territory": "Gulshan - 1"
   },
   {
     "_id": 5,
     "name": "Model Pharmacy",
     "address": "Khilkhet, Dhaka",
-    "parentId": 8,
-    "grandParentId": 3
+    "territory": "Uttara - 1"
   },
   {
     "_id": 6,
     "name": "Bionike Pharmacy",
     "address": "Uttara, Dhaka",
-    "parentId": 13,
-    "grandParentId": 4
+    "territory": "Uttara - 2"
   },
   {
     "_id": 7,
     "name": "Desh Pharmacy",
     "address": "New Market, Dhaka",
-    "parentId": 18,
-    "grandParentId": 5
+    "territory": "Dhanmondi - 2"
   },
   {
     "_id": 8,
     "name": "Asha Pharmacy",
-    "address": "Agargaon, Dhaka",
-    "parentId": 9,
-    "grandParentId": 3
+    "address": "Kolabagan, Dhaka",
+    "territory": "Dhanmondi - 1"
   },
   {
     "_id": 9,
     "name": "Health care Pharmacy",
-    "address": "Gulshan, Dhaka",
-    "parentId": 14,
-    "grandParentId": 4
+    "address": "New Market, Mymensingh",
+    "territory": "Mymensingh"
   },
   {
     "_id": 10,
+    "name": "Momota Pharmacy",
+    "address": "Ganginarpar, Mymensingh",
+    "territory": "Mymensingh"
+  },
+  {
+    "_id": 11,
     "name": "Gazipur Pharmacy",
     "address": "Gazipur, Dhaka",
-    "parentId": 19,
-    "grandParentId": 6
+    "territory": "Gazipur"
+  },
+  {
+    "_id": 12,
+    "name": "Bonik Medicine Corner",
+    "address": "Thana Stand, Savar , Dhaka",
+    "territory": "Savar"
+  },
+  {
+    "_id": 13,
+    "name": "S A Pharmacy",
+    "address": "Hospital Gate, Chattogram",
+    "territory": "CTG - 1"
+  },
+  {
+    "_id": 14,
+    "name": "Goutom Pharmacy",
+    "address": "Bandartilla, Chattogram",
+    "territory": "CTG - 2"
+  },
+  {
+    "_id": 14,
+    "name": "BSMMU Pharmacy",
+    "address": "BSMMU, Dhaka",
+    "territory": "BSMMU"
   }
 ]

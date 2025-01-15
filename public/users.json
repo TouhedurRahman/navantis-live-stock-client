@@ -191,14 +191,6 @@
   },
   {
     "_id": 25,
-    "name": "",
-    "designation": "Medical Promotion Officer",
-    "parentId": 6,
-    "grandParentId": 2,
-    "territory": ""
-  },
-  {
-    "_id": 26,
     "name": "Kaisar Ferdous",
     "designation": "Medical Promotion Officer",
     "parentId": 6,
@@ -206,7 +198,7 @@
     "territory": "Uttara - 2"
   },
   {
-    "_id": 27,
+    "_id": 26,
     "name": "Humayun",
     "designation": "Medical Promotion Officer",
     "parentId": 6,
@@ -214,7 +206,7 @@
     "territory": "Gazipur"
   },
   {
-    "_id": 28,
+    "_id": 27,
     "name": "Aynal Haque",
     "designation": "Medical Promotion Officer",
     "parentId": 6,
@@ -222,7 +214,7 @@
     "territory": "Uttara - 1"
   },
   {
-    "_id": 29,
+    "_id": 28,
     "name": "Abdul Aziz",
     "designation": "Medical Promotion Officer",
     "parentId": 6,
@@ -230,7 +222,7 @@
     "territory": "CTG - 1"
   },
   {
-    "_id": 30,
+    "_id": 29,
     "name": "Shamim Hossain",
     "designation": "Medical Promotion Officer",
     "parentId": 6,

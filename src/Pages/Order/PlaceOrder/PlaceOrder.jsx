@@ -19,6 +19,7 @@ const PlaceOrder = () => {
 
     const [areaManager, setAreaManager] = useState('N/A');
     const [zonalManager, setZonalManager] = useState('N/A');
+    const [userTerritory, setUserTerritory] = useState('N/A');
 
     const handleUserChange = (e) => {
         const userName = e.target.value;
@@ -26,13 +27,15 @@ const PlaceOrder = () => {
         setFilteredPharmacies([]);
         setSelectedPharmacy('');
         const selectedUser = tempUsers.find(user => user.name === userName);
-        console.log(selectedUser);
+        // console.log(selectedUser);
+        const territoryName = selectedUser.territory ?? null;
+        setUserTerritory(territoryName);
 
         const amName = tempUsers.find(tuser => tuser._id === selectedUser.parentId)?.name ?? null;
         const zmName = tempUsers.find(tuser => tuser._id === selectedUser.grandParentId)?.name ?? null;
 
         if (selectedUser) {
-            const userPharmacies = pharmacies.filter(pharmacy => pharmacy.parentId === selectedUser._id);
+            const userPharmacies = pharmacies.filter(pharmacy => pharmacy.territory === selectedUser.territory);
             setFilteredPharmacies(userPharmacies);
             setAreaManager(amName);
             setZonalManager(zmName);
@@ -58,6 +61,7 @@ const PlaceOrder = () => {
             orderedBy: data.user,
             areaManager: areaManager,
             zonalManager: zonalManager,
+            territory: userTerritory,
             orders: [
                 {
                     pharmacyName: selectedPharmacy,
@@ -86,7 +90,7 @@ const PlaceOrder = () => {
         <div>
             <PageTitle from={"Order"} to={"Place order"} />
             <div className="bg-white">
-                <h1 className="px-6 py-3 font-bold">Make Pharmacy-Wise Order</h1>
+                <h1 className="px-6 py-3 font-bold">Make pharmacy wise Order</h1>
                 <hr className='text-center border border-gray-500 mb-5' />
                 <form onSubmit={handleSubmit(onSubmit)} className="p-6 pt-0 space-y-4">
                     {/* User Dropdown */}
