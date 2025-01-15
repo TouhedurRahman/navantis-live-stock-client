@@ -20,7 +20,6 @@ const PlaceOrder = () => {
     const [areaManager, setAreaManager] = useState('N/A');
     const [zonalManager, setZonalManager] = useState('N/A');
 
-    // Handle user change to filter pharmacies
     const handleUserChange = (e) => {
         const userName = e.target.value;
 
@@ -55,20 +54,25 @@ const PlaceOrder = () => {
         }
 
         const orderDetails = {
-            ...data,
+            // ...data,
+            orderedBy: data.user,
             areaManager: areaManager,
             zonalManager: zonalManager,
-            pharmacy: selectedPharmacy,
-            products: Object.entries(productQuantities)
-                .map(([id, quantity]) => {
-                    const product = products.find(product => product._id === id);
-                    return {
-                        productId: id,
-                        productName: product?.productName || 'Unknown Product',
-                        quantity,
-                    };
-                })
-                .filter(product => product.quantity > 0),
+            orders: [
+                {
+                    pharmacyName: selectedPharmacy,
+                    products: Object.entries(productQuantities)
+                        .map(([id, quantity]) => {
+                            const product = products.find(product => product._id === id);
+                            return {
+                                productId: id,
+                                productName: product?.productName || 'Unknown Product',
+                                quantity,
+                            };
+                        })
+                        .filter(product => product.quantity > 0),
+                }
+            ]
         };
 
         console.log('Order Details:', orderDetails);
