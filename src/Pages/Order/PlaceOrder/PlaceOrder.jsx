@@ -12,6 +12,16 @@ const PlaceOrder = () => {
     const [tempUsers] = useTempUsers();
     const [products] = useDepotProducts();
 
+    const groupedProducts = products.reduce((acc, product) => {
+        const existingProduct = acc.find(item => item.productName === product.productName);
+        if (existingProduct) {
+            existingProduct.totalQuantity += product.totalQuantity;
+        } else {
+            acc.push({ ...product });
+        }
+        return acc;
+    }, []);
+
     const [filteredPharmacies, setFilteredPharmacies] = useState([]);
     const [selectedPharmacy, setSelectedPharmacy] = useState('');
     const [productQuantities, setProductQuantities] = useState({});
@@ -20,6 +30,15 @@ const PlaceOrder = () => {
     const [areaManager, setAreaManager] = useState('N/A');
     const [zonalManager, setZonalManager] = useState('N/A');
     const [userTerritory, setUserTerritory] = useState('N/A');
+
+    const getTodayDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    };
 
     const handleUserChange = (e) => {
         const userName = e.target.value;
@@ -56,27 +75,33 @@ const PlaceOrder = () => {
             return;
         }
 
+        const orderedProducts = Object.entries(productQuantities)
+            .map(([id, quantity]) => {
+                const product = products.find(product => product._id === id);
+                return {
+                    productId: id,
+                    productName: product?.productName || 'Unknown Product',
+                    quantity: parseInt(quantity, 10),
+                    tradePrice: product?.tradePrice || 0
+                };
+            })
+            .filter(product => product.quantity > 0);
+
+        const totalOrderedProducts = orderedProducts.length;
+        const totalOrderUnits = orderedProducts.reduce((sum, product) => sum + product.quantity, 0);
+        const totalOrderedTradePrice = orderedProducts.reduce((sum, product) => sum + (product.quantity * product.tradePrice), 0);
+
         const orderDetails = {
-            // ...data,
             orderedBy: data.user,
             areaManager: areaManager,
             zonalManager: zonalManager,
             territory: userTerritory,
-            orders: [
-                {
-                    pharmacyName: selectedPharmacy,
-                    products: Object.entries(productQuantities)
-                        .map(([id, quantity]) => {
-                            const product = products.find(product => product._id === id);
-                            return {
-                                productId: id,
-                                productName: product?.productName || 'Unknown Product',
-                                quantity,
-                            };
-                        })
-                        .filter(product => product.quantity > 0),
-                }
-            ]
+            pharmacy: selectedPharmacy,
+            products: orderedProducts,
+            totalProduct: totalOrderedProducts,
+            totalUnit: totalOrderUnits,
+            totalPrice: totalOrderedTradePrice,
+            status: "initialized"
         };
 
         console.log('Order Details:', orderDetails);
@@ -103,7 +128,7 @@ const PlaceOrder = () => {
                             onChange={handleUserChange}
                             className="border-gray-500 bg-white border p-2 text-sm"
                         >
-                            <option value="">-- Select a User --</option>
+                            <option value="">~~ Select a User ~~</option>
                             {tempUsers
                                 .filter(user => !['Managing Director', 'Zonal Manager', 'Area Manager'].includes(user.designation))
                                 .map(user => (
@@ -125,7 +150,7 @@ const PlaceOrder = () => {
                             onChange={(e) => setSelectedPharmacy(e.target.value)}
                             className="border-gray-500 bg-white border p-2 text-sm"
                         >
-                            <option value="">-- Select a Pharmacy --</option>
+                            <option value="">~~ Select a Pharmacy ~~</option>
                             {filteredPharmacies.map(pharmacy => (
                                 <option key={pharmacy._id} value={pharmacy.name}>
                                     {pharmacy.name}
@@ -147,40 +172,67 @@ const PlaceOrder = () => {
                     {/* Modal */}
                     {isModalOpen && (
                         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                            <div className="bg-white p-6 rounded shadow-lg w-3/4">
-                                <h2 className="text-lg font-bold mb-4">Select Products</h2>
-                                <div className="space-y-4">
-                                    {products.map(product => (
-                                        <div key={product._id} className="flex items-center justify-between">
-                                            <div>
-                                                <p>{product.productName} (Code: {product.productCode})</p>
-                                                <p className="text-sm text-gray-500">Batch: {product.batch} | Expire: {product.expire}</p>
-                                            </div>
-                                            <div>
-                                                <input
-                                                    type="number"
-                                                    min="0"
-                                                    max={product.totalQuantity}
-                                                    placeholder="Enter quantity"
-                                                    className="border border-gray-400 p-2 w-24"
-                                                    onChange={(e) => handleProductQuantityChange(product._id, e.target.value)}
-                                                />
-                                            </div>
-                                        </div>
-                                    ))}
+                            <div className="bg-white p-8 rounded-lg shadow-2xl w-3/4 max-w-4xl">
+                                {/* Modal Header */}
+                                <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Select Products</h2>
+
+                                {/* Table Layout */}
+                                <div className="overflow-x-auto">
+                                    <table className="w-full border-collapse">
+                                        {/* Table Head */}
+                                        <thead>
+                                            <tr className="bg-gray-100 border-b">
+                                                <th className="text-left p-4 font-medium text-gray-600">Product Name</th>
+                                                <th className="text-right p-4 font-medium text-gray-600">Trade Price</th>
+                                                <th className="text-center p-4 font-medium text-gray-600">Order Quantity</th>
+                                            </tr>
+                                        </thead>
+
+                                        {/* Table Body */}
+                                        <tbody>
+                                            {groupedProducts.map(product => (
+                                                <tr key={product._id} className="border-b hover:bg-gray-50">
+                                                    {/* Product Name */}
+                                                    <td className="p-4">
+                                                        <p className="font-medium text-gray-900">{product.productName}</p>
+                                                        <p className="text-sm text-gray-500">Code: {product.productCode}</p>
+                                                    </td>
+
+                                                    {/* Trade Price */}
+                                                    <td className="text-right p-4">
+                                                        <p className="font-medium text-gray-900">{product.tradePrice}</p>
+                                                    </td>
+
+                                                    {/* Quantity Input */}
+                                                    <td className="text-center p-4">
+                                                        <input
+                                                            type="number"
+                                                            min="0"
+                                                            max={product.totalQuantity}
+                                                            placeholder="Qty"
+                                                            className="border border-gray-300 rounded-md p-2 w-24 text-center focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                            onChange={(e) => handleProductQuantityChange(product._id, e.target.value)}
+                                                        />
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <div className="flex justify-end mt-4">
+
+                                {/* Modal Footer */}
+                                <div className="flex justify-center mt-6 space-x-4">
                                     <button
                                         type="button"
                                         onClick={() => setIsModalOpen(false)}
-                                        className="bg-gray-500 text-white px-4 py-2 rounded mr-2"
+                                        className="bg-gray-500 text-white px-6 py-2 rounded-md hover:bg-gray-600 transition"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         type="button"
                                         onClick={() => setIsModalOpen(false)}
-                                        className="bg-blue-500 text-white px-4 py-2 rounded"
+                                        className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition"
                                     >
                                         Confirm
                                     </button>
@@ -198,141 +250,3 @@ const PlaceOrder = () => {
 };
 
 export default PlaceOrder;
-
-/* import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import PageTitle from '../../../Components/PageTitle/PageTitle';
-import usePharmacies from '../../../Hooks/usePharmacies';
-import useTempUsers from '../../../Hooks/useTempUsers';
-
-const PlaceOrder = () => {
-    const { register, handleSubmit, reset, formState: { errors } } = useForm();
-
-    const [pharmacies] = usePharmacies();
-    const [tempUsers] = useTempUsers();
-
-    const [filteredPharmacies, setFilteredPharmacies] = useState([]);
-    const [selectedPharmacy, setSelectedPharmacy] = useState('');
-    const [areaManager, setAreaManager] = useState('N/A');
-    const [zonalManager, setZonalManager] = useState('N/A');
-
-    const handleUserChange = (e) => {
-        const userName = e.target.value;
-
-        setFilteredPharmacies([]);
-        setSelectedPharmacy('');
-        setAreaManager('N/A');
-        setZonalManager('N/A');
-
-        const selectedUser = tempUsers.find(user => user.name === userName);
-
-        if (selectedUser) {
-            const userPharmacies = pharmacies.filter(pharmacy => pharmacy.parentId === selectedUser._id);
-            setFilteredPharmacies(userPharmacies);
-        }
-    };
-
-    const handlePharmacyChange = (e) => {
-        const pharmacyName = e.target.value;
-        setSelectedPharmacy(pharmacyName);
-
-        setAreaManager('N/A');
-        setZonalManager('N/A');
-
-        const selected = filteredPharmacies.find(pharmacy => pharmacy.name === pharmacyName);
-
-        if (selected) {
-            const areaManagerData = tempUsers.find(user => user._id === selected.parentId);
-            const zonalManagerData = tempUsers.find(user => user._id === selected.grandParentId);
-
-            setAreaManager(areaManagerData ? areaManagerData.name : 'N/A');
-            setZonalManager(zonalManagerData ? zonalManagerData.name : 'N/A');
-        }
-    };
-
-    const onSubmit = (data) => {
-        console.log(data);
-        reset();
-    };
-
-    return (
-        <div>
-            <PageTitle from={"Order"} to={"Place order"} />
-            <div className="bg-white">
-                <h1 className="px-6 py-3 font-bold">Make order</h1>
-                <hr className='text-center border border-gray-500 mb-5' />
-                <form onSubmit={handleSubmit(onSubmit)} className="p-6 pt-0 space-y-4">
-                    <div className="flex flex-col">
-                        <label className="text-[#6E719A] mb-1 text-sm">
-                            User Name <span className="text-red-500">*</span>
-                        </label>
-                        <select
-                            {...register('user', { required: 'Please select a user' })}
-                            onChange={handleUserChange}
-                            className="border-gray-500 bg-white border p-2 text-sm"
-                        >
-                            <option value="">-- Select a User --</option>
-                            {tempUsers
-                                .filter(user => !['Managing Director', 'Zonal Manager', 'Area Manager'].includes(user.designation))
-                                .map(user => (
-                                    <option key={user._id} value={user.name}>
-                                        {user.name}
-                                    </option>
-                                ))}
-                        </select>
-                        {errors.user && <p className="text-red-500 text-sm">{errors.user.message}</p>}
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
-                        <div className="flex flex-col">
-                            <label className="text-[#6E719A] mb-1 text-sm">
-                                Pharmacy <span className="text-red-500">*</span>
-                            </label>
-                            <select
-                                {...register('pharmacy', { required: 'Please select a pharmacy' })}
-                                onChange={handlePharmacyChange}
-                                className="border-gray-500 bg-white border p-2 text-sm"
-                                disabled={filteredPharmacies.length === 0}
-                            >
-                                <option value="">-- Select a Pharmacy --</option>
-                                {filteredPharmacies.map(pharmacy => (
-                                    <option key={pharmacy.id} value={pharmacy.name}>
-                                        {pharmacy.name}
-                                    </option>
-                                ))}
-                            </select>
-                            {errors.pharmacy && <p className="text-red-500 text-sm">{errors.pharmacy.message}</p>}
-                        </div>
-
-                        {selectedPharmacy && (
-                            <div className="flex flex-col space-y-2">
-                                <div className="flex flex-col">
-                                    <label className="text-[#6E719A] mb-1 text-sm">Area Manager</label>
-                                    <input
-                                        type="text"
-                                        value={areaManager}
-                                        disabled
-                                        className="border-gray-500 bg-white border p-2 text-sm"
-                                    />
-                                </div>
-                                <div className="flex flex-col">
-                                    <label className="text-[#6E719A] mb-1 text-sm">Zonal Manager</label>
-                                    <input
-                                        type="text"
-                                        value={zonalManager}
-                                        disabled
-                                        className="border-gray-500 bg-white border p-2 text-sm"
-                                    />
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
-                    <button type="submit" className="bg-blue-500 text-white mt-5 p-2 rounded text-sm">Submit</button>
-                </form>
-            </div>
-        </div>
-    );
-};
-
-export default PlaceOrder; */
