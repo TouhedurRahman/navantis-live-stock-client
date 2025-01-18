@@ -224,35 +224,53 @@ const PlaceOrder = () => {
                         </form>
 
                         {/* Receipt Section */}
-                        <div className="w-3/4 bg-gray-100 p-4 flex flex-col justify-between">
-                            <div>
-                                <h2 className="text-lg font-bold">Order Summary</h2>
-                                <hr className="my-4" />
-                                {receiptProducts.length > 0 ? (
-                                    <ul>
-                                        {receiptProducts.map(product => (
-                                            <li key={product.id} className="mb-2">
-                                                <div className="flex justify-between">
-                                                    <span>{product.name}</span>
-                                                    <span>{product.quantity} x {product.tradePrice} = {product.quantity * product.tradePrice}</span>
-                                                </div>
-                                            </li>
-                                        ))}
-                                        <hr className="my-4" />
+                        <div className="w-full max-w-sm bg-white border border-gray-300 rounded-md p-4 shadow-sm text-sm font-mono">
+                            <div className="text-center">
+                                <h2 className="text-lg font-bold mb-2">Navantis Pharma Limited</h2>
+                                <p className="text-xs">Order Receipt</p>
+                                <p className="text-xs">Date: {new Date().toLocaleString()}</p>
+                                <hr className="my-2 border-gray-400" />
+                            </div>
+                            {receiptProducts.length > 0 ? (
+                                <>
+                                    <div>
+                                        <ul>
+                                            {receiptProducts.map(product => (
+                                                <li key={product.id} className="mb-2">
+                                                    <div className="flex justify-between">
+                                                        <span>{product.name}</span>
+                                                        <span>{product.quantity} x {product.tradePrice}</span>
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <span>= {product.quantity * product.tradePrice}</span>
+                                                    </div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                        <hr className="my-2 border-gray-400" />
                                         <div className="flex justify-between font-bold">
-                                            <span>Total</span>
+                                            <span>Total:</span>
                                             <span>
-                                                {receiptProducts.reduce((sum, product) => sum + (product.quantity * product.tradePrice), 0)}
+                                                {receiptProducts.reduce(
+                                                    (sum, product) => sum + product.quantity * product.tradePrice,
+                                                    0
+                                                )}
                                             </span>
                                         </div>
-                                    </ul>
-                                ) : (
-                                    <p>No products added yet.</p>
-                                )}
-                            </div>
+                                    </div>
+                                    <hr className="my-2 border-gray-400" />
+                                    <p className="text-center text-xs mt-4">Thank you for your purchase!</p>
+                                </>
+                            ) : (
+                                <p className="text-center">No products added yet.</p>
+                            )}
                             <button
                                 onClick={handleSubmit(onSubmit)}
-                                className="bg-green-500 text-white w-full p-2 mt-4 rounded"
+                                className={`w-full py-2 mt-4 rounded text-sm tracking-wider ${receiptProducts.length === 0
+                                    ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+                                    : "bg-gray-800 text-white hover:bg-gray-900"
+                                    }`}
+                                disabled={receiptProducts.length === 0}
                             >
                                 Place Order
                             </button>
