@@ -230,6 +230,17 @@ const PlaceOrder = () => {
                                 <p className="text-xs">Order Receipt</p>
                                 <p className="text-xs">Date: {new Date().toLocaleString()}</p>
                                 <hr className="my-2 border-gray-400" />
+                                {
+                                    receiptProducts.length > 0
+                                    &&
+                                    <>
+                                        <div className='text-left'>
+                                            <p className="text-xs">Customer Code: PHAR001</p>
+                                            <p className="text-xs">Customer Name: {selectedPharmacy}</p>
+                                        </div>
+                                        <hr className="my-2 border-gray-400" />
+                                    </>
+                                }
                             </div>
                             {receiptProducts.length > 0 ? (
                                 <>
