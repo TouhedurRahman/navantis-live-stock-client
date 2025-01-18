@@ -37,6 +37,8 @@ const PlaceOrder = () => {
 
         setFilteredPharmacies([]);
         setSelectedPharmacy('');
+        setReceiptProducts([]);  // Reset receipt products when user changes
+
         const selectedUser = tempUsers.find(user => user.name === userName);
         const territoryName = selectedUser?.territory ?? null;
         setUserTerritory(territoryName);
@@ -50,6 +52,11 @@ const PlaceOrder = () => {
             setAreaManager(amName);
             setZonalManager(zmName);
         }
+    };
+
+    const handlePharmacyChange = (e) => {
+        setSelectedPharmacy(e.target.value);
+        setReceiptProducts([]);  // Reset receipt products when pharmacy changes
     };
 
     const handleProductQuantityChange = (id, value) => {
@@ -139,7 +146,7 @@ const PlaceOrder = () => {
                                 <label className="text-sm">Pharmacy Name <span className="text-red-500">*</span></label>
                                 <select
                                     {...register('pharmacy', { required: 'Please select a pharmacy' })}
-                                    onChange={(e) => setSelectedPharmacy(e.target.value)}
+                                    onChange={handlePharmacyChange}
                                     className="border-gray-500 bg-white border p-2 text-sm"
                                 >
                                     <option value="">~~ Select a Pharmacy ~~</option>
