@@ -6,11 +6,21 @@ import usePharmacies from '../../../Hooks/usePharmacies';
 import useTempUsers from '../../../Hooks/useTempUsers';
 
 const PlaceOrder = () => {
+    const user = { email: "user@gmail.com" }
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
     const [pharmacies] = usePharmacies();
     const [tempUsers] = useTempUsers();
     const [products] = useDepotProducts();
+
+    const getTodayDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    };
 
     const groupedProducts = products.reduce((acc, product) => {
         const existingProduct = acc.find(item => item.productName === product.productName);
@@ -94,7 +104,8 @@ const PlaceOrder = () => {
         const totalOrderUnits = receiptProducts.reduce((sum, product) => sum + product.quantity, 0);
         const totalOrderedTradePrice = receiptProducts.reduce((sum, product) => sum + (product.quantity * product.tradePrice), 0);
 
-        const orderDetails = {
+        const newOrder = {
+            email: user?.email,
             orderedBy: data.user,
             areaManager,
             zonalManager,
@@ -104,10 +115,24 @@ const PlaceOrder = () => {
             totalProduct: totalOrderedProducts,
             totalUnit: totalOrderUnits,
             totalPrice: totalOrderedTradePrice,
-            status: "initialized"
+            status: "initialized",
+            date: getTodayDate()
         };
 
-        console.log('Order Details:', orderDetails);
+        console.log(newOrder);
+
+        axios.post('http://localhost:5000/orders', newOrder)
+            .then(data => {
+                if (data.data.insertedId) {
+                    reset();
+                    Swal.fire({
+                        icon: "success",
+                        title: "New Product successfully added!",
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                }
+            })
 
         reset();
         setProductQuantities({});
