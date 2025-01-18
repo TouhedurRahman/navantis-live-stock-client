@@ -225,38 +225,43 @@ const PlaceOrder = () => {
 
                         {/* Receipt Section */}
                         <div className="w-full max-w-sm bg-white border border-gray-300 rounded-md p-4 shadow-sm text-sm font-mono">
-                            <div className="text-center">
-                                <h2 className="text-lg font-bold mb-2">Navantis Pharma Limited</h2>
+                            <div className="text-center mb-4">
+                                <h2 className="text-lg font-bold">Navantis Pharma Limited</h2>
                                 <p className="text-xs">Order Receipt</p>
                                 <p className="text-xs">Date: {new Date().toLocaleString()}</p>
                                 <hr className="my-2 border-gray-400" />
                             </div>
                             {receiptProducts.length > 0 ? (
                                 <>
-                                    <div>
-                                        <ul>
-                                            {receiptProducts.map(product => (
-                                                <li key={product.id} className="mb-2">
-                                                    <div className="flex justify-between">
-                                                        <span>{product.name}</span>
-                                                        <span>{product.quantity} x {product.tradePrice}</span>
-                                                    </div>
-                                                    <div className="text-right">
-                                                        <span>= {product.quantity * product.tradePrice}</span>
-                                                    </div>
-                                                </li>
+                                    <table className="w-full border-collapse text-left">
+                                        <thead>
+                                            <tr className="border-b border-gray-400">
+                                                <th className="py-2">Product</th>
+                                                <th className="py-2 text-right px-3">Qty</th>
+                                                <th className="py-2 text-right px-3">Price/Unit</th>
+                                                <th className="py-2 text-right px-3">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {receiptProducts.map((product) => (
+                                                <tr key={product.id} className="border-b border-gray-200">
+                                                    <td className="py-2">{product.name}</td>
+                                                    <td className="py-2 text-right px-3">{product.quantity}</td>
+                                                    <td className="py-2 text-right px-3">{product.tradePrice}/-</td>
+                                                    <td className="py-2 text-right px-3">{product.quantity * product.tradePrice}/-</td>
+                                                </tr>
                                             ))}
-                                        </ul>
-                                        <hr className="my-2 border-gray-400" />
-                                        <div className="flex justify-between font-bold">
-                                            <span>Total:</span>
-                                            <span>
-                                                {receiptProducts.reduce(
-                                                    (sum, product) => sum + product.quantity * product.tradePrice,
-                                                    0
-                                                )}
-                                            </span>
-                                        </div>
+                                        </tbody>
+                                    </table>
+                                    <hr className="my-2 border-gray-400" />
+                                    <div className="flex justify-between font-bold text-sm mt-2">
+                                        <span>Total:</span>
+                                        <span className='px-3'>
+                                            {receiptProducts.reduce(
+                                                (sum, product) => sum + product.quantity * product.tradePrice,
+                                                0
+                                            )}/-
+                                        </span>
                                     </div>
                                     <hr className="my-2 border-gray-400" />
                                     <p className="text-center text-xs mt-4">Thank you for your purchase!</p>
