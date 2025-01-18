@@ -114,7 +114,7 @@ const PlaceOrder = () => {
                 <h1 className="px-6 py-3 font-bold">Make pharmacy wise Order</h1>
                 <hr className='text-center border border-gray-500 mb-5' />
                 <div className="p-6 pt-0 space-y-4">
-                    <div className='flex justify-between items-center'>
+                    <div className='flex justify-between items-start'>
                         <form onSubmit={handleSubmit(onSubmit)} className='w-full pr-6'>
                             <div className="flex flex-col">
                                 <label className="text-sm">User Name <span className="text-red-500">*</span></label>
