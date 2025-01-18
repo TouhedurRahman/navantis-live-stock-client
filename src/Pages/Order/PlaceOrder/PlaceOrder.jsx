@@ -195,6 +195,7 @@ const PlaceOrder = () => {
                                                                     max={product.totalQuantity}
                                                                     placeholder="Qty"
                                                                     className="border border-gray-300 rounded-md p-2 w-24 text-center focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                                    value={productQuantities[product._id] || 0}  // Prefill with saved quantity
                                                                     onChange={(e) => handleProductQuantityChange(product._id, e.target.value)}
                                                                 />
                                                             </td>
