@@ -211,7 +211,7 @@ const PlaceOrder = () => {
 
                             {isModalOpen && (
                                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                                    <div className="flex justify-center items-center bg-white p-8 rounded-lg shadow-2xl md:w-3/4 mx-auto max-w-4xl">
+                                    <div className="bg-white p-8 rounded-lg shadow-2xl w-3/4 max-w-4xl">
                                         <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Select Products</h2>
 
                                         <div className="overflow-x-auto">
@@ -273,7 +273,7 @@ const PlaceOrder = () => {
                         </form>
 
                         {/* Receipt Section */}
-                        <div className="w-full max-w-sm bg-white border border-gray-300 rounded-md p-4 shadow-sm text-sm font-mono">
+                        <div className="w-full max-w-sm mx-auto bg-white border border-gray-300 rounded-md p-4 shadow-sm text-sm font-mono">
                             <div className="text-center mb-4">
                                 <h2 className="text-lg font-bold">Navantis Pharma Limited</h2>
                                 <p className="text-xs">Order Receipt</p>
