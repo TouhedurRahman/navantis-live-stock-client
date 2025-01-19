@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
@@ -113,9 +114,9 @@ const PlaceOrder = () => {
             pharmacy: selectedPharmacy,
             products: receiptProducts,
             totalProduct: totalOrderedProducts,
-            totalUnit: totalOrderUnits,
-            totalPrice: totalOrderedTradePrice,
-            paymode: data.payMode,
+            totalUnit: Number(totalOrderUnits),
+            totalPrice: Number(totalOrderedTradePrice),
+            payMode: data.payMode,
             status: "initialized",
             date: getTodayDate()
         };
@@ -188,8 +189,7 @@ const PlaceOrder = () => {
                             <div className="flex flex-col">
                                 <label className="text-sm mb-2">Pay Mode <span className="text-red-500">*</span></label>
                                 <select
-                                    {...register('PayMode', { required: 'Pay Mode' })}
-                                    onChange={handlePharmacyChange}
+                                    {...register('payMode', { required: 'Pay mode is required' })}
                                     className="border-gray-500 bg-white border p-2 text-sm"
                                 >
                                     <option value="">~~ Select a Pay Mode ~~</option>
@@ -198,7 +198,7 @@ const PlaceOrder = () => {
                                     <option value="STC">STC</option>
 
                                 </select>
-                                {errors.pharmacy && <p className="text-red-500 text-sm">{errors.pharmacy.message}</p>}
+                                {errors.PayMode && <p className="text-red-500 text-sm">{errors.PayMode.message}</p>}
                             </div>
 
                             <button
