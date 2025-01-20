@@ -61,6 +61,7 @@ const useMenuConfig = () => {
                 { to: '/depot-in', icon: <FaArrowDown className='me-2' />, label: 'Stock In' },
                 { to: '/depot-out', icon: <FaArrowUp className='me-2' />, label: 'Stock Out' },
                 { to: '/depot-expired', icon: <FcExpired className='me-2' />, label: 'Expired' },
+                { to: '/order-delivery', icon: <FaShoppingCart className='me-2' />, label: 'Order Delivery' },
             ],
         };
     }
