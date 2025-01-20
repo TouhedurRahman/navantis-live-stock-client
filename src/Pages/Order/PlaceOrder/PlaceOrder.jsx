@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useDepotProducts from '../../../Hooks/useDepotProducts';
 import usePharmacies from '../../../Hooks/usePharmacies';
@@ -48,7 +49,7 @@ const PlaceOrder = () => {
 
         setFilteredPharmacies([]);
         setSelectedPharmacy('');
-        setReceiptProducts([]);  // Reset receipt products when user changes
+        setReceiptProducts([]);
 
         const selectedUser = tempUsers.find(user => user.name === userName);
         const territoryName = selectedUser?.territory ?? null;
@@ -243,7 +244,7 @@ const PlaceOrder = () => {
                                                                     max={product.totalQuantity}
                                                                     placeholder="Qty"
                                                                     className="border border-gray-300 rounded-md p-2 w-24 text-center focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                                                                    value={productQuantities[product._id] || 0}  // Prefill with saved quantity
+                                                                    value={productQuantities[product._id]}
                                                                     onChange={(e) => handleProductQuantityChange(product._id, e.target.value)}
                                                                 />
                                                             </td>
