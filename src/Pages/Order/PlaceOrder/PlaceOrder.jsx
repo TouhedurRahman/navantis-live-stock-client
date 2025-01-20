@@ -234,7 +234,7 @@ const PlaceOrder = () => {
                                                             </td>
 
                                                             <td className="text-right p-4">
-                                                                <p className="font-medium text-gray-900">{product.tradePrice}</p>
+                                                                <p className="font-medium text-gray-900">{product.tradePrice}/-</p>
                                                             </td>
 
                                                             <td className="text-center p-4">
@@ -254,7 +254,7 @@ const PlaceOrder = () => {
                                             </table>
                                         </div>
 
-                                        <div className="flex justify-end mt-6">
+                                        <div className="flex justify-center items-center mt-6">
                                             <button
                                                 onClick={() => setIsModalOpen(false)}
                                                 className="bg-gray-500 text-white px-4 py-2 rounded"
