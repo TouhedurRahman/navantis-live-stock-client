@@ -9,6 +9,34 @@ const OrderDelivery = () => {
 
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [selectedProducts, setSelectedProducts] = useState(null);
+    const [deliveryQuantities, setDeliveryQuantities] = useState({});
+
+    const handleDeliveryChange = (productId, value) => {
+        setDeliveryQuantities((prev) => ({
+            ...prev,
+            [productId]: Math.max(0, Math.min(value, products.find(p => p._id === productId)?.totalQuantity || 0)),
+        }));
+    };
+
+    const handleDeliverySubmit = () => {
+        const deliveryData = selectedProducts.map((product) => ({
+            productId: product.id,
+            deliveryQuantity: deliveryQuantities[product.id] || 0,
+        }));
+
+        console.log("Delivery Data Submitted:", deliveryData);
+        setSelectedProducts(null);
+        setDeliveryQuantities({});
+    };
+
+    // Function to find the next product with the nearest expiry date
+    const getNextExpireProduct = (orderProduct) => {
+        const sortedProducts = products
+            .filter((p) => p._id !== orderProduct.id) // Exclude the current product
+            .sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate)); // Sort by nearest expiry date
+
+        return sortedProducts[0]; // Return the next product with the nearest expiry
+    };
 
     return (
         <>
@@ -101,6 +129,31 @@ const OrderDelivery = () => {
                                     const depotProduct = products.find(
                                         (d) => d._id === product.id
                                     );
+
+                                    // Check if the order quantity exceeds available quantity
+                                    if (product.quantity > (depotProduct?.totalQuantity || 0)) {
+                                        const nextProduct = getNextExpireProduct(product);
+                                        return (
+                                            <tr key={product.id} className="border-b">
+                                                <td className="p-2">{product.name}</td>
+                                                <td className="p-2">{product.quantity}</td>
+                                                <td className="p-2">
+                                                    {depotProduct?.totalQuantity || 0}
+                                                </td>
+                                                <td className="p-2">
+                                                    <input
+                                                        type="number"
+                                                        className="border rounded p-1 w-16"
+                                                        placeholder="Qty"
+                                                        value={deliveryQuantities[product.id] || ""}
+                                                        onChange={(e) =>
+                                                            handleDeliveryChange(product.id, Number(e.target.value))
+                                                        }
+                                                    />
+                                                </td>
+                                            </tr>
+                                        );
+                                    }
                                     return (
                                         <tr key={product.id} className="border-b">
                                             <td className="p-2">{product.name}</td>
@@ -113,7 +166,10 @@ const OrderDelivery = () => {
                                                     type="number"
                                                     className="border rounded p-1 w-16"
                                                     placeholder="Qty"
-                                                    max={depotProduct?.totalQuantity || 0}
+                                                    value={deliveryQuantities[product.id] || ""}
+                                                    onChange={(e) =>
+                                                        handleDeliveryChange(product.id, Number(e.target.value))
+                                                    }
                                                 />
                                             </td>
                                         </tr>
@@ -121,12 +177,23 @@ const OrderDelivery = () => {
                                 })}
                             </tbody>
                         </table>
-                        <button
-                            className="bg-red-500 text-white px-4 py-2 rounded mt-4"
-                            onClick={() => setSelectedProducts(null)}
-                        >
-                            Close
-                        </button>
+                        <div className="flex justify-end gap-4 mt-4">
+                            <button
+                                className="bg-red-500 text-white px-4 py-2 rounded"
+                                onClick={() => {
+                                    setSelectedProducts(null);
+                                    setDeliveryQuantities({});
+                                }}
+                            >
+                                Close
+                            </button>
+                            <button
+                                className="bg-green-500 text-white px-4 py-2 rounded"
+                                onClick={handleDeliverySubmit}
+                            >
+                                Deliver
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
