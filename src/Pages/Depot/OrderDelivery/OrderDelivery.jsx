@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import PageTitle from '../../../Components/PageTitle/PageTitle';
-import useDepotProducts from '../../../Hooks/useDepotProducts';
-import useOrders from '../../../Hooks/useOrders';
+import React, { useState } from "react";
+import PageTitle from "../../../Components/PageTitle/PageTitle";
+import useDepotProducts from "../../../Hooks/useDepotProducts";
+import useOrders from "../../../Hooks/useOrders";
 
 const OrderDelivery = () => {
     const [orders] = useOrders();
@@ -11,17 +11,20 @@ const OrderDelivery = () => {
     const [selectedProducts, setSelectedProducts] = useState(null);
     const [deliveryQuantities, setDeliveryQuantities] = useState({});
 
-    const handleDeliveryChange = (productId, value) => {
+    const handleDeliveryChange = (productId, batchId, value) => {
         setDeliveryQuantities((prev) => ({
             ...prev,
-            [productId]: Math.max(0, Math.min(value, products.find(p => p._id === productId)?.totalQuantity || 0)),
+            [batchId]: Math.max(
+                0,
+                Math.min(value, products.find((p) => p._id === batchId)?.totalQuantity || 0)
+            ),
         }));
     };
 
     const handleDeliverySubmit = () => {
-        const deliveryData = selectedProducts.map((product) => ({
-            productId: product.id,
-            deliveryQuantity: deliveryQuantities[product.id] || 0,
+        const deliveryData = Object.keys(deliveryQuantities).map((batchId) => ({
+            batchId,
+            deliveryQuantity: deliveryQuantities[batchId] || 0,
         }));
 
         console.log("Delivery Data Submitted:", deliveryData);
@@ -29,13 +32,10 @@ const OrderDelivery = () => {
         setDeliveryQuantities({});
     };
 
-    // Function to find the next product with the nearest expiry date
-    const getNextExpireProduct = (orderProduct) => {
-        const sortedProducts = products
-            .filter((p) => p._id !== orderProduct.id) // Exclude the current product
-            .sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate)); // Sort by nearest expiry date
-
-        return sortedProducts[0]; // Return the next product with the nearest expiry
+    const getSortedProductsByExpiry = (productName) => {
+        return products
+            .filter((product) => product.productName === productName)
+            .sort((a, b) => new Date(a.expire) - new Date(b.expire));
     };
 
     return (
@@ -113,66 +113,76 @@ const OrderDelivery = () => {
             {/* Modal for Ordered Products */}
             {selectedProducts && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-[600px]">
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-[800px]">
                         <h2 className="text-lg font-bold mb-4">Ordered Products</h2>
                         <table className="w-full text-left">
                             <thead>
                                 <tr className="border-b">
                                     <th className="p-2">Product</th>
-                                    <th className="p-2">Quantity</th>
+                                    <th className="p-2">Order Qty</th>
                                     <th className="p-2">Available</th>
+                                    <th className="p-2">Expire</th>
                                     <th className="p-2">Delivery</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {selectedProducts.map((product) => {
-                                    const depotProduct = products.find(
-                                        (d) => d._id === product.id
-                                    );
+                                {Object.entries(
+                                    selectedProducts.reduce((acc, product) => {
+                                        // Group products by name
+                                        if (!acc[product.name]) acc[product.name] = [];
+                                        acc[product.name].push(product);
+                                        return acc;
+                                    }, {})
+                                ).map(([productName, products]) => {
+                                    const totalOrderQty = products.reduce((sum, p) => sum + p.quantity, 0);
+                                    const sortedDepotProducts = getSortedProductsByExpiry(productName);
+                                    let remainingOrderQty = totalOrderQty;
 
-                                    // Check if the order quantity exceeds available quantity
-                                    if (product.quantity > (depotProduct?.totalQuantity || 0)) {
-                                        const nextProduct = getNextExpireProduct(product);
-                                        return (
-                                            <tr key={product.id} className="border-b">
-                                                <td className="p-2">{product.name}</td>
-                                                <td className="p-2">{product.quantity}</td>
-                                                <td className="p-2">
-                                                    {depotProduct?.totalQuantity || 0}
-                                                </td>
-                                                <td className="p-2">
-                                                    <input
-                                                        type="number"
-                                                        className="border rounded p-1 w-16"
-                                                        placeholder="Qty"
-                                                        value={deliveryQuantities[product.id] || ""}
-                                                        onChange={(e) =>
-                                                            handleDeliveryChange(product.id, Number(e.target.value))
-                                                        }
-                                                    />
-                                                </td>
-                                            </tr>
-                                        );
-                                    }
                                     return (
-                                        <tr key={product.id} className="border-b">
-                                            <td className="p-2">{product.name}</td>
-                                            <td className="p-2">{product.quantity}</td>
-                                            <td className="p-2">
-                                                {depotProduct?.totalQuantity || 0}
-                                            </td>
-                                            <td className="p-2">
-                                                <input
-                                                    type="number"
-                                                    className="border rounded p-1 w-16"
-                                                    placeholder="Qty"
-                                                    value={deliveryQuantities[product.id] || ""}
-                                                    onChange={(e) =>
-                                                        handleDeliveryChange(product.id, Number(e.target.value))
-                                                    }
-                                                />
-                                            </td>
-                                        </tr>
+                                        <React.Fragment key={productName}>
+                                            {sortedDepotProducts.map((depotProduct, index) => {
+                                                const deliverableQty = Math.min(
+                                                    remainingOrderQty,
+                                                    depotProduct.totalQuantity
+                                                );
+                                                remainingOrderQty -= deliverableQty;
+
+                                                return (
+                                                    <tr key={depotProduct._id} className="border-b">
+                                                        {/* Display product name and total order quantity only on the first row */}
+                                                        {index === 0 && (
+                                                            <>
+                                                                <td className="p-2" rowSpan={sortedDepotProducts.length}>
+                                                                    {productName}
+                                                                </td>
+                                                                <td className="p-2" rowSpan={sortedDepotProducts.length}>
+                                                                    {totalOrderQty}
+                                                                </td>
+                                                            </>
+                                                        )}
+                                                        <td className="p-2">{depotProduct.totalQuantity}</td>
+                                                        <td className="p-2">{depotProduct.expire}</td>
+                                                        <td className="p-2">
+                                                            <input
+                                                                type="number"
+                                                                className="border rounded p-1 w-16"
+                                                                placeholder="Qty"
+                                                                value={
+                                                                    deliveryQuantities[depotProduct._id] || deliverableQty
+                                                                }
+                                                                onChange={(e) =>
+                                                                    handleDeliveryChange(
+                                                                        products[0].id,
+                                                                        depotProduct._id,
+                                                                        Number(e.target.value)
+                                                                    )
+                                                                }
+                                                            />
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </React.Fragment>
                                     );
                                 })}
                             </tbody>
