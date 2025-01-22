@@ -9,6 +9,7 @@ const OrderDelivery = () => {
 
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [selectedProducts, setSelectedProducts] = useState(null);
+    const [selectedOrderDetails, setSelectedOrderDetails] = useState(null);
     const [deliveryQuantities, setDeliveryQuantities] = useState({});
 
     const handleDeliveryChange = (batchId, value) => {
@@ -25,6 +26,7 @@ const OrderDelivery = () => {
     };
 
     const handleDeliverySubmit = () => {
+        console.log(selectedOrderDetails);
         const deliveryData = Object.keys(deliveryQuantities).map((batchId) => ({
             batchId,
             deliveryQuantity: deliveryQuantities[batchId] || 0,
@@ -101,6 +103,7 @@ const OrderDelivery = () => {
                                 <button
                                     className="bg-green-500 text-white px-4 py-2 rounded"
                                     onClick={() => {
+                                        setSelectedOrderDetails(order);
                                         setSelectedProducts(order.products);
                                         initializeDeliveryQuantities(order.products);
                                     }}
