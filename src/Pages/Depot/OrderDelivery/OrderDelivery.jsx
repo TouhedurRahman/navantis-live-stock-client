@@ -27,10 +27,95 @@ const OrderDelivery = () => {
 
     const handleDeliverySubmit = () => {
         console.log(selectedOrderDetails);
+
         const deliveryData = Object.keys(deliveryQuantities).map((batchId) => ({
             batchId,
             deliveryQuantity: deliveryQuantities[batchId] || 0,
         }));
+
+        /* const deliveredOrder = {
+            ...selectedOrderDetails,
+            products: Object.keys(deliveryQuantities).map((batchId) => {
+                const product = products.find((product) => product._id === batchId);
+                return {
+                    name: product?.productName,
+                    tradePrice: product?.tradePrice,
+                    quantity: deliveryQuantities[batchId] || 0,
+                };
+            }),
+            totalProduct: Object.keys(deliveryQuantities).filter(
+                (batchId) => deliveryQuantities[batchId] > 0
+            ).length,
+            totalUnit: Object.keys(deliveryQuantities).reduce(
+                (total, batchId) => total + (deliveryQuantities[batchId] || 0),
+                0
+            ),
+            totalPrice: Object.keys(deliveryQuantities).reduce((total, batchId) => {
+                const product = products.find((product) => product._id === batchId);
+                const tradePrice = product?.tradePrice || 0;
+                return total + tradePrice * (deliveryQuantities[batchId] || 0);
+            }, 0),
+        }; */
+
+        const deliveredOrder = {
+            ...selectedOrderDetails,
+            products: Object.values(
+                Object.keys(deliveryQuantities).reduce((acc, batchId) => {
+                    const product = products.find((product) => product._id === batchId);
+                    const productName = product?.productName;
+                    const tradePrice = product?.tradePrice || 0;
+                    const quantity = deliveryQuantities[batchId] || 0;
+
+                    if (productName) {
+                        if (acc[productName]) {
+                            acc[productName].quantity += quantity;
+                            acc[productName].totalPrice += tradePrice * quantity;
+                        } else {
+                            acc[productName] = {
+                                name: productName,
+                                tradePrice,
+                                quantity,
+                                totalPrice: tradePrice * quantity,
+                            };
+                        }
+                    }
+
+                    return acc;
+                }, {})
+            ),
+            totalProduct: Object.keys(
+                Object.keys(deliveryQuantities).reduce((acc, batchId) => {
+                    const product = products.find((product) => product._id === batchId);
+                    const productName = product?.productName;
+                    if (productName) acc[productName] = true;
+                    return acc;
+                }, {})
+            ).length,
+            totalUnit: Object.keys(deliveryQuantities).reduce(
+                (total, batchId) => total + (deliveryQuantities[batchId] || 0),
+                0
+            ),
+            totalPrice: Object.values(
+                Object.keys(deliveryQuantities).reduce((acc, batchId) => {
+                    const product = products.find((product) => product._id === batchId);
+                    const productName = product?.productName;
+                    const tradePrice = product?.tradePrice || 0;
+                    const quantity = deliveryQuantities[batchId] || 0;
+
+                    if (productName) {
+                        if (acc[productName]) {
+                            acc[productName] += tradePrice * quantity;
+                        } else {
+                            acc[productName] = tradePrice * quantity;
+                        }
+                    }
+
+                    return acc;
+                }, {})
+            ).reduce((total, price) => total + price, 0),
+        };
+
+        console.log(deliveredOrder);
 
         console.log("Delivery Data Submitted:", deliveryData);
         setSelectedProducts(null);
