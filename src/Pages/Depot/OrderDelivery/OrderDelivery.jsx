@@ -51,10 +51,29 @@ const OrderDelivery = () => {
     const handleDeliverySubmit = async () => {
         // console.log(selectedOrderDetails);
 
-        const deliveryData = Object.keys(deliveryQuantities).map((batchId) => ({
+        /* const deliveryData = Object.keys(deliveryQuantities).map((batchId) => ({
             batchId,
             deliveryQuantity: deliveryQuantities[batchId] || 0,
-        }));
+        })); */
+
+        const deliveryData = Object.keys(deliveryQuantities)
+            .map((batchId) => {
+                const batchDetails = products.find((batch) => batch._id === batchId);
+
+                return {
+                    batchId,
+                    productName: batchDetails?.productName,
+                    productCode: batchDetails?.productCode,
+                    expire: batchDetails?.expire,
+                    batch: batchDetails?.batch,
+                    actualPrice: batchDetails?.actualPrice,
+                    tradePrice: batchDetails?.tradePrice,
+                    totalQuantity: deliveryQuantities[batchId],
+                };
+            })
+            .filter((item) => item.totalQuantity > 0);
+
+        // console.log("Delivery Data:", deliveryData);
 
         const deliveredOrder = {
             ...selectedOrderDetails,
@@ -124,8 +143,6 @@ const OrderDelivery = () => {
         };
 
         // console.log(deliveredOrder);
-
-        // console.log("Delivery Data Submitted:", deliveryData);
 
         try {
             await Promise.all([
