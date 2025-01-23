@@ -118,7 +118,7 @@ const PlaceOrder = () => {
             totalUnit: Number(totalOrderUnits),
             totalPrice: Number(totalOrderedTradePrice),
             payMode: data.payMode,
-            status: "initialized",
+            status: "pending",
             date: getTodayDate()
         };
 

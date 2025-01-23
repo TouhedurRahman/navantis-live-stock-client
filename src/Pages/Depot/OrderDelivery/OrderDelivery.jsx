@@ -1,4 +1,7 @@
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import React, { useState } from "react";
+import Swal from "sweetalert2";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import useDepotProducts from "../../../Hooks/useDepotProducts";
 import useOrders from "../../../Hooks/useOrders";
@@ -25,8 +28,28 @@ const OrderDelivery = () => {
         }));
     };
 
-    const handleDeliverySubmit = () => {
-        console.log(selectedOrderDetails);
+    const deletePendingOrderMutation = useMutation({
+        mutationFn: async () => {
+            const response = await axios.delete(`http://localhost:5000/pending-order/${selectedOrderDetails._id}`);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error deleting pending order:", error);
+        },
+    });
+
+    const addDeliveredOrderMutation = useMutation({
+        mutationFn: async (newOrder) => {
+            const response = await axios.post('http://localhost:5000/orders', newOrder);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error add delivered ordered product:", error);
+        },
+    });
+
+    const handleDeliverySubmit = async () => {
+        // console.log(selectedOrderDetails);
 
         const deliveryData = Object.keys(deliveryQuantities).map((batchId) => ({
             batchId,
@@ -100,9 +123,38 @@ const OrderDelivery = () => {
             status: "delivered"
         };
 
-        console.log(deliveredOrder);
+        // console.log(deliveredOrder);
 
-        console.log("Delivery Data Submitted:", deliveryData);
+        // console.log("Delivery Data Submitted:", deliveryData);
+
+        try {
+            await Promise.all([
+                deletePendingOrderMutation.mutateAsync(),
+                addDeliveredOrderMutation.mutateAsync(deliveredOrder)
+            ]);
+
+            refetch();
+
+            Swal.fire({
+                title: "Success!",
+                text: "Products successfully delivered",
+                icon: "success",
+                showConfirmButton: false,
+                confirmButtonColor: "#3B82F6",
+                timer: 1500
+            });
+        } catch (error) {
+            // console.error("Error adding product:", error);
+            Swal.fire({
+                title: "Error!",
+                text: "Faild. Please try again.",
+                icon: "error",
+                showConfirmButton: false,
+                confirmButtonColor: "#d33",
+                timer: 1500
+            });
+        }
+
         setSelectedProducts(null);
         setDeliveryQuantities({});
     };
