@@ -33,30 +33,6 @@ const OrderDelivery = () => {
             deliveryQuantity: deliveryQuantities[batchId] || 0,
         }));
 
-        /* const deliveredOrder = {
-            ...selectedOrderDetails,
-            products: Object.keys(deliveryQuantities).map((batchId) => {
-                const product = products.find((product) => product._id === batchId);
-                return {
-                    name: product?.productName,
-                    tradePrice: product?.tradePrice,
-                    quantity: deliveryQuantities[batchId] || 0,
-                };
-            }),
-            totalProduct: Object.keys(deliveryQuantities).filter(
-                (batchId) => deliveryQuantities[batchId] > 0
-            ).length,
-            totalUnit: Object.keys(deliveryQuantities).reduce(
-                (total, batchId) => total + (deliveryQuantities[batchId] || 0),
-                0
-            ),
-            totalPrice: Object.keys(deliveryQuantities).reduce((total, batchId) => {
-                const product = products.find((product) => product._id === batchId);
-                const tradePrice = product?.tradePrice || 0;
-                return total + tradePrice * (deliveryQuantities[batchId] || 0);
-            }, 0),
-        }; */
-
         const deliveredOrder = {
             ...selectedOrderDetails,
             products: Object.values(
@@ -66,7 +42,7 @@ const OrderDelivery = () => {
                     const tradePrice = product?.tradePrice || 0;
                     const quantity = deliveryQuantities[batchId] || 0;
 
-                    if (productName) {
+                    if (productName && quantity > 0) {
                         if (acc[productName]) {
                             acc[productName].quantity += quantity;
                             acc[productName].totalPrice += tradePrice * quantity;
@@ -87,12 +63,19 @@ const OrderDelivery = () => {
                 Object.keys(deliveryQuantities).reduce((acc, batchId) => {
                     const product = products.find((product) => product._id === batchId);
                     const productName = product?.productName;
-                    if (productName) acc[productName] = true;
+                    const quantity = deliveryQuantities[batchId] || 0;
+
+                    if (productName && quantity > 0) {
+                        acc[productName] = true;
+                    }
                     return acc;
                 }, {})
             ).length,
             totalUnit: Object.keys(deliveryQuantities).reduce(
-                (total, batchId) => total + (deliveryQuantities[batchId] || 0),
+                (total, batchId) => {
+                    const quantity = deliveryQuantities[batchId] || 0;
+                    return total + (quantity > 0 ? quantity : 0); // Only add if quantity > 0
+                },
                 0
             ),
             totalPrice: Object.values(
@@ -102,7 +85,8 @@ const OrderDelivery = () => {
                     const tradePrice = product?.tradePrice || 0;
                     const quantity = deliveryQuantities[batchId] || 0;
 
-                    if (productName) {
+                    // Only include in totalPrice if quantity > 0
+                    if (productName && quantity > 0) {
                         if (acc[productName]) {
                             acc[productName] += tradePrice * quantity;
                         } else {
@@ -113,6 +97,7 @@ const OrderDelivery = () => {
                     return acc;
                 }, {})
             ).reduce((total, price) => total + price, 0),
+            status: "delivered"
         };
 
         console.log(deliveredOrder);
