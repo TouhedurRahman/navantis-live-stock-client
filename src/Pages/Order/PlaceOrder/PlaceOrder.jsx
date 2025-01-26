@@ -122,7 +122,7 @@ const PlaceOrder = () => {
             date: getTodayDate()
         };
 
-        console.log(newOrder);
+        // console.log(newOrder);
 
         axios.post('http://localhost:5000/orders', newOrder)
             .then(data => {

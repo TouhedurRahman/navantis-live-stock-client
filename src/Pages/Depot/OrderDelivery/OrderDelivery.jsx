@@ -48,6 +48,24 @@ const OrderDelivery = () => {
         },
     });
 
+    const updateDepotProductsMutation = useMutation({
+        mutationFn: async (deliveredProducts) => {
+            const responses = await Promise.all(
+                deliveredProducts.map(async (updatedProduct) => {
+                    const response = await axios.patch(
+                        `http://localhost:5000/depot-product/${updatedProduct._id}`,
+                        updatedProduct
+                    );
+                    return response.data;
+                })
+            );
+            return responses;
+        },
+        onError: (error) => {
+            console.error("Error order delivery:", error);
+        },
+    });
+
     const handleDeliverySubmit = async () => {
         // console.log(selectedOrderDetails);
 
@@ -61,14 +79,14 @@ const OrderDelivery = () => {
                 const batchDetails = products.find((batch) => batch._id === batchId);
 
                 return {
-                    batchId,
+                    _id: batchId,
                     productName: batchDetails?.productName,
                     productCode: batchDetails?.productCode,
                     expire: batchDetails?.expire,
                     batch: batchDetails?.batch,
                     actualPrice: batchDetails?.actualPrice,
                     tradePrice: batchDetails?.tradePrice,
-                    totalQuantity: deliveryQuantities[batchId],
+                    totalQuantity: Number(batchDetails.totalQuantity - deliveryQuantities[batchId]),
                 };
             })
             .filter((item) => item.totalQuantity > 0);
@@ -116,7 +134,7 @@ const OrderDelivery = () => {
             totalUnit: Object.keys(deliveryQuantities).reduce(
                 (total, batchId) => {
                     const quantity = deliveryQuantities[batchId] || 0;
-                    return total + (quantity > 0 ? quantity : 0); // Only add if quantity > 0
+                    return total + (quantity > 0 ? quantity : 0);
                 },
                 0
             ),
@@ -147,7 +165,8 @@ const OrderDelivery = () => {
         try {
             await Promise.all([
                 deletePendingOrderMutation.mutateAsync(),
-                addDeliveredOrderMutation.mutateAsync(deliveredOrder)
+                addDeliveredOrderMutation.mutateAsync(deliveredOrder),
+                updateDepotProductsMutation.mutateAsync(deliveryData)
             ]);
 
             refetch();
