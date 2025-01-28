@@ -10,6 +10,8 @@ const OrderDelivery = () => {
     const [orders, , ordersRefetch] = useOrders();
     const [products, , productsRefetch] = useDepotProducts();
 
+    const pendingOrders = orders.filter(order => order.status === 'pending');
+
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [selectedProducts, setSelectedProducts] = useState(null);
     const [selectedOrderDetails, setSelectedOrderDetails] = useState(null);
@@ -237,7 +239,7 @@ const OrderDelivery = () => {
 
                 {/* Order List */}
                 <div className="px-6">
-                    {orders.map((order) => (
+                    {pendingOrders.map((order) => (
                         <div
                             key={order._id}
                             className="border rounded-lg mb-4 p-4 shadow-sm bg-gray-100"
