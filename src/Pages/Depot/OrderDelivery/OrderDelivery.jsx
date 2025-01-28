@@ -7,8 +7,8 @@ import useDepotProducts from "../../../Hooks/useDepotProducts";
 import useOrders from "../../../Hooks/useOrders";
 
 const OrderDelivery = () => {
-    const [orders] = useOrders();
-    const [products] = useDepotProducts();
+    const [orders, , ordersRefetch] = useOrders();
+    const [products, , productsRefetch] = useDepotProducts();
 
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [selectedProducts, setSelectedProducts] = useState(null);
@@ -49,7 +49,8 @@ const OrderDelivery = () => {
     });
 
     const updateDepotProductsMutation = useMutation({
-        mutationFn: async (deliveredProducts) => {
+        mutationFn: async (data) => {
+            const deliveredProducts = data;
             const responses = await Promise.all(
                 deliveredProducts.map(async (updatedProduct) => {
                     const response = await axios.patch(
@@ -82,11 +83,11 @@ const OrderDelivery = () => {
                     _id: batchId,
                     productName: batchDetails?.productName,
                     productCode: batchDetails?.productCode,
-                    expire: batchDetails?.expire,
                     batch: batchDetails?.batch,
-                    actualPrice: batchDetails?.actualPrice,
-                    tradePrice: batchDetails?.tradePrice,
-                    totalQuantity: Number(batchDetails.totalQuantity - deliveryQuantities[batchId]),
+                    expire: batchDetails?.expire,
+                    actualPrice: Number(batchDetails?.actualPrice),
+                    tradePrice: Number(batchDetails?.tradePrice),
+                    totalQuantity: Number(Number(batchDetails.totalQuantity) - Number(deliveryQuantities[batchId])),
                 };
             })
             .filter((item) => item.totalQuantity > 0);
@@ -169,7 +170,8 @@ const OrderDelivery = () => {
                 updateDepotProductsMutation.mutateAsync(deliveryData)
             ]);
 
-            refetch();
+            ordersRefetch();
+            productsRefetch();
 
             Swal.fire({
                 title: "Success!",
@@ -180,7 +182,7 @@ const OrderDelivery = () => {
                 timer: 1500
             });
         } catch (error) {
-            // console.error("Error adding product:", error);
+            console.error("Error adding product:", error);
             Swal.fire({
                 title: "Error!",
                 text: "Faild. Please try again.",
