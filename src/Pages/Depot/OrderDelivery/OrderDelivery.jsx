@@ -69,6 +69,25 @@ const OrderDelivery = () => {
         },
     });
 
+    const addStockOutDepotMutation = useMutation({
+        mutationFn: async (data) => {
+            const deliveredProducts = data;
+            const responses = await Promise.all(
+                deliveredProducts.map(async (newProduct) => {
+                    const response = await axios.post(
+                        'http://localhost:5000/stock-out-depot',
+                        newProduct
+                    );
+                    return response.data;
+                })
+            );
+            return responses;
+        },
+        onError: (error) => {
+            console.error("Error stock out delivery:", error);
+        },
+    });
+
     const handleDeliverySubmit = async () => {
         // console.log(selectedOrderDetails);
 
@@ -95,6 +114,24 @@ const OrderDelivery = () => {
             .filter((item) => item.totalQuantity > 0);
 
         // console.log("Delivery Data:", deliveryData);
+
+        const dptSOutData = Object.keys(deliveryQuantities)
+            .map((batchId) => {
+                const batchDetails = products.find((batch) => batch._id === batchId);
+
+                return {
+                    productName: batchDetails?.productName,
+                    productCode: batchDetails?.productCode,
+                    batch: batchDetails?.batch,
+                    expire: batchDetails?.expire,
+                    actualPrice: Number(batchDetails?.actualPrice),
+                    tradePrice: Number(batchDetails?.tradePrice),
+                    totalQuantity: Number(deliveryQuantities[batchId]),
+                };
+            })
+            .filter((item) => item.totalQuantity > 0);
+
+        // console.log('Depot Stock out data:', dptSOutData);
 
         const deliveredOrder = {
             ...selectedOrderDetails,
@@ -169,7 +206,8 @@ const OrderDelivery = () => {
             await Promise.all([
                 deletePendingOrderMutation.mutateAsync(),
                 addDeliveredOrderMutation.mutateAsync(deliveredOrder),
-                updateDepotProductsMutation.mutateAsync(deliveryData)
+                updateDepotProductsMutation.mutateAsync(deliveryData),
+                addStockOutDepotMutation.mutateAsync(dptSOutData)
             ]);
 
             ordersRefetch();
