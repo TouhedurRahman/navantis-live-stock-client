@@ -110,8 +110,7 @@ const OrderDelivery = () => {
                     tradePrice: Number(batchDetails?.tradePrice),
                     totalQuantity: Number(Number(batchDetails.totalQuantity) - Number(deliveryQuantities[batchId])),
                 };
-            })
-            .filter((item) => item.totalQuantity > 0);
+            });
 
         // console.log("Delivery Data:", deliveryData);
 
