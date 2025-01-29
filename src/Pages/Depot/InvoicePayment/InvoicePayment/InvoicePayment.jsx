@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PageTitle from "../../../../Components/PageTitle/PageTitle";
+import OrderInvoice from "../OrderInvoice/OrderInvoice";
 
-const OrderInvoice = () => <div>Print invoice</div>;
 const DuePayment = () => <div>Due</div>;
 const OutstandingPayment = () => <div>Outstanding</div>;
 const Paid = () => <div>Paid</div>;
@@ -27,11 +27,11 @@ const InvoicePayment = () => {
     return (
         <>
             <div>
-                <PageTitle from={"Depot"} to={"Order delivery"} />
+                <PageTitle from={"Depot"} to={"Invoice payment"} />
             </div>
             <div className="bg-white pb-1">
                 <div>
-                    <h1 className="px-6 py-3 font-bold">Order delivery</h1>
+                    <h1 className="px-6 py-3 font-bold">{activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}</h1>
                     <hr className="text-center border border-gray-500 mb-5" />
                 </div>
 
