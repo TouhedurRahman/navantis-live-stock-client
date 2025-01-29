@@ -14,6 +14,7 @@ import DepotProductsList from "../../Pages/Depot/DepotProductsList/DepotProducts
 import DepotRecieveReq from "../../Pages/Depot/DepotRecieveReq/DepotRecieveReq";
 import DepotStockInList from "../../Pages/Depot/DepotStockInList/DepotStockInList";
 import DepotStockOutList from "../../Pages/Depot/DepotStockOutList/DepotStockOutList";
+import InvoicePayment from "../../Pages/Depot/InvoicePayment/InvoicePayment/InvoicePayment";
 import OrderDelivery from "../../Pages/Depot/OrderDelivery/OrderDelivery";
 import Home from "../../Pages/Home/Home/Home";
 import PlaceOrder from "../../Pages/Order/PlaceOrder/PlaceOrder";
@@ -120,6 +121,10 @@ const router = createBrowserRouter([
             {
                 path: "/order-delivery",
                 element: <OrderDelivery />
+            },
+            {
+                path: "/invoice-payment",
+                element: <InvoicePayment />
             },
             {
                 path: "/place-order",
