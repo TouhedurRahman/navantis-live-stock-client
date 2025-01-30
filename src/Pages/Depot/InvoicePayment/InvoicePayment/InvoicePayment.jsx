@@ -32,6 +32,11 @@ const InvoicePayment = () => {
         }
     };
 
+    const closeModal = () => {
+        setInvoiceNumber("");
+        setShowModal(false);
+    }
+
     return (
         <>
             <div>
@@ -141,7 +146,7 @@ const InvoicePayment = () => {
 
                         <button
                             className="mt-6 w-full bg-red-500 text-white py-3 px-5 rounded-xl hover:bg-red-600 transition-all font-semibold text-lg shadow-md"
-                            onClick={() => setShowModal(false)}
+                            onClick={() => closeModal()}
                         >
                             Close
                         </button>
