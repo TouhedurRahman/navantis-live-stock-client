@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import PageTitle from "../../../../Components/PageTitle/PageTitle";
 import useOrders from "../../../../Hooks/useOrders";
@@ -32,8 +33,45 @@ const InvoicePayment = () => {
         }
     };
 
+    const handlePayment = (data) => {
+        const updatedOrder = {
+            ...data,
+            paid: Number(paymentAmount),
+            due: Number(Number(data?.totalPrice) - Number(paymentAmount) - Number(data?.due || 0)),
+            status: "paid"
+        };
+
+        axios.patch(`http://localhost:5000/order/${updatedOrder._id}`, updatedOrder)
+            .then(response => {
+                if (response.data.modifiedCount) {
+                    setInvoiceNumber("");
+                    setPaymentAmount("");
+                    setShowModal(false);
+
+                    let timerInterval;
+                    Swal.fire({
+                        title: "Processing Your Payment",
+                        html: "Hang tight! We're securely completing your transaction.",
+                        timer: 2000,
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval);
+                        }
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire("Error", "Failed to process the payment.", "error");
+                console.error(error);
+            });
+    };
+
     const closeModal = () => {
         setInvoiceNumber("");
+        setPaymentAmount("");
         setShowModal(false);
     }
 
@@ -138,6 +176,7 @@ const InvoicePayment = () => {
                                 />
                                 <button
                                     className="mt-4 w-full bg-green-500 text-white py-3 px-5 rounded-xl hover:bg-green-600 transition-all font-semibold text-lg shadow-md"
+                                    onClick={() => handlePayment(invWiseOrder)}
                                 >
                                     Make Payment
                                 </button>
