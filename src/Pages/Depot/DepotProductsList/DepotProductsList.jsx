@@ -61,7 +61,7 @@ const DepotProductsList = () => {
                             <button
                                 onClick={() => setRequestModalOpen(true)}
                                 title="Request product from depot"
-                                className="bg-[#3B82F6] text-white font-bold px-4 py-2 rounded-md hover:bg-[#2563EB] transition-all"
+                                className="text-white font-bold py-2 px-6 transition-all transform shadow-md focus:outline-none bg-indigo-500 hover:bg-indigo-700 hover:scale-105 hover:shadow-lg rounded-sm"
                             >
                                 Request Products
                             </button>
