@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
+import Swal from "sweetalert2";
 import PageTitle from "../../../../Components/PageTitle/PageTitle";
 import useOrders from "../../../../Hooks/useOrders";
 import OrderInvoice from "../OrderInvoice/OrderInvoice";
@@ -9,14 +10,13 @@ const OutstandingPayment = () => <div>Outstanding</div>;
 const Paid = () => <div>Paid</div>;
 
 const InvoicePayment = () => {
-    const [orders] = useOrders();
+    const [orders, , refetch] = useOrders();
     const [activeTab, setActiveTab] = useState("invoice");
     const [showModal, setShowModal] = useState(false);
     const [invoiceNumber, setInvoiceNumber] = useState("");
     const [paymentAmount, setPaymentAmount] = useState("");
 
-    const deliveredOrders = orders.filter(order => order.status === 'delivered');
-    const invWiseOrder = deliveredOrders.find(order => order.invoice === invoiceNumber);
+    const invWiseOrder = orders.find(order => order.invoice === invoiceNumber);
 
     const renderContent = () => {
         switch (activeTab) {
@@ -34,16 +34,21 @@ const InvoicePayment = () => {
     };
 
     const handlePayment = (data) => {
+        const { _id, ...orderData } = data;
+
+        const newStatus = (((parseFloat(orderData?.totalPrice) - parseFloat(orderData?.paid || 0) - parseFloat(paymentAmount))) === 0) ? 'paid' : 'outstanding';
+
         const updatedOrder = {
-            ...data,
-            paid: Number(paymentAmount),
-            due: Number(Number(data?.totalPrice) - Number(paymentAmount) - Number(data?.due || 0)),
-            status: "paid"
+            ...orderData,
+            paid: parseFloat(parseFloat(orderData?.paid || 0) + parseFloat(paymentAmount)),
+            due: parseFloat((parseFloat(orderData?.totalPrice) - parseFloat(orderData?.paid || 0) - parseFloat(paymentAmount)).toFixed(2)),
+            status: newStatus
         };
 
-        axios.patch(`http://localhost:5000/order/${updatedOrder._id}`, updatedOrder)
+        axios.patch(`http://localhost:5000/order/${_id}`, updatedOrder)
             .then(response => {
-                if (response.data.modifiedCount) {
+                if (response.data.modifiedCount > 0) {
+                    refetch();
                     setInvoiceNumber("");
                     setPaymentAmount("");
                     setShowModal(false);
@@ -59,7 +64,7 @@ const InvoicePayment = () => {
                         },
                         willClose: () => {
                             clearInterval(timerInterval);
-                        }
+                        },
                     });
                 }
             })
@@ -146,23 +151,19 @@ const InvoicePayment = () => {
                                         </span>
                                     </div>
 
-                                    {invWiseOrder?.paid !== 0 && (
-                                        <div className="flex justify-between items-center mb-2">
-                                            <span className="text-sm text-gray-600">✅ Total Paid</span>
-                                            <span className="text-base font-semibold text-green-500">
-                                                {(Number((Number(invWiseOrder?.paid) || 0).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/- ৳
-                                            </span>
-                                        </div>
-                                    )}
+                                    <div className="flex justify-between items-center mb-2">
+                                        <span className="text-sm text-gray-600">✅ Total Paid</span>
+                                        <span className="text-base font-semibold text-green-500">
+                                            {(Number((Number(invWiseOrder?.paid) || 0).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/- ৳
+                                        </span>
+                                    </div>
 
-                                    {invWiseOrder?.due !== 0 && (
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-sm text-gray-600">🚨 Due Amount</span>
-                                            <span className="text-base font-semibold text-red-500">
-                                                {((Number(invWiseOrder?.due) || 0).toFixed(2).toLocaleString('en-IN'))}/- ৳
-                                            </span>
-                                        </div>
-                                    )}
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-sm text-gray-600">🚨 Due Amount</span>
+                                        <span className="text-base font-semibold text-red-500">
+                                            {(Number((Number(invWiseOrder?.due) || 0).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/- ৳
+                                        </span>
+                                    </div>
                                 </div>
 
                                 <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">
