@@ -12,7 +12,7 @@ const DuePayment = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [ordersPerPage, setOrdersPerPage] = useState(5);
 
-    const duePayments = orders.filter(order => order.status === "outstanding");
+    const duePayments = orders.filter(order => order.status === "due");
 
     const filteredOrders = duePayments.filter(order =>
         order?.invoice?.toLowerCase().includes(searchTerm.toLowerCase())
