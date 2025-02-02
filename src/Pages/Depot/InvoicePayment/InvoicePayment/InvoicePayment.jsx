@@ -3,9 +3,9 @@ import React, { useState } from "react";
 import Swal from "sweetalert2";
 import PageTitle from "../../../../Components/PageTitle/PageTitle";
 import useOrders from "../../../../Hooks/useOrders";
+import DuePayment from "../DuePayment/DuePayment";
 import OrderInvoice from "../OrderInvoice/OrderInvoice";
 
-const DuePayment = () => <div>Due</div>;
 const OutstandingPayment = () => <div>Outstanding</div>;
 const Paid = () => <div>Paid</div>;
 
