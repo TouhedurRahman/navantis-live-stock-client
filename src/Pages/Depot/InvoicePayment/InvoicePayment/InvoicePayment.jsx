@@ -5,8 +5,8 @@ import PageTitle from "../../../../Components/PageTitle/PageTitle";
 import useOrders from "../../../../Hooks/useOrders";
 import DuePayment from "../DuePayment/DuePayment";
 import OrderInvoice from "../OrderInvoice/OrderInvoice";
+import OutstandingPayment from "../OutstandingPayment/OutstandingPayment";
 
-const OutstandingPayment = () => <div>Outstanding</div>;
 const Paid = () => <div>Paid</div>;
 
 const InvoicePayment = () => {
