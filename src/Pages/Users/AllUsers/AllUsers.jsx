@@ -16,7 +16,7 @@ const AllUsers = () => {
     const [usersPerPage, setUsersPerPage] = useState(5);
 
     const filteredUsers = allUsers.filter(user =>
-        user.name.toLowerCase().includes(searchTerm.toLowerCase())
+        user?.name?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
