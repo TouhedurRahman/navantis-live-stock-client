@@ -6,6 +6,7 @@ import useOrders from "../../../../Hooks/useOrders";
 import DuePayment from "../DuePayment/DuePayment";
 import OrderInvoice from "../OrderInvoice/OrderInvoice";
 import OutstandingPayment from "../OutstandingPayment/OutstandingPayment";
+import PaidOrders from "../PaidOrders/PaidOrders";
 
 const Paid = () => <div>Paid</div>;
 
@@ -27,7 +28,8 @@ const InvoicePayment = () => {
             case "outstanding":
                 return <OutstandingPayment />;
             case "paid":
-                return <Paid />;
+                // return <Paid />;
+                return <PaidOrders />;
             default:
                 return null;
         }
