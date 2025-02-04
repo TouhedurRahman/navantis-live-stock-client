@@ -152,46 +152,70 @@ const InvoicePayment = () => {
                                             {(Number((Number(invWiseOrder?.totalPrice) || 0).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/- ৳
                                         </span>
                                     </div>
-
-                                    <div className="flex justify-between items-center mb-2">
-                                        <span className="text-sm text-gray-600">✅ Total Paid</span>
-                                        <span className="text-base font-semibold text-green-500">
-                                            {(Number((Number(invWiseOrder?.paid) || 0).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/- ৳
-                                        </span>
-                                    </div>
-
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-sm text-gray-600">🚨 Due Amount</span>
-                                        <span className="text-base font-semibold text-red-500">
-                                            {(Number((Number(invWiseOrder?.due) || 0).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/- ৳
-                                        </span>
-                                    </div>
+                                    {
+                                        invWiseOrder?.paid
+                                        &&
+                                        <>
+                                            <div className="flex justify-between items-center mb-2">
+                                                <span className="text-sm text-gray-600">✅ Total Paid</span>
+                                                <span className="text-base font-semibold text-green-500">
+                                                    {(Number((Number(invWiseOrder?.paid) || 0).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/- ৳
+                                                </span>
+                                            </div>
+                                        </>
+                                    }
+                                    {
+                                        invWiseOrder?.due > 0
+                                        &&
+                                        <>
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-sm text-gray-600">🚨 Due Amount</span>
+                                                <span className="text-base font-semibold text-red-500">
+                                                    {(Number((Number(invWiseOrder?.due) || 0).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/- ৳
+                                                </span>
+                                            </div>
+                                        </>
+                                    }
                                 </div>
 
-                                {invWiseOrder?.due > 0 ? (
+                                {(invWiseOrder?.totalPrice !== invWiseOrder?.paid) ? (
                                     <>
-                                        <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">
-                                            Paid Amount
-                                        </label>
-                                        <input
-                                            type="number"
-                                            className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
-                                            value={paymentAmount}
-                                            onChange={(e) => {
-                                                const inputValue = Number(e.target.value);
-                                                const maxPayment = invWiseOrder?.due;
-                                                setPaymentAmount(inputValue <= maxPayment ? inputValue : maxPayment);
-                                            }}
-                                        />
-                                        <button
-                                            className="mt-4 w-full bg-green-500 text-white py-3 px-5 rounded-xl hover:bg-green-600 transition-all font-semibold text-lg shadow-md"
-                                            onClick={() => handlePayment(invWiseOrder)}
-                                        >
-                                            Make Payment
-                                        </button>
+                                        {
+                                            (
+                                                (invWiseOrder?.paid !== invWiseOrder?.due)
+                                            )
+                                                ?
+                                                <>
+                                                    <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">
+                                                        Paid Amount
+                                                    </label>
+                                                    <input
+                                                        type="number"
+                                                        className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                                                        value={paymentAmount}
+                                                        onChange={(e) => {
+                                                            const inputValue = Number(e.target.value);
+                                                            const maxPayment = invWiseOrder?.due;
+                                                            setPaymentAmount(inputValue <= maxPayment ? inputValue : maxPayment);
+                                                        }}
+                                                    />
+                                                    <button
+                                                        className="mt-4 w-full bg-green-500 text-white py-3 px-5 rounded-xl hover:bg-green-600 transition-all font-semibold text-lg shadow-md"
+                                                        onClick={() => handlePayment(invWiseOrder)}
+                                                    >
+                                                        Make Payment
+                                                    </button>
+                                                </>
+                                                :
+                                                <>
+                                                    <p className="text-gray-600 font-mono font-extrabold text-center mt-6">
+                                                        Not delivered yet.
+                                                    </p>
+                                                </>
+                                        }
                                     </>
                                 ) : (
-                                    <div className="absolute -mt-[133px] mx-20 opacity-30">
+                                    <div className="absolute -mt-[120px] mx-20 opacity-30">
                                         <img src="https://i.ibb.co.com/LXF5nsVw/paid-logo.png" alt="Paid Seal" className="w-36 h-36 mx-auto" />
                                     </div>
                                 )}
