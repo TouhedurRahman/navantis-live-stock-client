@@ -215,7 +215,7 @@ const InvoicePayment = () => {
                                         }
                                     </>
                                 ) : (
-                                    <div className="absolute -mt-[120px] mx-20 opacity-30">
+                                    <div className="absolute -mt-[120px] left-1/2 -translate-x-1/2 opacity-30">
                                         <img src="https://i.ibb.co.com/LXF5nsVw/paid-logo.png" alt="Paid Seal" className="w-36 h-36 mx-auto" />
                                     </div>
                                 )}
