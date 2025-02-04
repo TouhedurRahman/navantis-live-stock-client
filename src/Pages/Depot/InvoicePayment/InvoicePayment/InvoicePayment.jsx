@@ -144,7 +144,7 @@ const InvoicePayment = () => {
                         />
 
                         {invWiseOrder?.totalPrice > 0 && (
-                            <div className="mt-6 text-gray-700">
+                            <div className="mt-6 text-gray-700 relative">
                                 <div className="mt-4 p-4 rounded-lg border bg-white shadow-sm">
                                     <div className="flex justify-between items-center mb-2">
                                         <span className="text-sm text-gray-600">💳 Total Payable</span>
@@ -168,21 +168,33 @@ const InvoicePayment = () => {
                                     </div>
                                 </div>
 
-                                <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">
-                                    Paid Amount
-                                </label>
-                                <input
-                                    type="number"
-                                    className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
-                                    value={paymentAmount}
-                                    onChange={(e) => setPaymentAmount(e.target.value)}
-                                />
-                                <button
-                                    className="mt-4 w-full bg-green-500 text-white py-3 px-5 rounded-xl hover:bg-green-600 transition-all font-semibold text-lg shadow-md"
-                                    onClick={() => handlePayment(invWiseOrder)}
-                                >
-                                    Make Payment
-                                </button>
+                                {invWiseOrder?.due > 0 ? (
+                                    <>
+                                        <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">
+                                            Paid Amount
+                                        </label>
+                                        <input
+                                            type="number"
+                                            className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                                            value={paymentAmount}
+                                            onChange={(e) => {
+                                                const inputValue = Number(e.target.value);
+                                                const maxPayment = invWiseOrder?.due;
+                                                setPaymentAmount(inputValue <= maxPayment ? inputValue : maxPayment);
+                                            }}
+                                        />
+                                        <button
+                                            className="mt-4 w-full bg-green-500 text-white py-3 px-5 rounded-xl hover:bg-green-600 transition-all font-semibold text-lg shadow-md"
+                                            onClick={() => handlePayment(invWiseOrder)}
+                                        >
+                                            Make Payment
+                                        </button>
+                                    </>
+                                ) : (
+                                    <div className="absolute -mt-[133px] mx-20 opacity-30">
+                                        <img src="https://i.ibb.co.com/LXF5nsVw/paid-logo.png" alt="Paid Seal" className="w-36 h-36 mx-auto" />
+                                    </div>
+                                )}
                             </div>
                         )}
 
@@ -195,6 +207,7 @@ const InvoicePayment = () => {
                     </div>
                 </div>
             )}
+
         </>
     );
 };
