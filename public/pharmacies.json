@@ -3,90 +3,105 @@
     "_id": 1,
     "name": "Lazz Pharma",
     "address": "Mirpur-1, Dhaka",
-    "territory": "Mirpur"
+    "territory": "Mirpur",
+    "discount": 5
   },
   {
     "_id": 2,
     "name": "Dhka Pharmacy",
     "address": "Mirpur-2, Dhaka",
-    "territory": "Mirpur"
+    "territory": "Mirpur",
+    "discount": 15
   },
   {
     "_id": 3,
     "name": "Digital Medicine Corner",
     "address": "Gulshan, Dhaka",
-    "territory": "Gulshan - 1"
+    "territory": "Gulshan - 1",
+    "discount": 0
   },
   {
     "_id": 4,
     "name": "National Pharmacy",
     "address": "Gulshan, Dhaka",
-    "territory": "Gulshan - 1"
+    "territory": "Gulshan - 1",
+    "discount": 10
   },
   {
     "_id": 5,
     "name": "Model Pharmacy",
     "address": "Khilkhet, Dhaka",
-    "territory": "Uttara - 1"
+    "territory": "Uttara - 1",
+    "discount": 20
   },
   {
     "_id": 6,
     "name": "Bionike Pharmacy",
     "address": "Uttara, Dhaka",
-    "territory": "Uttara - 2"
+    "territory": "Uttara - 2",
+    "discount": 10
   },
   {
     "_id": 7,
     "name": "Desh Pharmacy",
     "address": "New Market, Dhaka",
-    "territory": "Dhanmondi - 2"
+    "territory": "Dhanmondi - 2",
+    "discount": 13
   },
   {
     "_id": 8,
     "name": "Asha Pharmacy",
     "address": "Kolabagan, Dhaka",
-    "territory": "Dhanmondi - 1"
+    "territory": "Dhanmondi - 1",
+    "discount": 7
   },
   {
     "_id": 9,
     "name": "Health care Pharmacy",
     "address": "New Market, Mymensingh",
-    "territory": "Mymensingh"
+    "territory": "Mymensingh",
+    "discount": 2
   },
   {
     "_id": 10,
     "name": "Momota Pharmacy",
     "address": "Ganginarpar, Mymensingh",
-    "territory": "Mymensingh"
+    "territory": "Mymensingh",
+    "discount": 5
   },
   {
     "_id": 11,
     "name": "Gazipur Pharmacy",
     "address": "Gazipur, Dhaka",
-    "territory": "Gazipur"
+    "territory": "Gazipur",
+    "discount": 3
   },
   {
     "_id": 12,
     "name": "Bonik Medicine Corner",
     "address": "Thana Stand, Savar , Dhaka",
-    "territory": "Savar"
+    "territory": "Savar",
+    "discount": 2
   },
   {
     "_id": 13,
     "name": "S A Pharmacy",
     "address": "Hospital Gate, Chattogram",
-    "territory": "CTG - 1"
+    "territory": "CTG - 1",
+    "discount": 5
   },
   {
     "_id": 14,
     "name": "Goutom Pharmacy",
     "address": "Bandartilla, Chattogram",
-    "territory": "CTG - 2"
+    "territory": "CTG - 2",
+    "discount": 3
   },
   {
     "_id": 14,
     "name": "BSMMU Pharmacy",
     "address": "BSMMU, Dhaka",
-    "territory": "BSMMU"
+    "territory": "BSMMU",
+    "discount": 8
   }
 ]

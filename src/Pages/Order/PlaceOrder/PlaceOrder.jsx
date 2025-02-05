@@ -79,6 +79,18 @@ const PlaceOrder = () => {
         }));
     };
 
+    const totalPrice = receiptProducts.reduce(
+        (sum, product) => sum + product.quantity * product.tradePrice,
+        0
+    )
+
+    const pharmacyDiscount = pharmacies
+        .find(pharmacy => pharmacy.name === selectedPharmacy)?.discount;
+
+    const lessDiscount = Number(totalPrice * (pharmacyDiscount / 100));
+
+    const totalPayable = Number(totalPrice - lessDiscount);
+
     const confirmProducts = () => {
         const selectedProducts = Object.entries(productQuantities)
             .filter(([_, quantity]) => quantity > 0)
@@ -315,14 +327,33 @@ const PlaceOrder = () => {
                                         </tbody>
                                     </table>
                                     <hr className="my-2 border-gray-400" />
-                                    <div className="flex justify-between font-bold text-sm mt-2">
-                                        <span>Total:</span>
-                                        <span className='px-3'>
-                                            {receiptProducts.reduce(
-                                                (sum, product) => sum + product.quantity * product.tradePrice,
-                                                0
-                                            )}/-
-                                        </span>
+                                    <div className="space-y-2 font-bold text-sm mt-2">
+                                        {/* Grand Total Row */}
+                                        <div className="grid grid-cols-[1fr_auto_1fr] items-center">
+                                            <span className="text-right">Grand Total</span>
+                                            <span className="text-center w-6">:</span>
+                                            <span className="text-right px-3">
+                                                {(Number((Number(totalPrice)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-
+                                            </span>
+                                        </div>
+
+                                        {/* Less Discount Row */}
+                                        <div className="grid grid-cols-[1fr_auto_1fr] items-center">
+                                            <span className="text-right">Less Discount ({pharmacyDiscount}%)</span>
+                                            <span className="text-center w-6">:</span>
+                                            <span className="text-right px-3">
+                                                {(Number((Number(lessDiscount)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-
+                                            </span>
+                                        </div>
+
+                                        {/* Total Payable Row */}
+                                        <div className="grid grid-cols-[1fr_auto_1fr] items-center">
+                                            <span className="text-right">Total Payable</span>
+                                            <span className="text-center w-6">:</span>
+                                            <span className="text-right px-3">
+                                                {(Number((Number(totalPayable)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-
+                                            </span>
+                                        </div>
                                     </div>
                                     <hr className="my-2 border-gray-400" />
                                     <p className="text-center text-xs mt-4">Thank you for your purchase!</p>
