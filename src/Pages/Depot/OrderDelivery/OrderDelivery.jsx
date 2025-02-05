@@ -132,6 +132,31 @@ const OrderDelivery = () => {
 
         // console.log('Depot Stock out data:', dptSOutData);
 
+        const totalPrice = Object.values(
+            Object.keys(deliveryQuantities).reduce((acc, batchId) => {
+                const product = products.find((product) => product._id === batchId);
+                const productName = product?.productName;
+                const tradePrice = product?.tradePrice || 0;
+                const quantity = deliveryQuantities[batchId] || 0;
+
+                if (productName && quantity > 0) {
+                    if (acc[productName]) {
+                        acc[productName] += tradePrice * quantity;
+                    } else {
+                        acc[productName] = tradePrice * quantity;
+                    }
+                }
+
+                return acc;
+            }, {})
+        ).reduce((total, price) => total + price, 0);
+
+        const pharmacyDiscount = selectedOrderDetails.discount;
+
+        const lessDiscount = Number(totalPrice * (pharmacyDiscount / 100));
+
+        const totalPayable = Number(totalPrice - lessDiscount);
+
         const deliveredOrder = {
             ...selectedOrderDetails,
             products: Object.values(
@@ -177,25 +202,8 @@ const OrderDelivery = () => {
                 },
                 0
             ),
-            totalPrice: Object.values(
-                Object.keys(deliveryQuantities).reduce((acc, batchId) => {
-                    const product = products.find((product) => product._id === batchId);
-                    const productName = product?.productName;
-                    const tradePrice = product?.tradePrice || 0;
-                    const quantity = deliveryQuantities[batchId] || 0;
-
-                    // Only include in totalPrice if quantity > 0
-                    if (productName && quantity > 0) {
-                        if (acc[productName]) {
-                            acc[productName] += tradePrice * quantity;
-                        } else {
-                            acc[productName] = tradePrice * quantity;
-                        }
-                    }
-
-                    return acc;
-                }, {})
-            ).reduce((total, price) => total + price, 0),
+            totalPrice: Number(totalPrice),
+            totalPayable: Number(totalPayable),
             status: "delivered"
         };
 
