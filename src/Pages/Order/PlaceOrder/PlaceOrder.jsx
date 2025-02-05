@@ -129,6 +129,7 @@ const PlaceOrder = () => {
             totalProduct: totalOrderedProducts,
             totalUnit: Number(totalOrderUnits),
             totalPrice: Number(totalOrderedTradePrice),
+            discount: Number(pharmacyDiscount) || 0,
             payMode: data.payMode,
             status: "pending",
             date: getTodayDate()
@@ -339,7 +340,9 @@ const PlaceOrder = () => {
 
                                         {/* Less Discount Row */}
                                         <div className="grid grid-cols-[1fr_auto_1fr] items-center">
-                                            <span className="text-right">Less Discount ({pharmacyDiscount}%)</span>
+                                            <span className="text-right">
+                                                Less Discount {pharmacyDiscount > 0 && `(${pharmacyDiscount}%)`}
+                                            </span>
                                             <span className="text-center w-6">:</span>
                                             <span className="text-right px-3">
                                                 {(Number((Number(lessDiscount)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-
