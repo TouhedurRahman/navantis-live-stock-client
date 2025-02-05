@@ -38,12 +38,12 @@ const InvoicePayment = () => {
     const handlePayment = (data) => {
         const { _id, ...orderData } = data;
 
-        const newStatus = (((parseFloat(orderData?.totalPrice) - parseFloat(orderData?.paid || 0) - parseFloat(paymentAmount))) === 0) ? 'paid' : 'outstanding';
+        const newStatus = (((parseFloat(orderData?.totalPayable) - parseFloat(orderData?.paid || 0) - parseFloat(paymentAmount))) === 0) ? 'paid' : 'outstanding';
 
         const updatedOrder = {
             ...orderData,
             paid: parseFloat(parseFloat(orderData?.paid || 0) + parseFloat(paymentAmount)),
-            due: parseFloat((parseFloat(orderData?.totalPrice) - parseFloat(orderData?.paid || 0) - parseFloat(paymentAmount)).toFixed(2)),
+            due: parseFloat((parseFloat(orderData?.totalPayable) - parseFloat(orderData?.paid || 0) - parseFloat(paymentAmount)).toFixed(2)),
             status: newStatus
         };
 
@@ -143,13 +143,13 @@ const InvoicePayment = () => {
                             onChange={(e) => setInvoiceNumber(e.target.value)}
                         />
 
-                        {invWiseOrder?.totalPrice > 0 && (
+                        {invWiseOrder?.totalPayable > 0 && (
                             <div className="mt-6 text-gray-700 relative">
                                 <div className="mt-4 p-4 rounded-lg border bg-white shadow-sm">
                                     <div className="flex justify-between items-center mb-2">
                                         <span className="text-sm text-gray-600">💳 Total Payable</span>
                                         <span className="text-base font-semibold text-blue-600">
-                                            {(Number((Number(invWiseOrder?.totalPrice) || 0).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/- ৳
+                                            {(Number((Number(invWiseOrder?.totalPayable) || 0).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/- ৳
                                         </span>
                                     </div>
                                     {
@@ -178,7 +178,7 @@ const InvoicePayment = () => {
                                     }
                                 </div>
 
-                                {(invWiseOrder?.totalPrice !== invWiseOrder?.paid) ? (
+                                {(invWiseOrder?.totalPayable !== invWiseOrder?.paid) ? (
                                     <>
                                         {
                                             (
