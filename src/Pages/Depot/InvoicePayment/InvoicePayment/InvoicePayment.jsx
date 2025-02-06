@@ -33,6 +33,15 @@ const InvoicePayment = () => {
         }
     };
 
+    const getTodayDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    };
+
     const updateOrderMutation = useMutation({
         mutationFn: async (data) => {
             const { _id, ...orderData } = data;
@@ -54,10 +63,48 @@ const InvoicePayment = () => {
         },
     });
 
+    const addOrderPaymentMutation = useMutation({
+        mutationFn: async (data) => {
+            const { _id, ...orderData } = data;
+
+            const currentPaid = parseFloat(orderData?.paid || 0);
+            const totalPayable = parseFloat(orderData?.totalPayable);
+            const payment = parseFloat(paymentAmount);
+
+            const updatedPaid = parseFloat(currentPaid + payment);
+            const updatedDue = parseFloat((totalPayable - updatedPaid).toFixed(2));
+
+            const newStatus = updatedDue === 0 ? 'paid' : 'due';
+
+            const newPayment = {
+                email: orderData.email,
+                orderedBy: orderData.orderedBy,
+                areaManager: orderData.areaManager,
+                zonalManager: orderData.zonalManager,
+                territory: orderData.territory,
+                pharmacy: orderData.pharmacy,
+                invoice: orderData.invoice,
+                totalPayable: orderData.totalPayable,
+                paid: updatedPaid,
+                due: updatedDue,
+                status: newStatus,
+                paymentAmount: payment,
+                paidDate: getTodayDate(),
+            };
+
+            const response = await axios.post(`http://localhost:5000/payments`, newPayment);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error updating order:", error);
+        },
+    });
+
     const handlePayment = async (data) => {
         try {
             await Promise.all([
                 updateOrderMutation.mutateAsync(data),
+                addOrderPaymentMutation.mutateAsync(data)
             ]);
 
             refetch();
