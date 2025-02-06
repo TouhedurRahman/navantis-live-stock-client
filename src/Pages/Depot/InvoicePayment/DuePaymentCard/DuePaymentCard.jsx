@@ -34,7 +34,7 @@ const DuePaymentCard = ({ idx, order, refetch }) => {
                     {order.totalUnit}
                 </td>
                 <td className='text-right'>
-                    {(order.totalPrice).toLocaleString('en-IN')}/-
+                    {(order.totalPayable).toLocaleString('en-IN')}/-
                 </td>
                 <th>
                     <div className="flex justify-center items-center space-x-4 text-md">

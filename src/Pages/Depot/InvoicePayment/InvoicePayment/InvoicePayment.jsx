@@ -8,8 +8,6 @@ import OrderInvoice from "../OrderInvoice/OrderInvoice";
 import OutstandingPayment from "../OutstandingPayment/OutstandingPayment";
 import PaidOrders from "../PaidOrders/PaidOrders";
 
-const Paid = () => <div>Paid</div>;
-
 const InvoicePayment = () => {
     const [orders, , refetch] = useOrders();
     const [activeTab, setActiveTab] = useState("invoice");
@@ -28,7 +26,6 @@ const InvoicePayment = () => {
             case "outstanding":
                 return <OutstandingPayment />;
             case "paid":
-                // return <Paid />;
                 return <PaidOrders />;
             default:
                 return null;

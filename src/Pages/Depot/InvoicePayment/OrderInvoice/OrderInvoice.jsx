@@ -99,7 +99,7 @@ const OrderInvoice = () => {
                                                         <th className='text-left'>Customer</th>
                                                         <th className='text-right'>Total Products</th>
                                                         <th className='text-right'>Total Unit</th>
-                                                        <th className='text-right'>Total Price</th>
+                                                        <th className='text-right'>Total Payable</th>
                                                         <th className="text-center">Action</th>
                                                     </tr>
                                                 </thead>
