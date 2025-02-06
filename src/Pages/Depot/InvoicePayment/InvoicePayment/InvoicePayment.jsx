@@ -1,3 +1,4 @@
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import React, { useState } from "react";
 import Swal from "sweetalert2";
@@ -32,45 +33,62 @@ const InvoicePayment = () => {
         }
     };
 
-    const handlePayment = (data) => {
-        const { _id, ...orderData } = data;
+    const updateOrderMutation = useMutation({
+        mutationFn: async (data) => {
+            const { _id, ...orderData } = data;
 
-        const newStatus = (((parseFloat(orderData?.totalPayable) - parseFloat(orderData?.paid || 0) - parseFloat(paymentAmount))) === 0) ? 'paid' : 'outstanding';
+            const newStatus = (((parseFloat(orderData?.totalPayable) - parseFloat(orderData?.paid || 0) - parseFloat(paymentAmount))) === 0) ? 'paid' : 'outstanding';
 
-        const updatedOrder = {
-            ...orderData,
-            paid: parseFloat(parseFloat(orderData?.paid || 0) + parseFloat(paymentAmount)),
-            due: parseFloat((parseFloat(orderData?.totalPayable) - parseFloat(orderData?.paid || 0) - parseFloat(paymentAmount)).toFixed(2)),
-            status: newStatus
-        };
+            const updatedOrder = {
+                ...orderData,
+                paid: parseFloat(parseFloat(orderData?.paid || 0) + parseFloat(paymentAmount)),
+                due: parseFloat((parseFloat(orderData?.totalPayable) - parseFloat(orderData?.paid || 0) - parseFloat(paymentAmount)).toFixed(2)),
+                status: newStatus
+            };
 
-        axios.patch(`http://localhost:5000/order/${_id}`, updatedOrder)
-            .then(response => {
-                if (response.data.modifiedCount > 0) {
-                    refetch();
-                    setInvoiceNumber("");
-                    setPaymentAmount("");
-                    setShowModal(false);
+            const response = await axios.patch(`http://localhost:5000/order/${_id}`, updatedOrder)
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error updating order:", error);
+        },
+    });
 
-                    let timerInterval;
-                    Swal.fire({
-                        title: "Processing Your Payment",
-                        html: "Hang tight! We're securely completing your transaction.",
-                        timer: 2000,
-                        timerProgressBar: true,
-                        didOpen: () => {
-                            Swal.showLoading();
-                        },
-                        willClose: () => {
-                            clearInterval(timerInterval);
-                        },
-                    });
-                }
-            })
-            .catch(error => {
-                Swal.fire("Error", "Failed to process the payment.", "error");
-                console.error(error);
+    const handlePayment = async (data) => {
+        try {
+            await Promise.all([
+                updateOrderMutation.mutateAsync(data),
+            ]);
+
+            refetch();
+            setInvoiceNumber("");
+            setPaymentAmount("");
+            setShowModal(false);
+
+            let timerInterval;
+            Swal.fire({
+                title: "Processing Your Payment",
+                html: "Hang tight! We're securely completing your transaction.",
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                willClose: () => {
+                    clearInterval(timerInterval);
+                },
             });
+        } catch (error) {
+            console.error("Error adding product:", error);
+            Swal.fire({
+                title: "Error!",
+                text: "Faild. Please try again.",
+                icon: "error",
+                showConfirmButton: false,
+                confirmButtonColor: "#d33",
+                timer: 1500
+            });
+        }
     };
 
     const closeModal = () => {

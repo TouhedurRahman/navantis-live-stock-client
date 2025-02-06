@@ -31,7 +31,7 @@ const OrderInvoiceCard = ({ idx, order, refetch }) => {
 
         const updatedOrder = {
             ...orderData,
-            due: Number(orderData.totalPrice),
+            due: Number(orderData.totalPayable),
             status: 'due'
         };
 
