@@ -57,13 +57,22 @@ const DepotProductsList = () => {
                 <div>
                     <div className="flex justify-between items-center">
                         <h1 className="px-6 py-3 font-bold">Depot products list</h1>
-                        <div className="px-6">
+                        <div className="px-6 space-x-3">
+                            {/* depot Request */}
                             <button
                                 onClick={() => setRequestModalOpen(true)}
                                 title="Request product from depot"
                                 className="text-white font-bold py-2 px-6 transition-all transform shadow-md focus:outline-none bg-indigo-500 hover:bg-indigo-700 hover:scale-105 hover:shadow-lg rounded-sm"
                             >
                                 Request Products
+                            </button>
+                            {/* expire return */}
+                            <button
+                                // onClick={}
+                                title="Request product from depot"
+                                className="text-white font-bold py-2 px-6 transition-all transform shadow-md focus:outline-none bg-red-500 hover:bg-red-700 hover:scale-105 hover:shadow-lg rounded-sm"
+                            >
+                                Expire Return
                             </button>
                         </div>
                     </div>
