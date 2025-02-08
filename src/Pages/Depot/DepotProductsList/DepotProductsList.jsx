@@ -2,6 +2,7 @@ import { useState } from "react";
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
 import { ImSearch } from 'react-icons/im';
 import DepotRequestModal from "../../../Components/DepotRequestModal/DepotRequestModal";
+import ExpireRequestModal from "../../../Components/ExpireRequestModal/ExpireRequestModal";
 import Loader from "../../../Components/Loader/Loader";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import useDepotProducts from "../../../Hooks/useDepotProducts";
@@ -11,6 +12,7 @@ const DepotProductsList = () => {
     const [products, loading, refetch] = useDepotProducts();
 
     const [isRequestModalOpen, setRequestModalOpen] = useState(false);
+    const [isExpireRequestModalOpen, setExpireRequestModalOpen] = useState(false);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
@@ -68,7 +70,7 @@ const DepotProductsList = () => {
                             </button>
                             {/* expire return */}
                             <button
-                                // onClick={}
+                                onClick={() => setExpireRequestModalOpen(true)}
                                 title="Request product from depot"
                                 className="text-white font-bold py-2 px-6 transition-all transform shadow-md focus:outline-none bg-red-500 hover:bg-red-700 hover:scale-105 hover:shadow-lg rounded-sm"
                             >
@@ -205,10 +207,19 @@ const DepotProductsList = () => {
                         </>
                 }
             </div>
+            {/* depot request modal */}
             {isRequestModalOpen && (
                 <DepotRequestModal
                     isOpen={isRequestModalOpen}
                     onClose={() => setRequestModalOpen(false)}
+                />
+            )}
+
+            {/* expire request modal */}
+            {isExpireRequestModalOpen && (
+                <ExpireRequestModal
+                    isOpen={isExpireRequestModalOpen}
+                    onClose={() => setExpireRequestModalOpen(false)}
                 />
             )}
         </>
