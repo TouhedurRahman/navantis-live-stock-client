@@ -99,6 +99,7 @@ const PlaceOrder = () => {
                 return {
                     id,
                     name: product?.productName || 'Unknown Product',
+                    productCode: product?.productCode,
                     quantity,
                     tradePrice: product?.tradePrice || 0,
                 };
