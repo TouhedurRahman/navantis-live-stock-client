@@ -163,6 +163,7 @@ const OrderDelivery = () => {
                 Object.keys(deliveryQuantities).reduce((acc, batchId) => {
                     const product = products.find((product) => product._id === batchId);
                     const productName = product?.productName;
+                    const productCode = product?.productCode;
                     const tradePrice = product?.tradePrice || 0;
                     const quantity = deliveryQuantities[batchId] || 0;
 
@@ -173,6 +174,7 @@ const OrderDelivery = () => {
                         } else {
                             acc[productName] = {
                                 name: productName,
+                                productCode,
                                 tradePrice,
                                 quantity,
                                 totalPrice: tradePrice * quantity,
