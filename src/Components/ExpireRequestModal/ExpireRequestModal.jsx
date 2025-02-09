@@ -74,12 +74,16 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
 
 
     const onSubmit = async (data) => {
+        const tp = Number(((data.mrp - (data.mrp * 0.13))).toFixed(2));
+        const TotalTP = tp * data.quantity;
         try {
-            const returnedProduct = {
+            const newReturn = {
                 productName: data.productName,
                 batch: data.batch,
                 expire: data.expire,
-                tradePrice: Number(((data.mrp - (data.mrp * 0.13))).toFixed(2)),
+                tradePrice: tp,
+                totalQuantity: data.quantity,
+                TotalPrice: TotalTP,
                 returnedBy: data.returnedBy,
                 territory,
                 areaManager,
@@ -87,7 +91,7 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                 status: 'pending',
                 date: getTodayDate()
             }
-            console.log(returnedProduct);
+            console.log(newReturn);
 
             // reset();
 
@@ -165,7 +169,7 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                                 />
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                                 <div className="flex flex-col">
                                     <label className="block mb-1 text-center font-semibold">
                                         Batch <span className="text-red-500">*</span>
@@ -205,7 +209,20 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                                         placeholder="MRP TK"
                                         className="w-full text-center px-3 py-2 border rounded-md"
                                     />
-                                    {errors.expire && <p className="text-red-500 text-sm">{errors.expire.message}</p>}
+                                    {errors.mrp && <p className="text-red-500 text-sm">{errors.mrp.message}</p>}
+                                </div>
+                                <div className="flex flex-col">
+                                    <label className="block mb-1 text-center font-semibold">
+                                        Quantity <span className="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                        {...register("quantity", {
+                                            required: "Quantity is required",
+                                        })}
+                                        placeholder="Quantity"
+                                        className="w-full text-center px-3 py-2 border rounded-md"
+                                    />
+                                    {errors.quantity && <p className="text-red-500 text-sm">{errors.quantity.message}</p>}
                                 </div>
                             </div>
 
