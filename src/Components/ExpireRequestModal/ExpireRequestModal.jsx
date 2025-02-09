@@ -3,10 +3,12 @@ import { useForm } from 'react-hook-form';
 import { FaTimes } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import useOrders from '../../Hooks/useOrders';
+import usePharmacies from '../../Hooks/usePharmacies';
 
 const ExpireRequestModal = ({ isOpen, onClose }) => {
     const { user } = true;
     const [orders, loading] = useOrders();
+    const [pharmacies, pharmacyLoading] = usePharmacies();
 
     const {
         register,
@@ -19,8 +21,19 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
     const [uniqueProducts, setUniqueProducts] = useState([]);
     const [orderedByList, setOrderedByList] = useState([]);
     const [selectedProductCode, setSelectedProductCode] = useState('');
+    const [territory, setTerritory] = useState('');
+    const [filteredPharmacies, setFilteredPharmacies] = useState([]);
     const [areaManager, setAreaManager] = useState('');
     const [zonalManager, setZonalManager] = useState('');
+
+    const getTodayDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    };
 
     useEffect(() => {
         if (orders?.length) {
@@ -46,14 +59,37 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
 
     const handleOrderedByChange = (e) => {
         const selectedOrder = orders.find(order => order.orderedBy === e.target.value);
+        const territoryName = selectedOrder?.territory ?? null;
+        const filterPharmacies = pharmacies.filter(pharmacy => pharmacy.territory === territoryName);
+
+        setTerritory(territoryName);
         setAreaManager(selectedOrder?.areaManager || '');
         setZonalManager(selectedOrder?.zonalManager || '');
+        setFilteredPharmacies(filterPharmacies);
     };
+
+    const handlePharmacyChange = (e) => {
+        setValue('pharmacy', e.target.value);
+    };
+
 
     const onSubmit = async (data) => {
         try {
-            console.log(data);
-            reset();
+            const returnedProduct = {
+                productName: data.productName,
+                batch: data.batch,
+                expire: data.expire,
+                tradePrice: Number(((data.mrp - (data.mrp * 0.13))).toFixed(2)),
+                returnedBy: data.returnedBy,
+                territory,
+                areaManager,
+                zonalManager,
+                status: 'pending',
+                date: getTodayDate()
+            }
+            console.log(returnedProduct);
+
+            // reset();
 
             Swal.fire({
                 position: "center",
@@ -63,7 +99,7 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                 timer: 1500
             });
 
-            window.location.reload();
+            // window.location.reload();
         } catch (error) {
             Swal.fire({
                 position: "center",
@@ -121,53 +157,64 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                             </div>
 
                             <div>
-                                <label className="block mb-1 font-semibold">Product Short Code</label>
+                                <label className="block mb-1 text-center font-semibold">Product Short Code</label>
                                 <input
                                     value={selectedProductCode}
                                     readOnly
-                                    className="w-full px-3 py-2 border rounded-md bg-gray-100"
+                                    className="w-full px-3 py-2 text-center border rounded-md bg-gray-100"
                                 />
                             </div>
 
-                            <div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
-                                    <div className="flex flex-col">
-                                        <label className="block mb-1 font-semibold">
-                                            Batch <span className="text-red-500">*</span>
-                                        </label>
-                                        <input
-                                            {...register("batch", { required: "Batch is required" })}
-                                            placeholder="Enter product batch/batch no"
-                                            className="w-full px-3 py-2 border rounded-md"
-                                        />
-                                        {errors.batch && <p className="text-red-500 text-sm">{errors.batch.message}</p>}
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <label className="block mb-1 font-semibold">
-                                            Expire MM/YY <span className="text-red-500">*</span>
-                                        </label>
-                                        <input
-                                            {...register("expire", {
-                                                required: "Expire date is required",
-                                                pattern: {
-                                                    value: /^(0[1-9]|1[0-2])\/\d{2}$/, // Matches MM/YY format
-                                                    message: "Invalid date format. Use MM/YY"
-                                                }
-                                            })}
-                                            placeholder="MM/YY"
-                                            className="w-full px-3 py-2 border rounded-md"
-                                        />
-                                        {errors.expire && <p className="text-red-500 text-sm">{errors.expire.message}</p>}
-                                    </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+                                <div className="flex flex-col">
+                                    <label className="block mb-1 text-center font-semibold">
+                                        Batch <span className="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                        {...register("batch", { required: "Batch is required" })}
+                                        placeholder="Batch no."
+                                        className="w-full text-center px-3 py-2 border rounded-md"
+                                    />
+                                    {errors.batch && <p className="text-red-500 text-sm">{errors.batch.message}</p>}
+                                </div>
+                                <div className="flex flex-col">
+                                    <label className="block mb-1 text-center font-semibold">
+                                        Expire <span className="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                        {...register("expire", {
+                                            required: "Expire date is required",
+                                            pattern: {
+                                                value: /^(0[1-9]|1[0-2])\/\d{2}$/,
+                                                message: "Invalid date format. Use MM/YY"
+                                            }
+                                        })}
+                                        placeholder="MM/YY"
+                                        className="w-full text-center px-3 py-2 border rounded-md"
+                                    />
+                                    {errors.expire && <p className="text-red-500 text-sm">{errors.expire.message}</p>}
+                                </div>
+                                <div className="flex flex-col">
+                                    <label className="block mb-1 text-center font-semibold">
+                                        MRP <span className="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                        {...register("mrp", {
+                                            required: "MRP TK is required",
+                                        })}
+                                        placeholder="MRP TK"
+                                        className="w-full text-center px-3 py-2 border rounded-md"
+                                    />
+                                    {errors.expire && <p className="text-red-500 text-sm">{errors.expire.message}</p>}
                                 </div>
                             </div>
 
                             <div>
                                 <label className="block mb-1 font-semibold">
-                                    Ordered By <span className="text-red-500">*</span>
+                                    Rerturn By <span className="text-red-500">*</span>
                                 </label>
                                 <select
-                                    {...register('orderedBy', { required: 'Ordered by is required' })}
+                                    {...register('returnedBy', { required: 'Ordered by is required' })}
                                     onChange={handleOrderedByChange}
                                     className="w-full px-3 py-2 border rounded-md"
                                 >
@@ -182,21 +229,41 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                             </div>
 
                             <div>
-                                <label className="block mb-1 font-semibold">Area Manager</label>
-                                <input
-                                    value={areaManager}
-                                    readOnly
-                                    className="w-full px-3 py-2 border rounded-md bg-gray-100"
-                                />
+                                <label className="block mb-1 font-semibold">
+                                    Pharmacy <span className="text-red-500">*</span>
+                                </label>
+                                <select
+                                    {...register('pharmacy', { required: 'Pharmacy is required' })}
+                                    onChange={handlePharmacyChange}
+                                    className="w-full px-3 py-2 border rounded-md"
+                                >
+                                    <option value="">Select a pharmacy</option>
+                                    {filteredPharmacies.map(pharmacy => (
+                                        <option key={pharmacy._id} value={pharmacy.name}>
+                                            {pharmacy.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.orderedBy && <p className="text-red-500 text-sm">{errors.orderedBy.message}</p>}
                             </div>
+                            <div className='hidden'>
+                                <div>
+                                    <label className="block mb-1 font-semibold">Area Manager</label>
+                                    <input
+                                        value={areaManager}
+                                        readOnly
+                                        className="w-full px-3 py-2 border rounded-md bg-gray-100"
+                                    />
+                                </div>
 
-                            <div>
-                                <label className="block mb-1 font-semibold">Zonal Manager</label>
-                                <input
-                                    value={zonalManager}
-                                    readOnly
-                                    className="w-full px-3 py-2 border rounded-md bg-gray-100"
-                                />
+                                <div>
+                                    <label className="block mb-1 font-semibold">Zonal Manager</label>
+                                    <input
+                                        value={zonalManager}
+                                        readOnly
+                                        className="w-full px-3 py-2 border rounded-md bg-gray-100"
+                                    />
+                                </div>
                             </div>
 
                             {/* Submit Button */}
