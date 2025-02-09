@@ -1,3 +1,5 @@
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaTimes } from 'react-icons/fa';
@@ -72,29 +74,40 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
         setValue('pharmacy', e.target.value);
     };
 
+    const addExReturnMutation = useMutation({
+        mutationFn: async (data) => {
+            const tp = Number(((data.mrp - (data.mrp * 0.13))).toFixed(2));
+            const TotalTP = tp * data.quantity;
 
-    const onSubmit = async (data) => {
-        const tp = Number(((data.mrp - (data.mrp * 0.13))).toFixed(2));
-        const TotalTP = tp * data.quantity;
-        try {
             const newReturn = {
                 productName: data.productName,
                 batch: data.batch,
                 expire: data.expire,
                 tradePrice: tp,
-                totalQuantity: data.quantity,
+                totalQuantity: Number(data.quantity),
                 TotalPrice: TotalTP,
                 returnedBy: data.returnedBy,
+                pharmacy: data.pharmacy,
                 territory,
                 areaManager,
                 zonalManager,
                 status: 'pending',
                 date: getTodayDate()
-            }
-            console.log(newReturn);
+            };
 
-            // reset();
+            const response = await axios.post('http://localhost:5000/returns', newReturn);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error expire return:", error);
+        },
+    });
 
+    const onSubmit = async (data) => {
+        try {
+            addExReturnMutation.mutateAsync(data);
+
+            reset();
             Swal.fire({
                 position: "center",
                 icon: "success",
@@ -102,8 +115,7 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                 showConfirmButton: false,
                 timer: 1500
             });
-
-            // window.location.reload();
+            onClose();
         } catch (error) {
             Swal.fire({
                 position: "center",
@@ -216,6 +228,7 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                                         Quantity <span className="text-red-500">*</span>
                                     </label>
                                     <input
+                                        type='number'
                                         {...register("quantity", {
                                             required: "Quantity is required",
                                         })}
