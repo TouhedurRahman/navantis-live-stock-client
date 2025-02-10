@@ -2,10 +2,22 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { MdPrint } from 'react-icons/md';
 import Swal from 'sweetalert2';
+import useReturns from '../../../../Hooks/useReturns';
 
 const OrderInvoiceCard = ({ idx, order, refetch }) => {
+    const [returns] = useReturns();
+
     const [showModal, setShowModal] = useState(false);
     const [deliveryManName, setDeliveryManName] = useState("");
+
+    const adjustPayments = returns.filter(adReturn =>
+        adReturn.pharmacy === order.pharmacy
+        &&
+        adReturn.status === 'pending'
+    );
+
+    const totalAdjustedPrice = adjustPayments.reduce((acc, sum) => acc + sum.totalPrice, 0) || 0;
+    // console.log(totalAdjustedPrice);
 
     const printInvoice = (order) => {
         const printContent = `
@@ -40,9 +52,11 @@ const OrderInvoiceCard = ({ idx, order, refetch }) => {
         const { _id, ...orderData } = data;
         const updatedOrder = {
             ...orderData,
-            deliveryMan: deliveryManName,
+            adjustedPrice: Number(totalAdjustedPrice),
+            totalPayable: Number(orderData.totalPayable - totalAdjustedPrice),
             due: Number(orderData.totalPayable),
             status: 'due',
+            deliveryMan: deliveryManName,
         };
 
         printInvoice(updatedOrder);

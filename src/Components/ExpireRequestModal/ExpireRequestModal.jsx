@@ -85,7 +85,7 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                 expire: data.expire,
                 tradePrice: tp,
                 totalQuantity: Number(data.quantity),
-                TotalPrice: TotalTP,
+                totalPrice: TotalTP,
                 returnedBy: data.returnedBy,
                 pharmacy: data.pharmacy,
                 territory,
