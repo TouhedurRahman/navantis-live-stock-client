@@ -36,8 +36,8 @@ const AddNewCustomer = () => {
                 crLimit: Number(data.crlimit) || 0,
                 addedBy: data.addedby,
                 addedEmail: data.addedemail,
-                date: getTodayDate(),
-                status: 'pending'
+                status: 'pending',
+                date: getTodayDate()
             };
             const response = await axios.post('http://localhost:5000/customers', newCustomer);
             return response.data;
@@ -113,8 +113,8 @@ const AddNewCustomer = () => {
                             <input
                                 defaultValue={user?.territory}
                                 {...register("territory")}
-                                className="border-gray-500 bg-white border p-2 text-sm read-only cursor-not-allowed"
-                                disabled
+                                className="border-gray-500 bg-white border p-2 text-sm cursor-not-allowed"
+                                readOnly
                             />
                             {errors.territory && <p className="text-red-500 text-sm">{errors.territory.message}</p>}
                         </div>
