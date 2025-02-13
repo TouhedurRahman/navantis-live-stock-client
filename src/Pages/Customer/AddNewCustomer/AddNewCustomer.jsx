@@ -1,12 +1,86 @@
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import { useForm } from "react-hook-form";
+import Swal from "sweetalert2";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 
 const AddNewCustomer = () => {
-    const { user } = true;
+    const user = {
+        territory: "User's Territory",
+        displayName: "Navantis Pharma Limited",
+        email: "info@navantispharma.com"
+
+    };
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
-    const handleAddProduct = data => {
+    const getTodayDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
 
+        return `${year}-${month}-${day}`;
+    };
+
+    const addNewCustomerMutation = useMutation({
+        mutationFn: async (data) => {
+            const newCustomer = {
+                customerName: data.name,
+                customerTerritory: data.territory,
+                tradeLicense: data.trl,
+                drugLicnese: data.drl,
+                mobile: data.mobile,
+                email: data.email,
+                contactPerson: data.cperson || data.mobile,
+                discount: Number(data.discount) || 0,
+                crLimit: Number(data.crlimit) || 0,
+                addedBy: data.addedby,
+                addedEmail: data.addedemail,
+                date: getTodayDate(),
+                status: 'pending'
+            };
+            const response = await axios.post('http://localhost:5000/customers', newCustomer);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error adding customer", error);
+        },
+    });
+
+    const handleAddProduct = async (data) => {
+        try {
+            await Promise.all([
+                addNewCustomerMutation.mutateAsync(data),
+            ]);
+
+            reset();
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "New customer added.",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        } catch (error) {
+            if (error.response?.status === 409) {
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "Customer already exist",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            } else {
+                console.error("Error adding product:", error);
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "Faild to add customer",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        }
     };
 
     return (
@@ -37,7 +111,7 @@ const AddNewCustomer = () => {
                                 Territory <span className="text-red-500">*</span>
                             </label>
                             <input
-                                defaultValue={user?.territory || "User's Territory"}
+                                defaultValue={user?.territory}
                                 {...register("territory")}
                                 className="border-gray-500 bg-white border p-2 text-sm read-only cursor-not-allowed"
                                 disabled
@@ -98,10 +172,10 @@ const AddNewCustomer = () => {
 
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
-                                Email <span className="text-red-500">*</span>
+                                Email
                             </label>
                             <input
-                                {...register("email", { required: "Email is required" })}
+                                {...register("email")}
                                 placeholder="user@gmail.com"
                                 className="border-gray-500 bg-white border p-2 text-sm"
                             />
@@ -110,14 +184,13 @@ const AddNewCustomer = () => {
 
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
-                                Contact Person <span className="text-red-500">*</span>
+                                Contact Person
                             </label>
                             <input
-                                {...register("cperson", { required: "Mobile no. is required" })}
+                                {...register("cperson")}
                                 placeholder="01XXXXXXXXX"
                                 className="border-gray-500 bg-white border p-2 text-sm"
                             />
-                            {errors.cperson && <p className="text-red-500 text-sm">{errors.cperson.message}</p>}
                         </div>
                     </div>
 
@@ -138,11 +211,10 @@ const AddNewCustomer = () => {
                                 Credit Limit
                             </label>
                             <input
-                                {...register("crlimit", { required: "Mobile no. is required" })}
+                                {...register("crlimit")}
                                 placeholder="Enter credit limit"
                                 className="border-gray-500 bg-white border p-2 text-sm"
                             />
-                            {errors.crlimit && <p className="text-red-500 text-sm">{errors.crlimit.message}</p>}
                         </div>
                     </div>
 
@@ -155,7 +227,7 @@ const AddNewCustomer = () => {
                                 Name <span className="text-red-500">*</span>
                             </label>
                             <input
-                                defaultValue={user?.displayName || 'Navantis Pharma Limited'}
+                                defaultValue={user?.displayName}
                                 {...register("addedby", { required: "Added by is required" })}
                                 placeholder="Enter name of person adding"
                                 className="border-gray-500 bg-white border p-2 text-sm cursor-not-allowed"
@@ -168,7 +240,7 @@ const AddNewCustomer = () => {
                                 Email <span className="text-red-500">*</span>
                             </label>
                             <input
-                                defaultValue={user?.email || 'info@navantispharma.com'}
+                                defaultValue={user?.email}
                                 {...register("addedemail", {
                                     required: "Email is required",
                                     pattern: {
