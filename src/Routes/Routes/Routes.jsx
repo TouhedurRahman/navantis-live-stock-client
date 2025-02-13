@@ -10,6 +10,7 @@ import PurchaseList from "../../Pages/Admin/PurchaseList/PurchaseList";
 import PurchaseOrder from "../../Pages/Admin/PurchaseOrder/PurchaseOrder";
 import WarehouseStockRequest from "../../Pages/Admin/WarehouseStockRequest/WarehouseStockRequest";
 import AddNewCustomer from "../../Pages/Customer/AddNewCustomer/AddNewCustomer";
+import CustomerRequest from "../../Pages/Customer/CustomerRequest/CustomerRequest";
 import DepotExpiredProduct from "../../Pages/Depot/DepotExpiredProduct/DepotExpiredProduct";
 import DepotProductsList from "../../Pages/Depot/DepotProductsList/DepotProductsList";
 import DepotRecieveReq from "../../Pages/Depot/DepotRecieveReq/DepotRecieveReq";
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
             {
                 path: "/add-customer",
                 element: <AddNewCustomer />
+            },
+            {
+                path: "/customer-request",
+                element: <CustomerRequest />
             },
             {
                 path: "/admin-po",
