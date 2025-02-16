@@ -106,8 +106,8 @@ const CustomerRequest = () => {
                                                             <th>Customer Name</th>
                                                             <th>Address</th>
                                                             <th className='text-center'>Territory</th>
-                                                            <th className='text-center'>Added by</th>
-                                                            <th className='text-center'>Date</th>
+                                                            <th>Added by</th>
+                                                            <th className='text-center'>Added Date</th>
                                                             <th className='text-center'>
                                                                 View & Approve
                                                             </th>
