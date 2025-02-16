@@ -1,61 +1,33 @@
 import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import { useState } from "react";
 import { FaEye, FaTimes } from "react-icons/fa";
 import Swal from "sweetalert2";
 
 const CustomerRequestCard = ({ idx, customer, refetch }) => {
+    const user = {
+        displayName: 'Area Manager',
+        email: 'am@gmail.com'
+    }
     const [isModalOpen, setModalOpen] = useState(false);
-
-    const approveCustomerMutation = useMutation({
-        mutationFn: async () => {
-            // API call to approve the customer
-        },
-        onSuccess: () => {
-            refetch();
-            setModalOpen(false);
-            Swal.fire({
-                title: "Approved!",
-                text: "Customer request has been approved.",
-                icon: "success",
-                showConfirmButton: false,
-                timer: 1500
-            });
-        },
-        onError: (error) => {
-            Swal.fire({
-                title: "Error!",
-                text: "Failed to approve request. Please try again.",
-                icon: "error",
-                showConfirmButton: false,
-                timer: 1500
-            });
-        }
-    });
 
     const deniedCustomerMutation = useMutation({
         mutationFn: async () => {
-            // API call to deny the customer
+            const updatedCustomer = {
+                ...customer,
+                status: 'cancelled'
+            }
+            const response = await axios.patch(`http://localhost:5000/customer/${customer._id}`, updatedCustomer);
+            return response.data;
         },
-        onSuccess: () => {
-            refetch();
-            Swal.fire({
-                title: "Success!",
-                text: "Request Denied.",
-                icon: "success",
-                showConfirmButton: false,
-                timer: 1500
-            });
+        onError: (error) => {
+            console.error("Error stock out from warehouse:", error);
         },
-        onError: () => {
-            Swal.fire({
-                title: "Error!",
-                text: "Failed to deny request. Please try again.",
-                icon: "error",
-                showConfirmButton: false,
-                timer: 1500
-            });
-        }
     });
+
+    const handleApprove = () => {
+        // ...code
+    }
 
     const handleDeny = () => {
         Swal.fire({
@@ -68,7 +40,23 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
             confirmButtonText: "Yes, deny!"
         }).then(async (result) => {
             if (result.isConfirmed) {
-                deniedCustomerMutation.mutate();
+                try {
+                    await Promise.all([
+                        deniedCustomerMutation.mutateAsync()
+                    ]);
+
+                    refetch();
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Request Denied.",
+                        icon: "success",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                } catch (error) {
+                    console.error("Error denied request:", error);
+                    alert("Failed to stock in.");
+                }
             }
         });
     };
@@ -146,7 +134,7 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
                         {/* Footer */}
                         <div className="flex justify-end mt-6 space-x-2">
                             <button
-                                onClick={() => approveCustomerMutation.mutate()}
+                                onClick={() => handleApprove()}
                                 className="px-5 py-2 text-white bg-green-500 rounded-md shadow hover:bg-green-600 transition-all duration-200"
                             >
                                 Approve

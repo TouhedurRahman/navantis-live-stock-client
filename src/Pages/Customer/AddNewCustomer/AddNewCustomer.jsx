@@ -7,9 +7,8 @@ import PageTitle from "../../../Components/PageTitle/PageTitle";
 const AddNewCustomer = () => {
     const user = {
         territory: "User's Territory",
-        displayName: "Navantis Pharma Limited",
-        email: "info@navantispharma.com"
-
+        displayName: "M S A Person",
+        email: "msa@gmail.com"
     };
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
