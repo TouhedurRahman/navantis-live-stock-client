@@ -60,7 +60,7 @@ const CustomerRequest = () => {
                         :
                         <>
                             {
-                                currentCustomers.length > 0
+                                pendingCustomers.length > 0
                                     ?
                                     <>
                                         <div className="px-6">
@@ -97,73 +97,85 @@ const CustomerRequest = () => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="overflow-x-auto mb-3">
-                                                <table className="table">
-                                                    {/* head */}
-                                                    <thead>
-                                                        <tr>
-                                                            <th className="text-center">Sl. No.</th>
-                                                            <th>Customer Name</th>
-                                                            <th>Address</th>
-                                                            <th className='text-center'>Territory</th>
-                                                            <th>Added by</th>
-                                                            <th className='text-center'>Added Date</th>
-                                                            <th className='text-center'>
-                                                                View & Approve
-                                                            </th>
-                                                            <th className="text-center">Deny</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {
-                                                            currentCustomers.map((customer, idx) => (
-                                                                <CustomerRequestCard
-                                                                    idx={startIndex + idx + 1}
-                                                                    key={customer._id}
-                                                                    customer={customer}
-                                                                    refetch={refetch}
-                                                                />
-                                                            ))
-                                                        }
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                            {
+                                                filteredCustomers.length !== 0
+                                                    ?
+                                                    <>
+                                                        <div className="overflow-x-auto mb-3">
+                                                            <table className="table">
+                                                                {/* head */}
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th className="text-center">Sl. No.</th>
+                                                                        <th>Customer Name</th>
+                                                                        <th>Address</th>
+                                                                        <th className='text-center'>Territory</th>
+                                                                        <th>Added by</th>
+                                                                        <th className='text-center'>Added Date</th>
+                                                                        <th className='text-center'>
+                                                                            View & Approve
+                                                                        </th>
+                                                                        <th className="text-center">Deny</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    {
+                                                                        currentCustomers.map((customer, idx) => (
+                                                                            <CustomerRequestCard
+                                                                                idx={startIndex + idx + 1}
+                                                                                key={customer._id}
+                                                                                customer={customer}
+                                                                                refetch={refetch}
+                                                                            />
+                                                                        ))
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
 
-                                            {/* Pagination */}
-                                            <div className="flex justify-center items-center mb-10">
-                                                <div
-                                                    className={`mx-1 px-3 py-1 rounded-lg flex justify-center items-center ${currentPage === 1 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
-                                                    onClick={currentPage !== 1 ? () => changePage(currentPage - 1) : null}
-                                                    aria-disabled={currentPage === 1}
-                                                >
-                                                    <span className='flex justify-between items-center text-black'>
-                                                        <BsArrowLeftCircleFill className='h-6 w-6' />
-                                                    </span>
-                                                </div>
-                                                <div className='flex justify-center items-center'>
-                                                    {
-                                                        Array.from({ length: totalPages }, (_, index) => (
-                                                            <button
-                                                                key={index}
-                                                                className={`mx-1 flex justify-center items-center w-6 h-6 border border-black rounded-full ${currentPage === index + 1 ? 'bg-[#3B82F6] text-white font-mono font-extrabold border-2 border-green-900' : ''
-                                                                    }`}
-                                                                onClick={() => changePage(index + 1)}
+                                                        {/* Pagination */}
+                                                        <div className="flex justify-center items-center mb-10">
+                                                            <div
+                                                                className={`mx-1 px-3 py-1 rounded-lg flex justify-center items-center ${currentPage === 1 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                                                onClick={currentPage !== 1 ? () => changePage(currentPage - 1) : null}
+                                                                aria-disabled={currentPage === 1}
                                                             >
-                                                                {index + 1}
-                                                            </button>
-                                                        ))
-                                                    }
-                                                </div>
-                                                <div
-                                                    className={`mx-1 px-3 py-1 rounded-[4px] flex justify-center items-center ${currentPage === totalPages ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
-                                                    onClick={currentPage !== totalPages ? () => changePage(currentPage + 1) : null}
-                                                    aria-disabled={currentPage === totalPages}
-                                                >
-                                                    <span className='flex justify-between items-center text-black'>
-                                                        <BsArrowRightCircleFill className='h-6 w-6' />
-                                                    </span>
-                                                </div>
-                                            </div>
+                                                                <span className='flex justify-between items-center text-black'>
+                                                                    <BsArrowLeftCircleFill className='h-6 w-6' />
+                                                                </span>
+                                                            </div>
+                                                            <div className='flex justify-center items-center'>
+                                                                {
+                                                                    Array.from({ length: totalPages }, (_, index) => (
+                                                                        <button
+                                                                            key={index}
+                                                                            className={`mx-1 flex justify-center items-center w-6 h-6 border border-black rounded-full ${currentPage === index + 1 ? 'bg-[#3B82F6] text-white font-mono font-extrabold border-2 border-green-900' : ''
+                                                                                }`}
+                                                                            onClick={() => changePage(index + 1)}
+                                                                        >
+                                                                            {index + 1}
+                                                                        </button>
+                                                                    ))
+                                                                }
+                                                            </div>
+                                                            <div
+                                                                className={`mx-1 px-3 py-1 rounded-[4px] flex justify-center items-center ${currentPage === totalPages ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                                                onClick={currentPage !== totalPages ? () => changePage(currentPage + 1) : null}
+                                                                aria-disabled={currentPage === totalPages}
+                                                            >
+                                                                <span className='flex justify-between items-center text-black'>
+                                                                    <BsArrowRightCircleFill className='h-6 w-6' />
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </>
+                                                    :
+                                                    <>
+                                                        <p className="text-gray-600 font-mono font-extrabold text-center mb-6">
+                                                            No result found.
+                                                        </p>
+                                                    </>
+                                            }
                                         </div>
                                     </>
                                     :
