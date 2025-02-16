@@ -11,6 +11,22 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
     }
     const [isModalOpen, setModalOpen] = useState(false);
 
+    const approvedCustomerMutation = useMutation({
+        mutationFn: async () => {
+            const updatedCustomer = {
+                ...customer,
+                status: 'approved',
+                approvedBy: user?.displayName,
+                approvedEmail: user?.email
+            }
+            const response = await axios.patch(`http://localhost:5000/customer/${customer._id}`, updatedCustomer);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error approved customer request:", error);
+        }
+    })
+
     const deniedCustomerMutation = useMutation({
         mutationFn: async () => {
             const updatedCustomer = {
@@ -21,12 +37,28 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
             return response.data;
         },
         onError: (error) => {
-            console.error("Error stock out from warehouse:", error);
-        },
+            console.error("Error denied customer request:", error);
+        }
     });
 
-    const handleApprove = () => {
-        // ...code
+    const handleApprove = async () => {
+        try {
+            await Promise.all([
+                approvedCustomerMutation.mutateAsync()
+            ]);
+
+            refetch();
+            Swal.fire({
+                title: "Success!",
+                text: "Request approved.",
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        } catch (error) {
+            console.error("Error approved request:", error);
+            alert("Failed to stock in.");
+        }
     }
 
     const handleDeny = () => {

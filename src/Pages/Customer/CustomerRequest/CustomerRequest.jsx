@@ -168,7 +168,7 @@ const CustomerRequest = () => {
                                     </>
                                     :
                                     <>
-                                        <p className="text-gray-600 font-mono font-extrabold">
+                                        <p className="text-gray-600 font-mono font-extrabold text-center mb-6">
                                             No customer request added yet.
                                         </p>
                                     </>
