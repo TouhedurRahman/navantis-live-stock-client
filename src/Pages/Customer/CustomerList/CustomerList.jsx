@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
+import MyCustomer from "../MyCustomer/MyCustomer";
 
-const MyCustomer = () => <p>My Customer</p>
 const NewCustomer = () => <p>New Customer</p>
 
 const CustomerList = () => {
@@ -10,7 +10,7 @@ const CustomerList = () => {
     const renderContent = () => {
         switch (activeTab) {
             case "my customer":
-                return <MyCustomer>My Customer</MyCustomer>;
+                return <MyCustomer />;
             case "new customer":
                 return <NewCustomer>New Customer</NewCustomer>;
             default:
