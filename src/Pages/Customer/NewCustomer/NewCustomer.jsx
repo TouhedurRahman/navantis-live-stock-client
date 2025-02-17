@@ -4,14 +4,19 @@ import { ImSearch } from 'react-icons/im';
 import useCustomer from '../../../Hooks/useCustomer';
 import CustomerCard from '../CustomerCard/CustomerCard';
 
-const MyCustomer = () => {
+const NewCustomer = () => {
     const [customers, loading, refetch] = useCustomer();
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [customersPerPage, setCustomersPerPage] = useState(5);
 
-    const myCustomers = customers.filter(customer => customer.status === "approved");
+    const myCustomers = customers.filter(
+        customer =>
+            customer.status === "pending"
+            ||
+            customer.status === "denied"
+    );
 
     const filteredCustomers = myCustomers.filter(customer =>
         customer?.customerName?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -163,4 +168,4 @@ const MyCustomer = () => {
     );
 };
 
-export default MyCustomer;
+export default NewCustomer;

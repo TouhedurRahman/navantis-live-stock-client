@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import MyCustomer from "../MyCustomer/MyCustomer";
-
-const NewCustomer = () => <p>New Customer</p>
+import NewCustomer from "../NewCustomer/NewCustomer";
 
 const CustomerList = () => {
     const [activeTab, setActiveTab] = useState("my customer");
@@ -12,7 +11,7 @@ const CustomerList = () => {
             case "my customer":
                 return <MyCustomer />;
             case "new customer":
-                return <NewCustomer>New Customer</NewCustomer>;
+                return <NewCustomer />;
             default:
                 return null;
         }

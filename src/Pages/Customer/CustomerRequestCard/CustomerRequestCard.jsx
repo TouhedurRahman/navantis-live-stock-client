@@ -31,7 +31,7 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
         mutationFn: async () => {
             const updatedCustomer = {
                 ...customer,
-                status: 'cancelled'
+                status: 'denied'
             }
             const response = await axios.patch(`http://localhost:5000/customer/${customer._id}`, updatedCustomer);
             return response.data;
