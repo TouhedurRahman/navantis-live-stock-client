@@ -1,13 +1,59 @@
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 import React, { useState } from 'react';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { FaEye } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const CustomerCard = ({ idx, customer, refetch }) => {
     const [isdetailsModalOpen, setdetailsModalOpen] = useState(false);
 
-    const handleRemove = () => {
-        console.log("Remove product:", product._id);
+    const deleteCustomerMutation = useMutation({
+        mutationFn: async () => {
+            const response = await axios.delete(`http://localhost:5000/customer/${customer._id}`);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error delete customer:", error);
+        }
+    });
+
+    const handleRemove = async () => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete!"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await Promise.all([
+                        deleteCustomerMutation.mutateAsync(),
+                    ]);
+
+                    refetch();
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "Customer successfully deleted.",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                } catch (error) {
+                    Swal.fire({
+                        position: "center",
+                        icon: "error",
+                        title: "Faild to delete customer",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            }
+        });
     };
 
     return (
