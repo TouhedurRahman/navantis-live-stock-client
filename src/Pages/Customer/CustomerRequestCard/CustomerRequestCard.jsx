@@ -19,7 +19,7 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
                 approvedBy: user?.displayName,
                 approvedEmail: user?.email
             }
-            const response = await axios.patch(`http://localhost:5000/customer/${customer._id}`, updatedCustomer);
+            const response = await axios.patch(`http://localhost:5000/customer-status/${customer._id}`, updatedCustomer);
             return response.data;
         },
         onError: (error) => {
@@ -33,7 +33,7 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
                 ...customer,
                 status: 'denied'
             }
-            const response = await axios.patch(`http://localhost:5000/customer/${customer._id}`, updatedCustomer);
+            const response = await axios.patch(`http://localhost:5000/customer-status/${customer._id}`, updatedCustomer);
             return response.data;
         },
         onError: (error) => {
