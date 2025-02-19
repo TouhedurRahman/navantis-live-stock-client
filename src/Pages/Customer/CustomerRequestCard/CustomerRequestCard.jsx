@@ -125,55 +125,126 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
             </tr>
 
             {/* Modal */}
-            {isModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
-                    <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 transform transition-all duration-300">
+            {isModalOpen && customer && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+                    <div
+                        className="bg-white rounded-lg shadow-lg w-full max-w-lg h-4/5 flex flex-col"
+                        style={{ maxHeight: '90%' }}
+                    >
                         {/* Header */}
-                        <div className="flex justify-between items-center pb-4 border-b">
-                            <h2 className="text-2xl font-bold text-gray-800">Customer Details</h2>
-                            <button onClick={() => setModalOpen(false)} aria-label="Close modal">
-                                <FaTimes className="text-gray-500 hover:text-red-500 transition-all duration-200" size={20} />
+                        <div className="flex justify-between items-center px-5 py-4 border-b border-gray-200">
+                            <h2 className="text-xl font-semibold">Customer Details</h2>
+                            <button
+                                onClick={() => setModalOpen(false)}
+                                aria-label="Close modal"
+                                className="text-gray-500 hover:text-gray-700 transition-transform transform hover:scale-125"
+                            >
+                                <FaTimes size={20} />
                             </button>
                         </div>
 
-                        {/* Content */}
-                        <div className="mt-4 space-y-3 bg-white p-6 rounded-lg shadow-md border border-gray-200">
-                            {/* <h3 className="text-xl font-bold text-green-700 border-b pb-2">Customer Details</h3> */}
-                            <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-gray-800">
-                                <p><span className="font-semibold text-green-700">Name:</span> {customer.customerName}</p>
-                                <p><span className="font-semibold text-green-700">Territory:</span> {customer.customerTerritory}</p>
-                                <p><span className="font-semibold text-green-700">Trade License:</span> {customer.tradeLicense}</p>
-                                <p><span className="font-semibold text-green-700">Drug License:</span> {customer.drugLicense}</p>
-                                <p><span className="font-semibold text-green-700">Address:</span> {customer.address}</p>
-                                <p><span className="font-semibold text-green-700">Mobile:</span> {customer.mobile}</p>
-                                <p><span className="font-semibold text-green-700">Email:</span> {customer.email}</p>
-                                <p><span className="font-semibold text-green-700">Contact Person:</span> {customer.contactPerson}</p>
-                                <p><span className="font-semibold text-green-700">Discount:</span> <span className="text-green-600 font-bold">{customer.discount}%</span></p>
-                                <p><span className="font-semibold text-green-700">Credit Limit:</span> <span className="text-green-600 font-bold">{customer.crLimit} BDT</span></p>
-                                <p><span className="font-semibold text-green-700">Added By:</span> {customer.addedBy}</p>
-                                <p>
-                                    <span className="font-semibold text-green-700">Status:</span>
-                                    <span className={`ml-2 px-3 py-1 text-sm font-semibold rounded-full 
-                ${customer.status !== "pending" ? "bg-green-200 text-green-700" : "bg-red-200 text-red-700"}`}>
-                                        {customer.status}
-                                    </span>
-                                </p>
-                                <p><span className="font-semibold text-green-700">Date:</span> {new Date(customer.date).toISOString().split("T")[0]}</p>
-                            </div>
+                        {/* Scrollable Content */}
+                        <div className="mt-5 p-5 rounded-lg shadow-sm border border-gray-200 flex-1 overflow-y-auto">
+                            <table className="w-full border-collapse rounded-lg overflow-hidden shadow-md">
+                                <tbody>
+                                    {customer.customerName && (
+                                        <tr className="border-b">
+                                            <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Name</td>
+                                            <td className="px-4 py-3 text-gray-800">{customer.customerName}</td>
+                                        </tr>
+                                    )}
+                                    {customer.customerTerritory && (
+                                        <tr className="border-b bg-gray-50">
+                                            <td className="px-4 py-3 font-semibold text-gray-700">Territory</td>
+                                            <td className="px-4 py-3 text-gray-800">{customer.customerTerritory}</td>
+                                        </tr>
+                                    )}
+                                    {customer.tradeLicense && (
+                                        <tr className="border-b">
+                                            <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Trade License</td>
+                                            <td className="px-4 py-3 text-gray-800">{customer.tradeLicense}</td>
+                                        </tr>
+                                    )}
+                                    {customer.drugLicense && (
+                                        <tr className="border-b bg-gray-50">
+                                            <td className="px-4 py-3 font-semibold text-gray-700">Drug License</td>
+                                            <td className="px-4 py-3 text-gray-800">{customer.drugLicense}</td>
+                                        </tr>
+                                    )}
+                                    {customer.address && (
+                                        <tr className="border-b">
+                                            <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Address</td>
+                                            <td className="px-4 py-3 text-gray-800">{customer.address}</td>
+                                        </tr>
+                                    )}
+                                    {customer.mobile && (
+                                        <tr className="border-b bg-gray-50">
+                                            <td className="px-4 py-3 font-semibold text-gray-700">Mobile</td>
+                                            <td className="px-4 py-3 text-gray-800">{customer.mobile}</td>
+                                        </tr>
+                                    )}
+                                    {customer.email && (
+                                        <tr className="border-b">
+                                            <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Email</td>
+                                            <td className="px-4 py-3 text-gray-800">{customer.email}</td>
+                                        </tr>
+                                    )}
+                                    {customer.contactPerson && (
+                                        <tr className="border-b bg-gray-50">
+                                            <td className="px-4 py-3 font-semibold text-gray-700">Contact Person</td>
+                                            <td className="px-4 py-3 text-gray-800">{customer.contactPerson}</td>
+                                        </tr>
+                                    )}
+                                    {customer.discount !== undefined && (
+                                        <tr className="border-b">
+                                            <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Discount</td>
+                                            <td className="px-4 py-3 text-green-700 font-bold">{customer.discount}%</td>
+                                        </tr>
+                                    )}
+                                    {customer.crLimit !== undefined && (
+                                        <tr className="border-b bg-gray-50">
+                                            <td className="px-4 py-3 font-semibold text-gray-700">Credit Limit</td>
+                                            <td className="px-4 py-3 text-green-700 font-bold">{customer.crLimit} BDT</td>
+                                        </tr>
+                                    )}
+                                    {customer.addedBy && (
+                                        <tr className="border-b">
+                                            <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Added By</td>
+                                            <td className="px-4 py-3 text-gray-800">{customer.addedBy}</td>
+                                        </tr>
+                                    )}
+                                    {customer.status && (
+                                        <tr className="border-b bg-gray-50">
+                                            <td className="px-4 py-3 font-semibold text-gray-700">Status</td>
+                                            <td className="px-4 py-3">
+                                                <span className={`px-3 py-1 text-sm font-semibold rounded-full shadow-md 
+                                    ${customer.status !== "pending" ? "bg-green-500 text-white" : "bg-red-500 text-white"}`}>
+                                                    {customer.status.charAt(0).toUpperCase() + customer.status.slice(1)}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    )}
+                                    {customer.date && (
+                                        <tr>
+                                            <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Date</td>
+                                            <td className="px-4 py-3 text-gray-800">{new Date(customer.date).toISOString().split("T")[0]}</td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
                         </div>
 
-
                         {/* Footer */}
-                        <div className="flex justify-end mt-6 space-x-2">
+                        <div className="flex justify-end px-5 py-4 border-t border-gray-200 space-x-4">
                             <button
                                 onClick={() => handleApprove()}
-                                className="px-5 py-2 text-white bg-green-500 rounded-md shadow hover:bg-green-600 transition-all duration-200"
+                                className="px-4 py-2 text-white bg-green-500 rounded-md shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
                             >
                                 Approve
                             </button>
                             <button
                                 onClick={() => setModalOpen(false)}
-                                className="px-5 py-2 text-white bg-gray-400 rounded-md shadow hover:bg-gray-500 transition-all duration-200"
+                                className="px-4 py-2 text-white bg-red-500 rounded-md shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
                             >
                                 Close
                             </button>
