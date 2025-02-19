@@ -78,7 +78,7 @@ const MyCustomer = () => {
                                                     </div>
                                                     <input
                                                         type="text"
-                                                        placeholder="Search invoice"
+                                                        placeholder="Search customer"
                                                         value={searchTerm}
                                                         onChange={handleSearch}
                                                         className="border border-gray-500 border-l-0 px-3 py-1 rounded-r-full focus:outline-none"

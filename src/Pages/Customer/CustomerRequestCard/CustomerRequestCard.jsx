@@ -144,7 +144,7 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
                         </div>
 
                         {/* Scrollable Content */}
-                        <div className="mt-5 p-5 rounded-lg shadow-sm border border-gray-200 flex-1 overflow-y-auto">
+                        <div className="p-5 rounded-lg shadow-sm flex-1 overflow-y-auto">
                             <table className="w-full border-collapse rounded-lg overflow-hidden shadow-md">
                                 <tbody>
                                     {customer.customerName && (
@@ -195,13 +195,13 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
                                             <td className="px-4 py-3 text-gray-800">{customer.contactPerson}</td>
                                         </tr>
                                     )}
-                                    {customer.discount !== undefined && (
+                                    {customer.discount && (
                                         <tr className="border-b">
                                             <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Discount</td>
                                             <td className="px-4 py-3 text-green-700 font-bold">{customer.discount}%</td>
                                         </tr>
                                     )}
-                                    {customer.crLimit !== undefined && (
+                                    {customer.crLimit && (
                                         <tr className="border-b bg-gray-50">
                                             <td className="px-4 py-3 font-semibold text-gray-700">Credit Limit</td>
                                             <td className="px-4 py-3 text-green-700 font-bold">{customer.crLimit} BDT</td>
@@ -232,16 +232,17 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
                                     )}
                                 </tbody>
                             </table>
-                        </div>
 
-                        {/* Footer */}
-                        <div className="flex justify-end px-5 py-4 border-t border-gray-200 space-x-4">
                             <button
                                 onClick={() => handleApprove()}
-                                className="px-4 py-2 text-white bg-green-500 rounded-md shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+                                className="mt-5 w-full px-4 py-2 text-white bg-green-500 rounded-md shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
                             >
                                 Approve
                             </button>
+                        </div>
+
+                        {/* Footer */}
+                        <div className="flex justify-end px-5 py-4 border-t border-gray-200">
                             <button
                                 onClick={() => setModalOpen(false)}
                                 className="px-4 py-2 text-white bg-red-500 rounded-md shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
