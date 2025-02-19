@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useCustomer from '../../../Hooks/useCustomer';
@@ -18,6 +18,8 @@ const UpdateCustomer = () => {
     const [customers, loading, refetch] = useCustomer();
     const { id } = useParams();
     const customer = customers.find(customer => customer._id == id);
+
+    const navigate = useNavigate();
 
     const updateCustomerMutation = useMutation({
         mutationFn: async (data) => {
@@ -51,6 +53,7 @@ const UpdateCustomer = () => {
             ]);
 
             reset();
+            navigate('/customer-list');
             Swal.fire({
                 position: "center",
                 icon: "success",
