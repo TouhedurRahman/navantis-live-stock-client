@@ -104,11 +104,6 @@ const AllUsers = () => {
                                                 <th className="text-center">Image</th>
                                                 <th>Name</th>
                                                 <th>Email</th>
-                                                {
-                                                    singleUser?.designation === 'IT Officer'
-                                                    &&
-                                                    <th className="text-center">Update Designation</th>
-                                                }
                                                 <th className="text-center">Action</th>
                                             </tr>
                                         </thead>

@@ -2,7 +2,6 @@ import axios from "axios";
 import { useState } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 import { FaEye, FaUserShield } from "react-icons/fa6";
-import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import UserDetailsModal from "../../../Components/UserDetailsModal/UserDetailsModal";
 import useSingleUser from "../../../Hooks/useSingleUser";
@@ -128,30 +127,26 @@ const UsersCard = ({ user, idx, refetch }) => {
                 <td>
                     <p>{user.email}</p>
                 </td>
-                {
-                    singleUser?.designation === 'IT Officer'
-                    &&
-                    <td>
-                        <div className="flex justify-center items-center">
+                <th>
+                    <div className="flex justify-center items-center space-x-4 text-md">
+                        <button
+                            onClick={() => handleViewDetails(user)}
+                            className="p-2 rounded-[5px] hover:bg-green-100 focus:outline-none"
+                        >
+                            <FaEye className="text-green-500" />
+                        </button>
+
+                        {
+                            singleUser?.designation === 'IT Officer'
+                            &&
                             <button
                                 onClick={() => setShowRolePopup(true)} // Show popup
                                 className="p-2 rounded-[5px] hover:bg-orange-100 focus:outline-none"
                             >
                                 <FaUserShield className="text-orange-500" />
                             </button>
-                        </div>
-                    </td>
-                }
-                <th>
-                    <div className="flex justify-center items-center space-x-4 text-md">
-                        <Link>
-                            <button
-                                onClick={() => handleViewDetails(user)}
-                                className="p-2 rounded-[5px] hover:bg-green-100 focus:outline-none"
-                            >
-                                <FaEye className="text-green-500" />
-                            </button>
-                        </Link>
+                        }
+
                         <button
                             onClick={() => handleDelete()}
                             className="p-2 rounded-[5px] hover:bg-red-100 focus:outline-none"
