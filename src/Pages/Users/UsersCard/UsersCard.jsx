@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useState } from "react";
-import { FaTrashAlt } from "react-icons/fa";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { FaEye, FaUserShield } from "react-icons/fa6";
 import Swal from "sweetalert2";
 import UserDetailsModal from "../../../Components/UserDetailsModal/UserDetailsModal";
+import UserUpdateModal from "../../../Components/UserUpdateModal/UserUpdateModal";
 import useSingleUser from "../../../Hooks/useSingleUser";
 
 const UsersCard = ({ user, idx, refetch }) => {
@@ -12,6 +13,7 @@ const UsersCard = ({ user, idx, refetch }) => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [showRolePopup, setShowRolePopup] = useState(false);
     const [newRole, setNewRole] = useState("");
+    const [userUpdateModal, setUserUpdateModal] = useState(false);
 
     const handleUpdateDesignation = () => {
         if (!newRole.trim()) {
@@ -140,10 +142,21 @@ const UsersCard = ({ user, idx, refetch }) => {
                             singleUser?.designation === 'IT Officer'
                             &&
                             <button
-                                onClick={() => setShowRolePopup(true)} // Show popup
+                                onClick={() => setShowRolePopup(true)}
                                 className="p-2 rounded-[5px] hover:bg-orange-100 focus:outline-none"
                             >
                                 <FaUserShield className="text-orange-500" />
+                            </button>
+                        }
+
+                        {
+                            singleUser?.designation === 'IT Officer'
+                            &&
+                            <button
+                                onClick={() => setUserUpdateModal(true)}
+                                className="p-2 rounded-[5px] hover:bg-orange-100 focus:outline-none"
+                            >
+                                <FaEdit className="text-orange-500" />
                             </button>
                         }
 
@@ -207,6 +220,15 @@ const UsersCard = ({ user, idx, refetch }) => {
                 <UserDetailsModal
                     user={selectedUser}
                     onClose={() => setSelectedUser(null)}
+                />
+            )}
+
+            {/* user update modal */}
+            {userUpdateModal && (
+                <UserUpdateModal
+                    user={user}
+                    refetch={refetch}
+                    onClose={() => setUserUpdateModal(false)}
                 />
             )}
         </>
