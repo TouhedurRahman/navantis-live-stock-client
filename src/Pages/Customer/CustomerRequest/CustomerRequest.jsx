@@ -89,7 +89,7 @@ const CustomerRequest = () => {
                                                         </div>
                                                         <input
                                                             type="text"
-                                                            placeholder="Search products"
+                                                            placeholder="Search customers"
                                                             value={searchTerm}
                                                             onChange={handleSearch}
                                                             className="border border-gray-500 border-l-0 px-3 py-1 rounded-r-full focus:outline-none"
