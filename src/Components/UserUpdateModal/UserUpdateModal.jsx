@@ -1,7 +1,10 @@
 import React from 'react';
 import { FaTimes } from 'react-icons/fa';
+import useAllUsers from '../../Hooks/useAllUsers';
 
 const UserUpdateModal = ({ user, onClose }) => {
+    const [allUsers, loading, refetch] = useAllUsers();
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
             <div
@@ -22,7 +25,14 @@ const UserUpdateModal = ({ user, onClose }) => {
 
                 {/* Content */}
                 <div className="p-5 rounded-lg shadow-sm flex-1 overflow-y-auto">
-
+                    <div className='text-center font-medium'>
+                        <p className='text-2xl'>
+                            {user.name}
+                        </p>
+                        <p className='text-sm'>
+                            {user.designation}
+                        </p>
+                    </div>
                 </div>
 
                 {/* Footer */}
