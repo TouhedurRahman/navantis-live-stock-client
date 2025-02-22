@@ -15,8 +15,9 @@ const hierarchy = {
 
 const UserUpdateModal = ({ user, onClose }) => {
     const [allUsers, loading, refetch] = useAllUsers();
-    const { register, handleSubmit, formState: { errors }, reset } = useForm();
+    const { register, handleSubmit, watch, formState: { errors }, reset } = useForm();
     const [managers, setManagers] = useState([]);
+    const base = watch('base', '');
 
     useEffect(() => {
         setManagers(allUsers);
@@ -32,8 +33,12 @@ const UserUpdateModal = ({ user, onClose }) => {
     const { parent, grandparent } = getHierarchy(user.designation);
 
     const onSubmit = (data) => {
-        console.log('Selected Parent _id:', data.parent);
-        console.log('Selected Grandparent _id:', data.grandparent);
+        console.log("Base: ", data.base);
+        if (data.base === "Field") {
+            console.log("Territory: ", data.territory);
+            console.log("Selected Parent _id:", data.parent);
+            console.log("Selected Grandparent _id:", data.grandparent);
+        }
         onClose();
     };
 
@@ -52,63 +57,85 @@ const UserUpdateModal = ({ user, onClose }) => {
                     </button>
                 </div>
 
-                {/* main content */}
+                {/* Main content */}
                 <form onSubmit={handleSubmit(onSubmit)} className="p-5 rounded-lg shadow-sm flex-1 overflow-y-auto">
                     <div className='text-center font-medium'>
                         <p className='text-2xl'>{user.name}</p>
                         <p className='text-sm'>{user.designation}</p>
                     </div>
 
-                    <div className="flex flex-col">
+                    {/* Base Selection */}
+                    <div className="flex flex-col mt-4">
                         <label className="text-[#6E719A] mb-1 text-sm">
-                            Territory <span className="text-red-500">*</span>
+                            Base <span className="text-red-500">*</span>
                         </label>
-                        <input
-                            {...register("territory", { required: "Territory is required" })}
-                            placeholder="Enter territory name"
+                        <select
+                            {...register("base", { required: "Base selection is required" })}
                             className="border-gray-500 bg-white border p-2 text-sm"
-                        />
-                        {errors.territory && <p className="text-red-500 text-sm">{errors.territory.message}</p>}
+                        >
+                            <option value="">Select Base</option>
+                            <option value="Head Quarter">Head Quarter</option>
+                            <option value="Field">Field</option>
+                        </select>
+                        {errors.base && <p className="text-red-500 text-sm">{errors.base.message}</p>}
                     </div>
 
-                    {parent && (
-                        <div className="mt-5">
-                            <label htmlFor="parent" className="text-[#6E719A] mb-1 text-sm">
-                                {parent}  <span className="text-red-500">*</span>
-                            </label>
-                            <select
-                                id="parent"
-                                {...register('parent')}
-                                className="w-full border-gray-500 bg-white border p-2 text-sm"
-                                defaultValue=""
-                            >
-                                <option value="">Select {parent}</option>
-                                {managers.filter(u => u.designation === parent).map(manager => (
-                                    <option key={manager._id} value={manager._id}>{manager.name}</option>
-                                ))}
-                            </select>
-                        </div>
+                    {/* Field-specific inputs */}
+                    {base === "Field" && (
+                        <>
+                            <div className="flex flex-col mt-4">
+                                <label className="text-[#6E719A] mb-1 text-sm">
+                                    Territory <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    {...register("territory", { required: "Territory is required" })}
+                                    placeholder="Enter territory name"
+                                    className="border-gray-500 bg-white border p-2 text-sm"
+                                />
+                                {errors.territory && <p className="text-red-500 text-sm">{errors.territory.message}</p>}
+                            </div>
+
+                            {parent && (
+                                <div className="mt-4">
+                                    <label htmlFor="parent" className="text-[#6E719A] mb-1 text-sm">
+                                        {parent} <span className="text-red-500">*</span>
+                                    </label>
+                                    <select
+                                        id="parent"
+                                        {...register('parent')}
+                                        className="w-full mt-1 border-gray-500 bg-white border p-2 text-sm"
+                                        defaultValue=""
+                                    >
+                                        <option value="">Select {parent}</option>
+                                        {managers.filter(u => u.designation === parent).map(manager => (
+                                            <option key={manager._id} value={manager._id}>{manager.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+
+                            {grandparent && (
+                                <div className="mt-4">
+                                    <label htmlFor="grandparent" className="text-[#6E719A] mb-1 text-sm">
+                                        {grandparent}
+                                    </label>
+                                    <select
+                                        id="grandparent"
+                                        {...register('grandparent')}
+                                        className="w-full mt-1 border-gray-500 bg-white border p-2 text-sm"
+                                        defaultValue=""
+                                    >
+                                        <option value="">Select {grandparent}</option>
+                                        {managers.filter(u => u.designation === grandparent).map(manager => (
+                                            <option key={manager._id} value={manager._id}>{manager.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+                        </>
                     )}
 
-                    {grandparent && (
-                        <div className="mt-5">
-                            <label htmlFor="grandparent" className="text-[#6E719A] mb-1 text-sm">
-                                {grandparent}
-                            </label>
-                            <select
-                                id="grandparent"
-                                {...register('grandparent')}
-                                className="w-full border-gray-500 bg-white border p-2 text-sm"
-                                defaultValue=""
-                            >
-                                <option value="">Select {grandparent}</option>
-                                {managers.filter(u => u.designation === grandparent).map(manager => (
-                                    <option key={manager._id} value={manager._id}>{manager.name}</option>
-                                ))}
-                            </select>
-                        </div>
-                    )}
-
+                    {/* Submit Button */}
                     <div>
                         <button
                             type="submit"
