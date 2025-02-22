@@ -1,6 +1,9 @@
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaTimes } from 'react-icons/fa';
+import Swal from 'sweetalert2';
 import useAllUsers from '../../Hooks/useAllUsers';
 
 const hierarchy = {
@@ -32,14 +35,68 @@ const UserUpdateModal = ({ user, onClose }) => {
 
     const { parent, grandparent } = getHierarchy(user.designation);
 
-    const onSubmit = (data) => {
-        console.log("Base: ", data.base);
-        if (data.base === "Field") {
-            console.log("Territory: ", data.territory);
-            console.log("Selected Parent _id:", data.parent);
-            console.log("Selected Grandparent _id:", data.grandparent);
+    const updateCustomerMutation = useMutation({
+        mutationFn: async (data) => {
+            let updatedUser = {};
+
+            if (data.base !== 'Field') {
+                updatedUser = {
+                    base: data.base
+                }
+            } else {
+                updatedUser = {
+                    base: data.base,
+                    territory: data.territory,
+                    parentId: data.parent,
+                    grandParentId: data.grandparent
+                }
+            }
+
+            const response = await axios.patch(`http://localhost:5000/user/${user.email}`, updatedUser);
+            return response.data;
+        },
+        onError: (error) => {
+            console.log('Error updating user: ', error)
         }
-        onClose();
+    });
+
+    const onSubmit = (data) => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: `Update ${user.name}'s info.`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, update!"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await Promise.all([
+                        updateCustomerMutation.mutateAsync(data),
+                    ]);
+
+                    refetch();
+                    reset();
+                    onClose();
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "Customer successfully updated.",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                } catch (error) {
+                    Swal.fire({
+                        position: "center",
+                        icon: "error",
+                        title: "Faild to update customer",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            }
+        });
     };
 
     return (
