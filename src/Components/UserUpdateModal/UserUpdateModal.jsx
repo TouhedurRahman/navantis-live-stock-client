@@ -116,9 +116,25 @@ const UserUpdateModal = ({ user, onClose }) => {
 
                 {/* Main content */}
                 <form onSubmit={handleSubmit(onSubmit)} className="p-5 rounded-lg shadow-sm flex-1 overflow-y-auto">
-                    <div className='text-center font-medium'>
-                        <p className='text-2xl'>{user.name}</p>
-                        <p className='text-sm'>{user.designation}</p>
+                    <div className='w-full flex justify-between items-center'>
+                        <div className="w-1/2 flex justify-center items-center gap-3">
+                            <div className="avatar">
+                                <div className="h-24 w-24 rounded-full">
+                                    <img
+                                        src={
+                                            user.profilePicture
+                                                ? `${user.profilePicture}`
+                                                : "https://i.ibb.co/6r3zmMg/user.jpg"
+                                        }
+                                        alt="Loading..."
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div className='w-1/2 text-center font-medium'>
+                            <p className='text-2xl'>{user.name}</p>
+                            <p className='text-sm'>{user.designation}</p>
+                        </div>
                     </div>
 
                     {/* Base Selection */}
