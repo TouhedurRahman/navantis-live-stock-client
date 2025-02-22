@@ -148,6 +148,7 @@ const UserUpdateModal = ({ user, onClose }) => {
                             Base <span className="text-red-500">*</span>
                         </label>
                         <select
+                            defaultValue={user?.base}
                             {...register("base", { required: "Base selection is required" })}
                             className="border-gray-500 bg-white border p-2 text-sm"
                         >
@@ -166,6 +167,7 @@ const UserUpdateModal = ({ user, onClose }) => {
                                     Territory <span className="text-red-500">*</span>
                                 </label>
                                 <input
+                                    defaultValue={user?.territory}
                                     {...register("territory", { required: "Territory is required" })}
                                     placeholder="Enter territory name"
                                     className="border-gray-500 bg-white border p-2 text-sm"
