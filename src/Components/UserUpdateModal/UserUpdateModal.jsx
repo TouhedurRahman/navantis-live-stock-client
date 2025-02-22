@@ -47,8 +47,8 @@ const UserUpdateModal = ({ user, onClose }) => {
                 updatedUser = {
                     base: data.base,
                     territory: data.territory,
-                    parentId: data.parent,
-                    grandParentId: data.grandparent
+                    parentId: data.parent || null,
+                    grandParentId: data.grandparent || null
                 }
             }
 
