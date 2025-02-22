@@ -42,21 +42,26 @@ const UserUpdateModal = ({ user, onClose }) => {
             if (data.base !== 'Field') {
                 updatedUser = {
                     base: data.base
-                }
+                };
             } else {
+                const selectedParent = managers.find(manager => manager._id === data.parent);
+                const selectedGrandparent = managers.find(manager => manager._id === data.grandparent);
+
                 updatedUser = {
                     base: data.base,
                     territory: data.territory,
                     parentId: data.parent || null,
-                    grandParentId: data.grandparent || null
-                }
+                    parentName: selectedParent ? selectedParent.name : null,
+                    grandParentId: data.grandparent || null,
+                    grandParentName: selectedGrandparent ? selectedGrandparent.name : null
+                };
             }
 
             const response = await axios.patch(`http://localhost:5000/user/${user.email}`, updatedUser);
             return response.data;
         },
         onError: (error) => {
-            console.log('Error updating user: ', error)
+            console.log('Error updating user: ', error);
         }
     });
 
