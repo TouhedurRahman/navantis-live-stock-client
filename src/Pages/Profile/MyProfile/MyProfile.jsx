@@ -17,7 +17,6 @@ const MyProfile = () => {
     const [file, setFile] = useState(null);
     const [enterUserEmail, setEnterUserEmail] = useState(null);
 
-    const designationRef = useRef();
     const mobileNoRef = useRef();
     const userEmailRef = useRef(null);
 
@@ -70,12 +69,6 @@ const MyProfile = () => {
             })
     }
 
-    /* const handleUpdateDesignation = () => {
-        const designation = designationRef.current.value;
-        const updateDesignation = { designation: designation }
-        updateInfo(updateDesignation);
-    } */
-
     const handleUpdateMobileNo = () => {
         const mobileNo = mobileNoRef.current.value;
         const updateMobileNo = { mobile: mobileNo }
@@ -120,127 +113,118 @@ const MyProfile = () => {
     return (
         <>
             <div>
-                <PageTitle
-                    from={"Profile"}
-                    to={"My profile"}
-                />
+                <PageTitle from={"Profile"} to={"My Profile"} />
             </div>
             <div className="bg-white pb-1">
                 <div>
-                    <h1 className="px-6 py-3 font-bold">My profile</h1>
-                    <hr className='text-center border border-gray-500 mb-5' />
+                    <h1 className="px-6 py-3 font-bold">My Profile</h1>
+                    <hr className='border border-gray-500 mb-5' />
                 </div>
             </div>
-            <div className='flex justify-center items-center'>
-                <div className="w-full bg-white">
-                    <div className='w-full lg:flex justify-center items-center'>
-                        <div className='w-full mx-auto flex justify-center items-center'>
-                            {
-                                loadingSingleUser
-                                    ?
-                                    <Loader />
-                                    :
-                                    <div className='flex flex-col justify-center items-center'>
-                                        <div className='lg:flex justify-center items-center my-5'>
-                                            <img
-                                                className="h-[280px] w-[280px] mb-3 p-3 border border-gray-600 rounded-lg shadow-lg shadow-blue-200"
-                                                src={
-                                                    singleUser.profilePicture
-                                                        ?
-                                                        `${singleUser.profilePicture}`
-                                                        :
-                                                        "https://i.ibb.co/6r3zmMg/user.jpg"
-                                                } alt="Loading..." />
+
+            <div className="flex justify-center items-center">
+                <div className="w-full bg-white p-6">
+                    <div className="lg:flex gap-10">
+                        {/* Profile Picture Section */}
+                        <div className="flex flex-col items-center w-full lg:w-1/3">
+                            {loadingSingleUser ? <Loader /> : (
+                                <>
+                                    <div className="relative my-5">
+                                        <img
+                                            className="h-40 w-40 p-2 border border-gray-300 rounded-full shadow-md"
+                                            src={singleUser.profilePicture || "https://i.ibb.co/6r3zmMg/user.jpg"}
+                                            alt="Profile"
+                                        />
+                                    </div>
+                                    <p className="text-gray-600 font-semibold">Update Profile Picture</p>
+                                    <hr className="w-4/5 my-2" />
+                                    <form onSubmit={handleUpload} className="flex flex-col items-center">
+                                        <input
+                                            type="file"
+                                            className="file-input file-input-bordered w-full max-w-xs"
+                                            onChange={handleChange}
+                                        />
+                                        <button
+                                            type="submit"
+                                            className="w-[140px] btn mt-4 bg-blue-500 text-white font-bold hover:bg-blue-600 flex items-center gap-2"
+                                        >
+                                            Upload <FaCloudUploadAlt className="text-xl" />
+                                        </button>
+                                    </form>
+                                </>
+                            )}
+                        </div>
+
+                        {/* User Information Section */}
+                        <div className="w-full lg:w-2/3">
+                            {loading ? <Loader /> : (
+                                <div className="space-y-6">
+
+                                    {/* User Details */}
+                                    <div className="p-5 bg-gray-50 rounded-lg shadow-sm">
+                                        <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">User Information</h3>
+                                        <div className="mt-4 space-y-3">
+                                            <p><span className="text-gray-600 font-semibold">Name:</span> {user?.displayName}</p>
+                                            <p><span className="text-gray-600 font-semibold">Email:</span> {user?.email}</p>
+                                            <p><span className="text-gray-600 font-semibold">Designation:</span> {singleUser?.designation || "User"}</p>
+                                            <p><span className="text-gray-600 font-semibold">Mobile:</span> {singleUser?.mobile || "N/A"}</p>
                                         </div>
-                                        <p className='text-center text font-bold my-2 text-gray-600'>Update Profile Picture</p>
-                                        <hr></hr>
-                                        <form onSubmit={handleUpload}>
-                                            <input type="file" className="file-input file-input-bordered w-full max-w-xs" onChange={handleChange} />
-                                            <div className='text-center'>
-                                                <button value="submit" className='w-[120px] btn mx-auto my-5 bg-transparent border-2 border-[#3B82F6] text-black font-bold hover:bg-[#3B82F6] hover:text-white flex'>
-                                                    Upload <FaCloudUploadAlt className='text-xl' />
+                                    </div>
+
+                                    {/* Parent Details (if available) */}
+                                    {singleUser?.parentId && (
+                                        <div className="p-5 bg-gray-50 rounded-lg shadow-sm">
+                                            <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">Parent Information</h3>
+                                            <div className="mt-4 space-y-3">
+                                                <p><span className="text-gray-600 font-semibold">Parent Name:</span> {singleUser?.parentName || "N/A"}</p>
+                                                <p><span className="text-gray-600 font-semibold">Email:</span> {singleUser?.parentEmail || "N/A"}</p>
+                                                <p><span className="text-gray-600 font-semibold">Designation:</span> {singleUser?.parentDesignation || "N/A"}</p>
+                                                <p><span className="text-gray-600 font-semibold">Mobile:</span> {singleUser?.parentMobile || "N/A"}</p>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Update Section */}
+                                    <div className="p-5 bg-gray-50 rounded-lg shadow-sm">
+                                        <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">Account Settings</h3>
+                                        <div className="mt-4 space-y-4">
+                                            {/* Update Mobile Number */}
+                                            <div className="flex items-center gap-3">
+                                                <input
+                                                    type="text"
+                                                    defaultValue={singleUser.mobile}
+                                                    placeholder="Enter mobile number"
+                                                    className="input border-0 border-b-2 border-blue-500 font-bold w-full rounded focus:outline-none text-sm"
+                                                    ref={mobileNoRef}
+                                                />
+                                                <button
+                                                    className="w-[120px] btn bg-blue-500 text-white font-bold hover:bg-blue-600 flex items-center gap-2"
+                                                    onClick={handleUpdateMobileNo}
+                                                >
+                                                    Update <MdContactPhone className="text-xl" />
                                                 </button>
                                             </div>
-                                        </form>
+
+                                            {/* Reset Password */}
+                                            <div className="flex items-center gap-3">
+                                                <input
+                                                    type="email"
+                                                    placeholder="Enter your email"
+                                                    className="input border-0 border-b-2 border-blue-500 font-bold w-full rounded focus:outline-none text-sm"
+                                                    onBlur={handleEmailOnBlur}
+                                                    ref={userEmailRef}
+                                                />
+                                                <button
+                                                    onClick={handleResetPassword}
+                                                    className="w-[120px] btn bg-red-500 text-white font-bold hover:bg-red-600 flex items-center gap-2"
+                                                >
+                                                    Reset <MdLockReset className="text-xl" />
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
-                            }
-                        </div>
-                        <div className='w-full p-3 my-3 lg:m-5'>
-                            {
-                                loading
-                                    ?
-                                    <Loader />
-                                    :
-                                    <>
-                                        <p className='text font-bold my-2 text-gray-600'>Name</p>
-                                        <hr></hr>
-                                        <p className="mb-5 text-sm font-bold"> {user?.displayName}</p>
-                                        <p className='text font-bold my-2 text-gray-600'>Email</p>
-                                        <hr></hr>
-                                        <p className="mb-5 text-sm font-bold">{user?.email}</p>
-                                        <p className='text font-bold my-2 text-gray-600'>Designation</p>
-                                        <hr></hr>
-                                        <p className="mb-5 text-sm font-bold">
-                                            {
-                                                // (singleUser?.designation) ? "✓ Admin" : "✓ User"
-                                                singleUser?.designation
-                                            }
-                                        </p>
-                                        {/* <p className='text font-bold my-2 text-gray-600'>Designation</p>
-                                        <hr></hr>
-                                        <div className='w-full flex justify-between items-center my-3'>
-                                            <input
-                                                type="text"
-                                                defaultValue={singleUser.designation}
-                                                placeholder="Please enter your designation"
-                                                className="input border-0 border-b-2 border-b-[#3B82F6] mr-5 font-bold w-full rounded focus:outline-none text-sm"
-                                                ref={designationRef}
-                                            />
-                                            <button
-                                                className='w-[120px] btn mx-auto bg-transparent border-2 border-[#3B82F6] text-black font-bold hover:bg-[#3B82F6] hover:text-white flex'
-                                                onClick={handleUpdateDesignation}
-                                            >
-                                                Update <GrStatusGood className="text-xl" />
-                                            </button>
-                                        </div> */}
-                                        {/* <hr></hr> */}
-                                        <p className='text font-bold my-2 text-gray-600'>Mobile Number</p>
-                                        <hr></hr>
-                                        <div className='w-full flex justify-between items-center my-3'>
-                                            <input
-                                                type="text"
-                                                defaultValue={singleUser.mobile}
-                                                placeholder="Please enter your mobile no."
-                                                className="input border-0 border-b-2 border-b-[#3B82F6] mr-5 font-bold w-full rounded focus:outline-none text-sm"
-                                                ref={mobileNoRef}
-                                            />
-                                            <button
-                                                className='w-[120px] btn mx-auto bg-transparent border-2 border-[#3B82F6] text-black font-bold hover:bg-[#3B82F6] hover:text-white flex'
-                                                onClick={handleUpdateMobileNo}
-                                            >
-                                                Update <MdContactPhone className="text-xl" />
-                                            </button>
-                                        </div>
-                                        {/* <hr></hr> */}
-                                        <p className='text font-bold my-2 text-gray-600'>Change Password</p>
-                                        <hr></hr>
-                                        <div className='w-full flex justify-between items-center my-3'>
-                                            <input
-                                                type="email"
-                                                placeholder="Please enter your email"
-                                                className="input border-0 border-b-2 border-b-[#3B82F6] mr-5 font-bold w-full rounded focus:outline-none text-sm"
-                                                onBlur={handleEmailOnBlur}
-                                                ref={userEmailRef}
-                                            />
-                                            <button
-                                                onClick={handleResetPassword}
-                                                className='w-[120px] btn mx-auto bg-transparent border-2 border-[#3B82F6] text-black font-bold hover:bg-[#3B82F6] hover:text-white flex'
-                                            >
-                                                Reset <MdLockReset className="text-xl" />
-                                            </button>
-                                        </div>
-                                    </>
-                            }
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
