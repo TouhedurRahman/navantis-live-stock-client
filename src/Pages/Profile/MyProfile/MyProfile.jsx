@@ -122,115 +122,162 @@ const MyProfile = () => {
             <div className="bg-white pb-1">
                 <div>
                     <h1 className="px-6 py-3 font-bold">My Profile</h1>
-                    <hr className='border border-gray-500 mb-5' />
+                    <hr className='border border-gray-500' />
                 </div>
             </div>
 
-            <div className="flex justify-center items-center">
-                <div className="w-full bg-white p-6">
-                    <div className="lg:flex gap-10">
-                        {/* Profile Picture Section */}
-                        <div className="flex flex-col items-center w-full lg:w-1/3">
-                            {loadingSingleUser ? <Loader /> : (
-                                <>
-                                    <div className="relative my-5">
-                                        <img
-                                            className="h-40 w-40 p-2 border border-gray-300 rounded-full shadow-md"
-                                            src={singleUser.profilePicture || "https://i.ibb.co/6r3zmMg/user.jpg"}
-                                            alt="Profile"
-                                        />
-                                    </div>
-                                    <p className="text-gray-600 font-semibold">Update Profile Picture</p>
-                                    <hr className="w-4/5 my-2" />
-                                    <form onSubmit={handleUpload} className="flex flex-col items-center">
-                                        <input
-                                            type="file"
-                                            className="file-input file-input-bordered w-full max-w-xs"
-                                            onChange={handleChange}
-                                        />
-                                        <button
-                                            type="submit"
-                                            className="w-[140px] btn mt-4 bg-blue-500 text-white font-bold hover:bg-blue-600 flex items-center gap-2"
-                                        >
-                                            Upload <FaCloudUploadAlt className="text-xl" />
-                                        </button>
-                                    </form>
-                                </>
+            <div className="w-full flex justify-center">
+                <div className="w-full bg-white p-6 grid grid-cols-1 md:grid-cols-3 gap-2">
+
+                    {/* Profile Picture Section */}
+                    <div className="flex flex-col items-center bg-gray-50 p-6 shadow">
+                        {loadingSingleUser ? <Loader /> : (
+                            <>
+                                <img
+                                    className="h-72 w-72 border border-gray-300 rounded-full shadow-md"
+                                    src={singleUser.profilePicture || "https://i.ibb.co/6r3zmMg/user.jpg"}
+                                    alt="Profile"
+                                />
+                                <p className="text-gray-600 font-semibold mt-4">Update Profile Picture</p>
+                                <form onSubmit={handleUpload} className="w-full text-center mt-3">
+                                    <input
+                                        type="file"
+                                        className="file-input file-input-bordered w-full"
+                                        onChange={handleChange}
+                                    />
+                                    <button type="submit" className="btn bg-blue-500 text-white mt-3 w-full flex items-center justify-center">
+                                        Upload <FaCloudUploadAlt className="ml-2" />
+                                    </button>
+                                </form>
+                            </>
+                        )}
+                    </div>
+
+                    {/* User & Parent Info + Account Settings */}
+                    <div className="col-span-2 flex flex-col gap-2">
+                        {/* User & Parent Info */}
+                        <div className={`grid grid-cols-1 md:grid-cols-${singleUser?.parentId ? "2" : "1"} gap-2`}>
+
+                            {/* User Info */}
+                            <div className={`p-6 bg-gray-50 shadow ${!singleUser?.parentId ? "md:col-span-2" : ""}`}>
+                                <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">User Information</h3>
+                                <table className="w-full mt-4 text-sm border-collapse">
+                                    <tbody>
+                                        <tr className="border-b">
+                                            <td className="p-2 font-semibold text-gray-600">Name</td>
+                                            <td className="p-2">{user?.displayName}</td>
+                                        </tr>
+                                        <tr className="border-b">
+                                            <td className="p-2 font-semibold text-gray-600">Designation</td>
+                                            <td className="p-2">{singleUser?.designation || "User"}</td>
+                                        </tr>
+                                        {
+                                            singleUser?.territory && (
+                                                <tr className="border-b">
+                                                    <td className="p-2 font-semibold text-gray-600">Territory</td>
+                                                    <td className="p-2">{singleUser?.territory || "Territory"}</td>
+                                                </tr>
+                                            )
+                                        }
+                                        <tr className="border-b">
+                                            <td className="p-2 font-semibold text-gray-600">Mobile</td>
+                                            <td className="p-2">{singleUser?.mobile ? `+880 ${singleUser.mobile.slice(-10, -6)}-${singleUser.mobile.slice(-6)}` : "Not updated yet."}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="p-2 font-semibold text-gray-600">Email</td>
+                                            <td className="p-2">{user?.email}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {/* Parent Info (if available) */}
+                            {singleUser?.parentId && (
+                                <div className="p-6 bg-gray-50 shadow">
+                                    <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">My {findParent?.designation}</h3>
+                                    <table className="w-full mt-4 text-sm border-collapse">
+                                        <tbody>
+                                            <tr className="border-b">
+                                                <td className="p-2 font-semibold text-gray-600">Name</td>
+                                                <td className="p-2">{singleUser?.parentName || "N/A"}</td>
+                                            </tr>
+                                            <tr className="border-b">
+                                                <td className="p-2 font-semibold text-gray-600">Designation</td>
+                                                <td className="p-2">{findParent?.designation || "N/A"}</td>
+                                            </tr>
+                                            {
+                                                findParent?.territory && (
+                                                    <tr className="border-b">
+                                                        <td className="p-2 font-semibold text-gray-600">Territory</td>
+                                                        <td className="p-2">{findParent?.territory || "Territory"}</td>
+                                                    </tr>
+                                                )
+                                            }
+                                            <tr className="border-b">
+                                                <td className="p-2 font-semibold text-gray-600">Mobile</td>
+                                                <td className="p-2">{findParent?.mobile ? `+880 ${findParent.mobile.slice(-10, -6)}-${findParent.mobile.slice(-6)}` : "Not updated yet."}</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="p-2 font-semibold text-gray-600">Email</td>
+                                                <td className="p-2">{findParent?.email || "Not updated yet."}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             )}
                         </div>
 
-                        {/* User Information Section */}
-                        <div className="w-full lg:w-2/3">
-                            {loading ? <Loader /> : (
-                                <div className="space-y-6">
+                        {/* Account Settings */}
+                        <div className="p-6 bg-gray-50 shadow">
+                            <h3 className="text-xl font-semibold text-gray-700 border-b pb-3">Account Settings</h3>
+                            <div className="mt-6 space-y-6">
 
-                                    {/* User Details */}
-                                    <div className="p-5 bg-gray-50 rounded-lg shadow-sm">
-                                        <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">User Information</h3>
-                                        <div className="mt-4 space-y-3">
-                                            <p><span className="text-gray-600 font-semibold">Name:</span> {user?.displayName}</p>
-                                            <p><span className="text-gray-600 font-semibold">Designation:</span> {singleUser?.designation || "User"}</p>
-                                            <p><span className="text-gray-600 font-semibold">Mobile:</span> {singleUser?.mobile ? `+880 ${singleUser.mobile.slice(-10, -6)}-${singleUser.mobile.slice(-6)}` : "Not updated yet."}
-                                            </p>
-                                            <p><span className="text-gray-600 font-semibold">Email:</span> {user?.email}</p>
-                                        </div>
+                                {/* Update Mobile Number */}
+                                <div className="p-4 bg-white shadow flex flex-col sm:flex-row items-center justify-between gap-4">
+                                    <div className="text-sm">
+                                        <h4 className="font-semibold text-gray-700">Update Mobile Number</h4>
+                                        <p className="text-gray-500">Ensure your number is always up to date.</p>
                                     </div>
-
-                                    {/* Parent Details (if available) */}
-                                    {singleUser?.parentId && (
-                                        <div className="p-5 bg-gray-50 rounded-lg shadow-sm">
-                                            <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">My {findParent?.designation}</h3>
-                                            <div className="mt-4 space-y-3">
-                                                <p><span className="text-gray-600 font-semibold">Name:</span> {singleUser?.parentName || "N/A"}</p>
-                                                <p><span className="text-gray-600 font-semibold">Designation:</span> {findParent?.designation || "N/A"}</p>
-                                                <p><span className="text-gray-600 font-semibold">Mobile:</span> {findParent?.mobile ? `+880 ${findParent.mobile.slice(-10, -6)}-${findParent.mobile.slice(-6)}` : "Not updated yet."}
-                                                </p>
-                                                <p><span className="text-gray-600 font-semibold">Email:</span> {findParent?.email || "Not updated yet."}</p>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* Update Section */}
-                                    <div className="p-5 bg-gray-50 rounded-lg shadow-sm">
-                                        <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">Account Settings</h3>
-                                        <div className="mt-4 space-y-4">
-                                            {/* Update Mobile Number */}
-                                            <div className="flex items-center gap-3">
-                                                <input
-                                                    type="text"
-                                                    // defaultValue={singleUser.mobile}
-                                                    placeholder="Enter mobile no"
-                                                    className="input border-0 border-b-2 border-blue-500 font-bold w-full rounded focus:outline-none text-sm"
-                                                    ref={mobileNoRef}
-                                                />
-                                                <button
-                                                    className="w-[120px] btn bg-blue-500 text-white font-bold hover:bg-blue-600 flex items-center gap-2"
-                                                    onClick={handleUpdateMobileNo}
-                                                >
-                                                    Update <MdContactPhone className="text-xl" />
-                                                </button>
-                                            </div>
-
-                                            {/* Reset Password */}
-                                            <div className="flex items-center gap-3">
-                                                <input
-                                                    type="email"
-                                                    placeholder="Enter your email"
-                                                    className="input border-0 border-b-2 border-blue-500 font-bold w-full rounded focus:outline-none text-sm"
-                                                    onBlur={handleEmailOnBlur}
-                                                    ref={userEmailRef}
-                                                />
-                                                <button
-                                                    onClick={handleResetPassword}
-                                                    className="w-[120px] btn bg-red-500 text-white font-bold hover:bg-red-600 flex items-center gap-2"
-                                                >
-                                                    Reset <MdLockReset className="text-xl" />
-                                                </button>
-                                            </div>
-                                        </div>
+                                    <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                                        <input
+                                            type="text"
+                                            placeholder="Enter mobile no"
+                                            className="lg:w-64 input border border-gray-300 p-2 rounded w-full sm:w-auto text-sm"
+                                            ref={mobileNoRef}
+                                        />
+                                        <button
+                                            className="lg:w-36 btn bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center px-4 py-2 rounded-md"
+                                            onClick={handleUpdateMobileNo}
+                                        >
+                                            Update <MdContactPhone className="ml-2 text-lg" />
+                                        </button>
                                     </div>
                                 </div>
-                            )}
+
+                                {/* Reset Password */}
+                                <div className="p-4 bg-white shadow flex flex-col sm:flex-row items-center justify-between gap-4">
+                                    <div className="text-sm">
+                                        <h4 className="font-semibold text-gray-700">Reset Password</h4>
+                                        <p className="text-gray-500">You will receive a password reset link.</p>
+                                    </div>
+                                    <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                                        <input
+                                            type="email"
+                                            placeholder="Enter your email"
+                                            className="lg:w-64 input border border-gray-300 p-2 rounded w-full sm:w-auto text-sm"
+                                            onBlur={handleEmailOnBlur}
+                                            ref={userEmailRef}
+                                        />
+                                        <button
+                                            onClick={handleResetPassword}
+                                            className="lg:w-36 btn bg-red-500 hover:bg-red-600 text-white flex items-center justify-center px-4 py-2 rounded-md"
+                                        >
+                                            Reset <MdLockReset className="ml-2 text-lg" />
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
                 </div>
