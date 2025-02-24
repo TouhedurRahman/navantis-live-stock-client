@@ -5,12 +5,14 @@ import { MdContactPhone, MdLockReset } from 'react-icons/md';
 import Swal from 'sweetalert2';
 import Loader from '../../../Components/Loader/Loader';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
+import useAllUsers from '../../../Hooks/useAllUsers';
 import useAuth from '../../../Hooks/useAuth';
 import useHosting from '../../../Hooks/useHosting';
 import useSingleUser from '../../../Hooks/useSingleUser';
 
 const MyProfile = () => {
     const { user, resetPassword, loading } = useAuth();
+    const [allUsers] = useAllUsers();
     const [singleUser, loadingSingleUser, refetch] = useSingleUser();
     const img_hosting_url = useHosting();
 
@@ -19,6 +21,8 @@ const MyProfile = () => {
 
     const mobileNoRef = useRef();
     const userEmailRef = useRef(null);
+
+    const findParent = allUsers.find(allu => allu._id == singleUser.parentId);
 
     const updateInfo = (updatedInfo) => {
         const url = `http://localhost:5000/user/${user.email}`;
@@ -165,21 +169,23 @@ const MyProfile = () => {
                                         <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">User Information</h3>
                                         <div className="mt-4 space-y-3">
                                             <p><span className="text-gray-600 font-semibold">Name:</span> {user?.displayName}</p>
-                                            <p><span className="text-gray-600 font-semibold">Email:</span> {user?.email}</p>
                                             <p><span className="text-gray-600 font-semibold">Designation:</span> {singleUser?.designation || "User"}</p>
-                                            <p><span className="text-gray-600 font-semibold">Mobile:</span> {singleUser?.mobile || "N/A"}</p>
+                                            <p><span className="text-gray-600 font-semibold">Mobile:</span> {singleUser?.mobile ? `+880 ${singleUser.mobile.slice(-10, -6)}-${singleUser.mobile.slice(-6)}` : "Not updated yet."}
+                                            </p>
+                                            <p><span className="text-gray-600 font-semibold">Email:</span> {user?.email}</p>
                                         </div>
                                     </div>
 
                                     {/* Parent Details (if available) */}
                                     {singleUser?.parentId && (
                                         <div className="p-5 bg-gray-50 rounded-lg shadow-sm">
-                                            <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">Parent Information</h3>
+                                            <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">My {findParent?.designation}</h3>
                                             <div className="mt-4 space-y-3">
-                                                <p><span className="text-gray-600 font-semibold">Parent Name:</span> {singleUser?.parentName || "N/A"}</p>
-                                                <p><span className="text-gray-600 font-semibold">Email:</span> {singleUser?.parentEmail || "N/A"}</p>
-                                                <p><span className="text-gray-600 font-semibold">Designation:</span> {singleUser?.parentDesignation || "N/A"}</p>
-                                                <p><span className="text-gray-600 font-semibold">Mobile:</span> {singleUser?.parentMobile || "N/A"}</p>
+                                                <p><span className="text-gray-600 font-semibold">Name:</span> {singleUser?.parentName || "N/A"}</p>
+                                                <p><span className="text-gray-600 font-semibold">Designation:</span> {findParent?.designation || "N/A"}</p>
+                                                <p><span className="text-gray-600 font-semibold">Mobile:</span> {findParent?.mobile ? `+880 ${findParent.mobile.slice(-10, -6)}-${findParent.mobile.slice(-6)}` : "Not updated yet."}
+                                                </p>
+                                                <p><span className="text-gray-600 font-semibold">Email:</span> {findParent?.email || "Not updated yet."}</p>
                                             </div>
                                         </div>
                                     )}
@@ -192,8 +198,8 @@ const MyProfile = () => {
                                             <div className="flex items-center gap-3">
                                                 <input
                                                     type="text"
-                                                    defaultValue={singleUser.mobile}
-                                                    placeholder="Enter mobile number"
+                                                    // defaultValue={singleUser.mobile}
+                                                    placeholder="Enter mobile no"
                                                     className="input border-0 border-b-2 border-blue-500 font-bold w-full rounded focus:outline-none text-sm"
                                                     ref={mobileNoRef}
                                                 />
