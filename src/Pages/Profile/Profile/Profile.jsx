@@ -30,8 +30,8 @@ const Profile = () => {
                 <div className="h-10 flex justify-between items-center p-6">
                     <div className="flex flex-wrap justify-start items-center space-x-4">
                         {[
-                            { label: "My profile", value: "my profile", color: "bg-blue-500", hover: "hover:bg-blue-700" },
-                            { label: "my team", value: "my team", color: "bg-red-500", hover: "hover:bg-red-700" }
+                            { label: "My Profile", value: "my profile", color: "bg-blue-500", hover: "hover:bg-blue-700" },
+                            { label: "My Team", value: "my team", color: "bg-red-500", hover: "hover:bg-red-700" }
                         ].map((button) => (
                             <button
                                 key={button.value}
