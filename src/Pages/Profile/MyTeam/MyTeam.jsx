@@ -110,11 +110,11 @@ const MyTeam = () => {
                                                             </thead>
                                                             <tbody>
                                                                 {
-                                                                    currentUsers.map((myUser, idx) => (
+                                                                    currentUsers.map((teamMember, idx) => (
                                                                         <MyTeamCard
                                                                             idx={startIndex + idx + 1}
-                                                                            key={myUser._id}
-                                                                            myUser={myUser}
+                                                                            key={teamMember._id}
+                                                                            teamMember={teamMember}
                                                                             refetch={refetch}
                                                                         />
                                                                     ))
