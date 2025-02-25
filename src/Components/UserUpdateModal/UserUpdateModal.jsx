@@ -6,7 +6,7 @@ import { FaTimes } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import useAllUsers from '../../Hooks/useAllUsers';
 
-const hierarchy = {
+/* const hierarchy = {
     "Managing Director": [],
     "Sales Manager": ["Managing Director"],
     "Zonal Manager": ["Sales Manager", "Managing Director"],
@@ -14,6 +14,21 @@ const hierarchy = {
     "Medical Promotion Officer": ["Area Manager", "Zonal Manager"],
     "Skin Care Coordinator": ["Area Manager", "Zonal Manager"],
     "Area Sales Executive": ["Area Manager", "Zonal Manager"]
+}; */
+
+const hierarchy = {
+    "Managing Director": [],
+    "Sales Manager": ["Managing Director"],
+    "Zonal Manager": ["Sales Manager", "Managing Director"],
+    "Area Manager": ["Zonal Manager", "Sales Manager"],
+    "Sr. Area Manager": ["Zonal Manager", "Sales Manager"],
+    "Medical Promotion Officer": ["Area Manager", "Zonal Manager"],
+    "Skin Care Coordinator": ["Area Manager", "Zonal Manager"],
+    "Area Sales Executive": ["Area Manager", "Zonal Manager"],
+    "AM/Sr. AM": ["Zonal Manager", "Sales Manager"],
+    "MPO/Sr. MPO": ["Area Manager", "Zonal Manager"],
+    "SCC/Sr. SCC": ["Area Manager", "Zonal Manager"],
+    "ASE/Sr. ASE": ["Area Manager", "Zonal Manager"]
 };
 
 const UserUpdateModal = ({ user, onClose }) => {
@@ -26,8 +41,32 @@ const UserUpdateModal = ({ user, onClose }) => {
         setManagers(allUsers);
     }, [allUsers]);
 
-    const getHierarchy = (designation) => {
+    /* const getHierarchy = (designation) => {
         const parents = hierarchy[designation] || [];
+        const parent = parents[0] || null;
+        const grandparent = parents[1] || null;
+        return { parent, grandparent };
+    }; */
+
+    const getHierarchy = (designation) => {
+        const equivalentTitles = {
+            "AM/Sr. AM": ["Area Manager", "Sr. Area Manager"],
+            "MPO/Sr. MPO": ["Medical Promotion Officer"],
+            "SCC/Sr. SCC": ["Skin Care Coordinator"],
+            "ASE/Sr. ASE": ["Area Sales Executive"]
+        };
+
+        const mappedDesignations = equivalentTitles[designation] || [designation];
+        let parents = [];
+
+        mappedDesignations.forEach((mappedDesignation) => {
+            if (hierarchy[mappedDesignation]) {
+                parents.push(...hierarchy[mappedDesignation]);
+            }
+        });
+
+        parents = [...new Set(parents)];
+
         const parent = parents[0] || null;
         const grandparent = parents[1] || null;
         return { parent, grandparent };
@@ -187,7 +226,13 @@ const UserUpdateModal = ({ user, onClose }) => {
                                         defaultValue=""
                                     >
                                         <option value="">Select {parent}</option>
-                                        {managers.filter(u => u.designation === parent).map(manager => (
+                                        {/* {managers.filter(u => u.designation === parent).map(manager => (
+                                            <option key={manager._id} value={manager._id}>{manager.name}</option>
+                                        ))} */}
+                                        {managers.filter(u =>
+                                            u.designation === parent ||
+                                            (parent === "Area Manager" && u.designation === "Sr. Area Manager")
+                                        ).map(manager => (
                                             <option key={manager._id} value={manager._id}>{manager.name}</option>
                                         ))}
                                     </select>
