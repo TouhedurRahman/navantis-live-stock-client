@@ -137,7 +137,7 @@ const Navbar = () => {
                                         </div>
                                     </div>
                                     <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-[#1F2937] rounded-lg w-52 rounded-t-none shadow-0">
-                                        <li><Link to="my-profile" className='text-white' onClick={() => document.activeElement.blur()}><FaCircleUser />Profile</Link></li>
+                                        <li><Link to="profile" className='text-white' onClick={() => document.activeElement.blur()}><FaCircleUser />Profile</Link></li>
                                         {
                                             [
                                                 'Managing Director',

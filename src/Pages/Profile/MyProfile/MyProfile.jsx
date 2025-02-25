@@ -4,7 +4,6 @@ import { FaCloudUploadAlt } from 'react-icons/fa';
 import { MdContactPhone, MdLockReset } from 'react-icons/md';
 import Swal from 'sweetalert2';
 import Loader from '../../../Components/Loader/Loader';
-import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useAllUsers from '../../../Hooks/useAllUsers';
 import useAuth from '../../../Hooks/useAuth';
 import useHosting from '../../../Hooks/useHosting';
@@ -116,23 +115,14 @@ const MyProfile = () => {
 
     return (
         <>
-            <div>
-                <PageTitle from={"Profile"} to={"My Profile"} />
-            </div>
-            <div className="bg-white pb-1">
-                <div>
-                    <h1 className="px-6 py-3 font-bold">My Profile</h1>
-                    <hr className='border border-gray-500' />
-                </div>
-            </div>
-
             <div className="w-full flex justify-center">
-                <div className="w-full bg-white p-6 grid grid-cols-1 md:grid-cols-3 gap-2">
+                <div className="w-full bg-white grid grid-cols-1 md:grid-cols-3 gap-2">
 
                     {/* Profile Picture Section */}
                     <div className="flex flex-col items-center bg-gray-50 p-6 shadow">
                         {loadingSingleUser ? <Loader /> : (
-                            <>
+                            <div className='flex flex-col justify-center items center'>
+                                <h3 className="text-lg text-center font-semibold text-gray-700 w-full border-b pb-2 mb-6">Profile Picture</h3>
                                 <img
                                     className="h-72 w-72 border border-gray-300 rounded-full shadow-md"
                                     src={singleUser.profilePicture || "https://i.ibb.co/6r3zmMg/user.jpg"}
@@ -146,10 +136,10 @@ const MyProfile = () => {
                                         onChange={handleChange}
                                     />
                                     <button type="submit" className="btn bg-blue-500 text-white mt-3 w-full flex items-center justify-center">
-                                        Upload <FaCloudUploadAlt className="ml-2" />
+                                        Upload <FaCloudUploadAlt className="ml-1" />
                                     </button>
                                 </form>
-                            </>
+                            </div>
                         )}
                     </div>
 
@@ -160,7 +150,7 @@ const MyProfile = () => {
 
                             {/* User Info */}
                             <div className={`p-6 bg-gray-50 shadow ${!singleUser?.parentId ? "md:col-span-2" : ""}`}>
-                                <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">User Information</h3>
+                                <h3 className="text-lg text-center font-semibold text-gray-700 border-b pb-2">My Details</h3>
                                 <table className="w-full mt-4 text-sm border-collapse">
                                     <tbody>
                                         <tr className="border-b">
@@ -194,7 +184,7 @@ const MyProfile = () => {
                             {/* Parent Info (if available) */}
                             {singleUser?.parentId && (
                                 <div className="p-6 bg-gray-50 shadow">
-                                    <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">My {findParent?.designation}</h3>
+                                    <h3 className="text-lg text-center font-semibold text-gray-700 border-b pb-2">My {findParent?.designation}</h3>
                                     <table className="w-full mt-4 text-sm border-collapse">
                                         <tbody>
                                             <tr className="border-b">
@@ -229,7 +219,7 @@ const MyProfile = () => {
 
                         {/* Account Settings */}
                         <div className="p-6 bg-gray-50 shadow">
-                            <h3 className="text-xl font-semibold text-gray-700 border-b pb-3">Account Settings</h3>
+                            <h3 className="text-xl text-center font-semibold text-gray-700 border-b pb-3">Account Settings</h3>
                             <div className="mt-6 space-y-6">
 
                                 {/* Update Mobile Number */}

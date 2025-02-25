@@ -22,7 +22,7 @@ import InvoicePayment from "../../Pages/Depot/InvoicePayment/InvoicePayment/Invo
 import OrderDelivery from "../../Pages/Depot/OrderDelivery/OrderDelivery";
 import Home from "../../Pages/Home/Home/Home";
 import PlaceOrder from "../../Pages/Order/PlaceOrder/PlaceOrder";
-import MyProfile from "../../Pages/Profile/MyProfile/MyProfile";
+import Profile from "../../Pages/Profile/Profile/Profile";
 import AllUsers from "../../Pages/Users/AllUsers/AllUsers";
 import DepotDelivery from "../../Pages/Warehouse/DepotDelivery/DepotDelivery";
 import StockInList from "../../Pages/Warehouse/StockInList/StockInList";
@@ -151,8 +151,8 @@ const router = createBrowserRouter([
                 element: <PlaceOrder />
             },
             {
-                path: '/my-profile',
-                element: <MyProfile />
+                path: '/profile',
+                element: <Profile />
             },
             {
                 path: '/all-users',
