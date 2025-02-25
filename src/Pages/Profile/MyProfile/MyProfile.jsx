@@ -184,7 +184,7 @@ const MyProfile = () => {
                             {/* Parent Info (if available) */}
                             {singleUser?.parentId && (
                                 <div className="p-6 bg-gray-50 shadow">
-                                    <h3 className="text-lg text-center font-semibold text-gray-700 border-b pb-2">My {findParent?.designation}</h3>
+                                    <h3 className="text-lg text-center font-semibold text-gray-700 border-b pb-2">My Reporting Boss</h3>
                                     <table className="w-full mt-4 text-sm border-collapse">
                                         <tbody>
                                             <tr className="border-b">
