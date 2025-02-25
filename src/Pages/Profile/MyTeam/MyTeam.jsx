@@ -1,33 +1,34 @@
 import React, { useState } from 'react';
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
 import { ImSearch } from 'react-icons/im';
-import useCustomer from '../../../Hooks/useCustomer';
-import CustomerCard from '../CustomerCard/CustomerCard';
+import useAllUsers from '../../../Hooks/useAllUsers';
+import useAuth from '../../../Hooks/useAuth';
+import MyTeamCard from '../MyTeamCard/MyTeamCard';
 
-const NewCustomer = () => {
-    const [customers, loading, refetch] = useCustomer();
+const MyTeam = () => {
+    const { user } = useAuth();
+    const [allUsers, loading, refetch] = useAllUsers();
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
-    const [customersPerPage, setCustomersPerPage] = useState(5);
+    const [usersPerPage, setUsersPerPage] = useState(5);
 
-    const myCustomers = customers.filter(
-        customer =>
-            customer.status === "pending"
-            ||
-            customer.status === "denied"
+    const currentUserInfos = allUsers.find(allu => allu.email === user?.email);
+
+    const myTeamMembers = allUsers.filter(allu =>
+        allu.parentId === currentUserInfos._id
     );
 
-    const filteredCustomers = myCustomers.filter(customer =>
-        customer?.customerName?.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredUsers = myTeamMembers.filter(teamMember =>
+        teamMember?.name?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const totalPages = Math.ceil(filteredCustomers.length / customersPerPage);
+    const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
-    const startIndex = (currentPage - 1) * customersPerPage;
-    const endIndex = Math.min(startIndex + customersPerPage, filteredCustomers.length);
+    const startIndex = (currentPage - 1) * usersPerPage;
+    const endIndex = Math.min(startIndex + usersPerPage, filteredUsers.length);
 
-    const currentCustomers = filteredCustomers.slice(startIndex, endIndex);
+    const currentUsers = filteredUsers.slice(startIndex, endIndex);
 
     const changePage = (page) => {
         setCurrentPage(page);
@@ -38,15 +39,15 @@ const NewCustomer = () => {
         setCurrentPage(1);
     };
 
-    const handleOrdersPerPageChange = (e) => {
-        setCustomersPerPage(Number(e.target.value));
+    const handleUsersPerPageChange = (e) => {
+        setUsersPerPage(Number(e.target.value));
         setCurrentPage(1);
     };
 
     return (
         <div className="bg-white mt-3 pb-1">
             {
-                myCustomers.length > 0
+                myTeamMembers.length > 0
                     ?
                     <>
                         {
@@ -60,11 +61,11 @@ const NewCustomer = () => {
                                     <div className="px-6">
                                         <div className="mb-5 flex flex-col-reverse md:flex-row justify-center md:justify-between items-center">
                                             <div className="mt-5 md:mt-0">
-                                                <label htmlFor="customersPerPage">Show</label>
+                                                <label htmlFor="usersPerPage">Show</label>
                                                 <select
-                                                    id="customersPerPage"
-                                                    value={customersPerPage}
-                                                    onChange={handleOrdersPerPageChange}
+                                                    id="usersPerPage"
+                                                    value={usersPerPage}
+                                                    onChange={handleUsersPerPageChange}
                                                     className="border border-gray-500 rounded p-1 pointer-cursor mx-2"
                                                 >
                                                     <option value={5}>5</option>
@@ -73,7 +74,7 @@ const NewCustomer = () => {
                                                     <option value={20}>20</option>
                                                     <option value={50}>50</option>
                                                 </select>
-                                                <label htmlFor="customersPerPage">customers per page</label>
+                                                <label htmlFor="usersPerPage">members per page</label>
                                             </div>
                                             <div>
                                                 {/* Search Input */}
@@ -83,7 +84,7 @@ const NewCustomer = () => {
                                                     </div>
                                                     <input
                                                         type="text"
-                                                        placeholder="Search customers"
+                                                        placeholder="Search member"
                                                         value={searchTerm}
                                                         onChange={handleSearch}
                                                         className="border border-gray-500 border-l-0 px-3 py-1 rounded-r-full focus:outline-none"
@@ -92,7 +93,7 @@ const NewCustomer = () => {
                                             </div>
                                         </div>
                                         {
-                                            filteredCustomers.length !== 0
+                                            filteredUsers.length !== 0
                                                 ?
                                                 <>
                                                     <div className="overflow-x-auto mb-3">
@@ -101,19 +102,19 @@ const NewCustomer = () => {
                                                             <thead>
                                                                 <tr>
                                                                     <th className="text-center">Sl. No.</th>
-                                                                    <th className="text-center">Customer ID</th>
-                                                                    <th>Customer Name</th>
-                                                                    <th>Adsdress</th>
+                                                                    <th className="text-center">Name</th>
+                                                                    <th>Designation</th>
+                                                                    <th>Territory</th>
                                                                     <th className='text-center'>Actions</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
                                                                 {
-                                                                    currentCustomers.map((customer, idx) => (
-                                                                        <CustomerCard
+                                                                    currentUsers.map((myUser, idx) => (
+                                                                        <MyTeamCard
                                                                             idx={startIndex + idx + 1}
-                                                                            key={customer._id}
-                                                                            customer={customer}
+                                                                            key={myUser._id}
+                                                                            myUser={myUser}
                                                                             refetch={refetch}
                                                                         />
                                                                     ))
@@ -172,7 +173,7 @@ const NewCustomer = () => {
                     :
                     <>
                         <p className="text-gray-600 font-mono font-extrabold">
-                            No customer(s) found.
+                            No team member(s) found.
                         </p>
                     </>
             }
@@ -180,4 +181,4 @@ const NewCustomer = () => {
     );
 };
 
-export default NewCustomer;
+export default MyTeam;

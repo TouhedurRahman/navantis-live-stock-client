@@ -68,7 +68,7 @@ const MyCustomer = () => {
                                                     <option value={20}>20</option>
                                                     <option value={50}>50</option>
                                                 </select>
-                                                <label htmlFor="customersPerPage">orders per page</label>
+                                                <label htmlFor="customersPerPage">customers per page</label>
                                             </div>
                                             <div>
                                                 {/* Search Input */}

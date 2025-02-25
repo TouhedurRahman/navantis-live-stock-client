@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import MyProfile from "../MyProfile/MyProfile";
-
-const MyTeam = () => "My Team";
+import MyTeam from "../MyTeam/MyTeam";
 
 const Profile = () => {
     const [activeTab, setActiveTab] = useState("my profile");
