@@ -3,17 +3,35 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
+import useAllUsers from '../../../Hooks/useAllUsers';
 import useDepotProducts from '../../../Hooks/useDepotProducts';
 import usePharmacies from '../../../Hooks/usePharmacies';
-import useTempUsers from '../../../Hooks/useTempUsers';
+import useSingleUser from '../../../Hooks/useSingleUser';
 
 const PlaceOrder = () => {
     const user = { email: "user@gmail.com" }
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
+    const [allUsers] = useAllUsers();
+    const [singleUser] = useSingleUser();
+    // const [tempUsers] = useTempUsers();
     const [pharmacies] = usePharmacies();
-    const [tempUsers] = useTempUsers();
     const [products] = useDepotProducts();
+
+    // const [filteredPharmacies, setFilteredPharmacies] = useState([]);
+    const [selectedPharmacy, setSelectedPharmacy] = useState('');
+    const [productQuantities, setProductQuantities] = useState({});
+    const [receiptProducts, setReceiptProducts] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    /* const [areaManager, setAreaManager] = useState('N/A');
+    const [zonalManager, setZonalManager] = useState('N/A');
+    const [userTerritory, setUserTerritory] = useState('N/A'); */
+
+    const userTerritory = singleUser?.territory || null;
+    const userPharmacies = pharmacies.filter(pharmacy => pharmacy.territory === userTerritory);
+    const parentName = allUsers.find(parent => parent._id === singleUser.parentId)?.name || null;
+    const gParentName = allUsers.find(gparent => gparent._id === singleUser.grandParentId)?.name || null;
 
     const getTodayDate = () => {
         const today = new Date();
@@ -34,17 +52,7 @@ const PlaceOrder = () => {
         return acc;
     }, []);
 
-    const [filteredPharmacies, setFilteredPharmacies] = useState([]);
-    const [selectedPharmacy, setSelectedPharmacy] = useState('');
-    const [productQuantities, setProductQuantities] = useState({});
-    const [receiptProducts, setReceiptProducts] = useState([]);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const [areaManager, setAreaManager] = useState('N/A');
-    const [zonalManager, setZonalManager] = useState('N/A');
-    const [userTerritory, setUserTerritory] = useState('N/A');
-
-    const handleUserChange = (e) => {
+    /* const handleUserChange = (e) => {
         const userName = e.target.value;
 
         setFilteredPharmacies([]);
@@ -64,11 +72,11 @@ const PlaceOrder = () => {
             setAreaManager(amName);
             setZonalManager(zmName);
         }
-    };
+    }; */
 
     const handlePharmacyChange = (e) => {
         setSelectedPharmacy(e.target.value);
-        setReceiptProducts([]);  // Reset receipt products when pharmacy changes
+        setReceiptProducts([]);
     };
 
     const handleProductQuantityChange = (id, value) => {
@@ -121,9 +129,9 @@ const PlaceOrder = () => {
 
         const newOrder = {
             email: user?.email,
-            orderedBy: data.user,
-            areaManager,
-            zonalManager,
+            orderedBy: data.name,
+            areaManager: parentName,
+            zonalManager: gParentName,
             territory: userTerritory,
             pharmacy: selectedPharmacy,
             products: receiptProducts,
@@ -135,8 +143,6 @@ const PlaceOrder = () => {
             status: "pending",
             date: getTodayDate()
         };
-
-        // console.log(newOrder);
 
         axios.post('http://localhost:5000/orders', newOrder)
             .then(data => {
@@ -165,7 +171,7 @@ const PlaceOrder = () => {
                 <div className="p-6 pt-0 space-y-4">
                     <div className='flex flex-col lg:flex-row justify-start lg:justify-between items-start space-y-4 lg:space-y-0'>
                         <form onSubmit={handleSubmit(onSubmit)} className='w-full lg:pr-6 space-y-4'>
-                            <div className="flex flex-col">
+                            {/* <div className="flex flex-col">
                                 <label className="text-sm mb-2">User Name <span className="text-red-500">*</span></label>
                                 <select
                                     {...register('user', { required: 'Please select a user' })}
@@ -182,6 +188,19 @@ const PlaceOrder = () => {
                                         ))}
                                 </select>
                                 {errors.user && <p className="text-red-500 text-sm">{errors.user.message}</p>}
+                            </div> */}
+
+                            <div className="flex flex-col">
+                                <label className="mb-1 text-sm">
+                                    Order by <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    defaultValue={singleUser.name}
+                                    {...register("name", { required: "User name is required" })}
+                                    className="border-gray-500 bg-white border p-2 text-sm cursor-not-allowed"
+                                    readOnly
+                                />
+                                {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
                             </div>
 
                             <div className="flex flex-col">
@@ -192,7 +211,7 @@ const PlaceOrder = () => {
                                     className="border-gray-500 bg-white border p-2 text-sm"
                                 >
                                     <option value="">~~ Select a Pharmacy ~~</option>
-                                    {filteredPharmacies.map(pharmacy => (
+                                    {userPharmacies.map(pharmacy => (
                                         <option key={pharmacy._id} value={pharmacy.name}>
                                             {pharmacy.name}
                                         </option>
