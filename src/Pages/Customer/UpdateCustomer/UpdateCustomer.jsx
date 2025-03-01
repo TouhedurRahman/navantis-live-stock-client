@@ -24,8 +24,8 @@ const UpdateCustomer = () => {
     const updateCustomerMutation = useMutation({
         mutationFn: async (data) => {
             const updatedCustomer = {
-                customerName: data.name,
-                customerTerritory: data.territory,
+                name: data.name,
+                territory: data.territory,
                 tradeLicense: data.trl,
                 drugLicense: data.drl,
                 address: data.address,
@@ -89,7 +89,7 @@ const UpdateCustomer = () => {
                                 Customer Name <span className="text-red-500">*</span>
                             </label>
                             <input
-                                defaultValue={customer?.customerName}
+                                defaultValue={customer?.name}
                                 {...register("name", { required: "Name is required" })}
                                 placeholder="Enter product name"
                                 className="border-gray-500 bg-white border p-2 text-sm"

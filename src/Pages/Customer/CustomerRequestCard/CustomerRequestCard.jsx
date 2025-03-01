@@ -97,9 +97,9 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
         <>
             <tr>
                 <td className="text-center">{idx}</td>
-                <td><div className="font-bold">{customer.customerName}</div></td>
+                <td><div className="font-bold">{customer.name}</div></td>
                 <td>{customer.address}</td>
-                <td className="text-center">{customer.customerTerritory}</td>
+                <td className="text-center">{customer.territory}</td>
                 <td>{customer.addedBy}</td>
                 <td className="text-center">
                     {new Date(customer.date).toISOString().split("T")[0].split("-").reverse().join("-")}
@@ -147,16 +147,16 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
                         <div className="p-5 rounded-lg shadow-sm flex-1 overflow-y-auto">
                             <table className="w-full border-collapse rounded-lg overflow-hidden shadow-md">
                                 <tbody>
-                                    {customer.customerName && (
+                                    {customer.name && (
                                         <tr className="border-b">
                                             <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Name</td>
-                                            <td className="px-4 py-3 text-gray-800">{customer.customerName}</td>
+                                            <td className="px-4 py-3 text-gray-800">{customer.name}</td>
                                         </tr>
                                     )}
-                                    {customer.customerTerritory && (
+                                    {customer.territory && (
                                         <tr className="border-b bg-gray-50">
                                             <td className="px-4 py-3 font-semibold text-gray-700">Territory</td>
-                                            <td className="px-4 py-3 text-gray-800">{customer.customerTerritory}</td>
+                                            <td className="px-4 py-3 text-gray-800">{customer.territory}</td>
                                         </tr>
                                     )}
                                     {customer.tradeLicense && (

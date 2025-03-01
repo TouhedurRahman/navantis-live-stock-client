@@ -24,8 +24,8 @@ const AddNewCustomer = () => {
     const addNewCustomerMutation = useMutation({
         mutationFn: async (data) => {
             const newCustomer = {
-                customerName: data.name,
-                customerTerritory: data.territory,
+                name: data.name,
+                territory: data.territory,
                 tradeLicense: data.trl,
                 drugLicense: data.drl,
                 address: data.address,

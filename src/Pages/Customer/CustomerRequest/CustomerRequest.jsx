@@ -16,7 +16,7 @@ const CustomerRequest = () => {
     const pendingCustomers = customers.filter(customer => customer.status === 'pending');
 
     const filteredCustomers = pendingCustomers.filter(customer =>
-        customer?.customerName?.toLowerCase().includes(searchTerm.toLowerCase())
+        customer?.name?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const totalPages = Math.ceil(filteredCustomers.length / customersPerPage);

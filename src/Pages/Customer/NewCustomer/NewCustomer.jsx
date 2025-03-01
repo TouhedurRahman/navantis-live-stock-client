@@ -19,7 +19,7 @@ const NewCustomer = () => {
     );
 
     const filteredCustomers = myCustomers.filter(customer =>
-        customer?.customerName?.toLowerCase().includes(searchTerm.toLowerCase())
+        customer?.name?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const totalPages = Math.ceil(filteredCustomers.length / customersPerPage);
