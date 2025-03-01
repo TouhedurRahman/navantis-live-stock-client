@@ -3,13 +3,13 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
+import useAuth from "../../../Hooks/useAuth";
+import useSingleUser from "../../../Hooks/useSingleUser";
 
 const AddNewCustomer = () => {
-    const user = {
-        territory: "User's Territory",
-        displayName: "M S A Person",
-        email: "msa@gmail.com"
-    };
+    const { user } = useAuth();
+    const [singleUser] = useSingleUser();
+
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
     const getTodayDate = () => {
@@ -111,7 +111,7 @@ const AddNewCustomer = () => {
                                 Territory <span className="text-red-500">*</span>
                             </label>
                             <input
-                                defaultValue={user?.territory}
+                                defaultValue={singleUser?.territory}
                                 {...register("territory")}
                                 className="border-gray-500 bg-white border p-2 text-sm cursor-not-allowed"
                                 readOnly
@@ -227,7 +227,7 @@ const AddNewCustomer = () => {
                                 Name <span className="text-red-500">*</span>
                             </label>
                             <input
-                                defaultValue={user?.displayName}
+                                defaultValue={singleUser?.name}
                                 {...register("addedby", { required: "Added by is required" })}
                                 placeholder="Enter name of person adding"
                                 className="border-gray-500 bg-white border p-2 text-sm cursor-not-allowed"
@@ -240,7 +240,7 @@ const AddNewCustomer = () => {
                                 Email <span className="text-red-500">*</span>
                             </label>
                             <input
-                                defaultValue={user?.email}
+                                defaultValue={user.email}
                                 {...register("addedemail", {
                                     required: "Email is required",
                                     pattern: {
