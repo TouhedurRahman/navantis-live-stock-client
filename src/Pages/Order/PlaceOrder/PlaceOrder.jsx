@@ -30,7 +30,12 @@ const PlaceOrder = () => {
     const [userTerritory, setUserTerritory] = useState('N/A'); */
 
     const userTerritory = singleUser?.territory || null;
-    const userPharmacies = pharmacies.filter(pharmacy => pharmacy.territory === userTerritory);
+    const userPharmacies = pharmacies.filter(pharmacy =>
+        pharmacy.territory === userTerritory
+        &&
+        pharmacy.status === 'approved'
+    );
+
     const parentName = allUsers.find(parent => parent._id === singleUser.parentId)?.name || null;
     const gParentName = allUsers.find(gparent => gparent._id === singleUser.grandParentId)?.name || null;
 
