@@ -4,18 +4,19 @@ import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useAllUsers from '../../../Hooks/useAllUsers';
+import useAuth from '../../../Hooks/useAuth';
+import useCustomer from '../../../Hooks/useCustomer';
 import useDepotProducts from '../../../Hooks/useDepotProducts';
-import usePharmacies from '../../../Hooks/usePharmacies';
 import useSingleUser from '../../../Hooks/useSingleUser';
 
 const PlaceOrder = () => {
-    const user = { email: "user@gmail.com" }
+    const user = useAuth();
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
     const [allUsers] = useAllUsers();
     const [singleUser] = useSingleUser();
     // const [tempUsers] = useTempUsers();
-    const [pharmacies] = usePharmacies();
+    const [pharmacies] = useCustomer();
     const [products] = useDepotProducts();
 
     // const [filteredPharmacies, setFilteredPharmacies] = useState([]);

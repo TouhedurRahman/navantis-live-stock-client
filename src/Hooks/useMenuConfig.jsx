@@ -17,7 +17,7 @@ const useMenuConfig = () => {
         admin: ["Managing Director"],
         warehouse: ["Managing Director", "Warehouse Incharge"],
         depot: ["Managing Director", "Depot Incharge"],
-        customer: ["Managing Director", "IT Officer"],
+        customer: ["Managing Director", "IT Officer", "Skin Care Coordinator", "Medical Promotion Officer", "Area Sales Executive"],
         order: ["Managing Director", "IT Officer", "Skin Care Coordinator", "Medical Promotion Officer", "Area Sales Executive"]
     };
 
