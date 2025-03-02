@@ -3,12 +3,14 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
+import useAllUsers from "../../../Hooks/useAllUsers";
 import useAuth from "../../../Hooks/useAuth";
 import useSingleUser from "../../../Hooks/useSingleUser";
 
 const AddNewCustomer = () => {
     const { user } = useAuth();
     const [singleUser] = useSingleUser();
+    const [allUsers] = useAllUsers();
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
@@ -21,11 +23,14 @@ const AddNewCustomer = () => {
         return `${year}-${month}-${day}`;
     };
 
+    const parentTerritory = allUsers.find(u => u._id == singleUser?.parentId)?.territory;
+
     const addNewCustomerMutation = useMutation({
         mutationFn: async (data) => {
             const newCustomer = {
                 name: data.name,
                 territory: data.territory,
+                parentTerritory,
                 tradeLicense: data.trl,
                 drugLicense: data.drl,
                 address: data.address,

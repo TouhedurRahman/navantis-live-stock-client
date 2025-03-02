@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
 import { ImSearch } from 'react-icons/im';
 import useCustomer from '../../../Hooks/useCustomer';
+import useSingleUser from '../../../Hooks/useSingleUser';
 import CustomerCard from '../CustomerCard/CustomerCard';
 
 const NewCustomer = () => {
+    const [singleUser] = useSingleUser();
     const [customers, loading, refetch] = useCustomer();
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -13,9 +15,15 @@ const NewCustomer = () => {
 
     const myCustomers = customers.filter(
         customer =>
-            customer.status === "pending"
-            ||
-            customer.status === "denied"
+            (
+                customer.status === "pending"
+                ||
+                customer.status === "denied"
+            ) && (
+                customer.territory === singleUser.territory
+                ||
+                customer.parentTerritory === singleUser?.territory
+            )
     );
 
     const filteredCustomers = myCustomers.filter(customer =>

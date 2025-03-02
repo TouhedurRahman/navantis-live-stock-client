@@ -4,16 +4,22 @@ import { ImSearch } from 'react-icons/im';
 import Loader from '../../../Components/Loader/Loader';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useCustomer from '../../../Hooks/useCustomer';
+import useSingleUser from '../../../Hooks/useSingleUser';
 import CustomerRequestCard from '../CustomerRequestCard/CustomerRequestCard';
 
 const CustomerRequest = () => {
+    const [singleUser] = useSingleUser();
     const [customers, loading, refetch] = useCustomer();
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [customersPerPage, setCustomersPerPage] = useState(5);
 
-    const pendingCustomers = customers.filter(customer => customer.status === 'pending');
+    const pendingCustomers = customers.filter(customer =>
+        customer.status === 'pending'
+        &&
+        customer.parentTerritory === singleUser?.territory
+    );
 
     const filteredCustomers = pendingCustomers.filter(customer =>
         customer?.name?.toLowerCase().includes(searchTerm.toLowerCase())

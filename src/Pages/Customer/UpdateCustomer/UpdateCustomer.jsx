@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
+import useAllUsers from '../../../Hooks/useAllUsers';
 import useAuth from '../../../Hooks/useAuth';
 import useCustomer from '../../../Hooks/useCustomer';
 import useSingleUser from '../../../Hooks/useSingleUser';
@@ -12,12 +13,15 @@ import useSingleUser from '../../../Hooks/useSingleUser';
 const UpdateCustomer = () => {
     const { user } = useAuth();
     const [singleUser] = useSingleUser();
+    const [allUsers] = useAllUsers();
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
     const [customers, loading, refetch] = useCustomer();
     const { id } = useParams();
     const customer = customers.find(customer => customer._id == id);
+
+    const parentTerritory = allUsers.find(u => u._id == singleUser?.parentId)?.territory;
 
     const navigate = useNavigate();
 
@@ -26,6 +30,7 @@ const UpdateCustomer = () => {
             const updatedCustomer = {
                 name: data.name,
                 territory: data.territory,
+                parentTerritory,
                 tradeLicense: data.trl,
                 drugLicense: data.drl,
                 address: data.address,
