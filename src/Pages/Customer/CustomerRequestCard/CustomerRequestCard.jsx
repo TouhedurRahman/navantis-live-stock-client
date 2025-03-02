@@ -3,12 +3,12 @@ import axios from "axios";
 import { useState } from "react";
 import { FaEye, FaTimes } from "react-icons/fa";
 import Swal from "sweetalert2";
+import useAuth from "../../../Hooks/useAuth";
+import useSingleUser from "../../../Hooks/useSingleUser";
 
 const CustomerRequestCard = ({ idx, customer, refetch }) => {
-    const user = {
-        displayName: 'Area Manager',
-        email: 'am@gmail.com'
-    }
+    const { user } = useAuth();
+    const [singleUser] = useSingleUser();
     const [isModalOpen, setModalOpen] = useState(false);
 
     const approvedCustomerMutation = useMutation({
@@ -16,7 +16,7 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
             const updatedCustomer = {
                 ...customer,
                 status: 'approved',
-                approvedBy: user?.displayName,
+                approvedBy: singleUser?.name,
                 approvedEmail: user?.email
             }
             const response = await axios.patch(`http://localhost:5000/customer-status/${customer._id}`, updatedCustomer);
