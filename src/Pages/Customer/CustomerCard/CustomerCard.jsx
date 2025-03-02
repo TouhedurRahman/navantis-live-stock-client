@@ -5,8 +5,10 @@ import { FaEdit, FaTimes, FaTrashAlt } from 'react-icons/fa';
 import { FaEye } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import useSingleUser from '../../../Hooks/useSingleUser';
 
 const CustomerCard = ({ idx, customer, refetch }) => {
+    const [singleUser] = useSingleUser();
     const [isModalOpen, setModalOpen] = useState(false);
 
     const deleteCustomerMutation = useMutation({
@@ -80,13 +82,19 @@ const CustomerCard = ({ idx, customer, refetch }) => {
                         >
                             <FaEye className="text-orange-500" />
                         </button>
-                        <Link
-                            to={`/update-customer/${customer._id}`}
-                            title="Edit/update customer"
-                            className="p-2 rounded-[5px] hover:bg-yellow-100 focus:outline-none"
-                        >
-                            <FaEdit className="text-yellow-500" />
-                        </Link>
+                        {
+                            customer.addedEmail === singleUser.email
+                            &&
+                            <>
+                                <Link
+                                    to={`/update-customer/${customer._id}`}
+                                    title="Edit/update customer"
+                                    className="p-2 rounded-[5px] hover:bg-yellow-100 focus:outline-none"
+                                >
+                                    <FaEdit className="text-yellow-500" />
+                                </Link>
+                            </>
+                        }
                         <button
                             onClick={handleRemove}
                             title="Remove customer"
