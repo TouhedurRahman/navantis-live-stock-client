@@ -37,6 +37,7 @@ const PlaceOrder = () => {
     );
 
     const parentName = allUsers.find(parent => parent._id === singleUser.parentId)?.name || null;
+    const parentTerritory = allUsers.find(pt => pt._id === singleUser.parentId)?.territory || null;
     const gParentName = allUsers.find(gparent => gparent._id === singleUser.grandParentId)?.name || null;
 
     const getTodayDate = () => {
@@ -139,6 +140,7 @@ const PlaceOrder = () => {
             areaManager: parentName,
             zonalManager: gParentName,
             territory: userTerritory,
+            parentTerritory,
             pharmacy: selectedPharmacy,
             products: receiptProducts,
             totalProduct: totalOrderedProducts,
