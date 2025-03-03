@@ -4,8 +4,6 @@ import { FaCheck } from "react-icons/fa";
 import Swal from "sweetalert2";
 
 const DepotRecieveReqProductCard = ({ idx, product, refetch }) => {
-    const { user } = true;
-
     const getTodayDate = () => {
         const today = new Date();
         const year = today.getFullYear();

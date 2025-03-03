@@ -14,9 +14,9 @@ const useMenuConfig = () => {
     const [singleUser] = useSingleUser();
 
     const allowedDesignations = {
-        admin: ["Managing Director"],
-        warehouse: ["Managing Director", "Warehouse Incharge"],
-        depot: ["Managing Director", "Depot Incharge"],
+        admin: ["Managing Director", "IT Officer"],
+        warehouse: ["Managing Director", "Warehouse Incharge", "IT Officer"],
+        depot: ["Managing Director", "Depot Incharge", "IT Officer"],
         customer: ["Managing Director", "Area Manager", "Sr. Area Manager", "Skin Care Coordinator", "Medical Promotion Officer", "Area Sales Executive"],
         order: ["Managing Director", "IT Officer", "Skin Care Coordinator", "Medical Promotion Officer", "Area Sales Executive"]
     };
