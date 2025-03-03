@@ -5,10 +5,11 @@ import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useDepotRequest from '../../../Hooks/useDepotRequest';
+import useSingleUser from '../../../Hooks/useSingleUser';
 import useWhProducts from '../../../Hooks/useWhProducts';
 
 const DepotDelivery = () => {
-    const { user } = true;
+    const [singleUser] = useSingleUser();
     const { register, handleSubmit, reset, formState: { errors }, watch } = useForm();
 
     const [products] = useDepotRequest();
@@ -124,8 +125,8 @@ const DepotDelivery = () => {
                         tradePrice: Number(data[`tp${i}`]),
                         totalQuantity: deliveredQuantity,
                         date: getTodayDate(),
-                        addedby: user?.displayName || "Navantis Pharma Limited",
-                        addedemail: user?.email || "info@navantispharma.com"
+                        addedby: singleUser?.name,
+                        addedemail: singleUser?.email
                     });
                 }
             }
@@ -165,8 +166,8 @@ const DepotDelivery = () => {
                         tradePrice: Number(data[`tp${i}`]),
                         totalQuantity: deliveredQuantity,
                         date: getTodayDate(),
-                        deliveredBy: user?.displayName || "Navantis Pharma Limited",
-                        deliveredEmail: user?.email || "info@navantispharma.com"
+                        deliveredBy: singleUser?.name,
+                        deliveredEmail: singleUser?.email
                     });
                 }
             }

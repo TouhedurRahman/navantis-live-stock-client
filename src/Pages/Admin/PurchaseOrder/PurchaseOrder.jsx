@@ -4,9 +4,10 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
+import useSingleUser from '../../../Hooks/useSingleUser';
 
 const PurchaseOrder = () => {
-    const { user } = true;
+    const [singleUser] = useSingleUser();
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
     const addNewPrchaseMutation = useMutation({
@@ -208,7 +209,7 @@ const PurchaseOrder = () => {
                                 Name <span className="text-red-500">*</span>
                             </label>
                             <input
-                                defaultValue={user?.displayName || "Navantis Pharma Limited"}
+                                defaultValue={singleUser?.name}
                                 {...register("addedby", { required: "Added by is required" })}
                                 placeholder="Enter name of person adding"
                                 className="border-gray-500 bg-white border p-2 text-sm cursor-not-allowed"
@@ -221,7 +222,7 @@ const PurchaseOrder = () => {
                                 Email <span className="text-red-500">*</span>
                             </label>
                             <input
-                                defaultValue={user?.email || "info@navantispharma.com"}
+                                defaultValue={singleUser?.email}
                                 {...register("addedemail", {
                                     required: "Email is required",
                                     pattern: {
