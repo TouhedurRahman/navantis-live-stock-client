@@ -1,4 +1,13 @@
+import useAllUsers from "../Hooks/useAllUsers";
+import useCustomer from "../Hooks/useCustomer";
+
 const OrderInvoice = ({ order }) => {
+    const [allUsers] = useAllUsers();
+    const [customers] = useCustomer();
+
+    const orderedBy = allUsers.find(alu => alu.email === order.email);
+    const customer = customers.find(c => c.territory === order.territory);
+
     const handlePrint = () => {
         const companyHeader =
             `<div class="font-sans mb-8">
@@ -26,7 +35,7 @@ const OrderInvoice = ({ order }) => {
                             <p class="m-0 text-sm">Haque Villa, House No - 4, Block - C, Road No - 3, Section - 1, Kolwalapara, Mirpur - 1, Dhaka - 1216.</p>
                         </td>
                         <td class="p-2 border border-[#B2BEB5] text-center w-1/3">
-                            <p class="m-0 text-lg font-bold">Invoice</p>
+                            <p class="m-0 text-lg font-bold">INVOICE</p>
                         </td>
                         <td class="p-2 border border-[#B2BEB5] text-center w-1/3">
                             <div class="flex justify-between items-center">
@@ -42,38 +51,23 @@ const OrderInvoice = ({ order }) => {
                             <p class="m-0 text-sm">Depot Address: Some Street, City, Country</p>
                         </td>
                         <td class="p-2 border border-[#B2BEB5] w-1/3">
-                            <p class="m-0 text-sm">Customer Name: John Doe</p>
-                            <p class="m-0 text-sm">Customer Address: Some Address</p>
+                            <p class="m-0 text-sm">Customer Code: ${customer.customerId}</p>
+                            <p class="m-0 text-sm">${customer.name}</p>
+                            <p class="m-0 text-sm">${customer.address}</p>
+                            <p class="m-0 text-sm">Cell: +880 ${customer.mobile.slice(-10, -6)}-${customer.mobile.slice(-6)}</p>
                         </td>
                         <td class="p-2 border border-[#B2BEB5] w-1/3">
-                            <p class="m-0 text-sm">Date: ${new Date().toLocaleDateString()}</p>
-                            <p class="m-0 text-sm">Delivery Info: Delivered by Courier</p>
+                            <p class="m-0 text-sm">Date: ${order.date}</p>
+                            <p class="m-0 text-sm">Invoice No.: ${order.invoice}</p>
+                            <p class="m-0 text-sm">Pay Mode: ${order.payMode}</p>
+                            <p class="m-0 text-sm">Territory: ${order.territory}</p>
+                            <p class="m-0 text-sm">${orderedBy.designation?.split(" ").map(word => word[0].toUpperCase()).join("")}: ${orderedBy?.name}</p>
+                            <p class="m-0 text-sm">Cell: +880 ${orderedBy?.mobile.slice(-10, -6)}-${orderedBy?.mobile.slice(-6)}</p>
+                            <p class="m-0 text-sm">Delivered by: ${order.deliveryMan}</p>
+                            <p class="m-0 text-sm">Delivered Date: ${new Date().toLocaleDateString()}</p>
                         </td>
                     </tr>
                 </table>
-
-                <!-- Delivered Product Info -->
-                <div class="border border-[#B2BEB5] p-3">
-                    <p class="text-sm font-bold text-center uppercase">Delivered Products</p>
-                    <table class="w-full border-collapse mt-2">
-                        <tr class="bg-[#f4f4f4]">
-                            <th class="p-2 border border-[#B2BEB5] text-left w-1/3">Product Name</th>
-                            <th class="p-2 border border-[#B2BEB5] text-left w-1/3">Quantity</th>
-                            <th class="p-2 border border-[#B2BEB5] text-left w-1/3">Price</th>
-                        </tr>
-                        <!-- Example Product Rows -->
-                        <tr>
-                            <td class="p-2 border border-[#B2BEB5]">Product 1</td>
-                            <td class="p-2 border border-[#B2BEB5]">10</td>
-                            <td class="p-2 border border-[#B2BEB5]">${(100 * 10).toLocaleString('en-IN')}/-</td>
-                        </tr>
-                        <tr>
-                            <td class="p-2 border border-[#B2BEB5]">Product 2</td>
-                            <td class="p-2 border border-[#B2BEB5]">5</td>
-                            <td class="p-2 border border-[#B2BEB5]">${(200 * 5).toLocaleString('en-IN')}/-</td>
-                        </tr>
-                    </table>
-                </div>
             </div>`;
 
         const filteredTableContent = `
@@ -115,7 +109,6 @@ const OrderInvoice = ({ order }) => {
                         <td style="text-align: right;">${0}/-</td>
                         <td style="text-align: center; white-space: nowrap;"></td>
                     </tr>
-            }
                 </tbody>
             </table>
         `;
