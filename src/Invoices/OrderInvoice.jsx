@@ -62,14 +62,39 @@ const OrderInvoice = ({ order }) => {
                             <p class="m-0 text-sm">Cell: +880 ${customer.mobile.slice(-10, -6)}-${customer.mobile.slice(-6)}</p>
                         </td>
                         <td class="p-2 border border-[#B2BEB5] w-1/3 align-top">
-                            <p class="m-0 text-sm">Date: ${order.date}</p>
-                            <p class="m-0 text-sm">Invoice No.: ${order.invoice}</p>
-                            <p class="m-0 text-sm">Pay Mode: ${order.payMode}</p>
-                            <p class="m-0 text-sm">Territory: ${order.territory}</p>
-                            <p class="m-0 text-sm">${orderedBy.designation?.split(" ").map(word => word[0].toUpperCase()).join("")}: ${orderedBy?.name}</p>
-                            <p class="m-0 text-sm">Cell: +880 ${orderedBy?.mobile.slice(-10, -6)}-${orderedBy?.mobile.slice(-6)}</p>
-                            <p class="m-0 text-sm">Delivered by: ${order.deliveryMan}</p>
-                            <p class="m-0 text-sm">Delivered Date: ${new Date().toLocaleDateString()}</p>
+                            <div class="grid grid-cols-[max-content_15px_auto] text-sm gap-y-1">
+                                <span class="font-bold">Date</span>
+                                <span class="font-bold">:</span>
+                                <span>${order.date}</span>
+
+                                <span class="font-bold">Invoice No.</span>
+                                <span class="font-bold">:</span>
+                                <span>${order.invoice}</span>
+
+                                <span class="font-bold">Pay Mode</span>
+                                <span class="font-bold">:</span>
+                                <span>${order.payMode}</span>
+
+                                <span class="font-bold">Territory</span>
+                                <span class="font-bold">:</span>
+                                <span>${order.territory}</span>
+
+                                <span class="font-bold">${orderedBy.designation?.split(" ").map(word => word[0].toUpperCase()).join("")}</span>
+                                <span class="font-bold">:</span>
+                                <span>${orderedBy?.name}</span>
+
+                                <span class="font-bold">Cell</span>
+                                <span class="font-bold">:</span>
+                                <span>+880 ${orderedBy?.mobile.slice(-10, -6)}-${orderedBy?.mobile.slice(-6)}</span>
+
+                                <span class="font-bold">Delivered by</span>
+                                <span class="font-bold">:</span>
+                                <span>${order.deliveryMan}</span>
+
+                                <span class="font-bold">Delivered Date</span>
+                                <span class="font-bold">:</span>
+                                <span>${new Date().toLocaleDateString()}</span>
+                            </div>
                         </td>
                     </tr>
                 </table>
