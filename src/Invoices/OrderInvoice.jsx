@@ -141,6 +141,33 @@ const OrderInvoice = ({ order }) => {
                     </tr>
                 </tbody>
             </table>
+            <div class="space-y-2 font-bold text-sm mt-2">
+                <div class="grid grid-cols-[1fr_auto_1fr] items-center">
+                    <span class="text-right">Grand Total</span>
+                    <span class="text-center w-6">:</span>
+                    <span class="text-right px-3">
+                        ${0}/-
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-[1fr_auto_1fr] items-center">
+                    <span class="text-right">
+                        Less Discount (${order.discount > 0 && order.discount} %)
+                    </span>
+                    <span class="text-center w-6">:</span>
+                    <span class="text-right px-3">
+                        ${0}/-
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-[1fr_auto_1fr] items-center">
+                    <span class="text-right">Total Payable</span>
+                    <span class="text-center w-6">:</span>
+                    <span class="text-right px-3">
+                        ${0}/-
+                    </span>
+                </div>
+            </div>
         `;
 
         const currentDateTime = new Date();
