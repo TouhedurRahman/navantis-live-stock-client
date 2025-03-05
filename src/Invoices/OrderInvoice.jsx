@@ -8,6 +8,9 @@ const OrderInvoice = ({ order }) => {
     const orderedBy = allUsers.find(alu => alu.email === order.email);
     const customer = customers.find(c => c.territory === order.territory);
 
+    const totalUnit = order.products.reduce((sum, product) => sum + Number(product.quantity), 0);
+    const totalTP = order.products.reduce((sum, product) => sum + Number(product.quantity * product.tradePrice), 0);
+
     const handlePrint = () => {
         const companyHeader =
             `<div class="font-sans mb-8">
@@ -105,13 +108,12 @@ const OrderInvoice = ({ order }) => {
                 <thead>
                     <tr>
                         <th style="text-align: center;">Sl.</th>
+                        <th style="text-align: left;">Product Code</th>
                         <th style="text-align: left;">Product Name</th>
-                        <th style="text-align: center;">Batch</th>
-                        <th style="text-align: center;">Exp.</th>
-                        <th style="text-align: right;">Quantity</th>
-                        <th style="text-align: right;">Price/Unit (TP)</th>
-                        <th style="text-align: right;">Total Price (TP)</th>                        
-                        <th style="text-align: center;">Date</th>
+                        <th style="text-align: right;">TP (TK)</th>
+                        <th style="text-align: right;">Inv. Qty</th>
+                        <th style="text-align: right;">Vat (TK)</th>
+                        <th style="text-align: right;">Total TP (Tk)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -119,13 +121,12 @@ const OrderInvoice = ({ order }) => {
             (product, idx) => `
                             <tr>
                                 <td style="text-align: center;">${idx + 1}</td>
-                                <td>${0}</td>
-                                <td style="text-align: center;">${0}</td>
-                                <td style="text-align: center;">${0}</td>
-                                <td style="text-align: right;">${0}</td>
-                                <td style="text-align: right;">${0}/-</td>
-                                <td style="text-align: right;">${0}/-</td>
-                                <td style="text-align: center; white-space: nowrap;">${0}</td>
+                                <td style="text-align: left;">${product.productCode}</td>
+                                <td style="text-align: leftr;">${product.name}</td>
+                                <td style="text-align: right;">${product.tradePrice.toLocaleString('en-IN')}/-</td>
+                                <td style="text-align: right;">${product.quantity}</td>
+                                <td style="text-align: right;">${0.00}/-</td>
+                                <td style="text-align: right;">${((product.tradePrice) * (product.quantity)).toLocaleString('en-IN')}/-</td>
                             </tr>
                         `
         ).join('')}
@@ -133,11 +134,10 @@ const OrderInvoice = ({ order }) => {
                 <tbody>
                     <tr>
                         <!-- Merged first four columns -->
-                        <td colspan="4" style="text-align: center; font-weight: bold;">Total</td>
-                        <td style="text-align: right;">${0}</td>
-                        <td style="text-align: right;"></td>
-                        <td style="text-align: right;">${0}/-</td>
-                        <td style="text-align: center; white-space: nowrap;"></td>
+                        <td colspan="4" style="text-align: right; font-weight: bold;">Sub Total</td>
+                        <td style="text-align: right;">${totalUnit}</td>
+                        <td style="text-align: right;">${0.00}/-</td>
+                        <td style="text-align: right;">${totalTP.toLocaleString('en-IN')}/-</td>
                     </tr>
                 </tbody>
             </table>
