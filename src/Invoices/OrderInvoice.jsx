@@ -32,7 +32,12 @@ const OrderInvoice = ({ order }) => {
                     <tr>
                         <!-- First Row -->
                         <td class="p-2 border border-[#B2BEB5] w-1/3">
-                            <p class="m-0 text-sm">Haque Villa, House No - 4, Block - C, Road No - 3, Section - 1, Kolwalapara, Mirpur - 1, Dhaka - 1216.</p>
+                            <p class="text-justify m-0 text-sm">
+                                Haque Villa, House No - 4, Block - C, Road No - 3, Section - 1, Kolwalapara, Mirpur - 1, Dhaka - 1216.
+                            </p>
+                            <p class="text-justify m-0 text-sm">
+                                Cell: +880 1329-747657
+                            </p>
                         </td>
                         <td class="p-2 border border-[#B2BEB5] text-center w-1/3">
                             <p class="m-0 text-lg font-bold">INVOICE</p>
@@ -47,16 +52,16 @@ const OrderInvoice = ({ order }) => {
                     </tr>
                     <tr>
                         <!-- Second Row -->
-                        <td class="p-2 border border-[#B2BEB5] w-1/3">
+                        <td class="p-2 border border-[#B2BEB5] w-1/3 align-top">
                             <p class="m-0 text-sm">Depot Address: Some Street, City, Country</p>
                         </td>
-                        <td class="p-2 border border-[#B2BEB5] w-1/3">
+                        <td class="p-2 border border-[#B2BEB5] w-1/3 align-top">
                             <p class="m-0 text-sm">Customer Code: ${customer.customerId}</p>
                             <p class="m-0 text-sm">${customer.name}</p>
                             <p class="m-0 text-sm">${customer.address}</p>
                             <p class="m-0 text-sm">Cell: +880 ${customer.mobile.slice(-10, -6)}-${customer.mobile.slice(-6)}</p>
                         </td>
-                        <td class="p-2 border border-[#B2BEB5] w-1/3">
+                        <td class="p-2 border border-[#B2BEB5] w-1/3 align-top">
                             <p class="m-0 text-sm">Date: ${order.date}</p>
                             <p class="m-0 text-sm">Invoice No.: ${order.invoice}</p>
                             <p class="m-0 text-sm">Pay Mode: ${order.payMode}</p>
