@@ -1,3 +1,4 @@
+import { toWords } from "number-to-words";
 import useAllUsers from "../Hooks/useAllUsers";
 import useCustomer from "../Hooks/useCustomer";
 
@@ -10,6 +11,36 @@ const OrderInvoice = ({ order }) => {
 
     const totalUnit = order.products.reduce((sum, product) => sum + Number(product.quantity), 0);
     const totalTP = order.products.reduce((sum, product) => sum + Number(product.quantity * product.tradePrice), 0);
+
+    // less discount
+    const lessDiscount = Number(totalTP * (order.discount / 100));
+
+    // net payable amount
+    const netPayable = Number(totalTP - lessDiscount);
+
+    const capitalizeWords = (str) => {
+        return str
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    };
+
+    const convertToWordsWithPaisa = (amount) => {
+        const [whole, decimal] = amount.toString().split('.');
+
+        let wholeInWords = toWords(Number(whole)).replace(/,/g, '').replace(/-/g, ' ').trim();
+        wholeInWords = capitalizeWords(wholeInWords) + ' Taka';
+
+        let paisaInWords = '';
+        if (decimal) {
+            let decimalInWords = toWords(Number(decimal)).replace(/,/g, '').replace(/-/g, ' ').trim();
+            paisaInWords = ` And ${capitalizeWords(decimalInWords)} Paisa`;
+        }
+
+        return wholeInWords + paisaInWords + ' Only';
+    };
+
+    const amountInWords = convertToWordsWithPaisa(netPayable);
 
     const handlePrint = () => {
         const companyHeader =
@@ -36,7 +67,7 @@ const OrderInvoice = ({ order }) => {
                         <!-- First Row -->
                         <td class="p-2 border border-[#B2BEB5] w-1/3">
                             <p class="text-justify m-0 text-sm">
-                                Haque Villa, House No - 4, Block - C, Road No - 3, Section - 1, Kolwalapara, Mirpur - 1, Dhaka - 1216.
+                                Haque Villa, House No - 4, Block - C, Road No - 3, Section - 1, Kolwalapara, Mirpur - 1, Dhaka - 1216, Bangladesh.
                             </p>
                             <p class="text-justify m-0 text-sm">
                                 Cell: +880 1329-747657
@@ -56,7 +87,15 @@ const OrderInvoice = ({ order }) => {
                     <tr>
                         <!-- Second Row -->
                         <td class="p-2 border border-[#B2BEB5] w-1/3 align-top">
-                            <p class="m-0 text-sm">Depot Address: Some Street, City, Country</p>
+                            <p class="m-0 text-sm">
+                                <span class="font-bold">Dhaka Sales Depot</span> <br />
+                                House - 00 , Road - 06 <br />
+                                South Bishil <br />
+                                Mirpur - 01 <br />
+                                Dhaka - 1216 <br />
+                                Bangladesh. <br />
+                                Cell: +880 1322-852183
+                            </p>
                         </td>
                         <td class="p-2 border border-[#B2BEB5] w-1/3 align-top">
                             <p class="m-0 text-sm">Customer Code: ${customer.customerId}</p>
@@ -141,32 +180,29 @@ const OrderInvoice = ({ order }) => {
                     </tr>
                 </tbody>
             </table>
-            <div class="space-y-2 font-bold text-sm mt-2">
-                <div class="grid grid-cols-[1fr_auto_1fr] items-center">
-                    <span class="text-right">Grand Total</span>
-                    <span class="text-center w-6">:</span>
-                    <span class="text-right px-3">
-                        ${0}/-
-                    </span>
+            <div class="w-[40%] ml-auto text-right font-bold text-sm mt-2 space-y-1">
+                <div class="grid grid-cols-[1fr_auto_auto] items-center gap-2">
+                    <span>Grand Total</span>
+                    <span>:</span>
+                    <span class="w-24">${(Number((Number(totalTP)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-</span>
                 </div>
 
-                <div class="grid grid-cols-[1fr_auto_1fr] items-center">
-                    <span class="text-right">
-                        Less Discount (${order.discount > 0 && order.discount} %)
-                    </span>
-                    <span class="text-center w-6">:</span>
-                    <span class="text-right px-3">
-                        ${0}/-
-                    </span>
+                <div class="grid grid-cols-[1fr_auto_auto] items-center gap-2">
+                    <span>Less Discount (${order.discount > 0 && order.discount}%)</span>
+                    <span>:</span>
+                    <span class="w-24">${(Number((Number(lessDiscount)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-</span>
                 </div>
 
-                <div class="grid grid-cols-[1fr_auto_1fr] items-center">
-                    <span class="text-right">Total Payable</span>
-                    <span class="text-center w-6">:</span>
-                    <span class="text-right px-3">
-                        ${0}/-
-                    </span>
+                <hr class="border-t border-gray-800 my-1">
+
+                <div class="grid grid-cols-[1fr_auto_auto] items-center gap-2 font-bold">
+                    <span>Net Payable Amount</span>
+                    <span>:</span>
+                    <span class="w-24">${(Number((Number(netPayable)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-</span>
                 </div>
+            </div>
+            <div class="mb-3">
+                <p class="text-sm"><span class="font-bold">Amount in Words: </span>${amountInWords}.</p>
             </div>
         `;
 
