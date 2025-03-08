@@ -1,16 +1,26 @@
 import { toWords } from "number-to-words";
 import useAllUsers from "../Hooks/useAllUsers";
 import useCustomer from "../Hooks/useCustomer";
+import useOrders from "../Hooks/useOrders";
 
 const OrderInvoice = ({ order }) => {
+    const [orders] = useOrders();
     const [allUsers] = useAllUsers();
     const [customers] = useCustomer();
 
     const orderedBy = allUsers.find(alu => alu.email === order.email);
-    const customer = customers.find(c => c.territory === order.territory);
+    const customer = customers.find(c => c.name === order.pharmacy);
+
+    const outstandingOrders = orders.filter(outOrder =>
+        outOrder._id !== order._id
+        &&
+        outOrder.status === 'outstanding'
+    )
 
     const totalUnit = order.products.reduce((sum, product) => sum + Number(product.quantity), 0);
     const totalTP = order.products.reduce((sum, product) => sum + Number(product.quantity * product.tradePrice), 0);
+
+    const outStandingDue = outstandingOrders.reduce((sum, order) => sum + Number(order.due), 0);
 
     // less discount
     const lessDiscount = Number(totalTP * (order.discount / 100));
@@ -162,10 +172,10 @@ const OrderInvoice = ({ order }) => {
                                 <td style="text-align: center;">${idx + 1}</td>
                                 <td style="text-align: left;">${product.productCode}</td>
                                 <td style="text-align: leftr;">${product.name}</td>
-                                <td style="text-align: right;">${product.tradePrice.toLocaleString('en-IN')}/-</td>
+                                <td style="text-align: right;">${product.tradePrice}</td>
                                 <td style="text-align: right;">${product.quantity}</td>
-                                <td style="text-align: right;">${0.00}/-</td>
-                                <td style="text-align: right;">${((product.tradePrice) * (product.quantity)).toLocaleString('en-IN')}/-</td>
+                                <td style="text-align: right;">${0.00}</td>
+                                <td style="text-align: right;">${((product.tradePrice) * (product.quantity))}</td>
                             </tr>
                         `
         ).join('')}
@@ -175,8 +185,8 @@ const OrderInvoice = ({ order }) => {
                         <!-- Merged first four columns -->
                         <td colspan="4" style="text-align: right; font-weight: bold;">Sub Total</td>
                         <td style="text-align: right;">${totalUnit}</td>
-                        <td style="text-align: right;">${0.00}/-</td>
-                        <td style="text-align: right;">${totalTP.toLocaleString('en-IN')}/-</td>
+                        <td style="text-align: right;">${0.00}</td>
+                        <td style="text-align: right;">${totalTP}</td>
                     </tr>
                 </tbody>
             </table>
@@ -201,8 +211,38 @@ const OrderInvoice = ({ order }) => {
                     <span class="w-24">${(Number((Number(netPayable)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-</span>
                 </div>
             </div>
-            <div class="mb-3">
+            <div class="mt-1 mb-3">
                 <p class="text-sm"><span class="font-bold">Amount in Words: </span>${amountInWords}.</p>
+            </div>
+            <div>
+                <div class="mt-5 mb-1">
+                    <p class="text-sm font-bold">Outstanding(s)</p>
+                </div>
+                <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th style="text-align: center;">Sl.</th>
+                        <th style="text-align: left;">Invice No.</th>
+                        <th style="text-align: left;">Customer Name</th>
+                        <th style="text-align: center;">Date</th>
+                        <th style="text-align: right;">Due (TK)</th>
+                        <th style="text-align: center;">Total Due (TK)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${outstandingOrders.map(
+            (order, idx) => `
+                            <tr>
+                                <td style="text-align: center;">${idx + 1}</td>
+                                <td style="text-align: left;">${order.invoice}</td>
+                                <td style="text-align: left;">${order.pharmacy}</td>
+                                <td style="text-align: center;">${order.date}</td>
+                                <td style="text-align: right;">${order.due}/-</td>
+                                ${idx === 0 ? `<td rowspan='${outstandingOrders.length}' style="text-align: center;">${outStandingDue.toLocaleString('en-IN')}/-</td>` : ""}
+                            </tr>
+                        `
+        ).join('')}
+                </table>
             </div>
         `;
 
