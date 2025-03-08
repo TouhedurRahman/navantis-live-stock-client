@@ -1,11 +1,9 @@
 import React from 'react';
 import { MdPrint } from 'react-icons/md';
+import OrderInvoice from '../../../Invoices/OrderInvoice';
 
 const OutstandingPaymentCard = ({ idx, order, refetch }) => {
-    const handlePrint = () => {
-        console.log("Remove product:", product._id);
-        refetch();
-    };
+    const handlePrint = OrderInvoice({ order });
 
     return (
         <>

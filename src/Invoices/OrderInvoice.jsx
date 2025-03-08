@@ -26,7 +26,7 @@ const OrderInvoice = ({ order }) => {
     const lessDiscount = Number(totalTP * (order.discount / 100));
 
     // net payable amount
-    const netPayable = Number(totalTP - lessDiscount);
+    const netPayable = Number(totalTP - lessDiscount - (order.paid || 0));
 
     const capitalizeWords = (str) => {
         return str
@@ -203,6 +203,14 @@ const OrderInvoice = ({ order }) => {
                     <span class="w-24">${(Number((Number(lessDiscount)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-</span>
                 </div>
 
+                ${(order.paid > 0) ? `
+                    <div class="grid grid-cols-[1fr_auto_auto] items-center gap-2">
+                        <span>Paid</span>
+                        <span>:</span>
+                        <span class="w-24">${(Number((Number(order.paid)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-</span>
+                    </div>
+                    `: ``}
+
                 <hr class="border-t border-gray-800 my-1">
 
                 <div class="grid grid-cols-[1fr_auto_auto] items-center gap-2 font-bold">
@@ -214,7 +222,7 @@ const OrderInvoice = ({ order }) => {
             <div class="mt-1 mb-3">
                 <p class="text-sm"><span class="font-bold">Amount in Words: </span>${amountInWords}.</p>
             </div>
-            ${outstandingOrders.length > 0 && `
+            ${outstandingOrders.length > 0 ? `
                 <div>
                     <div class="mt-5 mb-1">
                         <p class="text-sm font-bold">Outstanding(s)</p>
@@ -246,7 +254,7 @@ const OrderInvoice = ({ order }) => {
                         </tbody>
                     </table>
                 </div>
-            `}            
+            `: ``}
         `;
 
         const currentDateTime = new Date();
