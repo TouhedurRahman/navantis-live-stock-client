@@ -255,6 +255,16 @@ const OrderInvoice = ({ order }) => {
                     </table>
                 </div>
             `: ``}
+            <div>
+                <!-- Signature Section -->
+                    <table style="width: 100%; border-collapse: separate; border-spacing: 10px 0; margin-top: 200px;">
+                        <tr>
+                            <td style="text-align: center; border: none; border-top: 1px dotted #000; padding-top: 5px;">Customer</td>
+                            <td style="text-align: center; border: none; border-top: 1px dotted #000; padding-top: 5px;">Depot In-charge</td>
+                            <td style="text-align: center; border: none; border-top: 1px dotted #000; padding-top: 5px;">Authorized by</td>
+                        </tr>
+                    </table>
+            </div>
         `;
 
         const currentDateTime = new Date();
