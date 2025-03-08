@@ -108,7 +108,7 @@ const OrderInvoice = ({ order }) => {
                             </p>
                         </td>
                         <td class="p-2 border border-[#B2BEB5] w-1/3 align-top">
-                            <p class="m-0 text-sm">Customer Code: ${customer.customerId}</p>
+                            <p class="m-0 text-sm font-bold">Customer Code: ${customer.customerId}</p>
                             <p class="m-0 text-sm">${customer.name}</p>
                             <p class="m-0 text-sm">${customer.address}</p>
                             <p class="m-0 text-sm">Cell: +880 ${customer.mobile.slice(-10, -6)}-${customer.mobile.slice(-6)}</p>
@@ -214,36 +214,39 @@ const OrderInvoice = ({ order }) => {
             <div class="mt-1 mb-3">
                 <p class="text-sm"><span class="font-bold">Amount in Words: </span>${amountInWords}.</p>
             </div>
-            <div>
-                <div class="mt-5 mb-1">
-                    <p class="text-sm font-bold">Outstanding(s)</p>
-                </div>
-                <table style="width: 100%; border-collapse: collapse;">
-                <thead>
-                    <tr>
-                        <th style="text-align: center;">Sl.</th>
-                        <th style="text-align: left;">Invice No.</th>
-                        <th style="text-align: left;">Customer Name</th>
-                        <th style="text-align: center;">Date</th>
-                        <th style="text-align: right;">Due (TK)</th>
-                        <th style="text-align: center;">Total Due (TK)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${outstandingOrders.map(
-            (order, idx) => `
+            ${outstandingOrders.length > 0 && `
+                <div>
+                    <div class="mt-5 mb-1">
+                        <p class="text-sm font-bold">Outstanding(s)</p>
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
                             <tr>
-                                <td style="text-align: center;">${idx + 1}</td>
-                                <td style="text-align: left;">${order.invoice}</td>
-                                <td style="text-align: left;">${order.pharmacy}</td>
-                                <td style="text-align: center;">${order.date}</td>
-                                <td style="text-align: right;">${order.due}/-</td>
-                                ${idx === 0 ? `<td rowspan='${outstandingOrders.length}' style="text-align: center;">${outStandingDue.toLocaleString('en-IN')}/-</td>` : ""}
+                                <th style="text-align: center;">Sl.</th>
+                                <th style="text-align: left;">Invoice No.</th>
+                                <th style="text-align: left;">Customer Name</th>
+                                <th style="text-align: center;">Date</th>
+                                <th style="text-align: right;">Due (TK)</th>
+                                <th style="text-align: center;">Total Due (TK)</th>
                             </tr>
-                        `
+                        </thead>
+                        <tbody>
+                            ${outstandingOrders.map(
+            (order, idx) => `
+                                    <tr>
+                                        <td style="text-align: center;">${idx + 1}</td>
+                                        <td style="text-align: left;">${order.invoice}</td>
+                                        <td style="text-align: left;">${order.pharmacy}</td>
+                                        <td style="text-align: center;">${order.date}</td>
+                                        <td style="text-align: right;">${order.due}/-</td>
+                                        ${idx === 0 ? `<td rowspan='${outstandingOrders.length}' style="text-align: center;">${outStandingDue.toLocaleString('en-IN')}/-</td>` : ""}
+                                    </tr>
+                                `
         ).join('')}
-                </table>
-            </div>
+                        </tbody>
+                    </table>
+                </div>
+            `}            
         `;
 
         const currentDateTime = new Date();
