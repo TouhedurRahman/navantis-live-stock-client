@@ -1,8 +1,9 @@
 import axios from "axios";
 import { useState } from "react";
-import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import { FaEdit, FaTrashAlt, FaUserClock } from "react-icons/fa";
 import { FaEye, FaUserShield } from "react-icons/fa6";
 import Swal from "sweetalert2";
+import UpdateAccessModal from "../../../Components/UpdateAccessModal/UpdateAccessModal";
 import UserDetailsModal from "../../../Components/UserDetailsModal/UserDetailsModal";
 import UserUpdateModal from "../../../Components/UserUpdateModal/UserUpdateModal";
 import useSingleUser from "../../../Hooks/useSingleUser";
@@ -13,7 +14,9 @@ const UsersCard = ({ user, idx, refetch }) => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [showRolePopup, setShowRolePopup] = useState(false);
     const [newRole, setNewRole] = useState("");
+
     const [userUpdateModal, setUserUpdateModal] = useState(false);
+    const [accessModal, setAccessModal] = useState(false);
 
     const handleUpdateDesignation = () => {
         if (!newRole.trim()) {
@@ -161,6 +164,13 @@ const UsersCard = ({ user, idx, refetch }) => {
                         }
 
                         <button
+                            onClick={() => setAccessModal(true)}
+                            className="p-2 rounded-[5px] hover:bg-yellow-100 focus:outline-none"
+                        >
+                            <FaUserClock className="text-yellow-500" />
+                        </button>
+
+                        <button
                             onClick={() => handleDelete()}
                             className="p-2 rounded-[5px] hover:bg-red-100 focus:outline-none"
                         >
@@ -193,7 +203,7 @@ const UsersCard = ({ user, idx, refetch }) => {
                             value={newRole}
                             onChange={(e) => setNewRole(e.target.value)}
                             className="border-2 border-gray-300 rounded-lg px-4 py-3 w-full mb-6 focus:ring-4 focus:ring-blue-300 focus:outline-none shadow-md transition"
-                            placeholder="Enter desination"
+                            placeholder="Enter designation"
                         />
 
                         {/* Action Buttons */}
@@ -229,6 +239,15 @@ const UsersCard = ({ user, idx, refetch }) => {
                     user={user}
                     refetch={refetch}
                     onClose={() => setUserUpdateModal(false)}
+                />
+            )}
+
+            {/* user update modal */}
+            {accessModal && (
+                <UpdateAccessModal
+                    user={user}
+                    refetch={refetch}
+                    onClose={() => setAccessModal(false)}
                 />
             )}
         </>
