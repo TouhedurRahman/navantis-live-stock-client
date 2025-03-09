@@ -2,15 +2,18 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaTimes } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 const permissionsList = ["admin", "warehouse", "depot", "customer", "order", "all-user"];
 
-const UpdateAccessModal = ({ user, onClose }) => {
+const UpdateAccessModal = ({ user, refetch, onClose }) => {
     const { handleSubmit } = useForm();
-    const [selectedPermissions, setSelectedPermissions] = useState(user?.permissions || []);
+    const [selectedPermissions, setSelectedPermissions] = useState([]);
 
     useEffect(() => {
-        setSelectedPermissions(user?.permissions || []);
+        if (user?.permissions) {
+            setSelectedPermissions(user.permissions);
+        }
     }, [user]);
 
     const handleCheckboxChange = (permission) => {
@@ -22,17 +25,28 @@ const UpdateAccessModal = ({ user, onClose }) => {
     };
 
     const onSubmit = async () => {
-        const updatedUser = {
-            // ...user,
-            permissions: selectedPermissions,
-        };
-
         try {
-            await axios.patch(`http://localhost:5000/user/${user.email}`, updatedUser);
-            alert("Permissions updated successfully!");
+            await axios.patch(`http://localhost:5000/user/${user.email}`, {
+                permissions: selectedPermissions,
+            });
+            refetch();
             onClose();
+
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Permissions successfully updated.",
+                showConfirmButton: false,
+                timer: 1500
+            });
         } catch (error) {
-            console.error("Error updating permissions", error);
+            Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Faild to update permissions!",
+                showConfirmButton: false,
+                timer: 1500
+            });
         }
     };
 
@@ -63,9 +77,7 @@ const UpdateAccessModal = ({ user, onClose }) => {
                                     onChange={() => handleCheckboxChange(perm)}
                                     className="w-4 h-4 cursor-pointer"
                                 />
-                                {perm
-                                    .replace(/-/g, " ")
-                                    .replace(/\b\w/g, (char) => char.toUpperCase())}
+                                {perm.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())}
                             </label>
                         ))}
                     </div>
