@@ -31,7 +31,6 @@ const UpdateAccessModal = ({ user, refetch, onClose }) => {
             });
             refetch();
             onClose();
-
             Swal.fire({
                 position: "center",
                 icon: "success",
@@ -39,6 +38,7 @@ const UpdateAccessModal = ({ user, refetch, onClose }) => {
                 showConfirmButton: false,
                 timer: 1500
             });
+            window.location.reload();
         } catch (error) {
             Swal.fire({
                 position: "center",
