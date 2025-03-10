@@ -142,7 +142,7 @@ const UsersCard = ({ user, idx, refetch }) => {
                         </button>
 
                         {
-                            singleUser?.designation === 'IT Officer'
+                            singleUser?.permissions?.includes("update-users")
                             &&
                             <button
                                 onClick={() => setShowRolePopup(true)}
@@ -153,7 +153,7 @@ const UsersCard = ({ user, idx, refetch }) => {
                         }
 
                         {
-                            singleUser?.designation === 'IT Officer'
+                            singleUser?.permissions?.includes("update-users")
                             &&
                             <button
                                 onClick={() => setUserUpdateModal(true)}
@@ -163,19 +163,27 @@ const UsersCard = ({ user, idx, refetch }) => {
                             </button>
                         }
 
-                        <button
-                            onClick={() => setAccessModal(true)}
-                            className="p-2 rounded-[5px] hover:bg-yellow-100 focus:outline-none"
-                        >
-                            <FaUserClock className="text-yellow-500" />
-                        </button>
+                        {
+                            singleUser?.permissions?.includes("update-users")
+                            &&
+                            <button
+                                onClick={() => setAccessModal(true)}
+                                className="p-2 rounded-[5px] hover:bg-yellow-100 focus:outline-none"
+                            >
+                                <FaUserClock className="text-yellow-500" />
+                            </button>
+                        }
 
-                        <button
-                            onClick={() => handleDelete()}
-                            className="p-2 rounded-[5px] hover:bg-red-100 focus:outline-none"
-                        >
-                            <FaTrashAlt className="text-red-500" />
-                        </button>
+                        {
+                            singleUser?.permissions?.includes("update-users")
+                            &&
+                            <button
+                                onClick={() => handleDelete()}
+                                className="p-2 rounded-[5px] hover:bg-red-100 focus:outline-none"
+                            >
+                                <FaTrashAlt className="text-red-500" />
+                            </button>
+                        }
                     </div>
                 </th>
             </tr>

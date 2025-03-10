@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { FaTimes } from "react-icons/fa";
 import Swal from "sweetalert2";
 
-const permissionsList = ["admin", "warehouse", "depot", "customer", "order", "all-user"];
+const permissionsList = ["admin", "warehouse", "depot", "customer", "approve-customer", "order", "all-users", "update-users"];
 
 const UpdateAccessModal = ({ user, refetch, onClose }) => {
     const { handleSubmit } = useForm();

@@ -62,6 +62,7 @@ const useMenuConfig = () => {
         customer: {
             icon: <AiFillMedicineBox className="mr-2" />,
             links: [
+                singleUser?.permissions?.includes("approve-customer") &&
                 { to: '/customer-request', icon: <VscGitPullRequestGoToChanges className='me-2' />, label: 'Customer Request' },
                 { to: '/add-customer', icon: <IoIosAddCircle className='me-2' />, label: 'Add new' },
                 { to: '/customer-list', icon: <FaListUl className='me-2' />, label: 'Customer List' },
