@@ -54,7 +54,7 @@ const OrderInvoice = ({ order }) => {
 
     const handlePrint = () => {
         const companyHeader =
-            `<div class="font-sans mb-8">
+            `<div class="font-sans">
                 <!-- Header Section -->
                 <div class="flex justify-between items-center mb-5">
                     <!-- Left side: Logo -->
@@ -72,12 +72,12 @@ const OrderInvoice = ({ order }) => {
                 </div>
 
                 <!-- Table Section -->
-                <table class="w-full border-collapse mb-5 text-[10px]">
+                <table class="w-full border-collapse text-[11px]">
                     <tr>
                         <!-- First Row -->
                         <td class="p-2 border border-[#B2BEB5] w-1/3">
                             <p class="text-justify m-0 text-[11px]">
-                                Haque Villa, House No - 4, Block - C, Road No - 3, Section - 1, Kolwalapara, Mirpur - 1, Dhaka - 1216, Bangladesh.
+                                Haque Villa, House No-4, Block-C, Road No-3, Section-1, Kolwalapara, Mirpur-1, Dhaka-1216, Bangladesh.
                             </p>
                             <p class="text-justify m-0 text-[11px]">
                                 Cell: +880 1329-747657
@@ -125,7 +125,7 @@ const OrderInvoice = ({ order }) => {
 
                                 <span class="font-bold">Pay Mode</span>
                                 <span class="font-bold">:</span>
-                                <span>${order.payMode}</span>
+                                <span class="font-bold">${order.payMode}</span>
 
                                 <span class="font-bold">Territory</span>
                                 <span class="font-bold">:</span>
@@ -153,6 +153,9 @@ const OrderInvoice = ({ order }) => {
             </div>`;
 
         const filteredTableContent = `
+            <div class="text-center my-1">
+                <p class="text-[11px] font-bold">*** Good once sold will not be taken back ***</p>
+            </div>
             <table style="width: 100%; border-collapse: collapse;">
                 <thead>
                     <tr>
@@ -246,7 +249,7 @@ const OrderInvoice = ({ order }) => {
                                         <td style="text-align: left;">${order.invoice}</td>
                                         <td style="text-align: left;">${order.pharmacy}</td>
                                         <td style="text-align: center;">${order.date}</td>
-                                        <td style="text-align: right;">${order.due}/-</td>
+                                        <td style="text-align: right;">${order.due}</td>
                                         ${idx === 0 ? `<td rowspan='${outstandingOrders.length}' style="text-align: center;">${outStandingDue.toLocaleString('en-IN')}/-</td>` : ""}
                                     </tr>
                                 `
@@ -257,7 +260,7 @@ const OrderInvoice = ({ order }) => {
             `: ``}
             <div>
                 <!-- Signature Section -->
-                    <table style="width: 100%; border-collapse: separate; border-spacing: 10px 0; margin-top: 200px;">
+                    <table style="width: 100%; border-collapse: separate; border-spacing: 11px 0; margin-top: 200px;">
                         <tr>
                             <td style="text-align: center; border: none; border-top: 1px dotted #000; padding-top: 5px;">Customer</td>
                             <td style="text-align: center; border: none; border-top: 1px dotted #000; padding-top: 5px;">Depot In-charge</td>
@@ -315,7 +318,7 @@ const OrderInvoice = ({ order }) => {
                                 padding: 8px;
                                 text-align: left;
                                 vertical-align: middle;
-                                font-size: 10px;
+                                font-size: 11px;
                             }
                             th {
                                 background-color: #f0f0f0;
