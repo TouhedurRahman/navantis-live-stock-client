@@ -117,7 +117,7 @@ const OrderInvoice = ({ order }) => {
                             <div class="grid grid-cols-[max-content_15px_auto] text-[11px] gap-y-1">
                                 <span class="font-bold">Date</span>
                                 <span class="font-bold">:</span>
-                                <span>${order.date}</span>
+                                <span>${new Date(order.date).toLocaleDateString('en-GB').replace(/\//g, '-')}</span>
 
                                 <span class="font-bold">Invoice No.</span>
                                 <span class="font-bold">:</span>
@@ -145,7 +145,7 @@ const OrderInvoice = ({ order }) => {
 
                                 <span class="font-bold">Delivered Date</span>
                                 <span class="font-bold">:</span>
-                                <span>${new Date().toLocaleDateString()}</span>
+                                <span>${new Date(order.date).toLocaleDateString('en-GB').replace(/\//g, '-')}</span>
                             </div>
                         </td>
                     </tr>
