@@ -264,7 +264,7 @@ const OrderInvoice = ({ order }) => {
                         <tr>
                             <td style="width: 33.33%; text-align: center; border: none; border-top: 1px dotted #000; padding-top: 5px;  font-weight: bold;">Customer</td>
                             <td style="width: 33.33%; text-align: center; border: none; border-top: 1px dotted #000; padding-top: 5px;  font-weight: bold;">Depot In-charge</td>
-                            <td style="width: 33.33%; text-align: center; border: none; border-top: 1px dotted #000; padding-top: 5px;  font-weight: bold;">Authorized by</td>
+                            <td style="width: 33.33%; text-align: center; border: none; border-top: 1px dotted #000; padding-top: 5px;  font-weight: bold;">Authorised by</td>
                         </tr>
                     </table>
             </div>
