@@ -248,7 +248,7 @@ const OrderInvoice = ({ order }) => {
                                         <td style="text-align: center;">${idx + 1}</td>
                                         <td style="text-align: left;">${order.invoice}</td>
                                         <td style="text-align: left;">${order.pharmacy}</td>
-                                        <td style="text-align: center;">${order.date}</td>
+                                        <td style="text-align: center;">${new Date(order.date).toLocaleDateString('en-GB').replace(/\//g, '-')}</td>
                                         <td style="text-align: right;">${order.due}</td>
                                         ${idx === 0 ? `<td rowspan='${outstandingOrders.length}' style="text-align: center;">${outStandingDue.toLocaleString('en-IN')}/-</td>` : ""}
                                     </tr>
