@@ -262,9 +262,9 @@ const OrderInvoice = ({ order }) => {
                 <!-- Signature Section -->
                     <table style="width: 100%; border-collapse: separate; border-spacing: 30px 0; margin-top: 200px;">
                         <tr>
-                            <td style="width: 33.33%; text-align: center; border: none; border-top: 1px dotted #000; padding-top: 5px;">Customer</td>
-                            <td style="width: 33.33%; text-align: center; border: none; border-top: 1px dotted #000; padding-top: 5px;">Depot In-charge</td>
-                            <td style="width: 33.33%; text-align: center; border: none; border-top: 1px dotted #000; padding-top: 5px;">Authorized by</td>
+                            <td style="width: 33.33%; text-align: center; border: none; border-top: 1px dotted #000; padding-top: 5px;  font-weight: bold;">Customer</td>
+                            <td style="width: 33.33%; text-align: center; border: none; border-top: 1px dotted #000; padding-top: 5px;  font-weight: bold;">Depot In-charge</td>
+                            <td style="width: 33.33%; text-align: center; border: none; border-top: 1px dotted #000; padding-top: 5px;  font-weight: bold;">Authorized by</td>
                         </tr>
                     </table>
             </div>
