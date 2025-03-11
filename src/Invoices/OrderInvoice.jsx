@@ -153,10 +153,7 @@ const OrderInvoice = ({ order }) => {
             </div>`;
 
         const filteredTableContent = `
-            <div class="text-center my-1">
-                <p class="text-[11px] font-bold">*** Good once sold will not be taken back ***</p>
-            </div>
-            <table style="width: 100%; border-collapse: collapse;">
+            <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
                 <thead>
                     <tr>
                         <th style="text-align: center;">Sl.</th>
@@ -222,8 +219,11 @@ const OrderInvoice = ({ order }) => {
                     <span class="w-24">${(Number((Number(netPayable)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-</span>
                 </div>
             </div>
-            <div class="mt-1 mb-3">
+            <div class="mt-1">
                 <p class="text-[11px]"><span class="font-bold">Amount in Words: </span>${amountInWords}.</p>
+            </div>
+            <div class="mt-1 mb-3">
+                <p class="text-[11px]"><span class="font-bold">Note: </span>Good once sold will not be taken back.</p>
             </div>
             ${outstandingOrders.length > 0 ? `
                 <div>
