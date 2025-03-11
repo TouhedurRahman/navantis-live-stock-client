@@ -4,7 +4,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { FaTimes } from "react-icons/fa";
 
-const DepotReqVaAModal = ({ isOpen, onClose, product, productQinWarehouse, productQinDepot, refetch }) => {
+const DepotReqVaAModal = ({ isOpen, onClose, product, productQinWarehouse, productQinDepot, lastMonthSales, refetch }) => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
     const getTodayDate = () => {
@@ -91,7 +91,7 @@ const DepotReqVaAModal = ({ isOpen, onClose, product, productQinWarehouse, produ
                             </div>
                             <div className="p-6 bg-white rounded-lg shadow-md text-center">
                                 <p className="text-sm font-medium text-green-700 uppercase">Last Month <br /> Sale</p>
-                                <p className="text-3xl font-extrabold mt-2">00</p>
+                                <p className="text-3xl font-extrabold mt-2">{lastMonthSales}</p>
                             </div>
                         </div>
                     </div>

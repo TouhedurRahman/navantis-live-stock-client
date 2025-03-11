@@ -5,6 +5,7 @@ import Loader from "../../../Components/Loader/Loader";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import useDepotProducts from "../../../Hooks/useDepotProducts";
 import useDepotRequest from "../../../Hooks/useDepotRequest";
+import useOrders from "../../../Hooks/useOrders";
 import useWhProducts from "../../../Hooks/useWhProducts";
 import DepotReqProductCard from "../DepotReqProductCard/DepotReqProductCard";
 
@@ -12,6 +13,7 @@ const DepotRequest = () => {
     const [depotReqProducts, dptReqLoading, dptReqRefetch] = useDepotRequest();
     const [whProducts] = useWhProducts();
     const [depotProducts] = useDepotProducts();
+    const [orders] = useOrders();
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
@@ -153,7 +155,7 @@ const DepotRequest = () => {
                                                         refetch={dptReqRefetch}
                                                         whProducts={whProducts}
                                                         depotProducts={depotProducts}
-                                                    // whProducts={whProducts}
+                                                        orders={orders}
                                                     />
                                                 ))
                                             }

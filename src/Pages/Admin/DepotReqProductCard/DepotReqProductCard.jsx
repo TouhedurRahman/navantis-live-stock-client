@@ -5,18 +5,29 @@ import { FaEye, FaTimes } from "react-icons/fa";
 import Swal from 'sweetalert2';
 import DepotReqVaAModal from '../../../Components/DepotReqVaAModal/DepotReqVaAModal';
 
-const DepotReqProductCard = ({ idx, product, refetch, whProducts, depotProducts }) => {
+const DepotReqProductCard = ({ idx, product, refetch, whProducts, depotProducts, orders }) => {
     const [isapproveModalOpen, setapproveModalOpen] = useState(false);
 
     const productQinWarehouse = whProducts
         .filter(whProduct => whProduct.productName === product.productName)
         .reduce((sum, whProduct) => sum + whProduct.totalQuantity, 0) || 0;
-    console.log(productQinWarehouse);
 
     const productQinDepot = depotProducts
         .filter(depotProduct => depotProduct.productName === product.productName)
         .reduce((sum, depotProduct) => sum + depotProduct.totalQuantity, 0) || 0;
-    console.log(productQinDepot);
+
+    const getLastMonthSales = (pname) => {
+        const oneMonthAgo = new Date();
+        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+        return orders
+            .filter(order => new Date(order.date) >= oneMonthAgo)
+            .flatMap(order => order.products)
+            .filter(product => product.name === pname)
+            .reduce((total, product) => total + product.quantity, 0);
+    };
+
+    const lastMonthSales = getLastMonthSales(product.productName);
 
     const deniedDptReqMutation = useMutation({
         mutationFn: async () => {
@@ -118,6 +129,7 @@ const DepotReqProductCard = ({ idx, product, refetch, whProducts, depotProducts 
                         product={product}
                         productQinWarehouse={productQinWarehouse}
                         productQinDepot={productQinDepot}
+                        lastMonthSales={lastMonthSales}
                         refetch={refetch}
                     />
                 )
