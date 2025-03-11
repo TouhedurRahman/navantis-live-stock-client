@@ -21,11 +21,13 @@ const DepotDelivery = () => {
     const uniqueDates = [...new Set(filteredProducts?.map(product => product.approvedDate))];
 
     const selectedDate = watch('date');
-    const selectedProductName = watch('name');
+    const selectedProductId = watch('productId');
 
-    const filteredNames = filteredProducts?.filter(product => product.approvedDate === selectedDate);
+    const dateWiseProducts = filteredProducts?.filter(product => product.approvedDate === selectedDate);
 
-    const selectedProductDetails = filteredNames?.find(product => product.productName === selectedProductName);
+    const selectedProductDetails = dateWiseProducts?.find(product => product._id === selectedProductId);
+
+    const selectedProductName = selectedProductDetails?.productName;
 
     useEffect(() => {
         if (selectedProductDetails) {
@@ -268,13 +270,13 @@ const DepotDelivery = () => {
                                 Name <span className="text-red-500">*</span>
                             </label>
                             <select
-                                {...register("name", { required: "Name is required" })}
+                                {...register("productId", { required: "Name is required" })}
                                 className="border-gray-500 bg-white border p-2 text-sm"
                                 disabled={!selectedDate}
                             >
                                 <option value="">Select product name</option>
-                                {filteredNames?.map((product, index) => (
-                                    <option key={index} value={product.productName}>
+                                {dateWiseProducts?.map((product, index) => (
+                                    <option key={index} value={product._id}>
                                         {product.productName}
                                     </option>
                                 ))}
