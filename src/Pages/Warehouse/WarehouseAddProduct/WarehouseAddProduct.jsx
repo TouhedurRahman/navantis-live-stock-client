@@ -5,8 +5,10 @@ import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useOrderStockProducts from '../../../Hooks/useOrderStockProducts';
+import useSingleUser from '../../../Hooks/useSingleUser';
 
 const WarehouseAddProduct = () => {
+    const [singleUser] = useSingleUser();
     const { register, handleSubmit, reset, formState: { errors }, watch } = useForm();
 
     const [products] = useOrderStockProducts();
@@ -17,11 +19,13 @@ const WarehouseAddProduct = () => {
     const uniqueDates = [...new Set(filteredProducts?.map(product => product.orderDate))];
 
     const selectedDate = watch('date');
-    const selectedProductName = watch('name');
+    const selectedProductId = watch('productId');
 
-    const filteredNames = filteredProducts?.filter(product => product.orderDate === selectedDate);
+    const dateWiseProducts = filteredProducts?.filter(product => product.orderDate === selectedDate);
 
-    const selectedProductDetails = filteredNames?.find(product => product.productName === selectedProductName);
+    const selectedProductDetails = dateWiseProducts?.find(product => product._id === selectedProductId);
+
+    const selectedProductName = selectedProductDetails?.productName;
 
     useEffect(() => {
         if (selectedProductDetails) {
@@ -41,7 +45,7 @@ const WarehouseAddProduct = () => {
     const reqWhStockMutation = useMutation({
         mutationFn: async (data) => {
             const updatedProduct = {
-                productName: data.name,
+                productName: selectedProductName,
                 productCode: data.psc,
                 batch: data.batch,
                 expire: data.expire,
@@ -136,13 +140,13 @@ const WarehouseAddProduct = () => {
                                 Name <span className="text-red-500">*</span>
                             </label>
                             <select
-                                {...register("name", { required: "Name is required" })}
+                                {...register("productId", { required: "Name is required" })}
                                 className="border-gray-500 bg-white border p-2 text-sm"
                                 disabled={!selectedDate}
                             >
                                 <option value="">Select product name</option>
-                                {filteredNames?.map((product, index) => (
-                                    <option key={index} value={product.productName}>
+                                {dateWiseProducts?.map((product, index) => (
+                                    <option key={index} value={product._id}>
                                         {product.productName}
                                     </option>
                                 ))}
@@ -276,7 +280,7 @@ const WarehouseAddProduct = () => {
                                 Name <span className="text-red-500">*</span>
                             </label>
                             <input
-                                defaultValue={"Navantis Pharma Limited"}
+                                defaultValue={singleUser?.name}
                                 {...register("addedby", { required: "Added by is required" })}
                                 placeholder="Enter name of person adding"
                                 className="border-gray-500 bg-white border p-2 text-sm cursor-not-allowed"
@@ -289,7 +293,7 @@ const WarehouseAddProduct = () => {
                                 Email <span className="text-red-500">*</span>
                             </label>
                             <input
-                                defaultValue={"info@navantispharma.com"}
+                                defaultValue={singleUser?.email}
                                 {...register("addedemail", {
                                     required: "Email is required",
                                     pattern: {
