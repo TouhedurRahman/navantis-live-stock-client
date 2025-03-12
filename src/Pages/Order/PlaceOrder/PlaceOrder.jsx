@@ -11,7 +11,7 @@ import useSingleUser from '../../../Hooks/useSingleUser';
 
 const PlaceOrder = () => {
     const user = useAuth();
-    const { register, handleSubmit, reset, formState: { errors } } = useForm();
+    const { register, handleSubmit, watch, reset, formState: { errors } } = useForm();
 
     const [allUsers] = useAllUsers();
     const [singleUser] = useSingleUser();
@@ -20,7 +20,7 @@ const PlaceOrder = () => {
     const [products] = useDepotProducts();
 
     // const [filteredPharmacies, setFilteredPharmacies] = useState([]);
-    const [selectedPharmacy, setSelectedPharmacy] = useState('');
+    const [selectedPharmacy, setSelectedPharmacy] = useState({});
     const [productQuantities, setProductQuantities] = useState({});
     const [receiptProducts, setReceiptProducts] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -82,7 +82,10 @@ const PlaceOrder = () => {
     }; */
 
     const handlePharmacyChange = (e) => {
-        setSelectedPharmacy(e.target.value);
+        const pharmacyId = e.target.value;
+        const selectedPharm = pharmacies.find(pharm => pharm._id === pharmacyId);
+        setSelectedPharmacy(selectedPharm);
+
         setReceiptProducts([]);
     };
 
@@ -100,7 +103,7 @@ const PlaceOrder = () => {
     )
 
     const pharmacyDiscount = pharmacies
-        .find(pharmacy => pharmacy.name === selectedPharmacy)?.discount;
+        .find(pharmacy => pharmacy.name === selectedPharmacy?.name)?.discount;
 
     const lessDiscount = Number(totalPrice * (pharmacyDiscount / 100));
 
@@ -141,7 +144,8 @@ const PlaceOrder = () => {
             zonalManager: gParentName,
             territory: userTerritory,
             parentTerritory,
-            pharmacy: selectedPharmacy,
+            pharmacy: selectedPharmacy?.name,
+            pharmacyId: selectedPharmacy?.customerId,
             products: receiptProducts,
             totalProduct: totalOrderedProducts,
             totalUnit: Number(totalOrderUnits),
@@ -214,13 +218,13 @@ const PlaceOrder = () => {
                             <div className="flex flex-col">
                                 <label className="text-sm mb-2">Pharmacy Name <span className="text-red-500">*</span></label>
                                 <select
-                                    {...register('pharmacy', { required: 'Please select a pharmacy' })}
+                                    {...register('pharmId', { required: 'Please select a pharmacy' })}
                                     onChange={handlePharmacyChange}
                                     className="border-gray-500 bg-white border p-2 text-sm"
                                 >
                                     <option value="">~~ Select a Pharmacy ~~</option>
                                     {userPharmacies.map(pharmacy => (
-                                        <option key={pharmacy._id} value={pharmacy.name}>
+                                        <option key={pharmacy._id} value={pharmacy._id}>
                                             {pharmacy.name}
                                         </option>
                                     ))}
@@ -326,8 +330,8 @@ const PlaceOrder = () => {
                                     &&
                                     <>
                                         <div className='text-left'>
-                                            <p className="text-xs">Customer Code: PHAR001</p>
-                                            <p className="text-xs">Customer Name: {selectedPharmacy}</p>
+                                            <p className="text-xs">Customer Code: {selectedPharmacy?.customerId}</p>
+                                            <p className="text-xs">Customer Name: {selectedPharmacy?.name}</p>
                                         </div>
                                         <hr className="my-2 border-gray-400" />
                                     </>
