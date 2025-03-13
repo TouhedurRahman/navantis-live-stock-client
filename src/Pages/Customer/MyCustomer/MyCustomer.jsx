@@ -20,6 +20,10 @@ const MyCustomer = () => {
             customer.territory === singleUser.territory
             ||
             customer.parentTerritory === singleUser?.territory
+            ||
+            customer.parentId == singleUser?._id
+            ||
+            customer.grandParentId == singleUser?._id
         )
     );
 
