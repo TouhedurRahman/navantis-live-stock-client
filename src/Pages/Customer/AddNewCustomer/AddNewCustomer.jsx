@@ -234,6 +234,7 @@ const AddNewCustomer = () => {
                             </select>
                         </div>
                     </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 mb-2">
                         {(paymentType === "Credit" || paymentType === "STC") && (
                             <div className="flex flex-col">
@@ -262,6 +263,7 @@ const AddNewCustomer = () => {
                             </div>
                         )}
                     </div>
+
                     <h1 className="mt-10 text-sm">Customer added by</h1>
                     <hr className='w-full border border-gray-500 mb-3' />
 
