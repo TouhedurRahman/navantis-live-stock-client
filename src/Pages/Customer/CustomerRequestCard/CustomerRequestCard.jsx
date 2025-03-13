@@ -11,11 +11,23 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
     const [singleUser] = useSingleUser();
     const [isModalOpen, setModalOpen] = useState(false);
 
+    const statusType = JSON.stringify(customer.payMode) === JSON.stringify(["Cash", "STC"])
+        ? customer.status === "pending"
+            ? "initialized"
+            : "approved"
+        : JSON.stringify(customer.payMode) === JSON.stringify(["Credit"])
+            ? customer.status === "pending"
+                ? "initialized"
+                : customer.status === "initialized"
+                    ? "requested"
+                    : "approved"
+            : "approved"
+
     const approvedCustomerMutation = useMutation({
         mutationFn: async () => {
             const updatedCustomer = {
                 ...customer,
-                status: 'approved',
+                status: statusType,
                 approvedBy: singleUser?.name,
                 approvedEmail: user?.email
             }

@@ -15,10 +15,27 @@ const CustomerRequest = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [customersPerPage, setCustomersPerPage] = useState(5);
 
-    const pendingCustomers = customers.filter(customer =>
-        customer.status === 'pending'
-        &&
-        customer.parentTerritory === singleUser?.territory
+    const pendingCustomers = customers.filter(
+        customer =>
+            (
+                customer.status === 'pending'
+                &&
+                customer.parentId === singleUser?._id
+            )
+            ||
+            (
+                customer.status === 'initialized'
+                &&
+                customer.grandParentId === singleUser?._id
+            )
+            ||
+            (
+                customer.status === "requested"
+                &&
+                customer.parentId !== singleUser?._id
+                &&
+                customer.grandParentId !== singleUser?._id
+            )
     );
 
     const filteredCustomers = pendingCustomers.filter(customer =>
