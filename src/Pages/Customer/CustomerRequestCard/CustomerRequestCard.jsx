@@ -159,101 +159,67 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
                         <div className="p-5 rounded-lg shadow-sm flex-1 overflow-y-auto">
                             <table className="w-full border-collapse rounded-lg overflow-hidden shadow-md">
                                 <tbody>
-                                    {customer.name && (
-                                        <tr className="border-b">
-                                            <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Name</td>
-                                            <td className="px-4 py-3 text-gray-800">{customer.name}</td>
-                                        </tr>
-                                    )}
-                                    {customer.territory && (
-                                        <tr className="border-b bg-gray-50">
-                                            <td className="px-4 py-3 font-semibold text-gray-700">Territory</td>
-                                            <td className="px-4 py-3 text-gray-800">{customer.territory}</td>
-                                        </tr>
-                                    )}
-                                    {customer.tradeLicense && (
-                                        <tr className="border-b">
-                                            <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Trade License</td>
-                                            <td className="px-4 py-3 text-gray-800">{customer.tradeLicense}</td>
-                                        </tr>
-                                    )}
-                                    {customer.drugLicense && (
-                                        <tr className="border-b bg-gray-50">
-                                            <td className="px-4 py-3 font-semibold text-gray-700">Drug License</td>
-                                            <td className="px-4 py-3 text-gray-800">{customer.drugLicense}</td>
-                                        </tr>
-                                    )}
-                                    {customer.address && (
-                                        <tr className="border-b">
-                                            <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Address</td>
-                                            <td className="px-4 py-3 text-gray-800">{customer.address}</td>
-                                        </tr>
-                                    )}
-                                    {customer.mobile && (
-                                        <tr className="border-b bg-gray-50">
-                                            <td className="px-4 py-3 font-semibold text-gray-700">Mobile</td>
-                                            <td className="px-4 py-3 text-gray-800">{customer.mobile}</td>
-                                        </tr>
-                                    )}
-                                    {customer.email && (
-                                        <tr className="border-b">
-                                            <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Email</td>
-                                            <td className="px-4 py-3 text-gray-800">{customer.email}</td>
-                                        </tr>
-                                    )}
-                                    {customer.contactPerson && (
-                                        <tr className="border-b bg-gray-50">
-                                            <td className="px-4 py-3 font-semibold text-gray-700">Contact Person</td>
-                                            <td className="px-4 py-3 text-gray-800">{customer.contactPerson}</td>
-                                        </tr>
-                                    )}
-                                    {customer.discount > 0 && (
-                                        <tr className="border-b">
-                                            <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Discount</td>
-                                            <td className="px-4 py-3 text-green-700 font-bold">{customer.discount}%</td>
-                                        </tr>
-                                    )}
-                                    {customer.payMode && (
-                                        <tr className="border-b">
-                                            <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Pay Mode</td>
-                                            <td className="px-4 py-3 text-gray-800">{customer.payMode?.join(", ")}</td>
-                                        </tr>
-                                    )}
-                                    {customer.crLimit > 0 && (
-                                        <tr className="border-b bg-gray-50">
-                                            <td className="px-4 py-3 font-semibold text-gray-700">Credit Limit</td>
-                                            <td className="px-4 py-3 text-green-700 font-bold">{customer.crLimit} BDT</td>
-                                        </tr>
-                                    )}
-                                    {customer.dayLimit > 0 && (
-                                        <tr className="border-b bg-gray-50">
-                                            <td className="px-4 py-3 font-semibold text-gray-700">Day Limit</td>
-                                            <td className="px-4 py-3 text-gray-800">{customer.dayLimit}</td>
-                                        </tr>
-                                    )}
-                                    {customer.addedBy && (
-                                        <tr className="border-b">
-                                            <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Added By</td>
-                                            <td className="px-4 py-3 text-gray-800">{customer.addedBy}</td>
-                                        </tr>
-                                    )}
-                                    {customer.status && (
-                                        <tr className="border-b bg-gray-50">
-                                            <td className="px-4 py-3 font-semibold text-gray-700">Status</td>
-                                            <td className="px-4 py-3">
-                                                <span className={`px-3 py-1 text-sm font-semibold rounded-full shadow-md 
-                                    ${customer.status !== "pending" ? "bg-green-500 text-white" : "bg-red-500 text-white"}`}>
-                                                    {customer.status.charAt(0).toUpperCase() + customer.status.slice(1)}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    )}
-                                    {customer.date && (
-                                        <tr>
-                                            <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Date</td>
-                                            <td className="px-4 py-3 text-gray-800">{new Date(customer.date).toISOString().split("T")[0]}</td>
-                                        </tr>
-                                    )}
+                                    <tr className="border-b">
+                                        <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Name</td>
+                                        <td className="px-4 py-3 text-gray-800">{customer.name}</td>
+                                    </tr>
+                                    <tr className="border-b bg-gray-50">
+                                        <td className="px-4 py-3 font-semibold text-gray-700">Territory</td>
+                                        <td className="px-4 py-3 text-gray-800">{customer.territory}</td>
+                                    </tr>
+                                    <tr className="border-b">
+                                        <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Trade License</td>
+                                        <td className="px-4 py-3 text-gray-800">{customer.tradeLicense}</td>
+                                    </tr>
+                                    <tr className="border-b bg-gray-50">
+                                        <td className="px-4 py-3 font-semibold text-gray-700">Drug License</td>
+                                        <td className="px-4 py-3 text-gray-800">{customer.drugLicense ? customer.drugLicense : "N/A"}</td>
+                                    </tr>
+                                    <tr className="border-b">
+                                        <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Address</td>
+                                        <td className="px-4 py-3 text-gray-800">{customer.address}</td>
+                                    </tr>
+                                    <tr className="border-b bg-gray-50">
+                                        <td className="px-4 py-3 font-semibold text-gray-700">Mobile</td>
+                                        <td className="px-4 py-3 text-gray-800">{customer.mobile}</td>
+                                    </tr>
+                                    <tr className="border-b">
+                                        <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Email</td>
+                                        <td className="px-4 py-3 text-gray-800">{customer.email}</td>
+                                    </tr>
+                                    <tr className="border-b bg-gray-50">
+                                        <td className="px-4 py-3 font-semibold text-gray-700">Contact Person</td>
+                                        <td className="px-4 py-3 text-gray-800">{customer.contactPerson}</td>
+                                    </tr>
+                                    <tr className="border-b">
+                                        <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Discount</td>
+                                        <td className="px-4 py-3 text-green-700 font-bold">{customer.discount}%</td>
+                                    </tr>
+                                    <tr className="border-b bg-gray-50">
+                                        <td className="px-4 py-3 font-semibold text-gray-700">Pay Mode</td>
+                                        <td className="px-4 py-3 text-gray-800">{customer.payMode?.join(", ")}</td>
+                                    </tr>
+                                    <tr className="border-b">
+                                        <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Credit Limit</td>
+                                        <td className="px-4 py-3 text-green-700 font-bold">{customer.crLimit} BDT</td>
+                                    </tr>
+                                    <tr className="border-b bg-gray-50">
+                                        <td className="px-4 py-3 font-semibold text-gray-700">Day Limit</td>
+                                        <td className="px-4 py-3 text-gray-800">{customer.dayLimit ? customer.dayLimit : "N/A"}</td>
+                                    </tr>
+                                    <tr className="border-b">
+                                        <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Date</td>
+                                        <td className="px-4 py-3 text-gray-800">{new Date(customer.date).toISOString().split("T")[0]}</td>
+                                    </tr>
+                                    <tr className="border-b bg-gray-50">
+                                        <td className="px-4 py-3 font-semibold text-gray-700">Status</td>
+                                        <td className="px-4 py-3">
+                                            <span className={`px-3 py-1 text-sm font-semibold rounded-full shadow-md 
+                                                ${((customer.status === "approved")) ? "bg-green-500 text-white" : ((customer.status === "requested")) ? "bg-yellow-500 text-white" : ((customer.status === "initialized")) ? "bg-orange-500 text-white" : "bg-red-500 text-white"}`}>
+                                                {customer.status.charAt(0).toUpperCase() + customer.status.slice(1)}
+                                            </span>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
 

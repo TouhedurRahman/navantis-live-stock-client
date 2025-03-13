@@ -16,9 +16,8 @@ const NewCustomer = () => {
     const myCustomers = customers.filter(
         customer =>
             (
-                customer.status === "pending"
-                ||
-                customer.status === "denied"
+                ["pending", "initialized", "requested", "denied"].includes(customer.status)
+
             ) && (
                 customer.territory === singleUser.territory
                 ||
