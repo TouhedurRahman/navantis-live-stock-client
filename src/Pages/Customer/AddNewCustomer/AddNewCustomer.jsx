@@ -12,7 +12,15 @@ const AddNewCustomer = () => {
     const [singleUser] = useSingleUser();
     const [allUsers] = useAllUsers();
 
-    const { register, handleSubmit, reset, formState: { errors } } = useForm();
+    const { register, handleSubmit, watch, reset, formState: { errors } } = useForm();
+
+    const paymentType = watch("paymentType");
+
+    const payMode = paymentType === "Cash"
+        ? ["cash"]
+        : paymentType === "STC"
+            ? ["cash", "STC"]
+            : ["Credit"];
 
     const getTodayDate = () => {
         const today = new Date();
@@ -30,7 +38,7 @@ const AddNewCustomer = () => {
             const newCustomer = {
                 name: data.name,
                 territory: data.territory,
-                parentTerritory,
+                parentTerritory: parentTerritory,
                 tradeLicense: data.trl,
                 drugLicense: data.drl,
                 address: data.address,
@@ -38,7 +46,9 @@ const AddNewCustomer = () => {
                 email: data.email,
                 contactPerson: data.cperson || data.mobile,
                 discount: Number(data.discount) || 0,
-                crLimit: Number(data.crlimit) || 0,
+                payMode: payMode,
+                crLimit: Number(data.crLimit) || 0,
+                dayLimit: Number(data.dayLimit) || 0,
                 addedBy: data.addedby,
                 addedEmail: data.addedemail,
                 status: 'pending',
@@ -211,18 +221,47 @@ const AddNewCustomer = () => {
                             />
                             {errors.discount && <p className="text-red-500 text-sm">{errors.discount.message}</p>}
                         </div>
+
                         <div className="flex flex-col">
-                            <label className="text-[#6E719A] mb-1 text-sm">
-                                Credit Limit
-                            </label>
-                            <input
-                                {...register("crlimit")}
-                                placeholder="Enter credit limit"
+                            <label className="text-[#6E719A] mb-1 text-sm">Payment Type</label>
+                            <select
+                                {...register("paymentType", { required: "Payment type is required" })}
                                 className="border-gray-500 bg-white border p-2 text-sm"
-                            />
+                            >
+                                <option value="Cash">Cash</option>
+                                <option value="Credit">Credit</option>
+                                <option value="STC">STC</option>
+                            </select>
                         </div>
                     </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 mb-2">
+                        {(paymentType === "Credit" || paymentType === "STC") && (
+                            <div className="flex flex-col">
+                                <label className="text-[#6E719A] mb-1 text-sm">
+                                    Credit Limit
+                                </label>
+                                <input
+                                    {...register("crLimit", { required: "Credit limit is required" })}
+                                    placeholder="Enter credit limit"
+                                    className="border-gray-500 bg-white border p-2 text-sm"
+                                />
+                                {errors.crLimit && <p className="text-red-500 text-sm">{errors.crLimit.message}</p>}
+                            </div>
+                        )}
 
+                        {paymentType === "Credit" && (
+                            <div className="flex flex-col">
+                                <label className="text-[#6E719A] mb-1 text-sm">Day Limit</label>
+                                <input
+                                    {...register("dayLimit", { required: "Day limit is required" })}
+                                    placeholder="Enter Day Limit"
+                                    className="border-gray-500 bg-white border p-2 text-sm"
+                                    type="number"
+                                />
+                                {errors.dayLimit && <p className="text-red-500 text-sm">{errors.dayLimit.message}</p>}
+                            </div>
+                        )}
+                    </div>
                     <h1 className="mt-10 text-sm">Customer added by</h1>
                     <hr className='w-full border border-gray-500 mb-3' />
 
@@ -262,8 +301,8 @@ const AddNewCustomer = () => {
                     </div>
                     <button type="submit" className="bg-blue-500 text-white mt-5 p-2 rounded text-sm">Submit</button>
                 </form>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 
