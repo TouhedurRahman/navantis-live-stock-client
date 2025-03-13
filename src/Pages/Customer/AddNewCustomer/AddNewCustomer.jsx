@@ -17,9 +17,9 @@ const AddNewCustomer = () => {
     const paymentType = watch("paymentType");
 
     const payMode = paymentType === "Cash"
-        ? ["cash"]
+        ? ["Cash"]
         : paymentType === "STC"
-            ? ["cash", "STC"]
+            ? ["Cash", "STC"]
             : ["Credit"];
 
     const getTodayDate = () => {
@@ -230,6 +230,7 @@ const AddNewCustomer = () => {
                                 {...register("paymentType", { required: "Payment type is required" })}
                                 className="border-gray-500 bg-white border p-2 text-sm"
                             >
+                                <option value="">Select Payment Mode</option>
                                 <option value="Cash">Cash</option>
                                 <option value="Credit">Credit</option>
                                 <option value="STC">STC</option>

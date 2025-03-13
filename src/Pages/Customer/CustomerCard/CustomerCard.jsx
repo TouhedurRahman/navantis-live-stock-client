@@ -177,16 +177,28 @@ const CustomerCard = ({ idx, customer, refetch }) => {
                                             <td className="px-4 py-3 text-gray-800">{customer.contactPerson}</td>
                                         </tr>
                                     )}
-                                    {customer.discount && (
+                                    {customer.discount > 0 && (
                                         <tr className="border-b">
                                             <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Discount</td>
                                             <td className="px-4 py-3 text-green-700 font-bold">{customer.discount}%</td>
                                         </tr>
                                     )}
-                                    {customer.crLimit && (
+                                    {customer.payMode && (
+                                        <tr className="border-b bg-gray-50">
+                                            <td className="px-4 py-3 font-semibold text-gray-700">Pay Mode</td>
+                                            <td className="px-4 py-3 text-gray-800">{customer.payMode?.join(", ")}</td>
+                                        </tr>
+                                    )}
+                                    {customer.crLimit > 0 && (
                                         <tr className="border-b bg-gray-50">
                                             <td className="px-4 py-3 font-semibold text-gray-700">Credit Limit</td>
                                             <td className="px-4 py-3 text-green-700 font-bold">{customer.crLimit} BDT</td>
+                                        </tr>
+                                    )}
+                                    {customer.dayLimit > 0 && (
+                                        <tr className="border-b bg-gray-50">
+                                            <td className="px-4 py-3 font-semibold text-gray-700">Day Limit</td>
+                                            <td className="px-4 py-3 text-gray-800">{customer.dayLimit}</td>
                                         </tr>
                                     )}
                                     {customer.date && (

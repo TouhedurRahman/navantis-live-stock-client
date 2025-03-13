@@ -20,9 +20,9 @@ const UpdateCustomer = () => {
     const paymentType = watch("paymentType");
 
     const payMode = paymentType === "Cash"
-        ? ["cash"]
+        ? ["Cash"]
         : paymentType === "STC"
-            ? ["cash", "STC"]
+            ? ["Cash", "STC"]
             : ["Credit"];
 
     const [customers, loading, refetch] = useCustomer();
@@ -213,6 +213,7 @@ const UpdateCustomer = () => {
                                 Discount
                             </label>
                             <input
+                                defaultValue={customer?.discount}
                                 {...register("discount")}
                                 placeholder="Enter parcentage rate"
                                 className="border-gray-500 bg-white border p-2 text-sm"
@@ -221,11 +222,12 @@ const UpdateCustomer = () => {
                         </div>
 
                         <div className="flex flex-col">
-                            <label className="text-[#6E719A] mb-1 text-sm">Payment Type</label>
+                            <label className="text-[#6E719A] mb-1 text-sm">Payment Mode</label>
                             <select
                                 {...register("paymentType", { required: "Payment type is required" })}
                                 className="border-gray-500 bg-white border p-2 text-sm"
                             >
+                                <option value="">Select Payment Mode</option>
                                 <option value="Cash">Cash</option>
                                 <option value="Credit">Credit</option>
                                 <option value="STC">STC</option>
@@ -240,6 +242,7 @@ const UpdateCustomer = () => {
                                     Credit Limit
                                 </label>
                                 <input
+                                    defaultValue={customer?.crLimit}
                                     {...register("crLimit", { required: "Credit limit is required" })}
                                     placeholder="Enter credit limit"
                                     className="border-gray-500 bg-white border p-2 text-sm"
@@ -252,6 +255,7 @@ const UpdateCustomer = () => {
                             <div className="flex flex-col">
                                 <label className="text-[#6E719A] mb-1 text-sm">Day Limit</label>
                                 <input
+                                    defaultValue={customer?.dayLimit}
                                     {...register("dayLimit", { required: "Day limit is required" })}
                                     placeholder="Enter Day Limit"
                                     className="border-gray-500 bg-white border p-2 text-sm"
