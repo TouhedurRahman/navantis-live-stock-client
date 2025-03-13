@@ -239,10 +239,11 @@ const PlaceOrder = () => {
                                     className="border-gray-500 bg-white border p-2 text-sm"
                                 >
                                     <option value="">~~ Select a Pay Mode ~~</option>
-                                    <option value="Cash">Cash</option>
-                                    <option value="Credit">Credit</option>
-                                    <option value="STC">STC</option>
-
+                                    {selectedPharmacy.payMode?.map((mode) => (
+                                        <option key={mode} value={mode}>
+                                            {mode}
+                                        </option>
+                                    ))}
                                 </select>
                                 {errors.PayMode && <p className="text-red-500 text-sm">{errors.PayMode.message}</p>}
                             </div>
