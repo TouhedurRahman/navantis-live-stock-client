@@ -65,6 +65,7 @@ const useMenuConfig = () => {
             links: [
                 singleUser?.permissions?.includes("approve-customer") &&
                 { to: '/customer-request', icon: <VscGitPullRequestGoToChanges className='me-2' />, label: 'Customer Request' },
+                singleUser?.permissions?.includes("add-customer") &&
                 { to: '/add-customer', icon: <IoIosAddCircle className='me-2' />, label: 'Add new' },
                 { to: '/customer-list', icon: <FaListUl className='me-2' />, label: 'Customer List' },
             ],
