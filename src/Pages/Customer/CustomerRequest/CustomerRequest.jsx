@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
 import { ImSearch } from 'react-icons/im';
+import { useLocation } from 'react-router-dom';
 import Loader from '../../../Components/Loader/Loader';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useCustomer from '../../../Hooks/useCustomer';
@@ -14,6 +15,8 @@ const CustomerRequest = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [customersPerPage, setCustomersPerPage] = useState(5);
+
+    const location = useLocation();
 
     const pendingCustomers = customers.filter(
         customer =>
@@ -65,15 +68,25 @@ const CustomerRequest = () => {
 
     return (
         <div>
-            <PageTitle
-                from={"Customer"}
-                to={"Customer request"}
-            />
+            <div>
+                {
+                    !location.pathname.includes('/customer-admin')
+                    &&
+                    <PageTitle
+                        from={"Customer"}
+                        to={"Customer request"}
+                    />
+                }
+            </div>
             <div className="bg-white pb-1">
-                <div>
-                    <h1 className="px-6 py-3 font-bold">Request to approve customer(s)</h1>
-                    <hr className='text-center border border-gray-500 mb-5' />
-                </div>
+                {
+                    !location.pathname.includes('/customer-admin')
+                    &&
+                    <div>
+                        <h1 className="px-6 py-3 font-bold">Request to approve customer(s)</h1>
+                        <hr className='text-center border border-gray-500 mb-5' />
+                    </div>
+                }
                 {
                     loading
                         ?

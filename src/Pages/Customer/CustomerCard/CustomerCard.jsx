@@ -155,7 +155,7 @@ const CustomerCard = ({ idx, customer, refetch }) => {
                                     </tr>
                                     <tr className="border-b">
                                         <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Email</td>
-                                        <td className="px-4 py-3 text-gray-800">{customer.email}</td>
+                                        <td className="px-4 py-3 text-gray-800">{customer.email ? customer.email : "N/A"}</td>
                                     </tr>
                                     <tr className="border-b bg-gray-50">
                                         <td className="px-4 py-3 font-semibold text-gray-700">Contact Person</td>

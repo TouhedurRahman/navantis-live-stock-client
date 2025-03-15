@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
 import { ImSearch } from 'react-icons/im';
+import { useLocation } from 'react-router-dom';
 import useCustomer from '../../../Hooks/useCustomer';
 import useSingleUser from '../../../Hooks/useSingleUser';
 import CustomerCard from '../CustomerCard/CustomerCard';
@@ -13,17 +14,24 @@ const MyCustomer = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [customersPerPage, setCustomersPerPage] = useState(5);
 
+    const location = useLocation();
+
     const myCustomers = customers.filter(customer =>
-        customer.status === "approved"
-        &&
         (
-            customer.territory === singleUser.territory
-            ||
-            customer.parentTerritory === singleUser?.territory
-            ||
-            customer.parentId == singleUser?._id
-            ||
-            customer.grandParentId == singleUser?._id
+            location.pathname.includes('/customer-admin')
+            &&
+            customer.status === "approved"
+        ) || (
+            customer.status === "approved"
+            && (
+                customer.territory === singleUser.territory
+                ||
+                customer.parentTerritory === singleUser?.territory
+                ||
+                customer.parentId == singleUser?._id
+                ||
+                customer.grandParentId == singleUser?._id
+            )
         )
     );
 

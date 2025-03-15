@@ -34,6 +34,7 @@ const useMenuConfig = () => {
                 { to: '/missing-products', icon: <FaExclamationCircle className='me-2' />, label: 'Missing Products' },
                 { to: '/price-update', icon: <TbCoinTakaFilled className='me-2' />, label: 'Price Update' },
                 { to: '/dmg-exp', icon: <FaTrashAlt className='me-2' />, label: 'Damaged & Exp.' },
+                { to: '/customer-admin', icon: <AiFillMedicineBox className='me-2' />, label: 'Customer' },
             ],
         },
         warehouse: {
