@@ -130,6 +130,46 @@ const PlaceOrder = () => {
 
     const makeOrder = (data) => {
         console.log("Order successfully placed.");
+
+        /* const totalOrderedProducts = receiptProducts.length;
+        const totalOrderUnits = receiptProducts.reduce((sum, product) => sum + product.quantity, 0);
+        const totalOrderedTradePrice = receiptProducts.reduce((sum, product) => sum + (product.quantity * product.tradePrice), 0);
+
+        const newOrder = {
+            email: user?.email,
+            orderedBy: data.name,
+            areaManager: parentName,
+            zonalManager: gParentName,
+            territory: userTerritory,
+            parentTerritory,
+            pharmacy: selectedPharmacy?.name,
+            pharmacyId: selectedPharmacy?.customerId,
+            products: receiptProducts,
+            totalProduct: totalOrderedProducts,
+            totalUnit: Number(totalOrderUnits),
+            totalPrice: Number(totalOrderedTradePrice),
+            discount: Number(pharmacyDiscount) || 0,
+            payMode: data.payMode,
+            status: "pending",
+            date: getTodayDate()
+        };
+
+        axios.post('http://localhost:5000/orders', newOrder)
+            .then(data => {
+                if (data.data.insertedId) {
+                    reset();
+                    Swal.fire({
+                        icon: "success",
+                        title: "Order successfully placed.",
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                }
+            })
+
+        reset();
+        setProductQuantities({});
+        setReceiptProducts([]); */
     }
 
     const onSubmit = (data) => {
@@ -138,7 +178,7 @@ const PlaceOrder = () => {
             return;
         }
 
-        if (data.payMode === "Cash" && selectedPharmacy?.payMode?.includes("Cash")) {
+        if (data.payMode === "Cash" && !selectedPharmacy?.payMode?.includes("STC")) {
             makeOrder(data);
         } else if (data.payMode === "Credit" && selectedPharmacy?.payMode?.includes("Credit")) {
             const today = new Date();
@@ -186,46 +226,6 @@ const PlaceOrder = () => {
         } else {
             console.log("It's working...");
         }
-
-        /* const totalOrderedProducts = receiptProducts.length;
-        const totalOrderUnits = receiptProducts.reduce((sum, product) => sum + product.quantity, 0);
-        const totalOrderedTradePrice = receiptProducts.reduce((sum, product) => sum + (product.quantity * product.tradePrice), 0);
-
-        const newOrder = {
-            email: user?.email,
-            orderedBy: data.name,
-            areaManager: parentName,
-            zonalManager: gParentName,
-            territory: userTerritory,
-            parentTerritory,
-            pharmacy: selectedPharmacy?.name,
-            pharmacyId: selectedPharmacy?.customerId,
-            products: receiptProducts,
-            totalProduct: totalOrderedProducts,
-            totalUnit: Number(totalOrderUnits),
-            totalPrice: Number(totalOrderedTradePrice),
-            discount: Number(pharmacyDiscount) || 0,
-            payMode: data.payMode,
-            status: "pending",
-            date: getTodayDate()
-        };
-
-        axios.post('http://localhost:5000/orders', newOrder)
-            .then(data => {
-                if (data.data.insertedId) {
-                    reset();
-                    Swal.fire({
-                        icon: "success",
-                        title: "New Product successfully added!",
-                        showConfirmButton: false,
-                        timer: 1000
-                    });
-                }
-            })
-
-        reset();
-        setProductQuantities({});
-        setReceiptProducts([]); */
     };
 
     return (
