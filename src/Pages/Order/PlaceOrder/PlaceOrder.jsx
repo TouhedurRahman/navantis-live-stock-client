@@ -225,6 +225,42 @@ const PlaceOrder = () => {
             }
         } else {
             console.log("It's working...");
+
+            const currentDate = new Date();
+            const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            const lastDayAllowed = new Date(currentDate.getFullYear(), currentDate.getMonth(), 28);
+
+            const stcOrdersThisMonth = orders.filter(order =>
+                order.pharmacyId == selectedPharmacy?.customerId
+                &&
+                order.payMode === "STC"
+                &&
+                new Date(order.date) >= firstDayOfMonth
+                &&
+                new Date(order.date) <= lastDayAllowed
+            );
+
+            const hasAnySTCOrderThisMonth = stcOrdersThisMonth.length > 0;
+
+            if (data.payMode === "STC") {
+                if (hasAnySTCOrderThisMonth) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Order Not Allowed",
+                        text: "An STC order has already been placed in this month. You cannot place another."
+                    });
+                } else if (selectedPharmacy?.crLimit >= totalPayable) {
+                    makeOrder(data);
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "You currently do not have a credit limit!"
+                    });
+                }
+            } else {
+                makeOrder(data);
+            }
         }
     };
 
