@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
@@ -7,6 +6,7 @@ import useAllUsers from '../../../Hooks/useAllUsers';
 import useAuth from '../../../Hooks/useAuth';
 import useCustomer from '../../../Hooks/useCustomer';
 import useDepotProducts from '../../../Hooks/useDepotProducts';
+import useOrders from '../../../Hooks/useOrders';
 import useSingleUser from '../../../Hooks/useSingleUser';
 
 const PlaceOrder = () => {
@@ -18,6 +18,7 @@ const PlaceOrder = () => {
     // const [tempUsers] = useTempUsers();
     const [pharmacies] = useCustomer();
     const [products] = useDepotProducts();
+    const [orders] = useOrders();
 
     // const [filteredPharmacies, setFilteredPharmacies] = useState([]);
     const [selectedPharmacy, setSelectedPharmacy] = useState({});
@@ -127,13 +128,66 @@ const PlaceOrder = () => {
         setIsModalOpen(false);
     };
 
+    const makeOrder = (data) => {
+        console.log("Order successfully placed.");
+    }
+
     const onSubmit = (data) => {
         if (!selectedPharmacy) {
             alert("Please select a pharmacy.");
             return;
         }
 
-        const totalOrderedProducts = receiptProducts.length;
+        if (data.payMode === "Cash" && selectedPharmacy?.payMode?.includes("Cash")) {
+            makeOrder(data);
+        } else if (data.payMode === "Credit" && selectedPharmacy?.payMode?.includes("Credit")) {
+            const today = new Date();
+
+            const overdueOrders = orders.filter(order => {
+                const orderDate = new Date(order.date);
+                const diffInDays = Math.floor((today - orderDate) / (1000 * 60 * 60 * 24));
+
+                return (
+                    order.pharmacyId === selectedPharmacy?.customerId &&
+                    order.payMode === "Credit" &&
+                    order.status === "due" &&
+                    diffInDays > selectedPharmacy.dayLimit
+                );
+            });
+
+            if (overdueOrders.length === 0) {
+                const creditDues = orders.filter(
+                    order =>
+                        order.pharmacyId == selectedPharmacy.customerId
+                        &&
+                        order.status === "due"
+                ).reduce(
+                    (sum, order) => sum + order.due, 0
+                )
+
+                const availableCrLimit = selectedPharmacy?.crLimit - creditDues;
+
+                if (availableCrLimit > 0 && availableCrLimit >= totalPayable) {
+                    makeOrder(data);
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "You currently do not have a credit limit!"
+                    });
+                }
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Overdue orders found!"
+                });
+            }
+        } else {
+            console.log("It's working...");
+        }
+
+        /* const totalOrderedProducts = receiptProducts.length;
         const totalOrderUnits = receiptProducts.reduce((sum, product) => sum + product.quantity, 0);
         const totalOrderedTradePrice = receiptProducts.reduce((sum, product) => sum + (product.quantity * product.tradePrice), 0);
 
@@ -171,7 +225,7 @@ const PlaceOrder = () => {
 
         reset();
         setProductQuantities({});
-        setReceiptProducts([]);
+        setReceiptProducts([]); */
     };
 
     return (
