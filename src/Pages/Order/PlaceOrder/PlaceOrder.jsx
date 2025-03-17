@@ -129,9 +129,9 @@ const PlaceOrder = () => {
     };
 
     const makeOrder = (data) => {
-        console.log("Order successfully placed.");
+        // console.log("Order successfully placed.");
 
-        /* const totalOrderedProducts = receiptProducts.length;
+        const totalOrderedProducts = receiptProducts.length;
         const totalOrderUnits = receiptProducts.reduce((sum, product) => sum + product.quantity, 0);
         const totalOrderedTradePrice = receiptProducts.reduce((sum, product) => sum + (product.quantity * product.tradePrice), 0);
 
@@ -169,7 +169,7 @@ const PlaceOrder = () => {
 
         reset();
         setProductQuantities({});
-        setReceiptProducts([]); */
+        setReceiptProducts([]);
     }
 
     const onSubmit = (data) => {
