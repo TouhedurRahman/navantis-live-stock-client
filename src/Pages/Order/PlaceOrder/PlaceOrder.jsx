@@ -212,54 +212,92 @@ const PlaceOrder = () => {
                 } else {
                     Swal.fire({
                         icon: "error",
-                        title: "Oops...",
-                        text: "You currently do not have a credit limit!"
+                        title: "Credit Limit Exceeded",
+                        text: "You do not have a sufficient credit limit!"
                     });
                 }
             } else {
                 Swal.fire({
                     icon: "error",
-                    title: "Oops...",
+                    title: "Order Blocked",
                     text: "Overdue orders found!"
                 });
             }
         } else {
-            console.log("It's working...");
-
             const currentDate = new Date();
             const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
             const lastDayAllowed = new Date(currentDate.getFullYear(), currentDate.getMonth(), 28);
 
-            const stcOrdersThisMonth = orders.filter(order =>
-                order.pharmacyId == selectedPharmacy?.customerId
+            const previousUnpaidSTC = orders.some(order =>
+                order.pharmacyId === selectedPharmacy?.customerId
                 &&
                 order.payMode === "STC"
                 &&
-                new Date(order.date) >= firstDayOfMonth
+                order.status.toLowerCase() === "due"
                 &&
-                new Date(order.date) <= lastDayAllowed
+                new Date(order.date) < firstDayOfMonth
             );
 
-            const hasAnySTCOrderThisMonth = stcOrdersThisMonth.length > 0;
-
-            if (data.payMode === "STC") {
-                if (hasAnySTCOrderThisMonth) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Order Not Allowed",
-                        text: "An STC order has already been placed in this month. You cannot place another."
-                    });
-                } else if (selectedPharmacy?.crLimit >= totalPayable) {
-                    makeOrder(data);
-                } else {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "You currently do not have a credit limit!"
-                    });
-                }
+            if (previousUnpaidSTC) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Order Blocked",
+                    text: "Overdue STC orders found!"
+                });
             } else {
-                makeOrder(data);
+                const stcOrders = orders.filter(order =>
+                    order.pharmacyId === selectedPharmacy?.customerId
+                    &&
+                    order.payMode === "STC"
+                    &&
+                    new Date(order.date) >= firstDayOfMonth
+                    &&
+                    new Date(order.date) <= lastDayAllowed
+                );
+
+                const hasUnpaidSTC = stcOrders.some(order => order.status.toLowerCase() === "due");
+
+                if (hasUnpaidSTC) {
+                    if (currentDate <= lastDayAllowed) {
+                        if (data.payMode === "Cash") {
+                            makeOrder(data);
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Order Restricted",
+                                text: "Due STC orders found! Only Cash payments are allowed until payment is cleared."
+                            });
+                        }
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Order Blocked",
+                            text: "Overdue STC orders found! You cannot place any new orders until payment is made."
+                        });
+                    }
+                } else {
+                    if (data.payMode === "STC") {
+                        const hasAnySTCOrderThisMonth = stcOrders.length > 0;
+
+                        if (hasAnySTCOrderThisMonth) {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Order Not Allowed",
+                                text: "An STC order has already been placed this month. You can't place another."
+                            });
+                        } else if (selectedPharmacy?.crLimit >= totalPayable) {
+                            makeOrder(data);
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Credit Limit Exceeded",
+                                text: "You do not have a sufficient credit limit!"
+                            });
+                        }
+                    } else {
+                        makeOrder(data);
+                    }
+                }
             }
         }
     };
