@@ -46,6 +46,7 @@ const WarehouseAddProduct = () => {
         mutationFn: async (data) => {
             const updatedProduct = {
                 productName: selectedProductName,
+                netWeight: selectedProductDetails.netWeight,
                 productCode: data.psc,
                 batch: data.batch,
                 expire: data.expire,
@@ -147,7 +148,7 @@ const WarehouseAddProduct = () => {
                                 <option value="">Select product name</option>
                                 {dateWiseProducts?.map((product, index) => (
                                     <option key={index} value={product._id}>
-                                        {product.productName}
+                                        {product.productName} - {product.netWeight}
                                     </option>
                                 ))}
                             </select>

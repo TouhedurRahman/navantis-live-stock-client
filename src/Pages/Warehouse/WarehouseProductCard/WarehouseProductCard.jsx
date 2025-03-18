@@ -27,6 +27,9 @@ const WarehouseProductCard = ({ idx, product, refetch, damagedProducts }) => {
                 <td>
                     <div className="font-bold">{product.productName}</div>
                 </td>
+                <td>
+                    {product.netWeight}
+                </td>
                 <td className='text-center'>
                     {product.batch}
                 </td>

@@ -14,6 +14,7 @@ const PurchaseOrder = () => {
         mutationFn: async (data) => {
             const newProduct = {
                 productName: data.name,
+                netWeight: `${data.netWeight} ${data.weightUnit}`,
                 batch: data.batch,
                 expire: data.expire,
                 actualPrice: Number(data.ap),
@@ -35,6 +36,7 @@ const PurchaseOrder = () => {
         mutationFn: async (data) => {
             const newProduct = {
                 productName: data.name,
+                netWeight: `${data.netWeight} ${data.weightUnit}`,
                 batch: data.batch,
                 expire: data.expire,
                 actualPrice: Number(data.ap),
@@ -114,17 +116,44 @@ const PurchaseOrder = () => {
                             {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
                         </div>
                         <div className="flex flex-col">
-                            <label className="text-[#6E719A] mb-1 text-sm">
-                                Product Quantity <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type="number"
-                                {...register("quantity", { required: "Quantity is required" })}
-                                placeholder="Enter product quantity"
-                                className="border-gray-500 bg-white border p-2 text-sm"
-                                onWheel={(e) => e.target.blur()}
-                            />
-                            {errors.quantity && <p className="text-red-500 text-sm">{errors.quantity.message}</p>}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+                                <div className="flex flex-col">
+                                    <label className="text-[#6E719A] mb-1 text-sm">
+                                        Net Weight <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="flex items-center">
+                                        <input
+                                            type="number"
+                                            {...register("netWeight", { required: "Net weight is required" })}
+                                            placeholder="Enter net weight"
+                                            className="border-gray-500 border-r-0 bg-white border p-2 text-sm w-full"
+                                            onWheel={(e) => e.target.blur()}
+                                        />
+                                        <select
+                                            {...register("weightUnit", { required: "Unit is required" })}
+                                            className="border-gray-500 border-l-0 bg-white border p-2 text-sm cursor-pointer"
+                                        >
+                                            <option value="ML">ML</option>
+                                            <option value="GM">GM</option>
+                                        </select>
+                                    </div>
+                                    {errors.netWeight && <p className="text-red-500 text-sm">{errors.netWeight.message}</p>}
+                                    {errors.weightUnit && <p className="text-red-500 text-sm">{errors.weightUnit.message}</p>}
+                                </div>
+                                <div className="flex flex-col">
+                                    <label className="text-[#6E719A] mb-1 text-sm">
+                                        Product Quantity <span className="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                        type="number"
+                                        {...register("quantity", { required: "Quantity is required" })}
+                                        placeholder="Enter product quantity"
+                                        className="border-gray-500 bg-white border p-2 text-sm"
+                                        onWheel={(e) => e.target.blur()}
+                                    />
+                                    {errors.quantity && <p className="text-red-500 text-sm">{errors.quantity.message}</p>}
+                                </div>
+                            </div>
                         </div>
                     </div>
 

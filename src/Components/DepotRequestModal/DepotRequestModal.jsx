@@ -32,19 +32,17 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
         return `${year}-${month}-${day}`;
     };
 
-    const uniqueWhProductNames = [
-        ...new Set(
+    const uniqueWhProducts = [
+        ...new Map(
             whProducts
-                .filter(product => product.totalQuantity >= 1)
-                .map(product => product.productName)
-        )
+                .filter(product => product.totalQuantity >= 1 && product._id && product.productName && product.netWeight)
+                .map(product => [`${product.productName}-${product.netWeight}`, product])
+        ).values()
     ];
 
     const handleProductChange = (e) => {
-        const selectedProductName = e.target.value;
-        const product = whProducts.find(
-            (product) => product.productName === selectedProductName
-        );
+        const selectedProductId = e.target.value;
+        const product = whProducts.find(product => product._id === selectedProductId);
         setSelectedProduct(product || null);
     };
 
@@ -54,15 +52,11 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
             .reduce((sum, product) => sum + product.totalQuantity, 0)
         : 0;
 
-    // console.log(selectedProQinDepot)
-
     const selectedProQinWh = selectedProduct
         ? whProducts
             .filter(product => product.productName === selectedProduct.productName)
             .reduce((sum, product) => sum + product.totalQuantity, 0)
         : 0;
-
-    // console.log(selectedProQinWh);
 
     const depotRequestQuantity = selectedProduct
         ? depotReqProducts
@@ -73,8 +67,6 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
             .find(product => product.requestedQuantity)?.requestedQuantity || 0
         : 0;
 
-    // console.log(depotRequestQuantity);
-
     const dptReqApprovedQuantity = selectedProduct
         ? depotReqProducts
             .filter(product =>
@@ -83,8 +75,6 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
             )
             .find(product => product.approvedQuantity)?.approvedQuantity || 0
         : 0;
-
-    // console.log(dptReqApprovedQuantity);
 
     const addDptReqMutation = useMutation({
         mutationFn: async (data) => {
@@ -176,15 +166,13 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
                                     onChange={handleProductChange}
                                 >
                                     <option value="">-- Select a product --</option>
-                                    {uniqueWhProductNames.map((productName, index) => (
-                                        <option key={index} value={productName}>
-                                            {productName}
+                                    {uniqueWhProducts.map((product) => (
+                                        <option key={product._id} value={product._id}>
+                                            {`${product.productName} - ${product.netWeight}`}
                                         </option>
                                     ))}
                                 </select>
-                                {errors.productId && (
-                                    <p className="mt-1 text-sm text-red-500">{errors.productId.message}</p>
-                                )}
+                                {errors.productId && <p className="mt-1 text-sm text-red-500">{errors.productId.message}</p>}
                             </div>
 
                             {/* Selected Product Details */}

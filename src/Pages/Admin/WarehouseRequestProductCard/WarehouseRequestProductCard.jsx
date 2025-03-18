@@ -18,14 +18,11 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
     );
     const existingSameBatchProductQuantity = existingSameBatchProducts.reduce((sum, product) => sum + product.totalQuantity, 0);
 
-    // console.log("Total Quantity:", existingSameBatchProductQuantity);
-
     const matchingProducts = whProducts.filter(
         matchingProduct =>
             matchingProduct.productName === product.productName
     );
     const initialQuantity = matchingProducts.reduce((sum, product) => sum + (product.totalQuantity), 0);
-    // console.log(initialQuantity);
 
     const matchingProductName = whProducts.find(
         existingProduct =>
@@ -33,12 +30,12 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
     );
     const initialActualPrice = matchingProductName?.actualPrice ?? null;
     const initialTradePrice = matchingProductName?.tradePrice ?? null;
-    // console.log(initialActualPrice, initialTradePrice);
 
     const addProductMutation = useMutation({
         mutationFn: async () => {
             const newProduct = {
                 productName: product.productName,
+                netWeight: product.netWeight,
                 productCode: product.productCode,
                 batch: product.batch,
                 expire: product.expire,
@@ -58,6 +55,7 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
         mutationFn: async () => {
             const updatedProduct = {
                 productName: product.productName,
+                netWeight: product.netWeight,
                 productCode: product.productCode,
                 batch: product.batch,
                 expire: product.expire,
@@ -78,6 +76,7 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
         mutationFn: async () => {
             const newProduct = {
                 productName: product.productName,
+                netWeight: product.netWeight,
                 productCode: product.productCode,
                 batch: product.batch,
                 expire: product.expire,
@@ -104,6 +103,7 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
         mutationFn: async () => {
             const newProduct = {
                 productName: product.productName,
+                netWeight: product.netWeight,
 
                 actualPrice: Number(product.actualPrice),
                 initialActualPrice: Number(initialActualPrice),
@@ -128,6 +128,7 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
         mutationFn: async (updatedStatus) => {
             const updatedProduct = {
                 productName: product.productName,
+                netWeight: product.netWeight,
                 productCode: product.productCode,
                 batch: product.batch,
                 expire: product.expire,
