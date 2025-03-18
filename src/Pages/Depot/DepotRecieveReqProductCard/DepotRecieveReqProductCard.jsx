@@ -113,6 +113,9 @@ const DepotRecieveReqProductCard = ({ idx, product, refetch }) => {
                 <td>
                     <div className="font-bold">{product.productName}</div>
                 </td>
+                <td>
+                    {product.netWeight}
+                </td>
                 <td className='text-center'>
                     {product.batch}
                 </td>

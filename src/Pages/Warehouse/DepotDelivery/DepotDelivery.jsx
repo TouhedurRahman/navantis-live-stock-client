@@ -80,6 +80,7 @@ const DepotDelivery = () => {
                     deliveredProducts.push({
                         _id: data[`id${i}`],
                         productName: selectedProductName,
+                        netWeight: selectedProductDetails.netWeight,
                         productCode: data[`psc${i}`],
                         batch: data[`batch${i}`],
                         expire: data[`expire${i}`],
@@ -277,7 +278,7 @@ const DepotDelivery = () => {
                                 <option value="">Select product name</option>
                                 {dateWiseProducts?.map((product, index) => (
                                     <option key={index} value={product._id}>
-                                        {product.productName}
+                                        {product.productName} - {product.netWeight}
                                     </option>
                                 ))}
                             </select>

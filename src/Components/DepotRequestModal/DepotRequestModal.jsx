@@ -80,6 +80,7 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
         mutationFn: async (data) => {
             const newProduct = {
                 productName: selectedProduct.productName,
+                netWeight: selectedProduct.netWeight,
                 requestedQuantity: Number(data.requestedQuantity),
                 requestedDate: getTodayDate(),
                 status: "requested",
