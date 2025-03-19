@@ -226,6 +226,7 @@ const PlaceOrder = () => {
         } else {
             const currentDate = new Date();
             const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            const stcOrderLastDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 10);
             const lastDayAllowed = new Date(currentDate.getFullYear(), currentDate.getMonth(), 28);
 
             const previousUnpaidSTC = orders.some(order =>
@@ -277,21 +278,29 @@ const PlaceOrder = () => {
                     }
                 } else {
                     if (data.payMode === "STC") {
-                        const hasAnySTCOrderThisMonth = stcOrders.length > 0;
+                        if (currentDate <= stcOrderLastDay) {
+                            const hasAnySTCOrderThisMonth = stcOrders.length > 0;
 
-                        if (hasAnySTCOrderThisMonth) {
-                            Swal.fire({
-                                icon: "error",
-                                title: "Order Not Allowed",
-                                text: "An STC order has already been placed this month. You can't place another."
-                            });
-                        } else if (selectedPharmacy?.crLimit >= totalPayable) {
-                            makeOrder(data);
+                            if (hasAnySTCOrderThisMonth) {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Order Not Allowed",
+                                    text: "An STC order has already been placed this month. You can't place another."
+                                });
+                            } else if (selectedPharmacy?.crLimit >= totalPayable) {
+                                makeOrder(data);
+                            } else {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Credit Limit Exceeded",
+                                    text: "You do not have a sufficient credit limit!"
+                                });
+                            }
                         } else {
                             Swal.fire({
                                 icon: "error",
-                                title: "Credit Limit Exceeded",
-                                text: "You do not have a sufficient credit limit!"
+                                title: "Order Restriction Notice",
+                                text: "STC orders cannot be placed after the 10th day of the current month. However, you may still place a cash order."
                             });
                         }
                     } else {
