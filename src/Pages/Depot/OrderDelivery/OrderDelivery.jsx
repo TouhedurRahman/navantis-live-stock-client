@@ -194,9 +194,9 @@ const OrderDelivery = () => {
                     const productCode = product?.productCode;
                     const batch = product?.batch;
                     const expire = product?.expire;
+                    const actualPrice = product?.actualPrice;
                     const tradePrice = product?.tradePrice || 0;
                     const quantity = deliveryQuantities[batchId] || 0;
-                    const actualPrice = product?.actualPrice;
 
                     const uniqueKey = `${productName}-${batchId}`;
 
@@ -206,14 +206,13 @@ const OrderDelivery = () => {
                             acc[uniqueKey].totalPrice += tradePrice * quantity;
                         } else {
                             acc[uniqueKey] = {
-                                batchId,
                                 name: productName,
                                 netWeight,
                                 productCode,
                                 batch,
                                 expire,
-                                tradePrice,
                                 actualPrice,
+                                tradePrice,
                                 quantity,
                                 totalPrice: tradePrice * quantity,
                             };

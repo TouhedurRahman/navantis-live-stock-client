@@ -36,7 +36,7 @@ const PriceUpdateList = () => {
             const matchesDateRange = fromDate && toDate
                 ? productDate >= new Date(fromDate) && productDate <= new Date(toDate)
                 : true;
-            const matchesSearch = product.productName.toLowerCase().includes(searchTerm.toLowerCase());
+            const matchesSearch = product.productName?.toLowerCase().includes(searchTerm.toLowerCase());
             return matchesYear && matchesMonth && matchesDateRange && matchesSearch;
         });
     }, [products, year, month, fromDate, toDate, searchTerm]);
@@ -276,6 +276,7 @@ const PriceUpdateList = () => {
                                             <tr>
                                                 <th className="text-center">Sl. No.</th>
                                                 <th className="text-left">Name</th>
+                                                <th className="text-left">Pack Size</th>
                                                 <th className="text-center">
                                                     New <br />
                                                     Quantity
@@ -312,6 +313,7 @@ const PriceUpdateList = () => {
                                                         }
                                                     </th>
                                                     <td>{product.productName}</td>
+                                                    <td>{product.netWeight}</td>
                                                     <td className="text-center">{product.newQuantity}</td>
                                                     <td className="text-center">{product.initialQuantity}</td>
                                                     <td className="text-center">

@@ -357,6 +357,7 @@ const MissingProductsList = () => {
                                             <tr>
                                                 <th className="text-center">Sl. No.</th>
                                                 <th className="text-left">Name</th>
+                                                <th className="text-left">Pack Size</th>
                                                 <th className="text-center">Batch</th>
                                                 <th className="text-center">Exp.</th>
                                                 <th className="text-center">Order Quantity</th>
@@ -379,6 +380,7 @@ const MissingProductsList = () => {
                                                         }
                                                     </th>
                                                     <td>{product.productName}</td>
+                                                    <td>{product.netWeight}</td>
                                                     <td className="text-center">{product.batch}</td>
                                                     <td className="text-center">{product.expire}</td>
                                                     <td className="text-center">

@@ -324,6 +324,7 @@ const PurchaseList = () => {
                                             <tr>
                                                 <th className="text-center">Sl. No.</th>
                                                 <th className="text-left">Name</th>
+                                                <th className="text-left">Pack Size</th>
                                                 <th className="text-center">Batch</th>
                                                 <th className="text-center">Expire</th>
                                                 <th className="text-center">Quantity</th>
@@ -342,6 +343,7 @@ const PurchaseList = () => {
                                                         }
                                                     </th>
                                                     <td>{product.productName}</td>
+                                                    <td>{product.netWeight}</td>
                                                     <td className="text-center">{product.batch}</td>
                                                     <td className="text-center">{product.expire}</td>
                                                     <td className="text-center">{product.totalQuantity}</td>
