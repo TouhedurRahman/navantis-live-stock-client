@@ -159,7 +159,7 @@ const OrderDelivery = () => {
 
         const deliveredOrder = {
             ...selectedOrderDetails,
-            products: Object.values(
+            /* products: Object.values(
                 Object.keys(deliveryQuantities).reduce((acc, batchId) => {
                     const product = products.find((product) => product._id === batchId);
                     const productName = product?.productName;
@@ -184,7 +184,45 @@ const OrderDelivery = () => {
 
                     return acc;
                 }, {})
-            ),
+            ), */
+
+            products: Object.values(
+                Object.keys(deliveryQuantities).reduce((acc, batchId) => {
+                    const product = products.find((product) => product._id === batchId);
+                    const productName = product?.productName;
+                    const netWeight = product?.netWeight;
+                    const productCode = product?.productCode;
+                    const batch = product?.batch;
+                    const expire = product?.expire;
+                    const tradePrice = product?.tradePrice || 0;
+                    const quantity = deliveryQuantities[batchId] || 0;
+                    const actualPrice = product?.actualPrice;
+
+                    const uniqueKey = `${productName}-${batchId}`;
+
+                    if (productName && quantity > 0) {
+                        if (acc[uniqueKey]) {
+                            acc[uniqueKey].quantity += quantity;
+                            acc[uniqueKey].totalPrice += tradePrice * quantity;
+                        } else {
+                            acc[uniqueKey] = {
+                                batchId,
+                                name: productName,
+                                netWeight,
+                                productCode,
+                                batch,
+                                expire,
+                                tradePrice,
+                                actualPrice,
+                                quantity,
+                                totalPrice: tradePrice * quantity,
+                            };
+                        }
+                    }
+                    return acc;
+                }, {})
+            ).sort((a, b) => a.name.localeCompare(b.name)),
+
             totalProduct: Object.keys(
                 Object.keys(deliveryQuantities).reduce((acc, batchId) => {
                     const product = products.find((product) => product._id === batchId);
@@ -197,6 +235,7 @@ const OrderDelivery = () => {
                     return acc;
                 }, {})
             ).length,
+
             totalUnit: Object.keys(deliveryQuantities).reduce(
                 (total, batchId) => {
                     const quantity = deliveryQuantities[batchId] || 0;
@@ -204,6 +243,7 @@ const OrderDelivery = () => {
                 },
                 0
             ),
+
             totalPrice: Number(totalPrice),
             totalPayable: Number(totalPayable),
             status: "delivered"

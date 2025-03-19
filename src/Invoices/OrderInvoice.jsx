@@ -117,21 +117,21 @@ const OrderInvoice = ({ order }) => {
                             <div class="grid grid-cols-[max-content_15px_auto] text-[11px] gap-y-1">
                                 <span class="font-bold">Date</span>
                                 <span class="font-bold">:</span>
-                                <span>${new Date(order.date).toLocaleDateString('en-GB').replace(/\//g, '-')}</span>
+                                <span>${new Date(order?.date).toLocaleDateString('en-GB').replace(/\//g, '-')}</span>
 
                                 <span class="font-bold">Invoice No.</span>
                                 <span class="font-bold">:</span>
-                                <span>${order.invoice}</span>
+                                <span>${order?.invoice}</span>
 
                                 <span class="font-bold">Pay Mode</span>
                                 <span class="font-bold">:</span>
-                                <span class="font-bold">${order.payMode}</span>
+                                <span class="font-bold">${order?.payMode}</span>
 
                                 <span class="font-bold">Territory</span>
                                 <span class="font-bold">:</span>
-                                <span>${order.territory}</span>
+                                <span>${order?.territory}</span>
 
-                                <span class="font-bold">${orderedBy.designation?.split(" ").map(word => word[0].toUpperCase()).join("")}</span>
+                                <span class="font-bold">${orderedBy?.designation?.split(" ").map(word => word[0].toUpperCase()).join("")}</span>
                                 <span class="font-bold">:</span>
                                 <span>${orderedBy?.name}</span>
 
@@ -159,10 +159,13 @@ const OrderInvoice = ({ order }) => {
                         <th style="text-align: center;">Sl.</th>
                         <th style="text-align: left;">Product Code</th>
                         <th style="text-align: left;">Product Name</th>
+                        <th style="text-align: center;">Pack Size</th>
+                        <th style="text-align: center;">Batch No.</th>
+                        <th style="text-align: center;">Expire</th>
                         <th style="text-align: right;">TP (TK)</th>
                         <th style="text-align: right;">Inv. Qty</th>
                         <th style="text-align: right;">Vat (TK)</th>
-                        <th style="text-align: right;">Total TP (Tk)</th>
+                        <th style="text-align: right;">Net Price (Tk)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -171,7 +174,10 @@ const OrderInvoice = ({ order }) => {
                             <tr>
                                 <td style="text-align: center;">${idx + 1}</td>
                                 <td style="text-align: left;">${product.productCode}</td>
-                                <td style="text-align: leftr;">${product.name}</td>
+                                <td style="text-align: left;">${product.name}</td>
+                                <td style="text-align: center;">${product.netWeight}</td>
+                                <td style="text-align: center;">${product.batch}</td>
+                                <td style="text-align: center;">${product.expire}</td>
                                 <td style="text-align: right;">${product.tradePrice}</td>
                                 <td style="text-align: right;">${product.quantity}</td>
                                 <td style="text-align: right;">${0.00}</td>
@@ -183,7 +189,7 @@ const OrderInvoice = ({ order }) => {
                 <tbody>
                     <tr>
                         <!-- Merged first four columns -->
-                        <td colspan="4" style="text-align: right; font-weight: bold;">Sub Total</td>
+                        <td colspan="7" style="text-align: right; font-weight: bold;">Sub Total</td>
                         <td style="text-align: right;">${totalUnit}</td>
                         <td style="text-align: right;">${0.00}</td>
                         <td style="text-align: right;">${totalTP}</td>
@@ -198,7 +204,7 @@ const OrderInvoice = ({ order }) => {
                 </div>
 
                 <div class="grid grid-cols-[1fr_auto_auto] items-center gap-2">
-                    <span>Less Discount (${order.discount > 0 && order.discount}%)</span>
+                    <span>Less Discount ${order.discount > 0 ? `(${order.discount}%)` : ``}</span>
                     <span>:</span>
                     <span class="w-24">${(Number((Number(lessDiscount)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-</span>
                 </div>
@@ -234,9 +240,11 @@ const OrderInvoice = ({ order }) => {
                         <thead>
                             <tr>
                                 <th style="text-align: center;">Sl.</th>
-                                <th style="text-align: left;">Invoice No.</th>
-                                <th style="text-align: left;">Customer Name</th>
+                                <th style="text-align: center;">Invoice No.</th>
+                                <th style="text-align: center;">Customer Code</th>
                                 <th style="text-align: center;">Date</th>
+                                <th style="text-align: right;">Payable (TK)</th>
+                                <th style="text-align: right;">Paid (TK)</th>
                                 <th style="text-align: right;">Due (TK)</th>
                                 <th style="text-align: center;">Total Due (TK)</th>
                             </tr>
@@ -246,9 +254,11 @@ const OrderInvoice = ({ order }) => {
             (order, idx) => `
                                     <tr>
                                         <td style="text-align: center;">${idx + 1}</td>
-                                        <td style="text-align: left;">${order.invoice}</td>
-                                        <td style="text-align: left;">${order.pharmacy}</td>
+                                        <td style="text-align: center;">${order.invoice}</td>
+                                        <td style="text-align: center;">${order.pharmacyId}</td>
                                         <td style="text-align: center;">${new Date(order.date).toLocaleDateString('en-GB').replace(/\//g, '-')}</td>
+                                        <td style="text-align: right;">${order.totalPayable}</td>
+                                        <td style="text-align: right;">${order.paid}</td>
                                         <td style="text-align: right;">${order.due}</td>
                                         ${idx === 0 ? `<td rowspan='${outstandingOrders.length}' style="text-align: center;">${outStandingDue.toLocaleString('en-IN')}/-</td>` : ""}
                                     </tr>

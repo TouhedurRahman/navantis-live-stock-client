@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
@@ -10,8 +11,8 @@ import useOrders from '../../../Hooks/useOrders';
 import useSingleUser from '../../../Hooks/useSingleUser';
 
 const PlaceOrder = () => {
-    const user = useAuth();
-    const { register, handleSubmit, watch, reset, formState: { errors } } = useForm();
+    const { user } = useAuth();
+    const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
     const [allUsers] = useAllUsers();
     const [singleUser] = useSingleUser();
