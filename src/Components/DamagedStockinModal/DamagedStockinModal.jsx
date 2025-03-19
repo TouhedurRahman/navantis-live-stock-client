@@ -78,9 +78,10 @@ const DamagedStockinModal = ({ isOpen, onClose, product, refetch, damagedProduct
                 <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(100% - 128px)' }}>
                     {/* Product Name and Code */}
                     <div className="bg-white p-6 rounded-lg shadow-lg transform transition duration-300">
-                        <h3 className="text-2xl font-extrabold text-green-900 mb-4 text-center border-b-2 border-green-300 pb-2">
+                        <h3 className="text-2xl font-extrabold text-green-900 mb-2 text-center border-b-2 border-green-300 pb-2">
                             {product.productName}
                         </h3>
+                        <p className=' text-xl font-bold font-sans mb-2 text-center'>{product.netWeight}</p>
                         <div className="grid grid-cols-2 gap-6 items-center">
                             {/* Product Details */}
                             <div className="bg-white rounded-lg shadow-md">

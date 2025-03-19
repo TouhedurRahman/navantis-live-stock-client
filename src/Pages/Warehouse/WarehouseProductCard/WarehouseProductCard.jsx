@@ -1,22 +1,14 @@
 import { useState } from 'react';
-import { FaBox, FaEye, FaSyncAlt, FaTimes, FaTruck } from "react-icons/fa";
+import { FaEye, FaSyncAlt } from "react-icons/fa";
 import DamagedStockinModal from '../../../Components/DamagedStockinModal/DamagedStockinModal';
-import SendToDepotModal from '../../../Components/SendToDepotModal/SendToDepotModal';
-import StockInModal from '../../../Components/StockInModal/StockInModal';
 import WarehouseDetailsModal from '../../../Components/WarehouseDetailsModal/WarehouseDetailsModal';
 
 const WarehouseProductCard = ({ idx, product, refetch, damagedProducts }) => {
     const [isdetailsModalOpen, setdetailsModalOpen] = useState(false);
     const [isDamagedModalOpen, setDamagedModalOpen] = useState(false);
-    const [isStockInModalOpen, setStockInModalOpen] = useState(false);
-    const [isSendToDepotModalOpen, setSendToDepotModalOpen] = useState(false);
 
     // const totaltActualPrice = product.actualPrice * product.totalQuantity;
     const totalTradePrice = product.tradePrice * product.totalQuantity;
-
-    const handleRemove = () => {
-        console.log("Remove product:", product._id);
-    };
 
     return (
         <>
@@ -55,32 +47,11 @@ const WarehouseProductCard = ({ idx, product, refetch, damagedProducts }) => {
                             <FaEye className="text-orange-500" />
                         </button>
                         <button
-                            onClick={() => setStockInModalOpen(true)}
-                            title="Stock In New Quantity"
-                            className="p-2 rounded-[5px] hover:bg-green-100 focus:outline-none"
-                        >
-                            <FaBox className="text-green-500" />
-                        </button>
-                        <button
                             onClick={() => setDamagedModalOpen(true)}
                             title="Damaged product"
                             className="p-2 rounded-[5px] hover:bg-blue-100 focus:outline-none"
                         >
                             <FaSyncAlt className="text-blue-500" />
-                        </button>
-                        <button
-                            onClick={() => setSendToDepotModalOpen(true)}
-                            title="Send product to depot"
-                            className="p-2 rounded-[5px] hover:bg-yellow-100 focus:outline-none"
-                        >
-                            <FaTruck className="text-yellow-500" />
-                        </button>
-                        <button
-                            onClick={handleRemove}
-                            title="Remove product from warehouse"
-                            className="p-2 rounded-[5px] hover:bg-red-100 focus:outline-none"
-                        >
-                            <FaTimes className="text-red-500" />
                         </button>
                     </div>
                 </th>
@@ -95,14 +66,6 @@ const WarehouseProductCard = ({ idx, product, refetch, damagedProducts }) => {
                     refetch={refetch}
                 />
             )}
-            {isStockInModalOpen && (
-                <StockInModal
-                    isOpen={isStockInModalOpen}
-                    onClose={() => setStockInModalOpen(false)}
-                    product={product}
-                    refetch={refetch}
-                />
-            )}
             {isDamagedModalOpen && (
                 <DamagedStockinModal
                     isOpen={isDamagedModalOpen}
@@ -110,14 +73,6 @@ const WarehouseProductCard = ({ idx, product, refetch, damagedProducts }) => {
                     product={product}
                     refetch={refetch}
                     damagedProducts={damagedProducts}
-                />
-            )}
-            {isSendToDepotModalOpen && (
-                <SendToDepotModal
-                    isOpen={isSendToDepotModalOpen}
-                    onClose={() => setSendToDepotModalOpen(false)}
-                    product={product}
-                    refetch={refetch}
                 />
             )}
         </>
