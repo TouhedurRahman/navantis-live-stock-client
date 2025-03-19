@@ -145,6 +145,7 @@ const DepotProductsList = () => {
                                             <tr>
                                                 <th className="text-center">Sl. No.</th>
                                                 <th>Name</th>
+                                                <th>Pack Size</th>
                                                 <th className='text-center'>Batch</th>
                                                 <th className='text-center'>Exp.</th>
                                                 <th className='text-center'>Quantity</th>

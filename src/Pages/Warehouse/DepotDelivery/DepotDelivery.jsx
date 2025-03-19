@@ -121,6 +121,7 @@ const DepotDelivery = () => {
                 if (deliveredQuantity > 0) {
                     stockOutWhProducts.push({
                         productName: selectedProductName,
+                        netWeight: selectedProductDetails?.netWeight,
                         productCode: data[`psc${i}`],
                         batch: data[`batch${i}`],
                         expire: data[`expire${i}`],
@@ -162,6 +163,7 @@ const DepotDelivery = () => {
                 if (deliveredQuantity > 0) {
                     depotReceivedProducts.push({
                         productName: selectedProductName,
+                        netWeight: selectedProductDetails?.netWeight,
                         productCode: data[`psc${i}`],
                         batch: data[`batch${i}`],
                         expire: data[`expire${i}`],

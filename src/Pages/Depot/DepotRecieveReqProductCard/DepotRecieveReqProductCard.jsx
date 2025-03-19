@@ -17,6 +17,7 @@ const DepotRecieveReqProductCard = ({ idx, product, refetch }) => {
         mutationFn: async () => {
             const newProduct = {
                 productName: product.productName,
+                netWeight: product.netWeight,
                 productCode: product.productCode,
                 batch: product.batch,
                 expire: product.expire,
@@ -36,6 +37,7 @@ const DepotRecieveReqProductCard = ({ idx, product, refetch }) => {
         mutationFn: async () => {
             const newProduct = {
                 productName: product.productName,
+                netWeight: product.netWeight,
                 productCode: product.productCode,
                 batch: product.batch,
                 expire: product.expire,

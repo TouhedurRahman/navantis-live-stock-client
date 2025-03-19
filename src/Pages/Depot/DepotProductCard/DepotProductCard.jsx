@@ -24,6 +24,7 @@ const DepotProductCard = ({ idx, product, refetch }) => {
         mutationFn: async () => {
             const newProduct = {
                 productName: product.productName,
+                netWeight: product.netWeight,
                 productCode: product.productCode,
                 batch: product.batch,
                 expire: product.expire,
@@ -99,6 +100,9 @@ const DepotProductCard = ({ idx, product, refetch }) => {
                 </td>
                 <td>
                     <div className="font-bold">{product.productName}</div>
+                </td>
+                <td>
+                    {product.netWeight}
                 </td>
                 <td className='text-center'>
                     {product.batch}
