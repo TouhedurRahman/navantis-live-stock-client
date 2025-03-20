@@ -15,7 +15,26 @@ const DeliveryReport = () => {
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: currentYear - 1999 }, (_, i) => currentYear - i);
 
-    // Filtered products based on filters
+    const uniqueOrderedBy = useMemo(() => {
+        const names = new Set();
+        orders.forEach(order => {
+            if (order.orderedBy) {
+                names.add(order.orderedBy.trim());
+            }
+        });
+        return Array.from(names);
+    }, [orders]);
+
+    const uniqueDeliveryMen = useMemo(() => {
+        const names = new Set();
+        orders.forEach(order => {
+            if (order.deliveryMan) {
+                names.add(order.deliveryMan.trim());
+            }
+        });
+        return Array.from(names);
+    }, [orders]);
+
     const filteredOrders = useMemo(() => {
         return orders.filter(order => {
             const orderDate = new Date(order.date);
@@ -32,14 +51,9 @@ const DeliveryReport = () => {
     }, [orders, year, month, fromDate, toDate, orderedBy, deliveryMan]);
 
     const findDateRange = (orders) => {
-        if (!orders.length) {
-            return { firstDate: null, lastDate: null };
-        }
+        if (!orders.length) return { firstDate: null, lastDate: null };
 
-        const sortedDates = orders
-            .map((order) => new Date(order.date))
-            .sort((a, b) => a - b);
-
+        const sortedDates = orders.map(order => new Date(order.date)).sort((a, b) => a - b);
         const firstDate = sortedDates[0].toLocaleDateString('en-GB').replace(/\//g, '-');
         const lastDate = sortedDates[sortedDates.length - 1].toLocaleDateString('en-GB').replace(/\//g, '-');
 
@@ -72,27 +86,23 @@ const DeliveryReport = () => {
                 <div className="w-full md:w-[60%] grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 px-6">
                     {/* Year Filter */}
                     <div>
-                        <label htmlFor="year" className="block font-semibold text-gray-700 mb-1">Year</label>
+                        <label className="block font-semibold text-gray-700 mb-1">Year</label>
                         <select
-                            id="year"
                             value={year}
                             onChange={(e) => setYear(e.target.value)}
                             className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm"
                         >
                             <option value="">All Years</option>
                             {years.map((y) => (
-                                <option key={y} value={y}>
-                                    {y}
-                                </option>
+                                <option key={y} value={y}>{y}</option>
                             ))}
                         </select>
                     </div>
 
                     {/* Month Filter */}
                     <div>
-                        <label htmlFor="month" className="block font-semibold text-gray-700 mb-1">Month</label>
+                        <label className="block font-semibold text-gray-700 mb-1">Month</label>
                         <select
-                            id="month"
                             value={month}
                             onChange={(e) => setMonth(e.target.value)}
                             className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm"
@@ -130,28 +140,32 @@ const DeliveryReport = () => {
 
                     {/* Ordered By Filter */}
                     <div>
-                        <label htmlFor="orderedBy" className="block font-semibold text-gray-700 mb-1">Ordered By</label>
-                        <input
-                            type="text"
-                            id="orderedBy"
+                        <label className="block font-semibold text-gray-700 mb-1">Ordered By</label>
+                        <select
                             value={orderedBy}
                             onChange={(e) => setOrderedBy(e.target.value)}
-                            placeholder="Ordered by..."
                             className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm"
-                        />
+                        >
+                            <option value="">Select a person</option>
+                            {uniqueOrderedBy.map(name => (
+                                <option key={name} value={name}>{name}</option>
+                            ))}
+                        </select>
                     </div>
 
                     {/* Delivery Man Filter */}
                     <div>
-                        <label htmlFor="deliveryMan" className="block font-semibold text-gray-700 mb-1">Delivery Man</label>
-                        <input
-                            type="text"
-                            id="deliveryMan"
+                        <label className="block font-semibold text-gray-700 mb-1">Delivery Man</label>
+                        <select
                             value={deliveryMan}
                             onChange={(e) => setDeliveryMan(e.target.value)}
-                            placeholder="Delivery man..."
                             className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm"
-                        />
+                        >
+                            <option value="">Select Delivery Name</option>
+                            {uniqueDeliveryMen.map(name => (
+                                <option key={name} value={name}>{name}</option>
+                            ))}
+                        </select>
                     </div>
 
                     {/* Clear Filters Button */}
