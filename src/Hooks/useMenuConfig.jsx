@@ -7,7 +7,7 @@ import { FcExpired } from 'react-icons/fc';
 import { GiDustCloud } from 'react-icons/gi';
 import { IoIosAddCircle } from 'react-icons/io';
 import { MdOutlineShoppingBag, MdPayment } from 'react-icons/md';
-import { TbCoinTakaFilled } from 'react-icons/tb';
+import { TbCoinTakaFilled, TbReportSearch } from 'react-icons/tb';
 import { VscGitPullRequestGoToChanges } from 'react-icons/vsc';
 import useSingleUser from './useSingleUser';
 
@@ -58,6 +58,7 @@ const useMenuConfig = () => {
                 { to: '/depot-expired', icon: <FcExpired className='me-2' />, label: 'Expired' },
                 { to: '/order-delivery', icon: <FaShoppingCart className='me-2' />, label: 'Order Delivery' },
                 { to: '/invoice-payment', icon: <MdPayment className='me-2' />, label: 'Invoice & Payment' },
+                { to: '/delivery-report', icon: <TbReportSearch className='me-2' />, label: 'Delivery Report' },
             ],
         },
         customer: {
