@@ -1,9 +1,16 @@
 import { useEffect, useState } from "react";
+import useAllUsers from "../Hooks/useAllUsers";
 import useCustomer from "../Hooks/useCustomer";
 
-const OrderDespatchSheet = ({ filteredOrders = [], firstDate, lastDate }) => {
+const MPOWiseInvSummary = ({ filteredOrders = [], firstDate, lastDate }) => {
     const [orders, setOrders] = useState(filteredOrders);
     const [customers] = useCustomer();
+    const [allUsers] = useAllUsers();
+
+    const orderByPersonEmail = orders.find(order => order.email);
+
+    // If an email exists, find the user in allUsers based on that email
+    const orderByPersonDetails = orderByPersonEmail ? allUsers.find(u => u.email === orderByPersonEmail.email) : null;
 
     useEffect(() => {
         setOrders(filteredOrders);
@@ -29,29 +36,55 @@ const OrderDespatchSheet = ({ filteredOrders = [], firstDate, lastDate }) => {
                     <p style="margin: 0; font-size: 10px;">Hotline: +880 1322-852183</p>
                 </div>
                 <div style="text-align: left; margin-bottom: 20px;">
-                    <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>Order Despatch Sheet</u></h3>
+                    <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>MPO Wise Invoice Summary</u></h3>
                     <p style="margin: 5px 0; font-size: 14px; text-align: center;">
                         ${(firstDate !== lastDate)
                 ?
                 `Date from <b>${firstDate}</b> to <b>${lastDate}</b>`
                 :
                 `Date <b>${firstDate}</b>`
-            }</p>
-                </div>
-                <div style="margin-bottom: 20px; padding: 5px 15px; border: 1px solid #B2BEB5; border-radius: 3px;">
-                    <p style="font-size: 11px; font-weight: bold; text-align: center; text-transform: uppercase;">
-                        Summary
-                    </p>
-                    <div style="display: flex; justify-content: space-between; padding: 5px 0;">
-                        <span style="font-size: 11px; font-weight: 600;">Total Customer(s)</span>
-                        <span style="font-size: 11px; font-weight: 700;">${orders.length}</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; padding: 5px 0; border-top: 1px solid #B2BEB5;">
-                        <span style="font-size: 11px; font-weight: 600;">Net Payable Amount</span>
-                        <span style="font-size: 11px; font-weight: 700;">${(Number((Number(sumOfTotalPayable)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-</span>
-                    </div>
+            }
+            </p>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px; font-size: 11px; font-weight: 600; margin-bottom: 10px;">
+                <div class="grid grid-cols-[max-content_15px_auto] text-[11px] gap-y-1">
+                    <span class="font-bold">${orderByPersonDetails?.designation?.split(" ").map(word => word[0].toUpperCase()).join("")} Name</span>
+                    <span class="font-bold">:</span>
+                    <span>${orderByPersonDetails.name}</span>
+
+                    <span class="font-bold">Designation</span>
+                    <span class="font-bold">:</span>
+                    <span>${orderByPersonDetails.designation}</span>
+
+                    <span class="font-bold">Territory</span>
+                    <span class="font-bold">:</span>
+                    <span>${orderByPersonDetails.territory}</span>
+
+                    <span class="font-bold">Mobile</span>
+                    <span class="font-bold">:</span>
+                    <span class="font-bold">${orderByPersonDetails.mobile}</span>
                 </div>
             </div>
+            <div style="margin-bottom: 20px; padding: 5px 15px; border: 1px solid #B2BEB5; border-radius: 3px;">
+
+                <p style="font-size: 11px; font-weight: bold; text-align: center; text-transform: uppercase; margin-top: 5px;">
+                    Summary
+                </p>
+
+                <div style="display: flex; justify-content: space-between; padding: 5px 0;">
+                    <span style="font-size: 11px; font-weight: 600;">Total Customer(s)</span>
+                    <span style="font-size: 11px; font-weight: 700;">${orders.length}</span>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; padding: 5px 0; border-top: 1px solid #B2BEB5;">
+                    <span style="font-size: 11px; font-weight: 600;">Net Payable Amount</span>
+                    <span style="font-size: 11px; font-weight: 700;">
+                        ${(Number((Number(sumOfTotalPayable)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-
+                    </span>
+                </div>
+
+            </div>
+        </div>
         `;
 
         const filteredTableContent = `
@@ -61,7 +94,6 @@ const OrderDespatchSheet = ({ filteredOrders = [], firstDate, lastDate }) => {
                 <th style="text-align: center;">Sl.</th>
                 <th style="text-align: center;">Invoice Date</th>
                 <th style="text-align: center;">Invoice No.</th>
-                <th style="text-align: center;">Customer code</th>
                 <th style="text-align: left;">Customer Name</th>
                 <th style="text-align: left;">Address</th>
                 <th style="text-align: right;">Net price (TK)</th>
@@ -75,7 +107,6 @@ const OrderDespatchSheet = ({ filteredOrders = [], firstDate, lastDate }) => {
                     <td style="text-align: center;">${idx + 1}</td>
                     <td style="text-align: center;">${new Date(order.date).toLocaleDateString('en-GB').replace(/\//g, '-')}</td>
                     <td style="text-align: center;">${order.invoice}</td>
-                    <td style="text-align: center;">${order.pharmacyId}</td>
                     <td>${order.pharmacy}</td>
                     <td>${customerAddress}</td>
                     <td style="text-align: right;">${(Number((Number(order.totalPayable)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
@@ -86,7 +117,7 @@ const OrderDespatchSheet = ({ filteredOrders = [], firstDate, lastDate }) => {
                 <tbody>
                     <tr>
                         <!-- Merged first four columns -->
-                        <td colspan="6" style="text-align: right; font-weight: bold;">Sub Total</td>
+                        <td colspan="5" style="text-align: right; font-weight: bold;">Sub Total</td>
                         <td style="text-align: right;">${(Number((Number(sumOfTotalPayable)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-</td>
                     </tr>
                 </tbody>
@@ -178,4 +209,4 @@ const OrderDespatchSheet = ({ filteredOrders = [], firstDate, lastDate }) => {
     return handlePrint;
 };
 
-export default OrderDespatchSheet;
+export default MPOWiseInvSummary;

@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from 'react';
+import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useOrders from '../../../Hooks/useOrders';
+import MPOWiseInvSummary from '../../../Reports/MPOWiseInvSummary';
 import OrderDespatchSheet from '../../../Reports/OrderDespatchSheet';
 
 const DeliveryReport = () => {
@@ -84,9 +86,11 @@ const DeliveryReport = () => {
         console.log(filteredOrders);
     }
 
-    const handleMpoInvPrint = () => {
-        console.log(filteredOrders);
-    }
+    const handleMpoInvPrint = MPOWiseInvSummary({
+        filteredOrders,
+        firstDate,
+        lastDate
+    });
 
     const handleMpoProductPrint = () => {
         console.log(filteredOrders);
@@ -218,7 +222,17 @@ const DeliveryReport = () => {
 
                         {/* Export to Excel Button */}
                         <button
-                            onClick={handleMpoInvPrint}
+                            onClick={() =>
+                                orderedBy
+                                    ?
+                                    handleMpoInvPrint()
+                                    :
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Oops...",
+                                        text: "Please select an MPO name!",
+                                    })
+                            }
                             className="bg-gradient-to-r from-green-500 to-green-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:scale-105 transition-all"
                         >
                             🖨️ MPO Wise Invoice Summary
@@ -226,7 +240,17 @@ const DeliveryReport = () => {
 
                         {/* Print Report Button */}
                         <button
-                            onClick={handleMpoProductPrint}
+                            onClick={() =>
+                                orderedBy
+                                    ?
+                                    handleMpoProductPrint()
+                                    :
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Oops...",
+                                        text: "Please select an MPO name!",
+                                    })
+                            }
                             className="bg-gradient-to-r from-gray-700 to-gray-900 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:scale-105 transition-all"
                         >
                             🖨️ MPO Wise Product Summary
