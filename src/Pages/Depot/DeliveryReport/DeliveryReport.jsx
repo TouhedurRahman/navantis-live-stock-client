@@ -4,6 +4,7 @@ import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useOrders from '../../../Hooks/useOrders';
 import MPOWiseInvSummary from '../../../Reports/MPOWiseInvSummary';
 import OrderDespatchSheet from '../../../Reports/OrderDespatchSheet';
+import ProductSummary from '../../../Reports/ProductSummary';
 
 const DeliveryReport = () => {
     const [orders, loading] = useOrders();
@@ -82,9 +83,11 @@ const DeliveryReport = () => {
         lastDate
     });
 
-    const handleProductSummaryPrint = () => {
-        console.log(filteredOrders);
-    }
+    const handleProductSummaryPrint = ProductSummary({
+        filteredOrders,
+        firstDate,
+        lastDate
+    });
 
     const handleMpoInvPrint = MPOWiseInvSummary({
         filteredOrders,
