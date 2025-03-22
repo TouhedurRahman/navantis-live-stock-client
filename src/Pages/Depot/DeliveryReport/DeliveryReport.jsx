@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useOrders from '../../../Hooks/useOrders';
+import OrderDespatchSheet from '../../../Reports/OrderDespatchSheet';
 
 const DeliveryReport = () => {
     const [orders, loading] = useOrders();
@@ -73,9 +74,11 @@ const DeliveryReport = () => {
         setDeliveryMan('');
     };
 
-    const handleDespatchSheetPrint = () => {
-        console.log(filteredOrders);
-    }
+    const handleDespatchSheetPrint = OrderDespatchSheet({
+        filteredOrders,
+        firstDate,
+        lastDate
+    });
 
     const handleProductSummaryPrint = () => {
         console.log(filteredOrders);
