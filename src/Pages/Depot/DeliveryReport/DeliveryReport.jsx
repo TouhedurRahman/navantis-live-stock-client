@@ -12,31 +12,33 @@ const DeliveryReport = () => {
     const [orderedBy, setOrderedBy] = useState('');
     const [deliveryMan, setDeliveryMan] = useState('');
 
+    const deliveredOrders = orders.filter(order => order.status !== 'pending');
+
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: currentYear - 1999 }, (_, i) => currentYear - i);
 
     const uniqueOrderedBy = useMemo(() => {
         const names = new Set();
-        orders.forEach(order => {
+        deliveredOrders.forEach(order => {
             if (order.orderedBy) {
                 names.add(order.orderedBy.trim());
             }
         });
         return Array.from(names);
-    }, [orders]);
+    }, [deliveredOrders]);
 
     const uniqueDeliveryMen = useMemo(() => {
         const names = new Set();
-        orders.forEach(order => {
+        deliveredOrders.forEach(order => {
             if (order.deliveryMan) {
                 names.add(order.deliveryMan.trim());
             }
         });
         return Array.from(names);
-    }, [orders]);
+    }, [deliveredOrders]);
 
     const filteredOrders = useMemo(() => {
-        return orders.filter(order => {
+        return deliveredOrders.filter(order => {
             const orderDate = new Date(order.date);
             const matchesYear = year ? orderDate.getFullYear() === parseInt(year) : true;
             const matchesMonth = month ? orderDate.getMonth() + 1 === parseInt(month) : true;
