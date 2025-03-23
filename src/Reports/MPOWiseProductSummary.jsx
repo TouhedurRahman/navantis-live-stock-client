@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import useAllUsers from "../Hooks/useAllUsers";
-import useCustomer from "../Hooks/useCustomer";
 
-const MPOWiseInvSummary = ({ filteredOrders = [], firstDate, lastDate }) => {
+const MPOWiseProductSummary = ({ filteredOrders = [], firstDate, lastDate }) => {
     const [orders, setOrders] = useState(filteredOrders);
-    const [customers] = useCustomer();
     const [allUsers] = useAllUsers();
 
     const orderByPersonEmail = orders.find(order => order.email);
@@ -14,7 +12,33 @@ const MPOWiseInvSummary = ({ filteredOrders = [], firstDate, lastDate }) => {
         setOrders(filteredOrders);
     }, [filteredOrders]);
 
-    const sumOfTotalPayable = orders.reduce((sum, order) => sum + Number(order.totalPayable), 0);
+    const productSummary = new Map();
+
+    orders.forEach(order => {
+        order.products.forEach(product => {
+            const key = `${product.name}-${product.netWeight}-${product.batch}`;
+
+            if (!productSummary.has(key)) {
+                productSummary.set(key, {
+                    productCode: product.productCode,
+                    name: product.name,
+                    netWeight: product.netWeight,
+                    batch: product.batch,
+                    expire: product.expire,
+                    soldQuantity: 0,
+                    totalQuantity: 0,
+                });
+            }
+
+            const existingProduct = productSummary.get(key);
+            existingProduct.soldQuantity += product.quantity;
+            existingProduct.totalQuantity += product.quantity;
+        });
+    });
+
+    const summarisedProducts = Array.from(productSummary.values());
+
+    const totalProducts = summarisedProducts.reduce((sum, product) => sum + Number(product.totalQuantity), 0);
 
     const handlePrint = () => {
         const companyHeader =
@@ -34,7 +58,7 @@ const MPOWiseInvSummary = ({ filteredOrders = [], firstDate, lastDate }) => {
                     <p style="margin: 0; font-size: 10px;">Hotline: +880 1322-852183</p>
                 </div>
                 <div style="text-align: left; margin-bottom: 20px;">
-                    <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>MPO Wise Invoice Summary</u></h3>
+                    <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>Date Wise Product Summary</u></h3>
                     <p style="margin: 5px 0; font-size: 14px; text-align: center;">
                         ${(firstDate !== lastDate)
                 ?
@@ -64,25 +88,15 @@ const MPOWiseInvSummary = ({ filteredOrders = [], firstDate, lastDate }) => {
                 </div>
             </div>
             <div style="margin-bottom: 20px; padding: 5px 15px; border: 1px solid #B2BEB5; border-radius: 3px;">
-
-                <p style="font-size: 11px; font-weight: bold; text-align: center; text-transform: uppercase; margin-top: 5px;">
+                <p style="font-size: 11px; font-weight: bold; text-align: center; text-transform: uppercase;">
                     Summary
                 </p>
-
                 <div style="display: flex; justify-content: space-between; padding: 5px 0;">
-                    <span style="font-size: 11px; font-weight: 600;">Total Customer(s)</span>
-                    <span style="font-size: 11px; font-weight: 700;">${orders.length}</span>
+                    <span style="font-size: 11px; font-weight: 600;">Total Product(s)</span>
+                    <span style="font-size: 11px; font-weight: 700;">${totalProducts}</span>
                 </div>
-
-                <div style="display: flex; justify-content: space-between; padding: 5px 0; border-top: 1px solid #B2BEB5;">
-                    <span style="font-size: 11px; font-weight: 600;">Net Payable Amount</span>
-                    <span style="font-size: 11px; font-weight: 700;">
-                        ${(Number((Number(sumOfTotalPayable)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-
-                    </span>
-                </div>
-
             </div>
-        </div>
+            </div>
         `;
 
         const filteredTableContent = `
@@ -90,24 +104,29 @@ const MPOWiseInvSummary = ({ filteredOrders = [], firstDate, lastDate }) => {
             <thead>
                 <tr>
                 <th style="text-align: center;">Sl.</th>
-                <th style="text-align: center;">Invoice Date</th>
-                <th style="text-align: center;">Invoice No.</th>
-                <th style="text-align: left;">Customer Name</th>
-                <th style="text-align: left;">Address</th>
-                <th style="text-align: right;">Net price (TK)</th>
+                <th style="text-align: left;">Product Code</th>
+                <th style="text-align: left;">Product Name</th>
+                <th style="text-align: center;">Pack Size</th>
+                <th style="text-align: center;">Batch</th>
+                <th style="text-align: center;">Expire</th>
+                <th style="text-align: right;">Sold Qty</th>
+                <th style="text-align: right;">Bonus Qty</th>
+                <th style="text-align: right;">Total Qty</th>
                 </tr>
             </thead>
             <tbody>
-                ${orders.map((order, idx) => {
-            const customerAddress = customers.find(c => c.customerId === order.pharmacyId)?.address;
+                ${summarisedProducts.map((product, idx) => {
             return `
                     <tr>
                     <td style="text-align: center;">${idx + 1}</td>
-                    <td style="text-align: center;">${new Date(order.date).toLocaleDateString('en-GB').replace(/\//g, '-')}</td>
-                    <td style="text-align: center;">${order.invoice}</td>
-                    <td>${order.pharmacy}</td>
-                    <td>${customerAddress}</td>
-                    <td style="text-align: right;">${(Number((Number(order.totalPayable)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                    <td style="text-align: left;">${product.productCode}</td>
+                    <td style="text-align: left;">${product.name}</td>
+                    <td style="text-align: center;">${product.netWeight}</td>
+                    <td style="text-align: center;">${product.batch}</td>
+                    <td style="text-align: center;">${product.expire}</td>
+                    <td style="text-align: right;">${product.soldQuantity}</td>
+                    <td style="text-align: right;">${"0"}</td>
+                    <td style="text-align: right;">${product.totalQuantity}</td>
                     </tr>
                 `;
         }).join('')}
@@ -115,8 +134,8 @@ const MPOWiseInvSummary = ({ filteredOrders = [], firstDate, lastDate }) => {
                 <tbody>
                     <tr>
                         <!-- Merged first four columns -->
-                        <td colspan="5" style="text-align: right; font-weight: bold;">Sub Total</td>
-                        <td style="text-align: right;">${(Number((Number(sumOfTotalPayable)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-</td>
+                        <td colspan="8" style="text-align: right; font-weight: bold;">Sub Total</td>
+                        <td style="text-align: right;">${totalProducts}</td>
                     </tr>
                 </tbody>
             </table>
@@ -207,4 +226,4 @@ const MPOWiseInvSummary = ({ filteredOrders = [], firstDate, lastDate }) => {
     return handlePrint;
 };
 
-export default MPOWiseInvSummary;
+export default MPOWiseProductSummary;

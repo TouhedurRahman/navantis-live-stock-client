@@ -3,6 +3,7 @@ import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useOrders from '../../../Hooks/useOrders';
 import MPOWiseInvSummary from '../../../Reports/MPOWiseInvSummary';
+import MPOWiseProductSummary from '../../../Reports/MPOWiseProductSummary';
 import OrderDespatchSheet from '../../../Reports/OrderDespatchSheet';
 import ProductSummary from '../../../Reports/ProductSummary';
 
@@ -95,9 +96,11 @@ const DeliveryReport = () => {
         lastDate
     });
 
-    const handleMpoProductPrint = () => {
-        console.log(filteredOrders);
-    }
+    const handleMpoProductPrint = MPOWiseProductSummary({
+        filteredOrders,
+        firstDate,
+        lastDate
+    });
 
     return (
         <>
