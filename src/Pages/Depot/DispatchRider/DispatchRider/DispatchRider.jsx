@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import PageTitle from "../../../../Components/PageTitle/PageTitle";
-
-const MyDispatchRider = () => "My Dispatch Rider"
-const NewDispatchRider = () => "New Dispatch Rider"
+import MyDispatchRider from "../MyDispatchRider/MyDispatchRider";
+import NewDispatchRider from "../NewDispatchRider/NewDispatchRider";
 
 const DispatchRider = () => {
     const [activeTab, setActiveTab] = useState("my dispatch rider");
