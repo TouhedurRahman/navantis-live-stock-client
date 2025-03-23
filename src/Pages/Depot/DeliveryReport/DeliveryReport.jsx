@@ -212,7 +212,17 @@ const DeliveryReport = () => {
                     <div className="w-full flex flex-col gap-4 px-6 mt-4">
                         {/* Generate Report Button */}
                         <button
-                            onClick={handleDespatchSheetPrint}
+                            onClick={() =>
+                                !orderedBy
+                                    ?
+                                    handleDespatchSheetPrint()
+                                    :
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Oops...",
+                                        text: "Please clear MPO name!",
+                                    })
+                            }
                             className="bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:scale-105 transition-all"
                         >
                             🖨️ Despatch Sheet
@@ -220,7 +230,17 @@ const DeliveryReport = () => {
 
                         {/* Export to PDF Button */}
                         <button
-                            onClick={handleProductSummaryPrint}
+                            onClick={() =>
+                                !orderedBy
+                                    ?
+                                    handleProductSummaryPrint()
+                                    :
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Oops...",
+                                        text: "Please clear MPO name!",
+                                    })
+                            }
                             className="bg-gradient-to-r from-red-500 to-red-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:scale-105 transition-all"
                         >
                             🖨️ Product Summary
