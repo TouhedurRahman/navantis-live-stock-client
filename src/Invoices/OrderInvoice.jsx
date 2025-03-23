@@ -14,6 +14,8 @@ const OrderInvoice = ({ order }) => {
     const outstandingOrders = orders.filter(outOrder =>
         outOrder._id !== order._id
         &&
+        outOrder.pharmacyId === order.pharmacyId
+        &&
         outOrder.status === 'outstanding'
     )
 
@@ -72,7 +74,7 @@ const OrderInvoice = ({ order }) => {
                 </div>
 
                 <!-- Table Section -->
-                <table class="w-full border-collapse text-[11px]">
+                <table class="mt-8 w-full border-collapse text-[11px]">
                     <tr>
                         <!-- First Row -->
                         <td class="p-2 border border-[#B2BEB5] w-1/3">

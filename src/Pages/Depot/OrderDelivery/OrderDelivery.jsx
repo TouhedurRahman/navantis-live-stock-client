@@ -89,8 +89,6 @@ const OrderDelivery = () => {
     });
 
     const handleDeliverySubmit = async () => {
-        // console.log(selectedOrderDetails);
-
         /* const deliveryData = Object.keys(deliveryQuantities).map((batchId) => ({
             batchId,
             deliveryQuantity: deliveryQuantities[batchId] || 0,
@@ -103,6 +101,7 @@ const OrderDelivery = () => {
                 return {
                     _id: batchId,
                     productName: batchDetails?.productName,
+                    netWeight: batchDetails?.netWeight,
                     productCode: batchDetails?.productCode,
                     batch: batchDetails?.batch,
                     expire: batchDetails?.expire,
@@ -112,14 +111,13 @@ const OrderDelivery = () => {
                 };
             });
 
-        // console.log("Delivery Data:", deliveryData);
-
         const dptSOutData = Object.keys(deliveryQuantities)
             .map((batchId) => {
                 const batchDetails = products.find((batch) => batch._id === batchId);
 
                 return {
                     productName: batchDetails?.productName,
+                    netWeight: batchDetails?.netWeight,
                     productCode: batchDetails?.productCode,
                     batch: batchDetails?.batch,
                     expire: batchDetails?.expire,
@@ -247,8 +245,6 @@ const OrderDelivery = () => {
             totalPayable: Number(totalPayable),
             status: "delivered"
         };
-
-        // console.log(deliveredOrder);
 
         try {
             await Promise.all([
