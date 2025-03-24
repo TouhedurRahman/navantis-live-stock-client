@@ -3,9 +3,11 @@ import React, { useState } from 'react';
 import { MdPrint } from 'react-icons/md';
 import Swal from 'sweetalert2';
 import useReturns from '../../../../Hooks/useReturns';
+import useRiders from '../../../../Hooks/useRiders';
 
 const OrderInvoiceCard = ({ idx, order, refetch }) => {
     const [returns] = useReturns();
+    const [riders] = useRiders();
 
     const [showModal, setShowModal] = useState(false);
     const [deliveryManName, setDeliveryManName] = useState("");
@@ -16,8 +18,15 @@ const OrderInvoiceCard = ({ idx, order, refetch }) => {
         adReturn.status === 'pending'
     );
 
+    const uniqueRiders = [
+        ...new Map(
+            riders
+                .filter(rider => rider._id && rider.name && rider.riderId)
+                .map(rider => [`${rider.name}-${rider.riderId}`, rider])
+        ).values()
+    ];
+
     const totalAdjustedPrice = adjustPayments.reduce((acc, sum) => acc + sum.totalPrice, 0) || 0;
-    // console.log(totalAdjustedPrice);
 
     const printInvoice = (order) => {
         const printContent = `
@@ -117,15 +126,25 @@ const OrderInvoiceCard = ({ idx, order, refetch }) => {
             {showModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-                        <h2 className="text-xl font-bold mb-4">Assign Delivery Man</h2>
-                        <input
+                        <h2 className="text-xl text-center font-medium mb-4">Assign Dispatch Rider</h2>
+                        <select
                             type="text"
                             value={deliveryManName}
                             onChange={(e) => setDeliveryManName(e.target.value)}
                             placeholder="Enter Delivery Man Name"
-                            className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        />
-                        <div className="flex justify-end space-x-4 mt-4">
+                            className="w-full text-center p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer"
+                        >
+                            <option value="">~~ Select a rider ~~</option>
+                            {uniqueRiders.map((rider) => (
+                                <option
+                                    key={rider._id}
+                                    value={`${rider.name} - ${rider.riderId}`}
+                                >
+                                    {`${rider.name} - ${rider.riderId}`}
+                                </option>
+                            ))}
+                        </select>
+                        <div className="flex justify-center space-x-4 mt-4">
                             <button
                                 onClick={() => setShowModal(false)}
                                 className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
