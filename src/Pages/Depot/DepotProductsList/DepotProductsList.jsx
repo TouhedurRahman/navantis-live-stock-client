@@ -5,6 +5,7 @@ import DepotRequestModal from "../../../Components/DepotRequestModal/DepotReques
 import ExpireRequestModal from "../../../Components/ExpireRequestModal/ExpireRequestModal";
 import Loader from "../../../Components/Loader/Loader";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
+import ReturnProductsModal from "../../../Components/ReturnProductsModal/ReturnProductsModal";
 import useDepotProducts from "../../../Hooks/useDepotProducts";
 import DepotProductCard from "../DepotProductCard/DepotProductCard";
 
@@ -12,6 +13,7 @@ const DepotProductsList = () => {
     const [products, loading, refetch] = useDepotProducts();
 
     const [isRequestModalOpen, setRequestModalOpen] = useState(false);
+    const [isReturnModalOpen, setReturnModalOpen] = useState(false);
     const [isExpireRequestModalOpen, setExpireRequestModalOpen] = useState(false);
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -63,15 +65,25 @@ const DepotProductsList = () => {
                             {/* depot Request */}
                             <button
                                 onClick={() => setRequestModalOpen(true)}
-                                title="Request product from depot"
+                                title="Request product from warehouse"
                                 className="text-white font-bold py-2 px-6 transition-all transform shadow-md focus:outline-none bg-indigo-500 hover:bg-indigo-700 hover:scale-105 hover:shadow-lg rounded-sm"
                             >
                                 Request Products
                             </button>
+
+                            {/* product Return */}
+                            <button
+                                onClick={() => setReturnModalOpen(true)}
+                                title="Return products"
+                                className="text-white font-bold py-2 px-6 transition-all transform shadow-md focus:outline-none bg-amber-500 hover:bg-amber-700 hover:scale-105 hover:shadow-lg rounded-sm"
+                            >
+                                Return Product
+                            </button>
+
                             {/* expire return */}
                             <button
                                 onClick={() => setExpireRequestModalOpen(true)}
-                                title="Request product from depot"
+                                title="Return expire products"
                                 className="text-white font-bold py-2 px-6 transition-all transform shadow-md focus:outline-none bg-red-500 hover:bg-red-700 hover:scale-105 hover:shadow-lg rounded-sm"
                             >
                                 Expire Return
@@ -213,6 +225,14 @@ const DepotProductsList = () => {
                 <DepotRequestModal
                     isOpen={isRequestModalOpen}
                     onClose={() => setRequestModalOpen(false)}
+                />
+            )}
+
+            {/* return product modal */}
+            {isReturnModalOpen && (
+                <ReturnProductsModal
+                    isOpen={isReturnModalOpen}
+                    onClose={() => setReturnModalOpen(false)}
                 />
             )}
 
