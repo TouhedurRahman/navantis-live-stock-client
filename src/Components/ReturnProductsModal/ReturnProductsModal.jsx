@@ -46,25 +46,35 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
         }
     };
 
-    const handleReturnChange = (productCode, value) => {
-        setReturnData((prev) => {
-            const maxReturnable = selectedOrder.products.find(p => p.productCode === productCode).quantity;
-            return {
-                ...prev,
-                [productCode]: isNaN(value) || value < 0 ? 0 : Math.min(value, maxReturnable)
-            };
-        });
+    const handleReturnChange = (productCode, batch, value) => {
+        const product = selectedOrder.products.find(p => p.productCode === productCode && p.batch === batch);
+
+        if (product) {
+            const maxReturnable = product.quantity;
+
+            setReturnData((prev) => {
+                return {
+                    ...prev,
+                    [`${productCode}-${batch}`]: isNaN(value) || value < 0 ? 0 : Math.min(value, maxReturnable)
+                };
+            });
+        }
     };
 
     const handleReturnSubmit = () => {
         if (!selectedOrder) return;
 
         const updatedProducts = selectedOrder.products
-            .map((product) => ({
-                ...product,
-                quantity: product.quantity - (returnData[product.productCode] || 0),
-                totalPrice: product.tradePrice * (product.quantity - (returnData[product.productCode] || 0))
-            }))
+            .map((product) => {
+                const returnKey = `${product.productCode}-${product.batch}`;
+                const returnQuantity = returnData[returnKey] || 0;
+
+                return {
+                    ...product,
+                    quantity: product.quantity - returnQuantity,
+                    totalPrice: product.tradePrice * (product.quantity - returnQuantity)
+                };
+            })
             .filter(product => product.quantity > 0);
 
         const updatedOrder = {
@@ -117,7 +127,7 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
                         <h3 className="text-lg text-center font-semibold mb-2">Ordered Products</h3>
                         {selectedOrder.products.map((product) => (
                             <div
-                                key={product.productCode}
+                                key={`${product.productCode}-${product.batch}`}
                                 className="bg-white text-center shadow-md rounded-lg p-4 mb-4 border border-gray-200 transition hover:shadow-lg"
                             >
                                 <p className="text-lg font-semibold text-gray-800">
@@ -140,8 +150,8 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
                                             type="number"
                                             min="0"
                                             max={product.quantity}
-                                            value={returnData[product.productCode]}
-                                            onChange={(e) => handleReturnChange(product.productCode, parseInt(e.target.value) || 0)}
+                                            value={returnData[`${product.productCode}-${product.batch}`] || 0}
+                                            onChange={(e) => handleReturnChange(product.productCode, product.batch, parseInt(e.target.value) || 0)}
                                             className="w-1/2 h-7 text-center mt-1 px-3 py-2 border rounded-md transition"
                                         />
                                     </span>
