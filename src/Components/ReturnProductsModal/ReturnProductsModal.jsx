@@ -22,23 +22,25 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
             return;
         }
 
-        console.log("Searching for invoice:", invoice.trim());
-        console.log("Available orders:", orders);
-
         const order = orders.find((o) => String(o.invoice).trim() === invoice.trim());
 
         if (order) {
-            console.log("Order found:", order);
-            setSelectedOrder(order);
+            const filteredProducts = order.products.filter(product => product.quantity > 0);
 
-            const initialReturnData = order.products.reduce((acc, product) => {
+            if (filteredProducts.length === 0) {
+                alert("No returnable products found!");
+                return;
+            }
+
+            setSelectedOrder({ ...order, products: filteredProducts });
+
+            const initialReturnData = filteredProducts.reduce((acc, product) => {
                 acc[product.productCode] = 0;
                 return acc;
             }, {});
 
             setReturnData(initialReturnData);
         } else {
-            console.log("Order not found!");
             alert("Order not found!");
             setSelectedOrder(null);
         }
@@ -57,13 +59,17 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
     const handleReturnSubmit = () => {
         if (!selectedOrder) return;
 
-        const updatedOrder = {
-            ...selectedOrder,
-            products: selectedOrder.products.map((product) => ({
+        const updatedProducts = selectedOrder.products
+            .map((product) => ({
                 ...product,
                 quantity: product.quantity - (returnData[product.productCode] || 0),
                 totalPrice: product.tradePrice * (product.quantity - (returnData[product.productCode] || 0))
-            })),
+            }))
+            .filter(product => product.quantity > 0);
+
+        const updatedOrder = {
+            ...selectedOrder,
+            products: updatedProducts
         };
 
         console.log("Updated Order Data:", updatedOrder);
@@ -77,8 +83,8 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
             <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
                 {/* Header */}
-                <div className="flex justify-between items-center w-full px-5 py-4 border-b border-gray-200">
-                    <h2 className="text-xl font-semibold">Products Return</h2>
+                <div className="flex justify-between items-center pb-4 border-b">
+                    <h2 className="text-xl font-semibold">Product Returns</h2>
                     <button
                         onClick={onClose}
                         aria-label="Close modal"
@@ -95,7 +101,7 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
                         placeholder="Enter Invoice Number"
                         value={invoice}
                         onChange={(e) => setInvoice(e.target.value)}
-                        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full text-center px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <button
                         onClick={handleSearch}
@@ -108,28 +114,42 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
                 {/* Products List */}
                 {selectedOrder && (
                     <div className="overflow-y-auto max-h-64">
-                        <h3 className="text-lg font-semibold mb-2">Products</h3>
+                        <h3 className="text-lg text-center font-semibold mb-2">Ordered Products</h3>
                         {selectedOrder.products.map((product) => (
-                            <div key={product.productCode} className="border p-2 mb-2 rounded-md">
-                                <p className="font-semibold">{product.name} ({product.netWeight})</p>
-                                <p>Batch: {product.batch} | Expire: {product.expire}</p>
-                                <p>Quantity: {product.quantity}</p>
-                                <label className="block mt-2">
-                                    Return Quantity:
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        max={product.quantity}
-                                        value={returnData[product.productCode]}
-                                        onChange={(e) => handleReturnChange(product.productCode, parseInt(e.target.value) || 0)}
-                                        className="w-full mt-1 px-2 py-1 border rounded-md"
-                                    />
+                            <div
+                                key={product.productCode}
+                                className="bg-white text-center shadow-md rounded-lg p-4 mb-4 border border-gray-200 transition hover:shadow-lg"
+                            >
+                                <p className="text-lg font-semibold text-gray-800">
+                                    {product.name} <span className="text-gray-500">({product.netWeight})</span>
+                                </p>
+                                <p className="text-sm text-gray-600 mt-1">
+                                    <span className="font-medium">Batch:</span> {product.batch}
+                                    <span className="mx-2 text-gray-400">|</span>
+                                    <span className="font-medium">Expire:</span> {product.expire}
+                                </p>
+                                <p className="text-sm text-gray-600 mt-1">
+                                    <span className="font-medium">Quantity:</span> {product.quantity}
+                                </p>
+                                <label className="flex justify-around items-center mt-3 text-gray-700 font-medium space-x-2">
+                                    <span className="w-1/2 flex justify-end items-center">
+                                        Return Quantity
+                                    </span>
+                                    <span className="w-1/2 flex justify-start items-center">
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            max={product.quantity}
+                                            value={returnData[product.productCode]}
+                                            onChange={(e) => handleReturnChange(product.productCode, parseInt(e.target.value) || 0)}
+                                            className="w-1/2 h-7 text-center mt-1 px-3 py-2 border rounded-md transition"
+                                        />
+                                    </span>
                                 </label>
                             </div>
                         ))}
-
                         <button
-                            className="w-full px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600"
+                            className="w-full px-4 py-2 my-1 text-white bg-green-500 rounded-md hover:bg-green-600"
                             onClick={handleReturnSubmit}
                         >
                             Process Return
@@ -145,7 +165,6 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
                     >
                         Close
                     </button>
-
                 </div>
             </div>
         </div>
