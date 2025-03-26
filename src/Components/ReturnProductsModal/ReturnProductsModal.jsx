@@ -82,18 +82,12 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
             products: updatedProducts
         };
 
-        const totalProductQuantity = orderUpdate.products.reduce((acc, product) => {
-            acc[product.name] = (acc[product.name] || 0) + product.quantity;
-            return acc;
-        }, {});
-
-        const totalProduct = Object.values(totalProductQuantity).reduce((sum, qty) => sum + qty, 0);
-
+        const totalProduct = orderUpdate.products.length;
         const totalUnit = orderUpdate.products.reduce((sum, product) => sum + product.quantity, 0);
         const totalPrice = orderUpdate.products.reduce((sum, product) => sum + product.totalPrice, 0);
 
-        const pharmacyDiscount = orderUpdate.discount;
-        const totalPayable = Number(totalPrice * (pharmacyDiscount / 100));
+        const lessDiscount = Number(totalPrice * (orderUpdate.discount / 100));
+        const totalPayable = Number(totalPrice - lessDiscount);
 
         const updatedOrder = {
             ...orderUpdate,
