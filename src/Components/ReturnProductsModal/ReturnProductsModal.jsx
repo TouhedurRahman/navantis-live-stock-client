@@ -64,10 +64,19 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
     const handleReturnSubmit = () => {
         if (!selectedOrder) return;
 
+        const returnedProducts = [];
         const updatedProducts = selectedOrder.products
             .map((product) => {
                 const returnKey = `${product.productCode}-${product.batch}`;
                 const returnQuantity = returnData[returnKey] || 0;
+
+                if (returnQuantity > 0) {
+                    returnedProducts.push({
+                        ...product,
+                        returnQuantity,
+                        totalReturnPrice: product.tradePrice * returnQuantity
+                    });
+                }
 
                 return {
                     ...product,
@@ -95,9 +104,10 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
             totalUnit,
             totalPrice,
             totalPayable
-        }
+        };
 
-        console.log("Updated Order Data:", updatedOrder);
+        console.log("Updated Order:", updatedOrder);
+        console.log("Returned Products:", returnedProducts);
         alert("Return processed successfully!");
         onClose();
     };
