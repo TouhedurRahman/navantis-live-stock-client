@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import useOrders from "../../Hooks/useOrders";
 
 const ReturnProductsModal = ({ isOpen, onClose }) => {
-    const [orders] = useOrders();
+    const [orders, , refetch] = useOrders();
     const [invoice, setInvoice] = useState("");
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [returnData, setReturnData] = useState({});
@@ -111,6 +111,29 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
         },
     });
 
+    const stockInDepotProductMutation = useMutation({
+        mutationFn: async (products) => {
+            for (const item of products) {
+                const newProduct = {
+                    productName: item.name,
+                    netWeight: item.netWeight,
+                    productCode: item.productCode,
+                    batch: item.batch,
+                    expire: item.expire,
+                    actualPrice: item.actualPrice,
+                    tradePrice: item.tradePrice,
+                    totalQuantity: item.quantity,
+                    date: getTodayDate()
+                };
+
+                await axios.post('http://localhost:5000/stock-in-depot', newProduct);
+            }
+        },
+        onError: (error) => {
+            console.error("Error stock in product to depot:", error);
+        },
+    });
+
     const handleReturnSubmit = async () => {
         if (!selectedOrder) return;
 
@@ -195,6 +218,7 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
             await Promise.all([
                 updateOrderMutation.mutateAsync(updatedOrder),
                 addDepotProductMutation.mutateAsync(productsReturned),
+                stockInDepotProductMutation.mutateAsync(productsReturned)
             ]);
 
             onClose();
@@ -207,8 +231,9 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
                 confirmButtonColor: "#3B82F6",
                 timer: 1500
             });
+
+            window.location.reload();
         } catch (error) {
-            // console.error("Error return product:", error);
             Swal.fire({
                 title: "Error!",
                 text: "Faild. Please try again.",
