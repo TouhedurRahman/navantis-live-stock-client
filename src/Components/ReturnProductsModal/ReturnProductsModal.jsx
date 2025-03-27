@@ -81,9 +81,15 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
 
                 if (returnQuantity > 0) {
                     productsReturned.push({
-                        ...product,
-                        returnQuantity,
-                        totalReturnPrice: product.tradePrice * returnQuantity
+                        name: product.name,
+                        netWeight: product.netWeight,
+                        productCode: product.productCode,
+                        batch: product.batch,
+                        expire: product.expire,
+                        tradePrice: product.tradePrice,
+                        actualPrice: product.actualPrice,
+                        quantity: returnQuantity,
+                        totalPrice: product.tradePrice * returnQuantity
                     });
                 }
 
@@ -119,13 +125,11 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
             due
         };
 
-        console.log("Updated Order: ", updatedOrder);
-
         const uniqueRerurnedProducts = new Set(productsReturned.map(product => product.name));
         const totalReturnedProduct = uniqueRerurnedProducts.size;
 
-        const totalReturnedUnit = productsReturned.reduce((sum, product) => sum + product.returnQuantity, 0);
-        const totalReturnedPrice = productsReturned.reduce((sum, product) => sum + product.totalReturnPrice, 0);
+        const totalReturnedUnit = productsReturned.reduce((sum, product) => sum + product.quantity, 0);
+        const totalReturnedPrice = productsReturned.reduce((sum, product) => sum + product.totalPrice, 0);
 
         const returnedProducts = {
             email: selectedOrder.email,
@@ -138,12 +142,13 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
             pharmacyId: selectedOrder.pharmacyId,
             invoice: selectedOrder.invoice,
             products: productsReturned,
-            totalReturnedProduct,
-            totalReturnedUnit,
-            totalReturnedPrice,
+            totalProduct: totalReturnedProduct,
+            totalUnit: totalReturnedUnit,
+            totalPrice: totalReturnedPrice,
             date: getTodayDate()
         }
 
+        console.log("Updated Order: ", updatedOrder);
         console.log("Returned Products: ", returnedProducts);
 
         alert("Return processed successfully!");
