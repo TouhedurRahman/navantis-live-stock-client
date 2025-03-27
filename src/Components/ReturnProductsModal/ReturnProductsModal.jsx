@@ -134,6 +134,16 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
         },
     });
 
+    const addReturnedProductsMutation = useMutation({
+        mutationFn: async (newReturn) => {
+            const response = await axios.post('http://localhost:5000/returns', newReturn);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error return product:", error);
+        },
+    });
+
     const handleReturnSubmit = async () => {
         if (!selectedOrder) return;
 
@@ -212,13 +222,12 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
             date: getTodayDate()
         }
 
-        console.log("Returned Products: ", returnedProducts);
-
         try {
             await Promise.all([
                 updateOrderMutation.mutateAsync(updatedOrder),
                 addDepotProductMutation.mutateAsync(productsReturned),
-                stockInDepotProductMutation.mutateAsync(productsReturned)
+                stockInDepotProductMutation.mutateAsync(productsReturned),
+                addReturnedProductsMutation.mutateAsync(returnedProducts)
             ]);
 
             onClose();
