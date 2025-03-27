@@ -1,5 +1,8 @@
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaTimes } from "react-icons/fa";
+import Swal from "sweetalert2";
 import useOrders from "../../Hooks/useOrders";
 
 const ReturnProductsModal = ({ isOpen, onClose }) => {
@@ -70,7 +73,23 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
         }
     };
 
-    const handleReturnSubmit = () => {
+    const updateOrderMutation = useMutation({
+        mutationFn: async (data) => {
+            const { _id, ...orderData } = data;
+
+            const updatedOrder = {
+                ...orderData,
+            };
+
+            const response = await axios.patch(`http://localhost:5000/order/${_id}`, updatedOrder);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error updating order:", error);
+        },
+    });
+
+    const handleReturnSubmit = async () => {
         if (!selectedOrder) return;
 
         const productsReturned = [];
@@ -148,11 +167,34 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
             date: getTodayDate()
         }
 
-        console.log("Updated Order: ", updatedOrder);
         console.log("Returned Products: ", returnedProducts);
 
-        alert("Return processed successfully!");
-        onClose();
+        try {
+            await Promise.all([
+                updateOrderMutation.mutateAsync(updatedOrder)
+            ]);
+
+            onClose();
+
+            Swal.fire({
+                title: "Success!",
+                text: "Products Return successfull",
+                icon: "success",
+                showConfirmButton: false,
+                confirmButtonColor: "#3B82F6",
+                timer: 1500
+            });
+        } catch (error) {
+            // console.error("Error return product:", error);
+            Swal.fire({
+                title: "Error!",
+                text: "Faild. Please try again.",
+                icon: "error",
+                showConfirmButton: false,
+                confirmButtonColor: "#d33",
+                timer: 1500
+            });
+        }
     };
 
     if (!isOpen) return null;
