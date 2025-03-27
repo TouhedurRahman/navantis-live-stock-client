@@ -89,6 +89,28 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
         },
     });
 
+    const addDepotProductMutation = useMutation({
+        mutationFn: async (products) => {
+            for (const item of products) {
+                const newProduct = {
+                    productName: item.name,
+                    netWeight: item.netWeight,
+                    productCode: item.productCode,
+                    batch: item.batch,
+                    expire: item.expire,
+                    actualPrice: item.actualPrice,
+                    tradePrice: item.tradePrice,
+                    totalQuantity: item.quantity,
+                };
+
+                await axios.post('http://localhost:5000/depot-products', newProduct);
+            }
+        },
+        onError: (error) => {
+            console.error("Error adding product to depot:", error);
+        },
+    });
+
     const handleReturnSubmit = async () => {
         if (!selectedOrder) return;
 
@@ -171,7 +193,8 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
 
         try {
             await Promise.all([
-                updateOrderMutation.mutateAsync(updatedOrder)
+                updateOrderMutation.mutateAsync(updatedOrder),
+                addDepotProductMutation.mutateAsync(productsReturned),
             ]);
 
             onClose();
