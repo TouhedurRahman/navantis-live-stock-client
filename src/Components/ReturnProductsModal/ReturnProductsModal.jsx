@@ -97,13 +97,15 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
 
         const lessDiscount = Number(totalPrice * (orderUpdate.discount / 100));
         const totalPayable = Number(totalPrice - lessDiscount);
+        const due = Number(totalPayable - (orderUpdate?.paid || 0));
 
         const updatedOrder = {
             ...orderUpdate,
             totalProduct,
             totalUnit,
             totalPrice,
-            totalPayable
+            totalPayable,
+            due
         };
 
         console.log("Updated Order:", updatedOrder);
