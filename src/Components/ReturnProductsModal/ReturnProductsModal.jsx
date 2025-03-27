@@ -183,7 +183,16 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
                 {/* Products List */}
                 {selectedOrder && (
                     <div className="overflow-y-auto max-h-64">
-                        <h3 className="text-lg text-center font-semibold mb-2">Ordered Products</h3>
+                        <div>
+                            <p className="text-xl text-center font-mono font-medium text-gray-600">{selectedOrder.pharmacy}</p>
+                            <p className="text-sm text-center text-gray-600 mt-1">
+                                <span className="font-medium">Cus. ID: </span> {selectedOrder.pharmacyId}
+                                <span className="mx-2 text-gray-400">|</span>
+                                <span className="font-medium">Territory: </span> {selectedOrder.territory}
+                            </p>
+                            <p className="text-sm text-center font-medium mt-4 mb-2">Ordered Products <span className="text-[10px] text-gray-400">(Total Products: {selectedOrder.totalProduct} | Total Unit: {selectedOrder.totalUnit})</span></p>
+                        </div>
+
                         {selectedOrder.products.map((product) => (
                             <div
                                 key={`${product.productCode}-${product.batch}`}
