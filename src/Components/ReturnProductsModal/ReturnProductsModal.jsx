@@ -100,7 +100,9 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
             products: updatedProducts
         };
 
-        const totalProduct = orderUpdate.products.length;
+        const uniqueUpdateProducts = new Set(orderUpdate.products.map(product => product.name));
+        const totalProduct = uniqueUpdateProducts.size;
+
         const totalUnit = orderUpdate.products.reduce((sum, product) => sum + product.quantity, 0);
         const totalPrice = orderUpdate.products.reduce((sum, product) => sum + product.totalPrice, 0);
 
@@ -119,7 +121,9 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
 
         console.log("Updated Order: ", updatedOrder);
 
-        const totalReturnedProduct = productsReturned.length;
+        const uniqueRerurnedProducts = new Set(productsReturned.map(product => product.name));
+        const totalReturnedProduct = uniqueRerurnedProducts.size;
+
         const totalReturnedUnit = productsReturned.reduce((sum, product) => sum + product.returnQuantity, 0);
         const totalReturnedPrice = productsReturned.reduce((sum, product) => sum + product.totalReturnPrice, 0);
 
