@@ -16,6 +16,15 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
         }
     }, [isOpen]);
 
+    const getTodayDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    };
+
     const handleSearch = () => {
         if (!invoice.trim()) {
             alert("Please enter an invoice number.");
@@ -64,14 +73,14 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
     const handleReturnSubmit = () => {
         if (!selectedOrder) return;
 
-        const returnedProducts = [];
+        const productsReturned = [];
         const updatedProducts = selectedOrder.products
             .map((product) => {
                 const returnKey = `${product.productCode}-${product.batch}`;
                 const returnQuantity = returnData[returnKey] || 0;
 
                 if (returnQuantity > 0) {
-                    returnedProducts.push({
+                    productsReturned.push({
                         ...product,
                         returnQuantity,
                         totalReturnPrice: product.tradePrice * returnQuantity
@@ -108,8 +117,31 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
             due
         };
 
-        console.log("Updated Order:", updatedOrder);
-        console.log("Returned Products:", returnedProducts);
+        console.log("Updated Order: ", updatedOrder);
+
+        const totalReturnedProduct = productsReturned.length;
+        const totalReturnedUnit = productsReturned.reduce((sum, product) => sum + product.returnQuantity, 0);
+        const totalReturnedPrice = productsReturned.reduce((sum, product) => sum + product.totalReturnPrice, 0);
+
+        const returnedProducts = {
+            email: selectedOrder.email,
+            orderedBy: selectedOrder.orderedBy,
+            areaManager: selectedOrder.areaManager,
+            zonalManager: selectedOrder.zonalManager,
+            territory: selectedOrder.territory,
+            parentTerritory: selectedOrder.parentTerritory,
+            pharmacy: selectedOrder.pharmacy,
+            pharmacyId: selectedOrder.pharmacyId,
+            invoice: selectedOrder.invoice,
+            products: productsReturned,
+            totalReturnedProduct,
+            totalReturnedUnit,
+            totalReturnedPrice,
+            date: getTodayDate()
+        }
+
+        console.log("Returned Products: ", returnedProducts);
+
         alert("Return processed successfully!");
         onClose();
     };
