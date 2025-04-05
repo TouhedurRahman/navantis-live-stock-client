@@ -4,18 +4,18 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaTimes } from 'react-icons/fa';
 import Swal from 'sweetalert2';
+import useCustomer from '../../Hooks/useCustomer';
 import useOrders from '../../Hooks/useOrders';
-import usePharmacies from '../../Hooks/usePharmacies';
 
 const ExpireRequestModal = ({ isOpen, onClose }) => {
     const [orders, loading] = useOrders();
-    const [pharmacies, pharmacyLoading] = usePharmacies();
+    const [pharmacies, pharmacyLoading] = useCustomer();
 
     const {
         register,
         handleSubmit,
         reset,
-        setValue,
+        watch,
         formState: { errors },
     } = useForm();
 
@@ -26,6 +26,10 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
     const [filteredPharmacies, setFilteredPharmacies] = useState([]);
     const [areaManager, setAreaManager] = useState('');
     const [zonalManager, setZonalManager] = useState('');
+
+    const selectedPharmacyId = watch('pharmacy');
+
+    const selectedPharmacyDetails = pharmacies?.find(pharmacy => pharmacy._id === selectedPharmacyId);
 
     const getTodayDate = () => {
         const today = new Date();
@@ -69,10 +73,6 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
         setFilteredPharmacies(filterPharmacies);
     };
 
-    const handlePharmacyChange = (e) => {
-        setValue('pharmacy', e.target.value);
-    };
-
     const addExReturnMutation = useMutation({
         mutationFn: async (data) => {
             const tp = Number(((data.mrp - (data.mrp * 0.13))).toFixed(2));
@@ -83,18 +83,19 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                 batch: data.batch,
                 expire: data.expire,
                 tradePrice: tp,
-                totalQuantity: Number(data.quantity),
                 totalPrice: TotalTP,
-                returnedBy: data.returnedBy,
-                pharmacy: data.pharmacy,
+                totalQuantity: Number(data.quantity),
+                pharmacy: selectedPharmacyDetails.name,
+                pharmacyId: selectedPharmacyDetails.customerId,
                 territory,
+                returnedBy: data.returnedBy,
                 areaManager,
                 zonalManager,
                 status: 'pending',
                 date: getTodayDate()
             };
 
-            const response = await axios.post('http://localhost:5000/returns', newReturn);
+            const response = await axios.post('http://localhost:5000/expired-returns', newReturn);
             return response.data;
         },
         onError: (error) => {
@@ -263,12 +264,11 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                                 </label>
                                 <select
                                     {...register('pharmacy', { required: 'Pharmacy is required' })}
-                                    onChange={handlePharmacyChange}
                                     className="w-full px-3 py-2 border rounded-md"
                                 >
                                     <option value="">Select a pharmacy</option>
                                     {filteredPharmacies.map(pharmacy => (
-                                        <option key={pharmacy._id} value={pharmacy.name}>
+                                        <option key={pharmacy._id} value={pharmacy._id}>
                                             {pharmacy.name}
                                         </option>
                                     ))}
