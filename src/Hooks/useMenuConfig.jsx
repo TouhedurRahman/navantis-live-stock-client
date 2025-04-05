@@ -31,6 +31,7 @@ const useMenuConfig = () => {
                 { to: '/damage-request', icon: <VscGitPullRequestGoToChanges className='me-2' />, label: 'Damage Request' },
                 { to: '/depot-request', icon: <VscGitPullRequestGoToChanges className='me-2' />, label: 'Depot Request' },
                 { to: '/expire-request', icon: <VscGitPullRequestGoToChanges className='me-2' />, label: 'Expire Request' },
+                { to: '/ex-return-req', icon: <VscGitPullRequestGoToChanges className='me-2' />, label: 'Ex. Return Req.' },
                 { to: '/missing-products', icon: <FaExclamationCircle className='me-2' />, label: 'Missing Products' },
                 { to: '/price-update', icon: <TbCoinTakaFilled className='me-2' />, label: 'Price Update' },
                 { to: '/dmg-exp', icon: <FaTrashAlt className='me-2' />, label: 'Damaged & Exp.' },

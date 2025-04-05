@@ -5,6 +5,7 @@ import Customer from "../../Pages/Admin/Customer/Customer";
 import DamageRequest from "../../Pages/Admin/DamageRequest/DamageRequest";
 import DepotRequest from "../../Pages/Admin/DepotRequest/DepotRequest";
 import ExpireRequest from "../../Pages/Admin/ExpireRequest/ExpireRequest";
+import ExReturnReq from "../../Pages/Admin/ExReturnReq/ExReturnReq";
 import MissingProductsList from "../../Pages/Admin/MissingProductsList/MissingProductsList";
 import PriceUpdateList from "../../Pages/Admin/PriceUpdateList/PriceUpdateList";
 import PurchaseList from "../../Pages/Admin/PurchaseList/PurchaseList";
@@ -85,6 +86,10 @@ const router = createBrowserRouter([
             {
                 path: "/expire-request",
                 element: <ExpireRequest />
+            },
+            {
+                path: "/ex-return-req",
+                element: <ExReturnReq />
             },
             {
                 path: "/missing-products",
