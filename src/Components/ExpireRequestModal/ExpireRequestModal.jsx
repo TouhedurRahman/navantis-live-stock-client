@@ -8,7 +8,6 @@ import useOrders from '../../Hooks/useOrders';
 import usePharmacies from '../../Hooks/usePharmacies';
 
 const ExpireRequestModal = ({ isOpen, onClose }) => {
-    const { user } = true;
     const [orders, loading] = useOrders();
     const [pharmacies, pharmacyLoading] = usePharmacies();
 

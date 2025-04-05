@@ -42,7 +42,7 @@ const WhDamagedProduct = () => {
             const matchesDateRange = fromDate && toDate
                 ? productDate >= new Date(fromDate) && productDate <= new Date(toDate)
                 : true;
-            const matchesSearch = product.productName.toLowerCase().includes(searchTerm.toLowerCase());
+            const matchesSearch = product.productName?.toLowerCase().includes(searchTerm.toLowerCase());
             return matchesYear && matchesMonth && matchesDateRange && matchesSearch;
         });
     }, [approvedDamagedProducts, year, month, fromDate, toDate, searchTerm]);
