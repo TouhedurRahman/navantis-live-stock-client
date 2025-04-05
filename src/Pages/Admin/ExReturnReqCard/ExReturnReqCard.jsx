@@ -1,15 +1,88 @@
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import { useState } from "react";
 import { FaEye, FaTimes } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 const ExReturnReqCard = ({ idx, returnReq, refetch }) => {
     const [isModalOpen, setModalOpen] = useState(false);
 
+    const approvedExReturnMutation = useMutation({
+        mutationFn: async () => {
+            const updatedExReturnReq = {
+                ...returnReq,
+                status: 'approved'
+            }
+            const response = await axios.patch(`http://localhost:5000/expired-returns/${returnReq._id}`, updatedExReturnReq);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error approved request:", error);
+        }
+    });
+
+    const deniedExReturnReqMutation = useMutation({
+        mutationFn: async () => {
+            const updatedExReturnReq = {
+                ...returnReq,
+                status: 'denied'
+            }
+            const response = await axios.patch(`http://localhost:5000/expired-returns/${returnReq._id}`, updatedExReturnReq);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error denied request:", error);
+        }
+    });
+
     const handleApprove = async () => {
-        console.log('Approved successfull');
-    }
+        try {
+            await Promise.all([
+                approvedExReturnMutation.mutateAsync()
+            ]);
+
+            refetch();
+            Swal.fire({
+                title: "Success!",
+                text: "Request approved.",
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        } catch (error) {
+            console.error("Error approved request:", error);
+        }
+    };
 
     const handleDeny = () => {
-        console.log('Denied successfull');
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, deny!"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await Promise.all([
+                        deniedExReturnReqMutation.mutateAsync()
+                    ]);
+
+                    refetch();
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Request Denied.",
+                        icon: "success",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                } catch (error) {
+                    console.error("Error denied request:", error);
+                }
+            }
+        });
     };
 
     return (
