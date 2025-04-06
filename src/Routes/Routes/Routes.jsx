@@ -23,6 +23,7 @@ import DepotStockInList from "../../Pages/Depot/DepotStockInList/DepotStockInLis
 import DepotStockOutList from "../../Pages/Depot/DepotStockOutList/DepotStockOutList";
 import DispatchRider from "../../Pages/Depot/DispatchRider/DispatchRider/DispatchRider";
 import UpdateRider from "../../Pages/Depot/DispatchRider/UpdateRider/UpdateRider";
+import ExpiredReturns from "../../Pages/Depot/ExpiredReturns/ExpiredReturns/ExpiredReturns";
 import InvoicePayment from "../../Pages/Depot/InvoicePayment/InvoicePayment/InvoicePayment";
 import OrderDelivery from "../../Pages/Depot/OrderDelivery/OrderDelivery";
 import Home from "../../Pages/Home/Home/Home";
@@ -150,6 +151,10 @@ const router = createBrowserRouter([
             {
                 path: "/depot-expired",
                 element: <DepotExpiredProduct />
+            },
+            {
+                path: "/expired-returns",
+                element: <ExpiredReturns />
             },
             {
                 path: "/dispatch-rider",
