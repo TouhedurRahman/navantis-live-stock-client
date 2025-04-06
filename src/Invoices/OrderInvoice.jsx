@@ -247,19 +247,19 @@ const OrderInvoice = ({ order }) => {
                     <span class="w-24">${(Number((Number(lessDiscount)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-</span>
                 </div>
 
-                ${(order.paid > 0) ? `
-                    <div class="grid grid-cols-[1fr_auto_auto] items-center gap-2">
-                        <span>Paid</span>
-                        <span>:</span>
-                        <span class="w-24">${(Number((Number(order.paid)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-</span>
-                    </div>
-                    `: ``}
-
                 ${(order.adjustedPrice > 0) ? `
                     <div class="grid grid-cols-[1fr_auto_auto] items-center gap-2">
                         <span>Expire Adjust</span>
                         <span>:</span>
                         <span class="w-24">${(Number((Number(order.adjustedPrice)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-</span>
+                    </div>
+                    `: ``}
+
+                ${(order.paid > 0) ? `
+                    <div class="grid grid-cols-[1fr_auto_auto] items-center gap-2">
+                        <span>Paid</span>
+                        <span>:</span>
+                        <span class="w-24">${(Number((Number(order.paid)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-</span>
                     </div>
                     `: ``}
 
