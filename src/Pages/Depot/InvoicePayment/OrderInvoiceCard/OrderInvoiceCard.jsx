@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { MdPrint } from 'react-icons/md';
@@ -12,13 +13,13 @@ const OrderInvoiceCard = ({ idx, order, refetch }) => {
     const [showModal, setShowModal] = useState(false);
     const [deliveryManName, setDeliveryManName] = useState("");
 
-    const expireReturnes = returns.filter(adReturn =>
+    const expireReturns = returns.filter(adReturn =>
         adReturn.pharmacyId === order.pharmacyId
         &&
         adReturn.status === 'approved'
     );
 
-    const totalAdjustedPrice = expireReturnes.reduce((acc, sum) => acc + sum.totalPrice, 0) || 0;
+    const totalAdjustedPrice = expireReturns.reduce((acc, sum) => acc + sum.totalPrice, 0) || 0;
 
     const uniqueRiders = [
         ...new Map(
@@ -52,44 +53,69 @@ const OrderInvoiceCard = ({ idx, order, refetch }) => {
         printWindow.print();
     };
 
-    const handlePrint = (data) => {
+    const updateOrderMutation = useMutation({
+        mutationFn: async (data) => {
+            const { _id, ...orderData } = data;
+            const updatedOrder = {
+                ...orderData,
+                adjustedPrice: Number(totalAdjustedPrice),
+                totalPayable: Number(orderData.totalPayable - totalAdjustedPrice),
+                due: Number(orderData.totalPayable - totalAdjustedPrice),
+                status: 'due',
+                deliveryMan: deliveryManName,
+            };
+
+            printInvoice(updatedOrder);
+
+            const response = await axios.patch(`http://localhost:5000/order/${_id}`, updatedOrder)
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error update order:", error);
+        }
+    });
+
+    const updateExReturnsMutation = useMutation({
+        mutationFn: async (expireReturns) => {
+            for (const exReturn of expireReturns) {
+                const updatedExReturnReq = {
+                    ...exReturn,
+                    status: 'adjusted'
+                }
+                await axios.patch(`http://localhost:5000/expired-returns/${exReturn._id}`, updatedExReturnReq);
+            }
+        },
+        onError: (error) => {
+            console.log('Error update status: ', error);
+        }
+    });
+
+    const handlePrint = async (data) => {
         if (!deliveryManName.trim()) {
             Swal.fire("Warning", "Please provide a Delivery Man name.", "warning");
             return;
-        }
-
-        const { _id, ...orderData } = data;
-        const updatedOrder = {
-            ...orderData,
-            adjustedPrice: Number(totalAdjustedPrice),
-            totalPayable: Number(orderData.totalPayable - totalAdjustedPrice),
-            due: Number(orderData.totalPayable - totalAdjustedPrice),
-            status: 'due',
-            deliveryMan: deliveryManName,
         };
 
-        printInvoice(updatedOrder);
+        try {
+            await Promise.all([
+                updateOrderMutation.mutateAsync(data),
+                updateExReturnsMutation.mutateAsync(expireReturns)
+            ]);
 
-        axios.patch(`http://localhost:5000/order/${_id}`, updatedOrder)
-            .then(response => {
-                if (response.data.modifiedCount > 0) {
-                    refetch();
-                    setDeliveryManName("");
-                    setShowModal(false);
-                    Swal.fire({
-                        title: "Success!",
-                        text: "Products successfully delivered.",
-                        icon: "success",
-                        showConfirmButton: false,
-                        confirmButtonColor: "#3B82F6",
-                        timer: 1500
-                    });
-                }
-            })
-            .catch(error => {
-                Swal.fire("Error", "Failed to process the delivery update.", "error");
-                console.error(error);
+            refetch();
+            setDeliveryManName("");
+            setShowModal(false);
+
+            Swal.fire({
+                title: "Success!",
+                text: "Order updated.",
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500
             });
+        } catch (error) {
+            console.log('Error update order: ', error)
+        }
     };
 
     return (
