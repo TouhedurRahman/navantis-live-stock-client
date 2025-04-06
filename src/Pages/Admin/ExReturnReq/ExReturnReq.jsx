@@ -199,7 +199,7 @@ const ExReturnReq = () => {
                                     :
                                     <>
                                         <p className="text-gray-600 font-mono font-extrabold text-center mb-6">
-                                            No customer request added yet.
+                                            No expire request added yet.
                                         </p>
                                     </>
                             }

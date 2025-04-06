@@ -2,21 +2,23 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { MdPrint } from 'react-icons/md';
 import Swal from 'sweetalert2';
-import useReturns from '../../../../Hooks/useReturns';
+import useExpiredReturnes from '../../../../Hooks/useExpiredReturnes';
 import useRiders from '../../../../Hooks/useRiders';
 
 const OrderInvoiceCard = ({ idx, order, refetch }) => {
-    const [returns] = useReturns();
+    const [returns] = useExpiredReturnes();
     const [riders] = useRiders();
 
     const [showModal, setShowModal] = useState(false);
     const [deliveryManName, setDeliveryManName] = useState("");
 
-    const adjustPayments = returns.filter(adReturn =>
-        adReturn.pharmacy === order.pharmacy
+    const expireReturnes = returns.filter(adReturn =>
+        adReturn.pharmacyId === order.pharmacyId
         &&
-        adReturn.status === 'pending'
+        adReturn.status === 'approved'
     );
+
+    const totalAdjustedPrice = expireReturnes.reduce((acc, sum) => acc + sum.totalPrice, 0) || 0;
 
     const uniqueRiders = [
         ...new Map(
@@ -25,8 +27,6 @@ const OrderInvoiceCard = ({ idx, order, refetch }) => {
                 .map(rider => [`${rider.name}-${rider.riderId}`, rider])
         ).values()
     ];
-
-    const totalAdjustedPrice = adjustPayments.reduce((acc, sum) => acc + sum.totalPrice, 0) || 0;
 
     const printInvoice = (order) => {
         const printContent = `
