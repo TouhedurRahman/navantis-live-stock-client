@@ -1,4 +1,3 @@
-import { toWords } from "number-to-words";
 import useAllUsers from "../Hooks/useAllUsers";
 import useCustomer from "../Hooks/useCustomer";
 import useOrders from "../Hooks/useOrders";
@@ -30,29 +29,66 @@ const OrderInvoice = ({ order }) => {
     // net payable amount
     const netPayable = Number(totalTP - lessDiscount - (order.paid || 0) - (order.adjustedPrice || 0));
 
-    const capitalizeWords = (str) => {
-        return str
-            .split(' ')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
-    };
+    const convertAmountToWords = (num) => {
+        const ones = [
+            '', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine',
+            'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen',
+            'Seventeen', 'Eighteen', 'Nineteen'
+        ];
+        const tens = [
+            '', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'
+        ];
+        const thousands = ['', 'Thousand'];
 
-    const convertToWordsWithPaisa = (amount) => {
-        const [whole, decimal] = amount.toString().split('.');
+        let words = '';
 
-        let wholeInWords = toWords(Number(whole)).replace(/,/g, '').replace(/-/g, ' ').trim();
-        wholeInWords = capitalizeWords(wholeInWords) + ' Taka';
-
-        let paisaInWords = '';
-        if (decimal) {
-            let decimalInWords = toWords(Number(decimal)).replace(/,/g, '').replace(/-/g, ' ').trim();
-            paisaInWords = ` And ${capitalizeWords(decimalInWords)} Paisa`;
+        if (num === 0) {
+            return 'Zero Taka Only';
         }
 
-        return wholeInWords + paisaInWords + ' Only';
+        // Convert integer part
+        let integerPart = Math.floor(num);
+        let decimalPart = Math.round((num - integerPart) * 100);
+
+        let i = 0;
+        while (integerPart > 0) {
+            if (integerPart % 1000 !== 0) {
+                words = `${convertHundreds(integerPart % 1000)} ${thousands[i]} ${words}`;
+            }
+            integerPart = Math.floor(integerPart / 1000);
+            i++;
+        }
+
+        // If there's a decimal part, append 'Paisa'
+        if (decimalPart > 0) {
+            words += `Taka and ${convertHundreds(decimalPart)} Paisa Only`;
+        }
+
+        // If there's no decimal part, add 'Taka Only'
+        if (decimalPart === 0) {
+            words += 'Taka Only';
+        }
+
+        return words.trim();
+
+        function convertHundreds(num) {
+            let result = '';
+            if (num > 99) {
+                result += ones[Math.floor(num / 100)] + ' Hundred ';
+                num %= 100;
+            }
+            if (num > 19) {
+                result += tens[Math.floor(num / 10)] + ' ';
+                num %= 10;
+            }
+            if (num > 0) {
+                result += ones[num] + ' ';
+            }
+            return result.trim();
+        }
     };
 
-    const amountInWords = convertToWordsWithPaisa(netPayable);
+    const amountInWords = convertAmountToWords(netPayable);
 
     const handlePrint = () => {
         const companyHeader =
