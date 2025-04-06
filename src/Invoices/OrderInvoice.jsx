@@ -28,7 +28,7 @@ const OrderInvoice = ({ order }) => {
     const lessDiscount = Number(totalTP * (order.discount / 100));
 
     // net payable amount
-    const netPayable = Number(totalTP - lessDiscount - (order.paid || 0));
+    const netPayable = Number(totalTP - lessDiscount - (order.paid || 0) - (order.adjustedPrice || 0));
 
     const capitalizeWords = (str) => {
         return str
@@ -216,6 +216,14 @@ const OrderInvoice = ({ order }) => {
                         <span>Paid</span>
                         <span>:</span>
                         <span class="w-24">${(Number((Number(order.paid)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-</span>
+                    </div>
+                    `: ``}
+
+                ${(order.adjustedPrice > 0) ? `
+                    <div class="grid grid-cols-[1fr_auto_auto] items-center gap-2">
+                        <span>Expire Adjust</span>
+                        <span>:</span>
+                        <span class="w-24">${(Number((Number(order.adjustedPrice)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-</span>
                     </div>
                     `: ``}
 
