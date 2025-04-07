@@ -7,6 +7,7 @@ import Loader from "../../../../Components/Loader/Loader";
 import PageTitle from "../../../../Components/PageTitle/PageTitle";
 import findDateRange from "../../../../Hooks/findDateRange";
 import useExpiredReturnes from "../../../../Hooks/useExpiredReturnes";
+import ExpiredReturnsInvoice from "../../../../Invoices/ExpiredReturnsInvoice";
 
 const ExpiredReturns = () => {
     const [expiredReturnes, loading] = useExpiredReturnes();
@@ -78,7 +79,7 @@ const ExpiredReturns = () => {
         setCurrentPage(1);
     };
 
-    // const handlePrint = DepotStockInInvoice({ firstDate, lastDate, totalUniqueProducts, totalUnit, totalTP, totalAP, filteredExReturns });
+    const handlePrint = ExpiredReturnsInvoice({ firstDate, lastDate, totalUniqueProducts, totalUnit, totalTP, filteredExReturns });
 
     return (
         <div>
@@ -223,7 +224,7 @@ const ExpiredReturns = () => {
                                         {/* Print Button */}
                                         <div className="flex justify-center items-center">
                                             <button
-                                                // onClick={handlePrint}
+                                                onClick={handlePrint}
                                                 className="col-span-1 md:col-span-3 mt-4 bg-green-500 text-white rounded-lg px-4 py-2 flex items-center justify-center shadow-sm hover:bg-green-600 transition-colors"
                                             >
                                                 <MdPrint className="mr-2" /> Print Invoice
@@ -405,6 +406,14 @@ const ExpiredReturns = () => {
                                     <tr className="border-b">
                                         <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Return By</td>
                                         <td className="px-4 py-3 text-gray-800">{selectedReturn.returnedBy}</td>
+                                    </tr>
+                                    <tr className="border-b bg-gray-50">
+                                        <td className="px-4 py-3 font-semibold text-gray-700">Pharmacy</td>
+                                        <td className="px-4 py-3 text-gray-800">{selectedReturn.pharmacy} - {selectedReturn.pharmacyId}</td>
+                                    </tr>
+                                    <tr className="border-b">
+                                        <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Territory</td>
+                                        <td className="px-4 py-3 text-gray-800">{selectedReturn.territory}</td>
                                     </tr>
                                     <tr className="border-b bg-gray-50">
                                         <td className="px-4 py-3 font-semibold text-gray-700">Area Manager</td>
