@@ -6,7 +6,7 @@ import {
 import { FcExpired } from 'react-icons/fc';
 import { GiDustCloud, GiReturnArrow, GiStorkDelivery } from 'react-icons/gi';
 import { IoIosAddCircle } from 'react-icons/io';
-import { MdOutlineShoppingBag, MdPayment } from 'react-icons/md';
+import { MdAssignmentReturned, MdOutlineShoppingBag, MdPayment } from 'react-icons/md';
 import { TbCoinTakaFilled, TbReportSearch } from 'react-icons/tb';
 import { VscGitPullRequestGoToChanges } from 'react-icons/vsc';
 import useSingleUser from './useSingleUser';
@@ -58,6 +58,7 @@ const useMenuConfig = () => {
                 { to: '/depot-in', icon: <FaArrowDown className='me-2' />, label: 'Stock In' },
                 { to: '/depot-out', icon: <FaArrowUp className='me-2' />, label: 'Stock Out' },
                 { to: '/depot-expired', icon: <FcExpired className='me-2' />, label: 'Expired' },
+                { to: '/expired-returns-status', icon: <MdAssignmentReturned className='me-2' />, label: 'Ex. Returns Status' },
                 { to: '/expired-returns', icon: <GiReturnArrow className='me-2' />, label: 'Expired Returns' },
                 { to: '/dispatch-rider', icon: <GiStorkDelivery className='me-2' />, label: 'Dispatch Rider' },
                 { to: '/order-delivery', icon: <FaShoppingCart className='me-2' />, label: 'Order Delivery' },

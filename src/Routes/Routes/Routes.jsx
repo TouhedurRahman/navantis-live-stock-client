@@ -24,6 +24,7 @@ import DepotStockOutList from "../../Pages/Depot/DepotStockOutList/DepotStockOut
 import DispatchRider from "../../Pages/Depot/DispatchRider/DispatchRider/DispatchRider";
 import UpdateRider from "../../Pages/Depot/DispatchRider/UpdateRider/UpdateRider";
 import ExpiredReturns from "../../Pages/Depot/ExpiredReturns/ExpiredReturns/ExpiredReturns";
+import ExpiredReturnsStatus from "../../Pages/Depot/ExpiredReturns/ExpiredReturnsStatus/ExpiredReturnsStatus";
 import InvoicePayment from "../../Pages/Depot/InvoicePayment/InvoicePayment/InvoicePayment";
 import OrderDelivery from "../../Pages/Depot/OrderDelivery/OrderDelivery";
 import Home from "../../Pages/Home/Home/Home";
@@ -151,6 +152,10 @@ const router = createBrowserRouter([
             {
                 path: "/depot-expired",
                 element: <DepotExpiredProduct />
+            },
+            {
+                path: "/expired-returns-status",
+                element: <ExpiredReturnsStatus />
             },
             {
                 path: "/expired-returns",
