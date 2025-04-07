@@ -182,7 +182,7 @@ const ExReturnReqCard = ({ idx, returnReq, refetch }) => {
                                         <td className="px-4 py-3 font-semibold text-gray-700">Status</td>
                                         <td className="px-4 py-3">
                                             <span className={`px-3 py-1 text-sm font-semibold rounded-full shadow-md 
-                                                ${((returnReq.status === "approved")) ? "bg-green-500 text-white" : ((returnReq.status === "requested")) ? "bg-yellow-500 text-white" : ((returnReq.status === "initialized")) ? "bg-orange-500 text-white" : "bg-red-500 text-white"}`}>
+                                                ${((returnReq.status === "adjusted")) ? "bg-green-500 text-white" : ((returnReq.status === "approved")) ? "bg-yellow-500 text-white" : ((returnReq.status === "pending")) ? "bg-orange-500 text-white" : "bg-red-500 text-white"}`}>
                                                 {returnReq.status.charAt(0).toUpperCase() + returnReq.status.slice(1)}
                                             </span>
                                         </td>

@@ -1,17 +1,14 @@
 import { useMemo, useState } from "react";
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
-import { FaEye } from "react-icons/fa";
+import { FaEye, FaTimes } from "react-icons/fa";
 import { ImSearch } from 'react-icons/im';
 import { MdPrint } from 'react-icons/md';
 import Loader from "../../../../Components/Loader/Loader";
 import PageTitle from "../../../../Components/PageTitle/PageTitle";
 import findDateRange from "../../../../Hooks/findDateRange";
 import useExpiredReturnes from "../../../../Hooks/useExpiredReturnes";
-import useSingleUser from "../../../../Hooks/useSingleUser";
 
 const ExpiredReturns = () => {
-    const [singleUser] = useSingleUser();
-
     const [expiredReturnes, loading] = useExpiredReturnes();
     const [searchTerm, setSearchTerm] = useState('');
     const [year, setYear] = useState('');
@@ -20,8 +17,8 @@ const ExpiredReturns = () => {
     const [toDate, setToDate] = useState('');
     const [productsPerPage, setProductsPerPage] = useState(5);
     const [currentPage, setCurrentPage] = useState(1);
-    const [isdetailsModalOpen, setdetailsModalOpen] = useState(false);
-    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [selectedReturn, setSelectedReturn] = useState(null);
 
     const adjustedExReturns = expiredReturnes.filter(eReturn => eReturn.status === "adjusted");
 
@@ -301,8 +298,8 @@ const ExpiredReturns = () => {
                                                             <button
                                                                 onClick={
                                                                     () => {
-                                                                        setdetailsModalOpen(true)
-                                                                        setSelectedProduct(product)
+                                                                        setModalOpen(true)
+                                                                        setSelectedReturn(product)
                                                                     }
                                                                 }
                                                                 title="Details"
@@ -357,6 +354,91 @@ const ExpiredReturns = () => {
                         </>
                 }
             </div>
+
+            {/* Modal */}
+            {isModalOpen && selectedReturn && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+                    <div
+                        className="bg-white rounded-lg shadow-lg w-full max-w-lg h-4/5 flex flex-col"
+                        style={{ maxHeight: '90%' }}
+                    >
+                        {/* Header */}
+                        <div className="flex justify-between items-center px-5 py-4 border-b border-gray-200">
+                            <h2 className="text-xl font-semibold">Return Details</h2>
+                            <button
+                                onClick={() => setModalOpen(false)}
+                                aria-label="Close modal"
+                                className="text-gray-500 hover:text-gray-700 transition-transform transform hover:scale-125"
+                            >
+                                <FaTimes size={20} />
+                            </button>
+                        </div>
+
+                        {/* Scrollable Content */}
+                        <div className="p-5 rounded-lg shadow-sm flex-1 overflow-y-auto">
+                            <table className="w-full border-collapse rounded-lg overflow-hidden shadow-md">
+                                <tbody>
+                                    <tr className="border-b">
+                                        <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Name</td>
+                                        <td className="px-4 py-3 text-gray-800">{selectedReturn.productName}</td>
+                                    </tr>
+                                    <tr className="border-b bg-gray-50">
+                                        <td className="px-4 py-3 font-semibold text-gray-700">Batch</td>
+                                        <td className="px-4 py-3 text-gray-800">{selectedReturn.batch}</td>
+                                    </tr>
+                                    <tr className="border-b">
+                                        <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Expire</td>
+                                        <td className="px-4 py-3 text-gray-800">{selectedReturn.expire}</td>
+                                    </tr>
+                                    <tr className="border-b bg-gray-50">
+                                        <td className="px-4 py-3 font-semibold text-gray-700">Quantity</td>
+                                        <td className="px-4 py-3 text-gray-800">{selectedReturn.totalQuantity}</td>
+                                    </tr>
+                                    <tr className="border-b">
+                                        <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">TP</td>
+                                        <td className="px-4 py-3 text-gray-800">{selectedReturn.tradePrice}</td>
+                                    </tr>
+                                    <tr className="border-b bg-gray-50">
+                                        <td className="px-4 py-3 font-semibold text-gray-700">Total Price</td>
+                                        <td className="px-4 py-3 text-gray-800">{selectedReturn.totalPrice}</td>
+                                    </tr>
+                                    <tr className="border-b">
+                                        <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Return By</td>
+                                        <td className="px-4 py-3 text-gray-800">{selectedReturn.returnedBy}</td>
+                                    </tr>
+                                    <tr className="border-b bg-gray-50">
+                                        <td className="px-4 py-3 font-semibold text-gray-700">Area Manager</td>
+                                        <td className="px-4 py-3 text-gray-800">{selectedReturn.areaManager}</td>
+                                    </tr>
+                                    <tr className="border-b">
+                                        <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Date</td>
+                                        <td className="px-4 py-3 text-gray-800">{new Date(selectedReturn.date).toLocaleDateString('en-GB').replace(/\//g, '-')}</td>
+                                    </tr>
+                                    <tr className="border-b bg-gray-50">
+                                        <td className="px-4 py-3 font-semibold text-gray-700">Status</td>
+                                        <td className="px-4 py-3">
+                                            <span className={`px-3 py-1 text-sm font-semibold rounded-full shadow-md 
+                                                            ${((selectedReturn.status === "adjusted")) ? "bg-green-500 text-white" : ((selectedReturn.status === "approved")) ? "bg-yellow-500 text-white" : ((selectedReturn.status === "pending")) ? "bg-orange-500 text-white" : "bg-red-500 text-white"}`}>
+                                                {selectedReturn.status.charAt(0).toUpperCase() + selectedReturn.status.slice(1)}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* Footer */}
+                        <div className="flex justify-end px-5 py-4 border-t border-gray-200">
+                            <button
+                                onClick={() => setModalOpen(false)}
+                                className="px-4 py-2 text-white bg-red-500 rounded-md shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
