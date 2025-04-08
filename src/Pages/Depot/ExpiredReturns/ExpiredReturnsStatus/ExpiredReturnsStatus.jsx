@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import PageTitle from "../../../../Components/PageTitle/PageTitle";
-
-const PendingExReturns = () => "This component for pending expired returns";
-const DeniedExReturns = () => "This component for denied expired returns";
-const ApprovedExReturns = () => "This component for approved expired returns";
-const AdjustedExReturns = () => "This component for adjusted expired returns";
+import ExReturnReqStatusList from "../ExReturnReqStatusList/ExReturnReqStatusList";
 
 const ExpiredReturnsStatus = () => {
     const [activeTab, setActiveTab] = useState("pending");
@@ -12,13 +8,13 @@ const ExpiredReturnsStatus = () => {
     const renderContent = () => {
         switch (activeTab) {
             case "pending":
-                return <PendingExReturns />;
+                return <ExReturnReqStatusList status={"pending"} />;
             case "denied":
-                return <DeniedExReturns />;
+                return <ExReturnReqStatusList status={"denied"} />;
             case "approved":
-                return <ApprovedExReturns />;
+                return <ExReturnReqStatusList status={"approved"} />;
             case "adjusted":
-                return <AdjustedExReturns />;
+                return <ExReturnReqStatusList status={"adjusted"} />;
             default:
                 return null;
         }

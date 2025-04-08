@@ -1,29 +1,23 @@
 import React, { useState } from 'react';
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
 import { ImSearch } from 'react-icons/im';
-import { useLocation } from 'react-router-dom';
-import Loader from '../../../Components/Loader/Loader';
-import PageTitle from '../../../Components/PageTitle/PageTitle';
-import useExpiredReturnes from '../../../Hooks/useExpiredReturnes';
-import useSingleUser from '../../../Hooks/useSingleUser';
-import ExReturnReqCard from '../ExReturnReqCard/ExReturnReqCard';
+import Loader from '../../../../Components/Loader/Loader';
+import useExpiredReturnes from '../../../../Hooks/useExpiredReturnes';
+import ExReturnReqStatusCard from '../ExReturnReqStatusCard/ExReturnReqStatusCard';
 
-const ExReturnReq = () => {
-    const [singleUser] = useSingleUser();
+const ExReturnReqStatusList = ({ status }) => {
     const [expiredReturns, loading, refetch] = useExpiredReturnes();
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [expiredReturnsPerPage, setExpiredReturnsPerPage] = useState(5);
 
-    const location = useLocation();
-
-    const pendingExpiredReturns = expiredReturns.filter(
+    const statusWiseExpiredReturns = expiredReturns.filter(
         eReturn =>
-            eReturn.status === 'pending'
+            eReturn.status === status
     );
 
-    const filteredExpiredReturns = pendingExpiredReturns.filter(eReturn =>
+    const filteredExpiredReturns = statusWiseExpiredReturns.filter(eReturn =>
         eReturn?.pharmacy?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -50,25 +44,7 @@ const ExReturnReq = () => {
 
     return (
         <div>
-            <div>
-                {
-                    !location.pathname.includes('/customer-admin')
-                    &&
-                    <PageTitle
-                        from={"Admin"}
-                        to={"Expired return request"}
-                    />
-                }
-            </div>
             <div className="bg-white pb-1">
-                {
-                    !location.pathname.includes('/customer-admin')
-                    &&
-                    <div>
-                        <h1 className="px-6 py-3 font-bold">Request to approve expired return(s)</h1>
-                        <hr className='text-center border border-gray-500 mb-5' />
-                    </div>
-                }
                 {
                     loading
                         ?
@@ -78,7 +54,7 @@ const ExReturnReq = () => {
                         :
                         <>
                             {
-                                pendingExpiredReturns.length > 0
+                                statusWiseExpiredReturns.length > 0
                                     ?
                                     <>
                                         <div className="px-6">
@@ -131,15 +107,19 @@ const ExReturnReq = () => {
                                                                         <th className='text-center'>Quantity</th>
                                                                         <th className='text-center'>Added Date</th>
                                                                         <th className='text-center'>
-                                                                            View & Approve
+                                                                            View
                                                                         </th>
-                                                                        <th className="text-center">Deny</th>
+                                                                        {
+                                                                            status === "denied"
+                                                                            &&
+                                                                            <th className="text-center">Delete</th>
+                                                                        }
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
                                                                     {
                                                                         currentExpiredReturns.map((returnReq, idx) => (
-                                                                            <ExReturnReqCard
+                                                                            <ExReturnReqStatusCard
                                                                                 idx={startIndex + idx + 1}
                                                                                 key={returnReq._id}
                                                                                 returnReq={returnReq}
@@ -210,4 +190,4 @@ const ExReturnReq = () => {
     );
 };
 
-export default ExReturnReq;
+export default ExReturnReqStatusList;
