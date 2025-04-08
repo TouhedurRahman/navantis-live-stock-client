@@ -80,6 +80,7 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
 
             const newReturn = {
                 productName: data.productName,
+                netWeight: `${data.netWeight} ${data.weightUnit}`,
                 batch: data.batch,
                 expire: data.expire,
                 tradePrice: tp,
@@ -160,7 +161,7 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                                 <select
                                     {...register('productName', { required: 'Product name is required' })}
                                     onChange={handleProductChange}
-                                    className="w-full px-3 py-2 border rounded-md"
+                                    className="w-full px-3 py-2 border"
                                 >
                                     <option value="">Select a product</option>
                                     {uniqueProducts.map(product => (
@@ -172,13 +173,37 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                                 {errors.productName && <p className="text-red-500 text-sm">{errors.productName.message}</p>}
                             </div>
 
-                            <div>
-                                <label className="block mb-1 text-center font-semibold">Product Short Code</label>
-                                <input
-                                    value={selectedProductCode}
-                                    readOnly
-                                    className="w-full px-3 py-2 text-center border rounded-md bg-gray-100"
-                                />
+                            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-2'>
+                                <div className="flex flex-col">
+                                    <label className="block mb-1 text-center font-semibold">Product Short Code</label>
+                                    <input
+                                        value={selectedProductCode}
+                                        className="w-full px-3 py-2 text-center border"
+                                    />
+                                </div>
+                                <div className="flex flex-col">
+                                    <label className="block mb-1 text-center font-semibold">
+                                        Net Weight <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="flex items-center border">
+                                        <input
+                                            type="number"
+                                            {...register("netWeight", { required: "Net weight is required" })}
+                                            placeholder="Net weight"
+                                            className="w-full px-3 py-2 text-center border-r-0 rounded-l-md outline-none"
+                                            onWheel={(e) => e.target.blur()}
+                                        />
+                                        <select
+                                            {...register("weightUnit", { required: "Unit is required" })}
+                                            className="w-auto px-3 py-2 text-center border-l-0 rounded-r-md outline-none"
+                                        >
+                                            <option value="ML">ML</option>
+                                            <option value="GM">GM</option>
+                                        </select>
+                                    </div>
+                                    {errors.netWeight && <p className="text-red-500 text-sm">{errors.netWeight.message}</p>}
+                                    {errors.weightUnit && <p className="text-red-500 text-sm">{errors.weightUnit.message}</p>}
+                                </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
@@ -189,7 +214,7 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                                     <input
                                         {...register("batch", { required: "Batch is required" })}
                                         placeholder="Batch no."
-                                        className="w-full text-center px-3 py-2 border rounded-md"
+                                        className="w-full text-center px-3 py-2 border"
                                     />
                                     {errors.batch && <p className="text-red-500 text-sm">{errors.batch.message}</p>}
                                 </div>
@@ -206,7 +231,7 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                                             }
                                         })}
                                         placeholder="MM/YY"
-                                        className="w-full text-center px-3 py-2 border rounded-md"
+                                        className="w-full text-center px-3 py-2 border"
                                     />
                                     {errors.expire && <p className="text-red-500 text-sm">{errors.expire.message}</p>}
                                 </div>
@@ -219,7 +244,7 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                                             required: "MRP TK is required",
                                         })}
                                         placeholder="MRP TK"
-                                        className="w-full text-center px-3 py-2 border rounded-md"
+                                        className="w-full text-center px-3 py-2 border"
                                     />
                                     {errors.mrp && <p className="text-red-500 text-sm">{errors.mrp.message}</p>}
                                 </div>
@@ -233,7 +258,8 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                                             required: "Quantity is required",
                                         })}
                                         placeholder="Quantity"
-                                        className="w-full text-center px-3 py-2 border rounded-md"
+                                        className="w-full text-center px-3 py-2 border"
+                                        onWheel={(e) => e.target.blur()}
                                     />
                                     {errors.quantity && <p className="text-red-500 text-sm">{errors.quantity.message}</p>}
                                 </div>
@@ -246,7 +272,7 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                                 <select
                                     {...register('returnedBy', { required: 'Ordered by is required' })}
                                     onChange={handleOrderedByChange}
-                                    className="w-full px-3 py-2 border rounded-md"
+                                    className="w-full px-3 py-2 border"
                                 >
                                     <option value="">Select an ordered by</option>
                                     {orderedByList.map(name => (
@@ -264,7 +290,7 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                                 </label>
                                 <select
                                     {...register('pharmacy', { required: 'Pharmacy is required' })}
-                                    className="w-full px-3 py-2 border rounded-md"
+                                    className="w-full px-3 py-2 border"
                                 >
                                     <option value="">Select a pharmacy</option>
                                     {filteredPharmacies.map(pharmacy => (
@@ -281,7 +307,7 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                                     <input
                                         value={areaManager}
                                         readOnly
-                                        className="w-full px-3 py-2 border rounded-md bg-gray-100"
+                                        className="w-full px-3 py-2 border bg-gray-100"
                                     />
                                 </div>
 
@@ -290,7 +316,7 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                                     <input
                                         value={zonalManager}
                                         readOnly
-                                        className="w-full px-3 py-2 border rounded-md bg-gray-100"
+                                        className="w-full px-3 py-2 border bg-gray-100"
                                     />
                                 </div>
                             </div>
@@ -298,7 +324,7 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                             {/* Submit Button */}
                             <button
                                 type="submit"
-                                className="w-full px-4 py-2 text-white bg-blue-500 rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-4 py-2 text-white bg-blue-500 shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
                                 Submit Request
                             </button>
@@ -307,7 +333,7 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                 </div>
 
                 <div className="flex justify-end px-5 py-4 border-t border-gray-200">
-                    <button className="px-4 py-2 text-white bg-red-500 rounded-md shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500" onClick={onClose}>
+                    <button className="px-4 py-2 text-white bg-red-500 shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500" onClick={onClose}>
                         Close
                     </button>
                 </div>
