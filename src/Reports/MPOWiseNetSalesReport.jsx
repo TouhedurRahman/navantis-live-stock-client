@@ -30,6 +30,7 @@ const MPOWiseNetSalesReport = ({ filteredOrders = [], firstDate, lastDate }) => 
 
         // Step 1: Group by Area Manager → OrderedBy (mpo) → Sum totalPayable
         const groupedOrders = {};
+        let grandTotal = 0;
 
         orders.forEach(order => {
             const areaManager = order?.areaManager || "Unknown Area Manager";
@@ -47,36 +48,52 @@ const MPOWiseNetSalesReport = ({ filteredOrders = [], firstDate, lastDate }) => 
             groupedOrders[areaManager][mpo] += totalPayable;
         });
 
-        // Step 2: Convert to HTML tables
         const groupedHTML = Object.entries(groupedOrders).map(([areaManager, mpoList]) => {
+            const areaTotal = Object.values(mpoList).reduce((acc, total) => acc + total, 0);
+            grandTotal += areaTotal;
+
             return `
                 <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
                     <thead>
                         <tr>
-                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0;">Orderly</th>
-                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Total Amount</th>
+                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; width: 70%;">Orderly</th>
+                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 30%;">Total Amount</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td colspan="2" style="padding: 8px; border: 1px solid #ddd; font-weight: bold; background-color: #e0e0e0;">
-                                ${areaManager}
+                                ${areaManager} (Total Sales: ${areaTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })})
                             </td>
                         </tr>
                         ${Object.entries(mpoList).map(([mpoName, total]) => {
-                return `
+                return ` 
                                 <tr>
-                                    <td style="padding: 8px; border: 1px solid #ccc;">${mpoName}</td>
-                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+                                    <td style="padding: 8px; border: 1px solid #ccc; width: 70%;">${mpoName}</td>
+                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right; width: 30%;">
                                         ${Number(total).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                     </td>
                                 </tr>
                             `;
             }).join('')}
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; background-color: #f9f9f9; width: 70%;">
+                                <strong>Area Total</strong>
+                            </td>
+                            <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-weight: bold; width: 30%;">
+                                ${areaTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             `;
         }).join('');
+
+        const finalTotalHTML = `
+            <div style="text-align: right; font-size: 12px; font-weight: bold; margin-top: 20px;">
+                <p>Grand Total: <strong>${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</strong></p>
+            </div>
+        `;
 
         const now = new Date().toLocaleString("en-US", {
             year: "numeric", month: "long", day: "numeric",
@@ -96,8 +113,16 @@ const MPOWiseNetSalesReport = ({ filteredOrders = [], firstDate, lastDate }) => 
                     ${styles}
                     <style>
                         @media print {
-                            @page { size: A4; margin: 10mm; }
-                            body { font-family: Arial, sans-serif; }
+                            @page {
+                                size: A4;
+                                margin: 5mm;
+                            }
+                            body {
+                                margin: 0;
+                                padding: 0;
+                                font-family: Arial, sans-serif;
+                                position: relative;
+                            }
                             th, td { font-size: 10px; }
                             body::after {
                                 content: "Printed on ${now}";
@@ -116,6 +141,7 @@ const MPOWiseNetSalesReport = ({ filteredOrders = [], firstDate, lastDate }) => 
                 <body>
                     ${companyHeader}
                     ${groupedHTML}
+                    ${finalTotalHTML}
                 </body>
             </html>
         `);
