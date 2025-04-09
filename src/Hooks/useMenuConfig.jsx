@@ -7,7 +7,7 @@ import { FcExpired } from 'react-icons/fc';
 import { GiDustCloud, GiReturnArrow, GiStorkDelivery } from 'react-icons/gi';
 import { IoIosAddCircle } from 'react-icons/io';
 import { MdAssignmentReturned, MdOutlineShoppingBag, MdPayment } from 'react-icons/md';
-import { TbCoinTakaFilled, TbReportSearch } from 'react-icons/tb';
+import { TbCoinTakaFilled, TbReportAnalytics, TbReportSearch } from 'react-icons/tb';
 import { VscGitPullRequestGoToChanges } from 'react-icons/vsc';
 import useSingleUser from './useSingleUser';
 
@@ -80,6 +80,14 @@ const useMenuConfig = () => {
             icon: <MdOutlineShoppingBag className="mr-2" />,
             links: [
                 { to: '/place-order', icon: <FaCartPlus className='me-2' />, label: 'Place Order' },
+            ],
+        },
+
+        reports: {
+            icon: <TbReportSearch className="mr-2" />,
+            links: [
+                { to: '/mpo-net-sales', icon: <TbReportAnalytics className='me-2' />, label: 'MPO Wise Net Sales' },
+                { to: '/product-summary', icon: <TbReportAnalytics className='me-2' />, label: 'Product Summary' },
             ],
         },
     };
