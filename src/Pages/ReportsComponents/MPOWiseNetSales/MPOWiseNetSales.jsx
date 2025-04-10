@@ -5,8 +5,8 @@ import useReturns from '../../../Hooks/useReturns';
 import MPOWiseNetSalesReport from '../../../Reports/MPOWiseNetSalesReport';
 
 const MPOWiseNetSales = () => {
-    const [orders, loading] = useOrders();
-    const [orderReturns] = useReturns();
+    const [orders] = useOrders();
+    const [returns] = useReturns();
 
     const [year, setYear] = useState('');
     const [month, setMonth] = useState('');
@@ -54,6 +54,17 @@ const MPOWiseNetSales = () => {
             return matchesYear && matchesMonth && matchesDateRange && matchesOrderedBy && matchesAreaManager;
         });
     }, [orders, year, month, fromDate, toDate, orderedBy, areaManager]);
+
+    const orderReturns = useMemo(() => {
+        return returns.filter(ret => {
+            const returnDate = new Date(ret.date);
+            const matchesDateRange = fromDate && toDate
+                ? returnDate >= new Date(fromDate) && returnDate <= new Date(toDate)
+                : true;
+
+            return matchesDateRange;
+        })
+    }, [returns, fromDate, toDate]);
 
     const findDateRange = (orders) => {
         if (!orders.length) return { firstDate: null, lastDate: null };
