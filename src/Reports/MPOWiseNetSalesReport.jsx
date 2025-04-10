@@ -12,6 +12,12 @@ const MPOWiseNetSalesReport = ({ filteredOrders = [], orderReturns = [], firstDa
         setReturns(orderReturns);
     }, [orderReturns]);
 
+    const now = new Date().toLocaleString("en-US", {
+        year: "numeric", month: "long", day: "numeric",
+        hour: "2-digit", minute: "2-digit", second: "2-digit",
+        hour12: true
+    });
+
     const handlePrint = () => {
         const companyHeader = `
             <div>
@@ -30,12 +36,14 @@ const MPOWiseNetSalesReport = ({ filteredOrders = [], orderReturns = [], firstDa
                 : `Date <b>${firstDate}</b>`}
                     </p>
                 </div>
+                <div class="mb-1 text-sm text-gray-400 text-right italic">
+                    <h3 class="">Printed on ${now}</h3>
+                </div>
             </div>
         `;
 
         // Step 1: Group by Area Manager → OrderedBy (mpo) → Sum totalPayable
         const groupedOrders = {};
-        let grandTotal = 0;
 
         orders.forEach(order => {
             const areaManager = order?.areaManager || "Unknown Area Manager";
@@ -53,58 +61,118 @@ const MPOWiseNetSalesReport = ({ filteredOrders = [], orderReturns = [], firstDa
             groupedOrders[areaManager][mpo] += totalPayable;
         });
 
+        // Step 2: Group returns by Area Manager → OrderedBy (mpo) → Sum totalPrice of returned products
+        const groupedReturns = {};
+
+        returns.forEach(ret => {
+            const areaManager = ret?.areaManager || "Unknown Area Manager";
+            const mpo = ret?.orderedBy || "Unknown MPO";
+
+            const returnTotal = ret.products.reduce((acc, product) => {
+                return acc + Number(product.totalPrice || 0);
+            }, 0);
+
+            if (!groupedReturns[areaManager]) {
+                groupedReturns[areaManager] = {};
+            }
+
+            if (!groupedReturns[areaManager][mpo]) {
+                groupedReturns[areaManager][mpo] = 0;
+            }
+
+            groupedReturns[areaManager][mpo] += returnTotal;
+        });
+
+        let grandGrossTotal = 0;
+        let grandReturnTotal = 0;
+        let grandNetTotal = 0;
+
         const groupedHTML = Object.entries(groupedOrders).map(([areaManager, mpoList]) => {
-            const areaTotal = Object.values(mpoList).reduce((acc, total) => acc + total, 0);
-            grandTotal += areaTotal;
+            const areaNetTotal = Object.entries(mpoList).reduce((acc, [mpoName, total]) => {
+                const returnAmount = groupedReturns[areaManager]?.[mpoName] || 0;
+                return acc + (total - returnAmount);
+            }, 0);
+            grandNetTotal += areaNetTotal;
+
+            const areaGrossTotal = Object.values(mpoList).reduce((a, b) => a + b, 0);
+            grandGrossTotal += areaGrossTotal;
+
+            const areaReturnTotal = Object.entries(mpoList).reduce((acc, [mpoName]) => {
+                return acc + (groupedReturns[areaManager]?.[mpoName] || 0);
+            }, 0);
+            grandReturnTotal += areaReturnTotal;
 
             return `
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
-                    <thead>
-                        <tr>
-                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; width: 70%;">Order by</th>
-                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 30%;">Total Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="2" style="padding: 8px; border: 1px solid #ddd; font-weight: bold; background-color: #e0e0e0;">
-                                ${areaManager} (Total Sales: ${areaTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })})
-                            </td>
-                        </tr>
-                        ${Object.entries(mpoList).map(([mpoName, total]) => {
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+            <thead>
+                <tr>
+                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 40%;">Order by</th>
+                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 20%;">Sold Amount</th>
+                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 20%;">Return Amount</th>
+                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 20%;">Net Sales</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="4" style="padding: 8px; border: 1px solid #ddd; font-weight: bold; background-color: #e0e0e0;">
+                        ${areaManager} (Area Manager)
+                    </td>
+                </tr>
+                ${Object.entries(mpoList).map(([mpoName, grossTotal]) => {
+                const returnAmount = groupedReturns[areaManager]?.[mpoName] || 0;
+                const netAmount = grossTotal - returnAmount;
                 return ` 
-                                <tr>
-                                    <td style="padding: 8px; border: 1px solid #ccc; width: 70%;">${mpoName}</td>
-                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right; width: 30%;">
-                                        ${Number(total).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                                    </td>
-                                </tr>
-                            `;
-            }).join('')}
                         <tr>
-                            <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; background-color: #f9f9f9; width: 70%;">
-                                <strong>Area Total</strong>
+                            <td style="padding: 8px; border: 1px solid #ccc;">${mpoName}</td>
+                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+                                ${grossTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                             </td>
-                            <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-weight: bold; width: 30%;">
-                                ${areaTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+                                ${returnAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                            </td>
+                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right; font-weight: bold;">
+                                ${netAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                             </td>
                         </tr>
-                    </tbody>
-                </table>
-            `;
+                    `;
+            }).join('')}
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; background-color: #f9f9f9;">
+                        <strong>Area Totals</strong>
+                    </td>
+                    <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-weight: bold; background-color: #f9f9f9;">
+                        ${areaGrossTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                    </td>
+                    <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-weight: bold; background-color: #f9f9f9;">
+                        ${areaReturnTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                    </td>
+                    <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-weight: bold; background-color: #f9f9f9;">
+                        ${areaNetTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                    </td>
+                </tr>                
+            </tbody>
+        </table>
+    `;
         }).join('');
 
         const finalTotalHTML = `
-            <div style="text-align: right; font-size: 12px; font-weight: bold; margin-top: 20px;">
-                <p>Grand Total: <strong>${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</strong></p>
-            </div>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                <tbody>
+                    <tr style="background-color: #d9edf7; font-weight: bold;">
+                        <td style="padding: 8px; border: 1px solid #aaa; width: 40%;">Grand Total</td>
+                        <td style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 20%;">
+                            ${grandGrossTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                        </td>
+                        <td style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 20%;">
+                            ${grandReturnTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                        </td>
+                        <td style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 20%;">
+                            ${grandNetTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         `;
-
-        const now = new Date().toLocaleString("en-US", {
-            year: "numeric", month: "long", day: "numeric",
-            hour: "2-digit", minute: "2-digit", second: "2-digit",
-            hour12: true
-        });
 
         const newWindow = window.open();
         const styles = [...document.querySelectorAll('link[rel="stylesheet"], style')].map(
@@ -129,7 +197,7 @@ const MPOWiseNetSalesReport = ({ filteredOrders = [], orderReturns = [], firstDa
                                 position: relative;
                             }
                             th, td { font-size: 10px; }
-                            body::after {
+                            /* body::after {
                                 content: "Printed on ${now}";
                                 position: fixed;
                                 bottom: 0;
@@ -139,7 +207,7 @@ const MPOWiseNetSalesReport = ({ filteredOrders = [], orderReturns = [], firstDa
                                 font-size: 12px;
                                 color: #555;
                                 font-style: italic;
-                            }
+                            } */
                         }
                     </style>
                 </head>
