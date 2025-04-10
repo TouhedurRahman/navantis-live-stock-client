@@ -60,6 +60,7 @@ const OrderInvoiceCard = ({ idx, order, refetch }) => {
                 ...orderData,
                 adjustedPrice: Number(totalAdjustedPrice),
                 totalPayable: Number(orderData.totalPayable - totalAdjustedPrice),
+                soldAmount: Number(orderData.totalPayable - totalAdjustedPrice),
                 due: Number(orderData.totalPayable - totalAdjustedPrice),
                 status: 'due',
                 deliveryMan: deliveryManName,

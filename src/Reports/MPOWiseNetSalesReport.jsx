@@ -42,13 +42,12 @@ const MPOWiseNetSalesReport = ({ filteredOrders = [], orderReturns = [], firstDa
             </div>
         `;
 
-        // Step 1: Group by Area Manager → OrderedBy (mpo) → Sum totalPayable
         const groupedOrders = {};
 
         orders.forEach(order => {
             const areaManager = order?.areaManager || "Unknown Area Manager";
             const mpo = order?.orderedBy || "Unknown MPO";
-            const totalPayable = Number(order.totalPayable || 0);
+            const soldAmount = Number(order.soldAmount || 0);
 
             if (!groupedOrders[areaManager]) {
                 groupedOrders[areaManager] = {};
@@ -58,10 +57,9 @@ const MPOWiseNetSalesReport = ({ filteredOrders = [], orderReturns = [], firstDa
                 groupedOrders[areaManager][mpo] = 0;
             }
 
-            groupedOrders[areaManager][mpo] += totalPayable;
+            groupedOrders[areaManager][mpo] += soldAmount;
         });
 
-        // Step 2: Group returns by Area Manager → OrderedBy (mpo) → Sum totalPrice of returned products
         const groupedReturns = {};
 
         returns.forEach(ret => {
