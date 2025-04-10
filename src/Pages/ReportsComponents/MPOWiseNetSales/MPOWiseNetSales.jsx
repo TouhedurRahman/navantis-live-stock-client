@@ -1,17 +1,19 @@
 import React, { useMemo, useState } from 'react';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useOrders from '../../../Hooks/useOrders';
+import useReturns from '../../../Hooks/useReturns';
 import MPOWiseNetSalesReport from '../../../Reports/MPOWiseNetSalesReport';
 
 const MPOWiseNetSales = () => {
     const [orders, loading] = useOrders();
+    const [orderReturns] = useReturns();
 
     const [year, setYear] = useState('');
     const [month, setMonth] = useState('');
     const [fromDate, setFromDate] = useState('');
     const [toDate, setToDate] = useState('');
     const [orderedBy, setOrderedBy] = useState('');
-    const [deliveryMan, setDeliveryMan] = useState('');
+    const [areaManager, setAreaManager] = useState('');
 
     const deliveredOrders = orders.filter(order => order.status !== 'pending');
 
@@ -28,11 +30,11 @@ const MPOWiseNetSales = () => {
         return Array.from(names);
     }, [deliveredOrders]);
 
-    const uniqueDeliveryMen = useMemo(() => {
+    const uniqueAreaManager = useMemo(() => {
         const names = new Set();
         deliveredOrders.forEach(order => {
-            if (order.deliveryMan) {
-                names.add(order.deliveryMan.trim());
+            if (order.areaManager) {
+                names.add(order.areaManager.trim());
             }
         });
         return Array.from(names);
@@ -47,11 +49,11 @@ const MPOWiseNetSales = () => {
                 ? orderDate >= new Date(fromDate) && orderDate <= new Date(toDate)
                 : true;
             const matchesOrderedBy = orderedBy ? order.orderedBy?.toLowerCase().includes(orderedBy.toLowerCase()) : true;
-            const matchesAreaManager = deliveryMan ? order.areaManager?.toLowerCase().includes(deliveryMan.toLowerCase()) : true;
+            const matchesAreaManager = areaManager ? order.areaManager?.toLowerCase().includes(areaManager.toLowerCase()) : true;
 
             return matchesYear && matchesMonth && matchesDateRange && matchesOrderedBy && matchesAreaManager;
         });
-    }, [orders, year, month, fromDate, toDate, orderedBy, deliveryMan]);
+    }, [orders, year, month, fromDate, toDate, orderedBy, areaManager]);
 
     const findDateRange = (orders) => {
         if (!orders.length) return { firstDate: null, lastDate: null };
@@ -71,11 +73,12 @@ const MPOWiseNetSales = () => {
         setFromDate('');
         setToDate('');
         setOrderedBy('');
-        setDeliveryMan('');
+        setAreaManager('');
     };
 
     const handlePrint = MPOWiseNetSalesReport({
         filteredOrders,
+        orderReturns,
         firstDate,
         lastDate
     });
@@ -99,7 +102,7 @@ const MPOWiseNetSales = () => {
                             <select
                                 value={year}
                                 onChange={(e) => setYear(e.target.value)}
-                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm"
+                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
                             >
                                 <option value="">All Years</option>
                                 {years.map((y) => (
@@ -114,7 +117,7 @@ const MPOWiseNetSales = () => {
                             <select
                                 value={month}
                                 onChange={(e) => setMonth(e.target.value)}
-                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm"
+                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
                             >
                                 <option value="">All Months</option>
                                 {Array.from({ length: 12 }, (_, i) => (
@@ -132,7 +135,7 @@ const MPOWiseNetSales = () => {
                                 type="date"
                                 value={fromDate}
                                 onChange={(e) => setFromDate(e.target.value)}
-                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm"
+                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
                             />
                         </div>
 
@@ -143,7 +146,7 @@ const MPOWiseNetSales = () => {
                                 type="date"
                                 value={toDate}
                                 onChange={(e) => setToDate(e.target.value)}
-                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm"
+                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
                             />
                         </div>
 
@@ -153,7 +156,7 @@ const MPOWiseNetSales = () => {
                             <select
                                 value={orderedBy}
                                 onChange={(e) => setOrderedBy(e.target.value)}
-                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm"
+                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
                             >
                                 <option value="">Select a person</option>
                                 {uniqueOrderedBy.map(name => (
@@ -164,14 +167,14 @@ const MPOWiseNetSales = () => {
 
                         {/* Delivery Man Filter */}
                         <div>
-                            <label className="block font-semibold text-gray-700 mb-1">Delivery Man</label>
+                            <label className="block font-semibold text-gray-700 mb-1">Area Manager</label>
                             <select
-                                value={deliveryMan}
-                                onChange={(e) => setDeliveryMan(e.target.value)}
-                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm"
+                                value={areaManager}
+                                onChange={(e) => setAreaManager(e.target.value)}
+                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
                             >
-                                <option value="">Select Delivery Name</option>
-                                {uniqueDeliveryMen.map(name => (
+                                <option value="">Select Area Manager</option>
+                                {uniqueAreaManager.map(name => (
                                     <option key={name} value={name}>{name}</option>
                                 ))}
                             </select>

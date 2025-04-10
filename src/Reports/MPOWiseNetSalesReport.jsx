@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
 
-const MPOWiseNetSalesReport = ({ filteredOrders = [], firstDate, lastDate }) => {
+const MPOWiseNetSalesReport = ({ filteredOrders = [], orderReturns = [], firstDate, lastDate }) => {
     const [orders, setOrders] = useState(filteredOrders);
+    const [returns, setReturns] = useState(orderReturns);
 
     useEffect(() => {
         setOrders(filteredOrders);
     }, [filteredOrders]);
+
+    useEffect(() => {
+        setReturns(orderReturns);
+    }, [orderReturns]);
 
     const handlePrint = () => {
         const companyHeader = `
@@ -56,7 +61,7 @@ const MPOWiseNetSalesReport = ({ filteredOrders = [], firstDate, lastDate }) => 
                 <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
                     <thead>
                         <tr>
-                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; width: 70%;">Orderly</th>
+                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; width: 70%;">Order by</th>
                             <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 30%;">Total Amount</th>
                         </tr>
                     </thead>
