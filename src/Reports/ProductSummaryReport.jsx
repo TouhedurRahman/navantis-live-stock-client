@@ -57,7 +57,7 @@ const ProductSummaryReport = ({ filteredOrders = [], firstDate, lastDate }) => {
             }
 
             productDetails.forEach(product => {
-                if (product.name && product.quantity && product.tradePrice) {
+                if (product.productCode && product.name && product.quantity && product.tradePrice) {
                     const productKey = product.name;
                     const quantity = Number(product.quantity);
                     const totalPrice = quantity * Number(product.tradePrice);
@@ -67,6 +67,7 @@ const ProductSummaryReport = ({ filteredOrders = [], firstDate, lastDate }) => {
 
                     if (!groupedOrders[areaManager][mpo].products[productKey]) {
                         groupedOrders[areaManager][mpo].products[productKey] = {
+                            productCode: product.productCode,
                             productName: product.name,
                             quantity: 0,
                             totalPrice: 0
@@ -81,63 +82,57 @@ const ProductSummaryReport = ({ filteredOrders = [], firstDate, lastDate }) => {
 
         const groupedHTML = Object.entries(groupedOrders).map(([areaManager, mpoList]) => {
             return `
-            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
-                <thead>
-                    <tr>
-                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 20%;">Territory</th>
-                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 20%;">Order by</th>
-                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 60%;">Product Summary</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td colspan="1" style="padding: 10px; border: 1px solid #ddd; font-weight: bold; background-color: #e9f5ff; width: 20%;">
-                            ${(() => {
-                    const areaOrder = orders.find(order => order.areaManager === areaManager);
-                    return areaOrder?.parentTerritory || "Unknown Territory";
-                })()}
-                        </td>
-                        <td colspan="4" style="padding: 10px; border: 1px solid #ddd; font-weight: bold; background-color: #e9f5ff; width: 50%;">
-                            Area Manager: ${areaManager}
-                        </td>
-                </tr>
+                <div style="margin-bottom: 30px;">
+                    <h3 style="margin-bottom: 5px;">Area Manager: ${areaManager}</h3>
                     ${Object.entries(mpoList).map(([mpoName, mpoData]) => {
-                    const productsArray = Object.values(mpoData.products);
+                const productsArray = Object.values(mpoData.products);
+                const mpoOrder = orders.find(order => order.orderedBy === mpoName && order.areaManager === areaManager);
+                const mpoTerritory = mpoOrder?.territory || "Unknown Territory";
 
-                    // Get territory for this MPO
-                    const mpoOrder = orders.find(order => order.orderedBy === mpoName && order.areaManager === areaManager);
-                    const mpoTerritory = mpoOrder?.territory || "Unknown Territory";
-                    return `
-                            <tr>
-                                <td style="padding: 8px; border: 1px solid #ccc;">${mpoTerritory}</td>
-                                <td style="padding: 8px; border: 1px solid #ccc;">${mpoName}</td>
-                                <td style="padding: 8px; border: 1px solid #ccc;">
-                                    <table style="width: 100%; border-collapse: collapse;">
-                                        <thead>
-                                            <tr>
-                                                <th style="padding: 8px; border: 1px solid #aaa; text-align: left;">Product</th>
-                                                <th style="padding: 8px; border: 1px solid #aaa; text-align: right;">Quantity</th>
-                                                <th style="padding: 8px; border: 1px solid #aaa; text-align: right;">Total Price</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            ${productsArray.map(product => `
-                                                <tr>
-                                                    <td style="padding: 8px; border: 1px solid #ccc;">${product.productName}</td>
-                                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${product.quantity}</td>
-                                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
-                                                        ${product.totalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                                                    </td>
-                                                </tr>
-                                            `).join('')}
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
+                let mpoTotalQty = 0;
+                let mpoTotalPrice = 0;
+
+                productsArray.forEach(product => {
+                    mpoTotalQty += product.quantity;
+                    mpoTotalPrice += product.totalPrice;
+                });
+
+                return `
+                            <h4 style="margin: 10px 0 5px;">MPO: ${mpoName} (${mpoTerritory})</h4>
+                            <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
+                                <thead>
+                                    <tr>
+                                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left;">Product Code</th>
+                                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left;">Product</th>
+                                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Quantity</th>
+                                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Total Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${productsArray.map(product => `
+                                        <tr>
+                                            <td style="padding: 8px; border: 1px solid #ccc;">${product.productCode}</td>
+                                            <td style="padding: 8px; border: 1px solid #ccc;">${product.productName}</td>
+                                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${product.quantity}</td>
+                                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+                                                ${product.totalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                    <tr>
+                                        <td colspan="2" style="padding: 8px; border: 1px solid #aaa; font-weight: bold;">MPO Total</td>
+                                        <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right;">
+                                            ${mpoTotalQty.toLocaleString('en-IN')}
+                                        </td>
+                                        <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right;">
+                                            ${mpoTotalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         `;
-                }).join('')}
-                </tbody>
-            </table>
+            }).join('')}  
+                </div>
             `;
         }).join('');
 
