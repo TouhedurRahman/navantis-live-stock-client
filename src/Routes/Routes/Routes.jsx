@@ -31,6 +31,7 @@ import Home from "../../Pages/Home/Home/Home";
 import PlaceOrder from "../../Pages/Order/PlaceOrder/PlaceOrder";
 import Profile from "../../Pages/Profile/Profile/Profile";
 import MPOWiseNetSales from "../../Pages/ReportsComponents/MPOWiseNetSales/MPOWiseNetSales";
+import ProductSummary from "../../Pages/ReportsComponents/ProductSummary/ProductSummary";
 import AllUsers from "../../Pages/Users/AllUsers/AllUsers";
 import DepotDelivery from "../../Pages/Warehouse/DepotDelivery/DepotDelivery";
 import StockInList from "../../Pages/Warehouse/StockInList/StockInList";
@@ -38,7 +39,6 @@ import StockOutList from "../../Pages/Warehouse/StockOutList/StockOutList";
 import WarehouseAddProduct from "../../Pages/Warehouse/WarehouseAddProduct/WarehouseAddProduct";
 import WhDamagedProduct from "../../Pages/Warehouse/WhDamagedProduct/WhDamagedProduct";
 import WhProductsList from "../../Pages/Warehouse/WhProductsList/WhProductsList";
-import ProductSummary from "../../Reports/ProductSummary";
 import Login from "./LoginAndRegistration/Login/Login";
 import Registration from "./LoginAndRegistration/Registration/Registration";
 

@@ -3,10 +3,10 @@ import { FaFileExcel, FaFilePdf } from "react-icons/fa6";
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useOrders from '../../../Hooks/useOrders';
 import useReturns from '../../../Hooks/useReturns';
-import MPOWiseNetSalesReport from '../../../Reports/MPOWiseNetSalesReport';
-import MPOWiseNetSalesReportExcel from '../../../Reports/MPOWiseNetSalesReportExcel';
+import ProductSummaryReport from '../../../Reports/ProductSummaryReport';
+import ProductSummaryReportExcel from '../../../Reports/ProductSummaryReportExcel';
 
-const MPOWiseNetSales = () => {
+const ProductSummary = () => {
     const [orders] = useOrders();
     const [returns] = useReturns();
 
@@ -89,14 +89,14 @@ const MPOWiseNetSales = () => {
         setAreaManager('');
     };
 
-    const handlePrint = MPOWiseNetSalesReport({
+    const handlePrint = ProductSummaryReport({
         filteredOrders,
         orderReturns,
         firstDate,
         lastDate
     });
 
-    const handleDownloadExcel = MPOWiseNetSalesReportExcel({
+    const handleDownloadExcel = ProductSummaryReportExcel({
         filteredOrders,
         orderReturns,
         firstDate,
@@ -106,11 +106,11 @@ const MPOWiseNetSales = () => {
     return (
         <>
             <div>
-                <PageTitle from={"Reports"} to={"MPO wise net sales"} />
+                <PageTitle from={"Reports"} to={"Product Summary"} />
             </div>
             <div className="bg-white pb-1">
                 <div>
-                    <h1 className="px-6 py-3 font-bold">MPO wise net sales</h1>
+                    <h1 className="px-6 py-3 font-bold">Product Summary</h1>
                     <hr className='text-center border border-gray-500 mb-5' />
                 </div>
                 <div className='grid grid-cols-1 md:grid-cols-2 items-center gap-4'>
@@ -237,4 +237,4 @@ const MPOWiseNetSales = () => {
     );
 };
 
-export default MPOWiseNetSales;
+export default ProductSummary;
