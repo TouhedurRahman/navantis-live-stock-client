@@ -86,6 +86,8 @@ const MPOWiseNetSalesReport = ({ filteredOrders = [], orderReturns = [], firstDa
         let grandNetTotal = 0;
 
         const groupedHTML = Object.entries(groupedOrders).map(([areaManager, mpoList]) => {
+            const areaTerritory = Object.values(orders).find(o => o.areaManager === areaManager)?.parentTerritory || "N/A";
+
             const areaNetTotal = Object.entries(mpoList).reduce((acc, [mpoName, total]) => {
                 const returnAmount = groupedReturns[areaManager]?.[mpoName] || 0;
                 return acc + (total - returnAmount);
@@ -101,56 +103,76 @@ const MPOWiseNetSalesReport = ({ filteredOrders = [], orderReturns = [], firstDa
             grandReturnTotal += areaReturnTotal;
 
             return `
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
-            <thead>
-                <tr>
-                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 40%;">Order by</th>
-                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 20%;">Sold Amount</th>
-                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 20%;">Return Amount</th>
-                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 20%;">Net Sales</th>
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                <thead>
+                    <tr>
+                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 20%;">Territory</th>
+                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 20%;">Order by</th>
+                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 20%;">Sold Amount</th>
+                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 20%;">Return Amount</th>
+                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 20%;">Net Sales</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td colspan="1" style="padding: 10px; border: 1px solid #ddd; font-weight: bold; background-color: #e9f5ff; width: 20%;">
+                            ${(() => {
+                    const areaOrder = orders.find(order => order.areaManager === areaManager);
+                    return areaOrder?.parentTerritory || "Unknown Territory";
+                })()}
+                        </td>
+                        <td colspan="4" style="padding: 10px; border: 1px solid #ddd; font-weight: bold; background-color: #e9f5ff; width: 50%;">
+                            Area Manager: ${areaManager}
+                        </td>
                 </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td colspan="4" style="padding: 8px; border: 1px solid #ddd; font-weight: bold; background-color: #e0e0e0;">
-                        ${areaManager} (Area Manager)
-                    </td>
-                </tr>
-                ${Object.entries(mpoList).map(([mpoName, grossTotal]) => {
-                const returnAmount = groupedReturns[areaManager]?.[mpoName] || 0;
-                const netAmount = grossTotal - returnAmount;
-                return ` 
-                        <tr>
-                            <td style="padding: 8px; border: 1px solid #ccc;">${mpoName}</td>
-                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
-                                ${grossTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                            </td>
-                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
-                                ${returnAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                            </td>
-                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right; font-weight: bold;">
-                                ${netAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                            </td>
-                        </tr>
-                    `;
-            }).join('')}
-                <tr>
-                    <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; background-color: #f9f9f9;">
-                        <strong>Area Totals</strong>
-                    </td>
-                    <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-weight: bold; background-color: #f9f9f9;">
-                        ${areaGrossTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                    </td>
-                    <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-weight: bold; background-color: #f9f9f9;">
-                        ${areaReturnTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                    </td>
-                    <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-weight: bold; background-color: #f9f9f9;">
-                        ${areaNetTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                    </td>
-                </tr>                
-            </tbody>
-        </table>
-    `;
+                    ${Object.entries(mpoList).map(([mpoName, grossTotal]) => {
+                    const returnAmount = groupedReturns[areaManager]?.[mpoName] || 0;
+                    const netAmount = grossTotal - returnAmount;
+
+                    // Get territory for this MPO
+                    const mpoOrder = orders.find(order => order.orderedBy === mpoName && order.areaManager === areaManager);
+                    const mpoTerritory = mpoOrder?.territory || "Unknown Territory";
+
+                    return ` 
+                            <tr>
+                                <td style="padding: 8px; border: 1px solid #ccc;">${mpoTerritory}</td>
+                                <td style="padding: 8px; border: 1px solid #ccc;">${mpoName}</td>
+                                <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+                                    ${grossTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                </td>
+                                <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+                                    ${returnAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                </td>
+                                <td style="padding: 8px; border: 1px solid #ccc; text-align: right; font-weight: bold;">
+                                    ${netAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                </td>
+                            </tr>
+                        `;
+                }).join('')}
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; background-color: #f9f9f9;">
+                            ${(() => {
+                    const areaOrder = orders.find(order => order.areaManager === areaManager);
+                    return areaOrder?.parentTerritory || "Unknown Territory";
+                })()}
+                        </td>
+                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; background-color: #f9f9f9;">
+                            <strong>Area Totals</strong>
+                        </td>
+                        <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-weight: bold; background-color: #f9f9f9;">
+                            ${areaGrossTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                        </td>
+                        <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-weight: bold; background-color: #f9f9f9;">
+                            ${areaReturnTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                        </td>
+                        <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-weight: bold; background-color: #f9f9f9;">
+                            ${areaNetTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                        </td>
+                    </tr>               
+                </tbody>
+            </table>
+        `;
         }).join('');
 
         const finalTotalHTML = `
