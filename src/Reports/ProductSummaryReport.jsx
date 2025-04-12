@@ -24,7 +24,7 @@ const ProductSummaryReport = ({ filteredOrders = [], firstDate, lastDate }) => {
                     <p style="margin: 0; font-size: 10px;">Hotline: +880 1322-852183</p>
                 </div>
                 <div style="text-align: left; margin-bottom: 20px;">
-                    <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>MPO wise Net Sales</u></h3>
+                    <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>Product Summary</u></h3>
                     <p style="margin: 5px 0; font-size: 14px; text-align: center;">
                         ${(firstDate !== lastDate)
                 ? `Date from <b>${firstDate}</b> to <b>${lastDate}</b>`
@@ -106,10 +106,10 @@ const ProductSummaryReport = ({ filteredOrders = [], firstDate, lastDate }) => {
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
                         <thead>
                             <tr>
-                                <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left;">Product Code</th>
-                                <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left;">Product</th>
-                                <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Quantity</th>
-                                <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Total Price</th>
+                                <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 20%";>Product Code</th>
+                                <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 40%";">Product Name</th>
+                                <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 20%";">Quantity</th>
+                                <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 20%";">Total Price</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -144,11 +144,11 @@ const ProductSummaryReport = ({ filteredOrders = [], firstDate, lastDate }) => {
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
                         <tbody>
                             <tr>
-                                <td colspan="2" style="padding: 8px; border: 1px solid #aaa; font-weight: bold;">Area Manager Total</td>
-                                <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right;">
+                                <td colspan="2" style="padding: 8px; border: 1px solid #aaa; font-weight: bold; width: 60%";">Area Manager Total</td>
+                                <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right; width: 20%";">
                                     ${areaTotalQty.toLocaleString('en-IN')}
                                 </td>
-                                <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right;">
+                                <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right; width: 20%";">
                                     ${areaTotalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                 </td>
                             </tr>
@@ -162,11 +162,11 @@ const ProductSummaryReport = ({ filteredOrders = [], firstDate, lastDate }) => {
             <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
                 <tbody>
                     <tr>
-                        <td colspan="2" style="padding: 8px; border: 1px solid #aaa; font-weight: bold;">Grand Total</td>
-                        <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right;">
+                        <td colspan="2" style="padding: 8px; border: 1px solid #aaa; font-weight: bold; width: 60%";">Grand Total</td>
+                        <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right; width: 20%";">
                             ${grandTotalQty.toLocaleString('en-IN')}
                         </td>
-                        <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right;">
+                        <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right; width: 20%";">
                             ${grandTotalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                         </td>
                     </tr>
@@ -182,7 +182,7 @@ const ProductSummaryReport = ({ filteredOrders = [], firstDate, lastDate }) => {
         newWindow.document.write(`
             <html>
                 <head>
-                    <title>Order Despatch Report</title>
+                    <title>Product Summary</title>
                     ${styles}
                     <style>
                         @media print {
