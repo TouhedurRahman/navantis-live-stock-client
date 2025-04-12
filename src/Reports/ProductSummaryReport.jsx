@@ -91,15 +91,25 @@ const ProductSummaryReport = ({ filteredOrders = [], firstDate, lastDate }) => {
                 </thead>
                 <tbody>
                     <tr>
-                        <td colspan="3" style="padding: 10px; border: 1px solid #ddd; font-weight: bold; background-color: #e9f5ff;">
+                        <td colspan="1" style="padding: 10px; border: 1px solid #ddd; font-weight: bold; background-color: #e9f5ff; width: 20%;">
+                            ${(() => {
+                    const areaOrder = orders.find(order => order.areaManager === areaManager);
+                    return areaOrder?.parentTerritory || "Unknown Territory";
+                })()}
+                        </td>
+                        <td colspan="4" style="padding: 10px; border: 1px solid #ddd; font-weight: bold; background-color: #e9f5ff; width: 50%;">
                             Area Manager: ${areaManager}
                         </td>
-                    </tr>
+                </tr>
                     ${Object.entries(mpoList).map(([mpoName, mpoData]) => {
-                const productsArray = Object.values(mpoData.products);
-                return `
+                    const productsArray = Object.values(mpoData.products);
+
+                    // Get territory for this MPO
+                    const mpoOrder = orders.find(order => order.orderedBy === mpoName && order.areaManager === areaManager);
+                    const mpoTerritory = mpoOrder?.territory || "Unknown Territory";
+                    return `
                             <tr>
-                                <td style="padding: 8px; border: 1px solid #ccc;">${mpoName}</td>
+                                <td style="padding: 8px; border: 1px solid #ccc;">${mpoTerritory}</td>
                                 <td style="padding: 8px; border: 1px solid #ccc;">${mpoName}</td>
                                 <td style="padding: 8px; border: 1px solid #ccc;">
                                     <table style="width: 100%; border-collapse: collapse;">
@@ -125,7 +135,7 @@ const ProductSummaryReport = ({ filteredOrders = [], firstDate, lastDate }) => {
                                 </td>
                             </tr>
                         `;
-            }).join('')}
+                }).join('')}
                 </tbody>
             </table>
             `;
@@ -133,16 +143,9 @@ const ProductSummaryReport = ({ filteredOrders = [], firstDate, lastDate }) => {
 
         const finalTotalHTML = `
             <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                <thead>
-                    <tr style="background-color: #d9edf7; font-weight: bold;">
-                        <th style="padding: 8px; border: 1px solid #aaa; width: 40%;">Grand Total</th>
-                        <th style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 20%;">Total Quantity</th>
-                        <th style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 20%;">Total Price</th>
-                    </tr>
-                </thead>
                 <tbody>
                     <tr>
-                        <td style="padding: 8px; border: 1px solid #aaa;"></td>
+                        <td style="padding: 8px; border: 1px solid #aaa;">Grand Total</td>
                         <td style="padding: 8px; border: 1px solid #aaa; text-align: right;">
                             ${grandTotalQty.toLocaleString('en-IN')}
                         </td>
