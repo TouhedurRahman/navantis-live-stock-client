@@ -37,14 +37,14 @@ const ProductSummaryReport = ({ filteredOrders = [], firstDate, lastDate }) => {
             </div>
         `;
 
-        // Group orders by Area Manager and MPO
         const groupedOrders = {};
+        let grandTotalQty = 0;
+        let grandTotalPrice = 0;
 
         orders.forEach(order => {
             const areaManager = order?.areaManager || "Unknown Area Manager";
             const mpo = order?.orderedBy || "Unknown MPO";
             const productDetails = order?.products || [];
-            const soldAmount = Number(order.soldAmount || 0);
 
             if (!groupedOrders[areaManager]) {
                 groupedOrders[areaManager] = {};
@@ -52,73 +52,66 @@ const ProductSummaryReport = ({ filteredOrders = [], firstDate, lastDate }) => {
 
             if (!groupedOrders[areaManager][mpo]) {
                 groupedOrders[areaManager][mpo] = {
-                    totalSold: 0,
-                    products: []
+                    products: {}
                 };
             }
 
-            groupedOrders[areaManager][mpo].totalSold += soldAmount;
-
-            // Debugging: Log the MPO and Products
-            console.log(`Processing MPO: ${mpo} for Area Manager: ${areaManager}`);
             productDetails.forEach(product => {
-                // console.log(`Product: ${product.name}, Quantity: ${product.quantity}, Price: ${product.tradePrice}`);
                 if (product.name && product.quantity && product.tradePrice) {
-                    groupedOrders[areaManager][mpo].products.push({
-                        productName: product.name,
-                        quantity: product.quantity,
-                        totalPrice: product.quantity * product.tradePrice
-                    });
+                    const productKey = product.name;
+                    const quantity = Number(product.quantity);
+                    const totalPrice = quantity * Number(product.tradePrice);
+
+                    grandTotalQty += quantity;
+                    grandTotalPrice += totalPrice;
+
+                    if (!groupedOrders[areaManager][mpo].products[productKey]) {
+                        groupedOrders[areaManager][mpo].products[productKey] = {
+                            productName: product.name,
+                            quantity: 0,
+                            totalPrice: 0
+                        };
+                    }
+
+                    groupedOrders[areaManager][mpo].products[productKey].quantity += quantity;
+                    groupedOrders[areaManager][mpo].products[productKey].totalPrice += totalPrice;
                 }
             });
         });
 
-        let grandGrossTotal = 0;
-        let grandNetTotal = 0;
-
-        // Create HTML tables for each Area Manager and MPO
         const groupedHTML = Object.entries(groupedOrders).map(([areaManager, mpoList]) => {
-            const areaGrossTotal = Object.values(mpoList).reduce((acc, mpo) => acc + mpo.totalSold, 0);
-            grandGrossTotal += areaGrossTotal;
-
-            const areaNetTotal = Object.values(mpoList).reduce((acc, mpo) => acc + mpo.totalSold, 0);
-            grandNetTotal += areaNetTotal;
-
             return `
             <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
                 <thead>
                     <tr>
                         <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 20%;">Territory</th>
                         <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 20%;">Order by</th>
-                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 20%;">Sold Amount</th>
-                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 20%;">Product Summary</th>
+                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 60%;">Product Summary</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td colspan="4" style="padding: 10px; border: 1px solid #ddd; font-weight: bold; background-color: #e9f5ff;">
+                        <td colspan="3" style="padding: 10px; border: 1px solid #ddd; font-weight: bold; background-color: #e9f5ff;">
                             Area Manager: ${areaManager}
                         </td>
                     </tr>
                     ${Object.entries(mpoList).map(([mpoName, mpoData]) => {
+                const productsArray = Object.values(mpoData.products);
                 return `
                             <tr>
                                 <td style="padding: 8px; border: 1px solid #ccc;">${mpoName}</td>
-                                <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
-                                    ${mpoData.totalSold.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                                </td>
-                                <td style="padding: 8px; border: 1px solid #ccc; text-align: left;">
+                                <td style="padding: 8px; border: 1px solid #ccc;">${mpoName}</td>
+                                <td style="padding: 8px; border: 1px solid #ccc;">
                                     <table style="width: 100%; border-collapse: collapse;">
                                         <thead>
                                             <tr>
                                                 <th style="padding: 8px; border: 1px solid #aaa; text-align: left;">Product</th>
                                                 <th style="padding: 8px; border: 1px solid #aaa; text-align: right;">Quantity</th>
-                                                <th style="padding: 8px; border: 1px solid #aaa; text-align: right;">Price</th>
+                                                <th style="padding: 8px; border: 1px solid #aaa; text-align: right;">Total Price</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            ${mpoData.products.map(product => {
-                    return `
+                                            ${productsArray.map(product => `
                                                 <tr>
                                                     <td style="padding: 8px; border: 1px solid #ccc;">${product.productName}</td>
                                                     <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${product.quantity}</td>
@@ -126,15 +119,13 @@ const ProductSummaryReport = ({ filteredOrders = [], firstDate, lastDate }) => {
                                                         ${product.totalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                                     </td>
                                                 </tr>
-                                            `;
-                }).join('')}
+                                            `).join('')}
                                         </tbody>
                                     </table>
                                 </td>
                             </tr>
                         `;
             }).join('')}
-
                 </tbody>
             </table>
             `;
@@ -142,14 +133,21 @@ const ProductSummaryReport = ({ filteredOrders = [], firstDate, lastDate }) => {
 
         const finalTotalHTML = `
             <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                <tbody>
+                <thead>
                     <tr style="background-color: #d9edf7; font-weight: bold;">
-                        <td style="padding: 8px; border: 1px solid #aaa; width: 40%;">Grand Total</td>
-                        <td style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 20%;">
-                            ${grandGrossTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                        <th style="padding: 8px; border: 1px solid #aaa; width: 40%;">Grand Total</th>
+                        <th style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 20%;">Total Quantity</th>
+                        <th style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 20%;">Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #aaa;"></td>
+                        <td style="padding: 8px; border: 1px solid #aaa; text-align: right;">
+                            ${grandTotalQty.toLocaleString('en-IN')}
                         </td>
-                        <td style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 20%;">
-                            ${grandNetTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                        <td style="padding: 8px; border: 1px solid #aaa; text-align: right;">
+                            ${grandTotalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                         </td>
                     </tr>
                 </tbody>
