@@ -1,8 +1,10 @@
 import React, { useMemo, useState } from 'react';
+import { FaFileExcel, FaFilePdf } from "react-icons/fa6";
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useOrders from '../../../Hooks/useOrders';
 import useReturns from '../../../Hooks/useReturns';
 import MPOWiseNetSalesReport from '../../../Reports/MPOWiseNetSalesReport';
+import MPOWiseNetSalesReportExcel from '../../../Reports/MPOWiseNetSalesReportExcel';
 
 const MPOWiseNetSales = () => {
     const [orders] = useOrders();
@@ -94,14 +96,21 @@ const MPOWiseNetSales = () => {
         lastDate
     });
 
+    const handleDownloadExcel = MPOWiseNetSalesReportExcel({
+        filteredOrders,
+        orderReturns,
+        firstDate,
+        lastDate
+    });
+
     return (
         <>
             <div>
-                <PageTitle from={"Depot"} to={"Delivery report"} />
+                <PageTitle from={"Depot"} to={"MPO wise net sales"} />
             </div>
             <div className="bg-white pb-1">
                 <div>
-                    <h1 className="px-6 py-3 font-bold">Depot delivery report</h1>
+                    <h1 className="px-6 py-3 font-bold">MPO wise net sales</h1>
                     <hr className='text-center border border-gray-500 mb-5' />
                 </div>
                 <div className='grid grid-cols-1 md:grid-cols-2 items-center gap-4'>
@@ -202,11 +211,24 @@ const MPOWiseNetSales = () => {
 
                     {/* button section */}
                     <div className="w-full flex flex-col gap-4 px-6 mt-4">
+                        {/* print pdf button */}
                         <button
                             onClick={handlePrint}
                             className="bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:scale-105 transition-all"
                         >
-                            🖨️ MPO Wise Net Sales
+                            <span className='flex justify-center items-center'>
+                                <FaFilePdf className='mr-2' /> Print PDF
+                            </span>
+                        </button>
+
+                        {/* download excel file button */}
+                        <button
+                            onClick={handleDownloadExcel}
+                            className="bg-gradient-to-r from-red-500 to-red-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:scale-105 transition-all"
+                        >
+                            <span className='flex justify-center items-center'>
+                                <FaFileExcel className='mr-2' /> Download Excel
+                            </span>
                         </button>
                     </div>
                 </div>
