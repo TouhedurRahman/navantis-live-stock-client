@@ -202,7 +202,7 @@ const MPOWiseNetSalesReport = ({ filteredOrders = [], orderReturns = [], firstDa
         newWindow.document.write(`
             <html>
                 <head>
-                    <title>Order Despatch Report</title>
+                    <title>MPO Wise Net Sales</title>
                     ${styles}
                     <style>
                         @media print {

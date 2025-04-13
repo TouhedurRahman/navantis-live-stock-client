@@ -34,7 +34,7 @@ const MPOWiseNetSalesReportExcel = ({ filteredOrders = [], orderReturns = [], fi
                 : `Date <b>${firstDate}</b>`}
                     </p>
                     <p style="margin: 5px 0; font-size: 10px; text-align: center;">
-                        Printed on ${now}
+                        Downloaded on ${now}
                     </p>
                 </div>
             </div>

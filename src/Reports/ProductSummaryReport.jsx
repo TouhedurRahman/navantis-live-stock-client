@@ -102,7 +102,7 @@ const ProductSummaryReport = ({ filteredOrders = [], firstDate, lastDate }) => {
                 areaTotalPrice += mpoTotalPrice;
 
                 return `
-                    <h4 style="margin: 10px 0 5px;">MPO: ${mpoName} (${mpoTerritory})</h4>
+                    <p style="margin: 5px 0; font-weight: bold; font-size: 12px;">MPO/SCC/ASE: ${mpoName} | Territory: ${mpoTerritory}</p>
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
                         <thead>
                             <tr>
@@ -124,7 +124,7 @@ const ProductSummaryReport = ({ filteredOrders = [], firstDate, lastDate }) => {
                                 </tr>
                             `).join('')}
                             <tr>
-                                <td colspan="2" style="padding: 8px; border: 1px solid #aaa; font-weight: bold;">MPO Total</td>
+                                <td colspan="2" style="padding: 8px; border: 1px solid #aaa; font-weight: bold;">MPO/SCC/ASE Total</td>
                                 <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right;">
                                     ${mpoTotalQty.toLocaleString('en-IN')}
                                 </td>
@@ -139,7 +139,11 @@ const ProductSummaryReport = ({ filteredOrders = [], firstDate, lastDate }) => {
 
             return `
                 <div style="margin-bottom: 30px;">
-                    <h3 style="margin-bottom: 5px;">Area Manager: ${areaManager}</h3>
+                    <p style="margin-bottom: 5px; text-align: center; font-weight: bold; font-size: 12px;">Sr. AM/AM: ${areaManager} | Territory: ${(() => {
+                    const areaOrder = orders.find(order => order.areaManager === areaManager);
+                    return areaOrder?.parentTerritory || "Unknown Territory";
+                })()}
+                    </p>
                     ${mpoTables}
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
                         <tbody>

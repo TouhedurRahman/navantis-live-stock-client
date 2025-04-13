@@ -2,13 +2,12 @@ import React, { useMemo, useState } from 'react';
 import { FaFileExcel, FaFilePdf } from "react-icons/fa6";
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useOrders from '../../../Hooks/useOrders';
-import useReturns from '../../../Hooks/useReturns';
 import ProductSummaryReport from '../../../Reports/ProductSummaryReport';
 import ProductSummaryReportExcel from '../../../Reports/ProductSummaryReportExcel';
 
 const ProductSummary = () => {
     const [orders] = useOrders();
-    const [returns] = useReturns();
+    // const [returns] = useReturns();
 
     const [year, setYear] = useState('');
     const [month, setMonth] = useState('');
@@ -57,7 +56,7 @@ const ProductSummary = () => {
         });
     }, [orders, year, month, fromDate, toDate, orderedBy, areaManager]);
 
-    const orderReturns = useMemo(() => {
+    /* const orderReturns = useMemo(() => {
         return returns.filter(ret => {
             const returnDate = new Date(ret.date);
             const matchesDateRange = fromDate && toDate
@@ -66,7 +65,7 @@ const ProductSummary = () => {
 
             return matchesDateRange;
         })
-    }, [returns, fromDate, toDate]);
+    }, [returns, fromDate, toDate]); */
 
     const findDateRange = (orders) => {
         if (!orders.length) return { firstDate: null, lastDate: null };
@@ -91,14 +90,14 @@ const ProductSummary = () => {
 
     const handlePrint = ProductSummaryReport({
         filteredOrders,
-        orderReturns,
+        // orderReturns,
         firstDate,
         lastDate
     });
 
     const handleDownloadExcel = ProductSummaryReportExcel({
         filteredOrders,
-        orderReturns,
+        // orderReturns,
         firstDate,
         lastDate
     });
