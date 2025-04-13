@@ -86,7 +86,7 @@ const useMenuConfig = () => {
         reports: {
             icon: <TbReportSearch className="mr-2" />,
             links: [
-                { to: '/mpo-net-sales', icon: <TbReportAnalytics className='me-2' />, label: 'MPO Wise Net Sales' },
+                { to: '/net-sales-report', icon: <TbReportAnalytics className='me-2' />, label: 'Net Sales' },
                 { to: '/product-summary', icon: <TbReportAnalytics className='me-2' />, label: 'Product Summary' },
             ],
         },

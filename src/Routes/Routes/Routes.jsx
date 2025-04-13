@@ -30,7 +30,7 @@ import OrderDelivery from "../../Pages/Depot/OrderDelivery/OrderDelivery";
 import Home from "../../Pages/Home/Home/Home";
 import PlaceOrder from "../../Pages/Order/PlaceOrder/PlaceOrder";
 import Profile from "../../Pages/Profile/Profile/Profile";
-import MPOWiseNetSales from "../../Pages/ReportsComponents/MPOWiseNetSales/MPOWiseNetSales";
+import NetSales from "../../Pages/ReportsComponents/NetSales/NetSales";
 import ProductSummary from "../../Pages/ReportsComponents/ProductSummary/ProductSummary";
 import AllUsers from "../../Pages/Users/AllUsers/AllUsers";
 import DepotDelivery from "../../Pages/Warehouse/DepotDelivery/DepotDelivery";
@@ -196,8 +196,8 @@ const router = createBrowserRouter([
                 element: <AllUsers />
             },
             {
-                path: '/mpo-net-sales',
-                element: <MPOWiseNetSales />
+                path: '/net-sales-report',
+                element: <NetSales />
             },
             {
                 path: '/product-summary',

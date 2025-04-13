@@ -6,7 +6,7 @@ import useReturns from '../../../Hooks/useReturns';
 import MPOWiseNetSalesReport from '../../../Reports/MPOWiseNetSalesReport';
 import MPOWiseNetSalesReportExcel from '../../../Reports/MPOWiseNetSalesReportExcel';
 
-const MPOWiseNetSales = () => {
+const NetSales = () => {
     const [orders] = useOrders();
     const [returns] = useReturns();
 
@@ -16,6 +16,7 @@ const MPOWiseNetSales = () => {
     const [toDate, setToDate] = useState('');
     const [orderedBy, setOrderedBy] = useState('');
     const [areaManager, setAreaManager] = useState('');
+    const [customer, setCustomer] = useState('');
 
     const deliveredOrders = orders.filter(order => order.status !== 'pending');
 
@@ -42,6 +43,21 @@ const MPOWiseNetSales = () => {
         return Array.from(names);
     }, [deliveredOrders]);
 
+    const uniquePharmacies = useMemo(() => {
+        const pharmacyMap = new Map();
+
+        deliveredOrders.forEach(order => {
+            if (order.pharmacyId && order.pharmacy) {
+                pharmacyMap.set(order.pharmacyId.trim(), order.pharmacy.trim());
+            }
+        });
+
+        return Array.from(pharmacyMap.entries()).map(([pharmacyId, pharmacy]) => ({
+            pharmacyId,
+            pharmacy,
+        }));
+    }, [deliveredOrders]);
+
     const filteredOrders = useMemo(() => {
         return deliveredOrders.filter(order => {
             const orderDate = new Date(order.date);
@@ -52,10 +68,11 @@ const MPOWiseNetSales = () => {
                 : true;
             const matchesOrderedBy = orderedBy ? order.orderedBy?.toLowerCase().includes(orderedBy.toLowerCase()) : true;
             const matchesAreaManager = areaManager ? order.areaManager?.toLowerCase().includes(areaManager.toLowerCase()) : true;
+            const matchesCustomer = customer ? order.pharmacyId?.toLowerCase().includes(customer.toLowerCase()) : true;
 
-            return matchesYear && matchesMonth && matchesDateRange && matchesOrderedBy && matchesAreaManager;
+            return matchesYear && matchesMonth && matchesDateRange && matchesOrderedBy && matchesAreaManager && matchesCustomer;
         });
-    }, [orders, year, month, fromDate, toDate, orderedBy, areaManager]);
+    }, [orders, year, month, fromDate, toDate, orderedBy, areaManager, customer]);
 
     const orderReturns = useMemo(() => {
         return returns.filter(ret => {
@@ -87,6 +104,7 @@ const MPOWiseNetSales = () => {
         setToDate('');
         setOrderedBy('');
         setAreaManager('');
+        setCustomer('');
     };
 
     const handlePrint = MPOWiseNetSalesReport({
@@ -106,11 +124,11 @@ const MPOWiseNetSales = () => {
     return (
         <>
             <div>
-                <PageTitle from={"Reports"} to={"MPO wise net sales"} />
+                <PageTitle from={"Reports"} to={"Net sales"} />
             </div>
             <div className="bg-white pb-1">
                 <div>
-                    <h1 className="px-6 py-3 font-bold">MPO wise net sales</h1>
+                    <h1 className="px-6 py-3 font-bold">Net sales reports</h1>
                     <hr className='text-center border border-gray-500 mb-5' />
                 </div>
                 <div className='grid grid-cols-1 md:grid-cols-2 items-center gap-4'>
@@ -185,7 +203,7 @@ const MPOWiseNetSales = () => {
                             </select>
                         </div>
 
-                        {/* Delivery Man Filter */}
+                        {/* Area Manager Filter */}
                         <div>
                             <label className="block font-semibold text-gray-700 mb-1">Area Manager</label>
                             <select
@@ -196,6 +214,23 @@ const MPOWiseNetSales = () => {
                                 <option value="">Select Area Manager</option>
                                 {uniqueAreaManager.map(name => (
                                     <option key={name} value={name}>{name}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Customer Filter */}
+                        <div className='col-span-1 md:col-span-2'>
+                            <label className="block font-semibold text-gray-700 mb-1">Customer</label>
+                            <select
+                                value={customer}
+                                onChange={(e) => setCustomer(e.target.value)}
+                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
+                            >
+                                <option value="">Select Customer</option>
+                                {uniquePharmacies.map(({ pharmacy, pharmacyId }) => (
+                                    <option key={pharmacyId} value={pharmacyId}>
+                                        {pharmacy} - {pharmacyId}
+                                    </option>
                                 ))}
                             </select>
                         </div>
@@ -237,4 +272,4 @@ const MPOWiseNetSales = () => {
     );
 };
 
-export default MPOWiseNetSales;
+export default NetSales;
