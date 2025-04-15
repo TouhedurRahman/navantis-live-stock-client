@@ -28,6 +28,7 @@ import ExpiredReturnsStatus from "../../Pages/Depot/ExpiredReturns/ExpiredReturn
 import InvoicePayment from "../../Pages/Depot/InvoicePayment/InvoicePayment/InvoicePayment";
 import OrderDelivery from "../../Pages/Depot/OrderDelivery/OrderDelivery";
 import Home from "../../Pages/Home/Home/Home";
+import MyOrder from "../../Pages/Order/MyOrder/MyOrder";
 import PlaceOrder from "../../Pages/Order/PlaceOrder/PlaceOrder";
 import Profile from "../../Pages/Profile/Profile/Profile";
 import NetSales from "../../Pages/ReportsComponents/NetSales/NetSales";
@@ -186,6 +187,10 @@ const router = createBrowserRouter([
             {
                 path: "/place-order",
                 element: <PlaceOrder />
+            },
+            {
+                path: "/my-order",
+                element: <MyOrder />
             },
             {
                 path: '/profile',

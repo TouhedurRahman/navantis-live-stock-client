@@ -80,6 +80,7 @@ const useMenuConfig = () => {
             icon: <MdOutlineShoppingBag className="mr-2" />,
             links: [
                 { to: '/place-order', icon: <FaCartPlus className='me-2' />, label: 'Place Order' },
+                { to: '/my-order', icon: <FaCartPlus className='me-2' />, label: 'My Order' },
             ],
         },
 
