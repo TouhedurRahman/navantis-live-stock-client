@@ -1,14 +1,16 @@
 import React, { useMemo, useState } from 'react';
 import { FaFileExcel, FaFilePdf } from "react-icons/fa6";
 import PageTitle from '../../../Components/PageTitle/PageTitle';
+import useCustomer from '../../../Hooks/useCustomer';
 import useOrders from '../../../Hooks/useOrders';
 import useReturns from '../../../Hooks/useReturns';
-import MPOWiseNetSalesReport from '../../../Reports/MPOWiseNetSalesReport';
-import MPOWiseNetSalesReportExcel from '../../../Reports/MPOWiseNetSalesReportExcel';
+import NetSalesReport from '../../../Reports/NetSalesReport';
+import NetSalesReportExcel from '../../../Reports/NetSalesReportExcel';
 
 const NetSales = () => {
     const [orders] = useOrders();
     const [returns] = useReturns();
+    const [customers] = useCustomer();
 
     const [year, setYear] = useState('');
     const [month, setMonth] = useState('');
@@ -17,46 +19,12 @@ const NetSales = () => {
     const [orderedBy, setOrderedBy] = useState('');
     const [areaManager, setAreaManager] = useState('');
     const [customer, setCustomer] = useState('');
+    const [reportType, setReportType] = useState('Net Sales');
 
     const deliveredOrders = orders.filter(order => order.status !== 'pending');
 
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: currentYear - 1999 }, (_, i) => currentYear - i);
-
-    const uniqueOrderedBy = useMemo(() => {
-        const names = new Set();
-        deliveredOrders.forEach(order => {
-            if (order.orderedBy) {
-                names.add(order.orderedBy.trim());
-            }
-        });
-        return Array.from(names);
-    }, [deliveredOrders]);
-
-    const uniqueAreaManager = useMemo(() => {
-        const names = new Set();
-        deliveredOrders.forEach(order => {
-            if (order.areaManager) {
-                names.add(order.areaManager.trim());
-            }
-        });
-        return Array.from(names);
-    }, [deliveredOrders]);
-
-    const uniquePharmacies = useMemo(() => {
-        const pharmacyMap = new Map();
-
-        deliveredOrders.forEach(order => {
-            if (order.pharmacyId && order.pharmacy) {
-                pharmacyMap.set(order.pharmacyId.trim(), order.pharmacy.trim());
-            }
-        });
-
-        return Array.from(pharmacyMap.entries()).map(([pharmacyId, pharmacy]) => ({
-            pharmacyId,
-            pharmacy,
-        }));
-    }, [deliveredOrders]);
 
     const filteredOrders = useMemo(() => {
         return deliveredOrders.filter(order => {
@@ -97,6 +65,51 @@ const NetSales = () => {
 
     const { firstDate, lastDate } = findDateRange(filteredOrders);
 
+    const uniqueOrderedBy = useMemo(() => {
+        const names = new Set();
+        filteredOrders.forEach(order => {
+            if (order.orderedBy) {
+                names.add(order.orderedBy.trim());
+            }
+        });
+        return Array.from(names);
+    }, [filteredOrders]);
+
+    const uniqueAreaManager = useMemo(() => {
+        const names = new Set();
+        filteredOrders.forEach(order => {
+            if (order.areaManager) {
+                names.add(order.areaManager.trim());
+            }
+        });
+        return Array.from(names);
+    }, [filteredOrders]);
+
+    const uniquePharmacies = useMemo(() => {
+        const pharmacyMap = new Map();
+
+        filteredOrders.forEach(order => {
+            if (order.pharmacyId && order.pharmacy) {
+                pharmacyMap.set(order.pharmacyId.trim(), order.pharmacy.trim());
+            }
+        });
+
+        return Array.from(pharmacyMap.entries()).map(([pharmacyId, pharmacy]) => ({
+            pharmacyId,
+            pharmacy,
+        }));
+    }, [filteredOrders]);
+
+    const orderWithPharmacyId = filteredOrders.find(order => order.pharmacyId);
+    const selectedCustomerCode = orderWithPharmacyId ? orderWithPharmacyId.pharmacyId : null;
+
+    const customerDetails = customers.find(singleCus => singleCus.customerId === selectedCustomerCode);
+
+    const customerCode = customerDetails?.customerId || '';
+    const customerName = customerDetails?.name || '';
+    const customerAddress = customerDetails?.address || '';
+    const customerMobile = customerDetails?.mobile || '';
+
     const clearFilters = () => {
         setYear('');
         setMonth('');
@@ -105,20 +118,31 @@ const NetSales = () => {
         setOrderedBy('');
         setAreaManager('');
         setCustomer('');
+        setReportType('Net Sales');
     };
 
-    const handlePrint = MPOWiseNetSalesReport({
+    const handlePrint = NetSalesReport({
+        reportType,
         filteredOrders,
         orderReturns,
         firstDate,
-        lastDate
+        lastDate,
+        customerCode,
+        customerName,
+        customerAddress,
+        customerMobile
     });
 
-    const handleDownloadExcel = MPOWiseNetSalesReportExcel({
+    const handleDownloadExcel = NetSalesReportExcel({
+        reportType,
         filteredOrders,
         orderReturns,
         firstDate,
-        lastDate
+        lastDate,
+        customerCode,
+        customerName,
+        customerAddress,
+        customerMobile
     });
 
     return (
@@ -211,7 +235,7 @@ const NetSales = () => {
                                 onChange={(e) => setAreaManager(e.target.value)}
                                 className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
                             >
-                                <option value="">Select Area Manager</option>
+                                <option value="">Select an Area Manager</option>
                                 {uniqueAreaManager.map(name => (
                                     <option key={name} value={name}>{name}</option>
                                 ))}
@@ -226,12 +250,39 @@ const NetSales = () => {
                                 onChange={(e) => setCustomer(e.target.value)}
                                 className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
                             >
-                                <option value="">Select Customer</option>
+                                <option value="">Select a Customer</option>
                                 {uniquePharmacies.map(({ pharmacy, pharmacyId }) => (
                                     <option key={pharmacyId} value={pharmacyId}>
                                         {pharmacy} - {pharmacyId}
                                     </option>
                                 ))}
+                            </select>
+                        </div>
+
+                        {/* Report Filter */}
+                        <div className='col-span-1 md:col-span-2'>
+                            <label className="block font-semibold text-gray-700 mb-1">Report Type</label>
+                            <select
+                                value={reportType}
+                                onChange={(e) => setReportType(e.target.value)}
+                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
+                            >
+                                <option value="Net sales">Net Sales</option>
+                                {
+                                    orderedBy !== ''
+                                    &&
+                                    < option value="MPO wise Net Sales">MPO wise Net Sales</option>
+                                }
+                                {
+                                    areaManager !== ''
+                                    &&
+                                    < option value="Area Manager wise Net Sales">Area Manager wise Net Sales</option>
+                                }
+                                {
+                                    customer !== ''
+                                    &&
+                                    <option value="Customer wise Net Sales">Customer wise Net Sales</option>
+                                }
                             </select>
                         </div>
 
@@ -266,8 +317,8 @@ const NetSales = () => {
                             </span>
                         </button>
                     </div>
-                </div>
-            </div>
+                </div >
+            </div >
         </>
     );
 };

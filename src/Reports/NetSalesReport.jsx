@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const MPOWiseNetSalesReport = ({ filteredOrders = [], orderReturns = [], firstDate, lastDate }) => {
+const NetSalesReport = ({ reportType, filteredOrders = [], orderReturns = [], firstDate, lastDate, customerCode, customerName, customerAddress, customerMobile }) => {
     const [orders, setOrders] = useState(filteredOrders);
     const [returns, setReturns] = useState(orderReturns);
 
@@ -29,7 +29,7 @@ const MPOWiseNetSalesReport = ({ filteredOrders = [], orderReturns = [], firstDa
                     <p style="margin: 0; font-size: 10px;">Hotline: +880 1322-852183</p>
                 </div>
                 <div style="text-align: left; margin-bottom: 20px;">
-                    <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>MPO wise Net Sales</u></h3>
+                    <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>${reportType}</u></h3>
                     <p style="margin: 5px 0; font-size: 14px; text-align: center;">
                         ${(firstDate !== lastDate)
                 ? `Date from <b>${firstDate}</b> to <b>${lastDate}</b>`
@@ -39,6 +39,32 @@ const MPOWiseNetSalesReport = ({ filteredOrders = [], orderReturns = [], firstDa
                 <div class="mb-1 text-sm text-gray-400 text-right italic">
                     <h3 class="">Printed on ${now}</h3>
                 </div>
+                ${reportType === "Customer wise Net Sales"
+                ?
+                `
+                <div style="display: flex; flex-direction: column; gap: 2px; font-size: 11px; font-weight: 600; margin-bottom: 10px;">
+                    <div class="grid grid-cols-[max-content_15px_auto] text-[11px] gap-y-1">
+                        <span class="font-bold">Customer Code</span>
+                        <span class="font-bold">:</span>
+                        <span>${customerCode}</span>
+
+                        <span class="font-bold">Customer Name</span>
+                        <span class="font-bold">:</span>
+                        <span>${customerName}</span>
+
+                        <span class="font-bold">Customer Address</span>
+                        <span class="font-bold">:</span>
+                        <span>${customerAddress}</span>
+
+                        <span class="font-bold">Mobile</span>
+                        <span class="font-bold">:</span>
+                        <span>+880 ${customerMobile.slice(-10, -6)}-${customerMobile.slice(-6)}</span>
+                    </div>
+                </div>
+                `
+                :
+                ""
+            }
             </div>
         `;
 
@@ -158,7 +184,7 @@ const MPOWiseNetSalesReport = ({ filteredOrders = [], orderReturns = [], firstDa
                 })()}
                         </td>
                         <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; background-color: #f9f9f9;">
-                            <strong>Area Totals</strong>
+                            <strong>Sub Total</strong>
                         </td>
                         <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-weight: bold; background-color: #f9f9f9;">
                             ${areaGrossTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
@@ -246,4 +272,4 @@ const MPOWiseNetSalesReport = ({ filteredOrders = [], orderReturns = [], firstDa
     return handlePrint;
 };
 
-export default MPOWiseNetSalesReport;
+export default NetSalesReport;
