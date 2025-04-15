@@ -177,7 +177,7 @@ const NetSalesReportExcel = ({ reportType, filteredOrders = [], orderReturns = [
                 })()}
                         </td>
                         <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; background-color: #f9f9f9;">
-                            <strong>Sub Total</strong>
+                            <strong>Area Totals</strong>
                         </td>
                         <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-weight: bold; background-color: #f9f9f9;">
                             ${areaGrossTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const ProductSummaryReport = ({ filteredOrders = [], firstDate, lastDate }) => {
+const ProductSummaryReport = ({ reportType, filteredOrders = [], firstDate, lastDate, customerCode, customerName, customerAddress, customerMobile }) => {
     const [orders, setOrders] = useState(filteredOrders);
 
     useEffect(() => {
@@ -24,7 +24,7 @@ const ProductSummaryReport = ({ filteredOrders = [], firstDate, lastDate }) => {
                     <p style="margin: 0; font-size: 10px;">Hotline: +880 1322-852183</p>
                 </div>
                 <div style="text-align: left; margin-bottom: 20px;">
-                    <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>Product Summary</u></h3>
+                    <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>${reportType}</u></h3>
                     <p style="margin: 5px 0; font-size: 14px; text-align: center;">
                         ${(firstDate !== lastDate)
                 ? `Date from <b>${firstDate}</b> to <b>${lastDate}</b>`
@@ -34,6 +34,32 @@ const ProductSummaryReport = ({ filteredOrders = [], firstDate, lastDate }) => {
                 <div class="mb-1 text-sm text-gray-400 text-right italic">
                     <h3 class="">Printed on ${now}</h3>
                 </div>
+                ${reportType === "Customer wise Products Summary"
+                ?
+                `
+                    <div style="display: flex; flex-direction: column; gap: 2px; font-size: 11px; font-weight: 600; margin-bottom: 10px;">
+                        <div class="grid grid-cols-[max-content_15px_auto] text-[11px] gap-y-1">
+                            <span class="font-bold">Customer Code</span>
+                            <span class="font-bold">:</span>
+                            <span>${customerCode}</span>
+    
+                            <span class="font-bold">Customer Name</span>
+                            <span class="font-bold">:</span>
+                            <span>${customerName}</span>
+    
+                            <span class="font-bold">Customer Address</span>
+                            <span class="font-bold">:</span>
+                            <span>${customerAddress}</span>
+    
+                            <span class="font-bold">Mobile</span>
+                            <span class="font-bold">:</span>
+                            <span>+880 ${customerMobile.slice(-10, -6)}-${customerMobile.slice(-6)}</span>
+                        </div>
+                    </div>
+                    `
+                :
+                ""
+            }
             </div>
         `;
 

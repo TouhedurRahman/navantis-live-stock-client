@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const ProductSummaryReportExcel = ({ filteredOrders = [], firstDate, lastDate }) => {
+const ProductSummaryReportExcel = ({ reportType, filteredOrders = [], firstDate, lastDate, customerCode, customerName, customerAddress, customerMobile }) => {
     const [orders, setOrders] = useState(filteredOrders);
 
     useEffect(() => {
@@ -22,7 +22,7 @@ const ProductSummaryReportExcel = ({ filteredOrders = [], firstDate, lastDate })
                     <p style="margin: 5px 0; font-size: 10px; text-align: center;">Hotline: +880 1322-852183</p>
                 </div>
                 <div style="text-align: left; margin-bottom: 20px;">
-                    <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>Product Summary</u></h3>
+                    <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>${reportType}</u></h3>
                     <p style="margin: 5px 0; font-size: 14px; text-align: center;">
                         ${(firstDate !== lastDate)
                 ? `Date from <b>${firstDate}</b> to <b>${lastDate}</b>`
@@ -32,6 +32,27 @@ const ProductSummaryReportExcel = ({ filteredOrders = [], firstDate, lastDate })
                         Downloaded on ${now}
                     </p>
                 </div>
+                ${reportType === "Customer wise Products Summary"
+                ?
+                `
+                        <div style="font-weight: bold;">
+                            <p style="margin: 5px 0; font-size: 11px; text-align: left;">
+                                Customer Code: ${customerCode}
+                            </p>
+                            <p style="margin: 5px 0; font-size: 11px; text-align: left;">
+                                Customer Name: ${customerName}
+                            </p>
+                            <p style="margin: 5px 0; font-size: 11px; text-align: left;">
+                                Customer Address: ${customerAddress}
+                            </p>
+                            <p style="margin: 5px 0; font-size: 11px; text-align: left;">
+                                Mobile: +880 ${customerMobile.slice(-10, -6)}-${customerMobile.slice(-6)}
+                            </p>
+                        </div>
+                    `
+                :
+                ""
+            }
             </div>
         `;
 

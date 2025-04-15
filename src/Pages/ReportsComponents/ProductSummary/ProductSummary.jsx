@@ -1,13 +1,14 @@
 import React, { useMemo, useState } from 'react';
 import { FaFileExcel, FaFilePdf } from "react-icons/fa6";
 import PageTitle from '../../../Components/PageTitle/PageTitle';
+import useCustomer from '../../../Hooks/useCustomer';
 import useOrders from '../../../Hooks/useOrders';
 import ProductSummaryReport from '../../../Reports/ProductSummaryReport';
 import ProductSummaryReportExcel from '../../../Reports/ProductSummaryReportExcel';
 
 const ProductSummary = () => {
     const [orders] = useOrders();
-    // const [returns] = useReturns();
+    const [customers] = useCustomer();
 
     const [year, setYear] = useState('');
     const [month, setMonth] = useState('');
@@ -15,31 +16,13 @@ const ProductSummary = () => {
     const [toDate, setToDate] = useState('');
     const [orderedBy, setOrderedBy] = useState('');
     const [areaManager, setAreaManager] = useState('');
+    const [customer, setCustomer] = useState('');
+    const [reportType, setReportType] = useState('Products Summary');
 
     const deliveredOrders = orders.filter(order => order.status !== 'pending');
 
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: currentYear - 1999 }, (_, i) => currentYear - i);
-
-    const uniqueOrderedBy = useMemo(() => {
-        const names = new Set();
-        deliveredOrders.forEach(order => {
-            if (order.orderedBy) {
-                names.add(order.orderedBy.trim());
-            }
-        });
-        return Array.from(names);
-    }, [deliveredOrders]);
-
-    const uniqueAreaManager = useMemo(() => {
-        const names = new Set();
-        deliveredOrders.forEach(order => {
-            if (order.areaManager) {
-                names.add(order.areaManager.trim());
-            }
-        });
-        return Array.from(names);
-    }, [deliveredOrders]);
 
     const filteredOrders = useMemo(() => {
         return deliveredOrders.filter(order => {
@@ -51,21 +34,11 @@ const ProductSummary = () => {
                 : true;
             const matchesOrderedBy = orderedBy ? order.orderedBy?.toLowerCase().includes(orderedBy.toLowerCase()) : true;
             const matchesAreaManager = areaManager ? order.areaManager?.toLowerCase().includes(areaManager.toLowerCase()) : true;
+            const matchesCustomer = customer ? order.pharmacyId?.toLowerCase().includes(customer.toLowerCase()) : true;
 
-            return matchesYear && matchesMonth && matchesDateRange && matchesOrderedBy && matchesAreaManager;
+            return matchesYear && matchesMonth && matchesDateRange && matchesOrderedBy && matchesAreaManager && matchesCustomer;
         });
-    }, [orders, year, month, fromDate, toDate, orderedBy, areaManager]);
-
-    /* const orderReturns = useMemo(() => {
-        return returns.filter(ret => {
-            const returnDate = new Date(ret.date);
-            const matchesDateRange = fromDate && toDate
-                ? returnDate >= new Date(fromDate) && returnDate <= new Date(toDate)
-                : true;
-
-            return matchesDateRange;
-        })
-    }, [returns, fromDate, toDate]); */
+    }, [orders, year, month, fromDate, toDate, orderedBy, areaManager, customer]);
 
     const findDateRange = (orders) => {
         if (!orders.length) return { firstDate: null, lastDate: null };
@@ -79,6 +52,51 @@ const ProductSummary = () => {
 
     const { firstDate, lastDate } = findDateRange(filteredOrders);
 
+    const uniqueOrderedBy = useMemo(() => {
+        const names = new Set();
+        filteredOrders.forEach(order => {
+            if (order.orderedBy) {
+                names.add(order.orderedBy.trim());
+            }
+        });
+        return Array.from(names);
+    }, [filteredOrders]);
+
+    const uniqueAreaManager = useMemo(() => {
+        const names = new Set();
+        filteredOrders.forEach(order => {
+            if (order.areaManager) {
+                names.add(order.areaManager.trim());
+            }
+        });
+        return Array.from(names);
+    }, [filteredOrders]);
+
+    const uniquePharmacies = useMemo(() => {
+        const pharmacyMap = new Map();
+
+        filteredOrders.forEach(order => {
+            if (order.pharmacyId && order.pharmacy) {
+                pharmacyMap.set(order.pharmacyId.trim(), order.pharmacy.trim());
+            }
+        });
+
+        return Array.from(pharmacyMap.entries()).map(([pharmacyId, pharmacy]) => ({
+            pharmacyId,
+            pharmacy,
+        }));
+    }, [filteredOrders]);
+
+    const orderWithPharmacyId = filteredOrders.find(order => order.pharmacyId);
+    const selectedCustomerCode = orderWithPharmacyId ? orderWithPharmacyId.pharmacyId : null;
+
+    const customerDetails = customers.find(singleCus => singleCus.customerId === selectedCustomerCode);
+
+    const customerCode = customerDetails?.customerId || '';
+    const customerName = customerDetails?.name || '';
+    const customerAddress = customerDetails?.address || '';
+    const customerMobile = customerDetails?.mobile || '';
+
     const clearFilters = () => {
         setYear('');
         setMonth('');
@@ -86,30 +104,40 @@ const ProductSummary = () => {
         setToDate('');
         setOrderedBy('');
         setAreaManager('');
+        setCustomer('');
+        setReportType('Products Summary');
     };
 
     const handlePrint = ProductSummaryReport({
+        reportType,
         filteredOrders,
-        // orderReturns,
         firstDate,
-        lastDate
+        lastDate,
+        customerCode,
+        customerName,
+        customerAddress,
+        customerMobile
     });
 
     const handleDownloadExcel = ProductSummaryReportExcel({
+        reportType,
         filteredOrders,
-        // orderReturns,
         firstDate,
-        lastDate
+        lastDate,
+        customerCode,
+        customerName,
+        customerAddress,
+        customerMobile
     });
 
     return (
         <>
             <div>
-                <PageTitle from={"Reports"} to={"Product Summary"} />
+                <PageTitle from={"Reports"} to={"Products summary"} />
             </div>
             <div className="bg-white pb-1">
                 <div>
-                    <h1 className="px-6 py-3 font-bold">Product Summary</h1>
+                    <h1 className="px-6 py-3 font-bold">Products summary reports</h1>
                     <hr className='text-center border border-gray-500 mb-5' />
                 </div>
                 <div className='grid grid-cols-1 md:grid-cols-2 items-center gap-4'>
@@ -184,7 +212,7 @@ const ProductSummary = () => {
                             </select>
                         </div>
 
-                        {/* Delivery Man Filter */}
+                        {/* Area Manager Filter */}
                         <div>
                             <label className="block font-semibold text-gray-700 mb-1">Area Manager</label>
                             <select
@@ -192,10 +220,54 @@ const ProductSummary = () => {
                                 onChange={(e) => setAreaManager(e.target.value)}
                                 className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
                             >
-                                <option value="">Select Area Manager</option>
+                                <option value="">Select an Area Manager</option>
                                 {uniqueAreaManager.map(name => (
                                     <option key={name} value={name}>{name}</option>
                                 ))}
+                            </select>
+                        </div>
+
+                        {/* Customer Filter */}
+                        <div className='col-span-1 md:col-span-2'>
+                            <label className="block font-semibold text-gray-700 mb-1">Customer</label>
+                            <select
+                                value={customer}
+                                onChange={(e) => setCustomer(e.target.value)}
+                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
+                            >
+                                <option value="">Select a Customer</option>
+                                {uniquePharmacies.map(({ pharmacy, pharmacyId }) => (
+                                    <option key={pharmacyId} value={pharmacyId}>
+                                        {pharmacy} - {pharmacyId}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Report Filter */}
+                        <div className='col-span-1 md:col-span-2'>
+                            <label className="block font-semibold text-gray-700 mb-1">Report Type</label>
+                            <select
+                                value={reportType}
+                                onChange={(e) => setReportType(e.target.value)}
+                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
+                            >
+                                <option value="Products Summary">Products Summary</option>
+                                {
+                                    orderedBy !== ''
+                                    &&
+                                    < option value="MPO wise Products Summary">MPO wise Products Summary</option>
+                                }
+                                {
+                                    areaManager !== ''
+                                    &&
+                                    < option value="Area Manager wise Products Summary">Area Manager wise Products Summary</option>
+                                }
+                                {
+                                    customer !== ''
+                                    &&
+                                    <option value="Customer wise Products Summary">Customer wise Products Summary</option>
+                                }
                             </select>
                         </div>
 
@@ -230,8 +302,8 @@ const ProductSummary = () => {
                             </span>
                         </button>
                     </div>
-                </div>
-            </div>
+                </div >
+            </div >
         </>
     );
 };
