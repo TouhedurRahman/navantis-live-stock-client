@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
+import MyOrders from "../MyOrders/MyOrders";
 
-const MyPendingOrders = () => "";
 const MyDeliveredOrders = () => "";
 
 const MyOrder = () => {
-    const [activeTab, setActiveTab] = useState("pending");
+    const [activeTab, setActiveTab] = useState("pending orders");
 
     const renderContent = () => {
         switch (activeTab) {
-            case "pending":
-                return <MyPendingOrders />;
-            case "delivered":
+            case "pending orders":
+                return <MyOrders status={'pending'} />;
+            case "delivered orders":
                 return <MyDeliveredOrders />;
             default:
                 return null;
