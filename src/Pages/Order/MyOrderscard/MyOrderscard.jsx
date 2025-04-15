@@ -1,5 +1,8 @@
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 import React, { useState } from 'react';
 import { FaEye, FaTimes, FaTrashAlt } from 'react-icons/fa';
+import Swal from 'sweetalert2';
 
 const MyOrderscard = ({ idx, myOrder, refetch }) => {
     const [isModalOpen, setModalOpen] = useState(false);
@@ -7,6 +10,47 @@ const MyOrderscard = ({ idx, myOrder, refetch }) => {
     const lessDiscount = Number(myOrder.totalPrice * (myOrder.discount / 100));
 
     const totalPayable = Number(myOrder.totalPrice - lessDiscount);
+
+    const deleteOrderMutation = useMutation({
+        mutationFn: async () => {
+            const response = await axios.delete(`http://localhost:5000/pending-order/${myOrder._id}`);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error delete order:", error);
+        }
+    });
+
+    const handleDelete = () => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete!"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await Promise.all([
+                        deleteOrderMutation.mutateAsync()
+                    ]);
+
+                    refetch();
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Order deleted.",
+                        icon: "success",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                } catch (error) {
+                    console.error("Error delete order:", error);
+                }
+            }
+        });
+    };
 
     return (
         <>
@@ -35,7 +79,7 @@ const MyOrderscard = ({ idx, myOrder, refetch }) => {
                     &&
                     <td className="text-center">
                         <button
-                            // onClick={handleDeny}
+                            onClick={handleDelete}
                             title="Deny Request"
                             className="p-2 rounded-[5px] hover:bg-red-100 focus:outline-none"
                         >
