@@ -230,7 +230,7 @@ const NetSalesReportExcel = ({ reportType, filteredOrders = [], orderReturns = [
 
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
-        link.download = `MPO-wise-Net-Sales-${firstDate}-to-${lastDate}.xls`;
+        link.download = `${reportType} Date from ${firstDate} to ${lastDate}.xls`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);

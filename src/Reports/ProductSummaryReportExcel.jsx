@@ -216,7 +216,7 @@ const ProductSummaryReportExcel = ({ reportType, filteredOrders = [], firstDate,
 
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
-        link.download = `Product-Summary-${firstDate}-to-${lastDate}.xls`;
+        link.download = `${reportType} Date from ${firstDate} to ${lastDate}.xls`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
