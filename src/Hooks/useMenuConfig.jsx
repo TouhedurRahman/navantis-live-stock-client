@@ -79,6 +79,7 @@ const useMenuConfig = () => {
         order: {
             icon: <MdOutlineShoppingBag className="mr-2" />,
             links: [
+                !['Sr. Area Manager', 'Area Manager'].includes(singleUser?.designation) &&
                 { to: '/place-order', icon: <FaCartPlus className='me-2' />, label: 'Place Order' },
                 { to: '/my-order', icon: <FaCartPlus className='me-2' />, label: 'My Order' },
                 { to: '/my-order-report', icon: <FaCartPlus className='me-2' />, label: 'My Report' },
