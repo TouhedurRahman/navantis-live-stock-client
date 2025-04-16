@@ -4,8 +4,8 @@ import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useCustomer from '../../../Hooks/useCustomer';
 import useOrders from '../../../Hooks/useOrders';
 import useSingleUser from '../../../Hooks/useSingleUser';
-import ProductSummaryReport from '../../../Reports/ProductSummaryReport';
-import ProductSummaryReportExcel from '../../../Reports/ProductSummaryReportExcel';
+import MyProductSummaryReport from '../../../Reports/MyProductSummaryReport';
+import MyProductSummaryReportExcel from '../../../Reports/MyProductSummaryReportExcel';
 
 const MyOrderReport = () => {
     const [singleUser] = useSingleUser();
@@ -119,7 +119,7 @@ const MyOrderReport = () => {
         setReportType('Products Summary');
     };
 
-    const handlePrint = ProductSummaryReport({
+    const handlePrint = MyProductSummaryReport({
         reportType,
         filteredOrders,
         firstDate,
@@ -130,7 +130,7 @@ const MyOrderReport = () => {
         customerMobile
     });
 
-    const handleDownloadExcel = ProductSummaryReportExcel({
+    const handleDownloadExcel = MyProductSummaryReportExcel({
         reportType,
         filteredOrders,
         firstDate,
