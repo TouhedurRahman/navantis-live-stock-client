@@ -29,6 +29,7 @@ import InvoicePayment from "../../Pages/Depot/InvoicePayment/InvoicePayment/Invo
 import OrderDelivery from "../../Pages/Depot/OrderDelivery/OrderDelivery";
 import Home from "../../Pages/Home/Home/Home";
 import MyOrder from "../../Pages/Order/MyOrder/MyOrder";
+import MyOrderReport from "../../Pages/Order/MyOrderReport/MyOrderReport";
 import PlaceOrder from "../../Pages/Order/PlaceOrder/PlaceOrder";
 import Profile from "../../Pages/Profile/Profile/Profile";
 import NetSales from "../../Pages/ReportsComponents/NetSales/NetSales";
@@ -191,6 +192,10 @@ const router = createBrowserRouter([
             {
                 path: "/my-order",
                 element: <MyOrder />
+            },
+            {
+                path: "/my-order-report",
+                element: <MyOrderReport />
             },
             {
                 path: '/profile',

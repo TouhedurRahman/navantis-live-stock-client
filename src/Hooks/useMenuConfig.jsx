@@ -81,6 +81,7 @@ const useMenuConfig = () => {
             links: [
                 { to: '/place-order', icon: <FaCartPlus className='me-2' />, label: 'Place Order' },
                 { to: '/my-order', icon: <FaCartPlus className='me-2' />, label: 'My Order' },
+                { to: '/my-order-report', icon: <FaCartPlus className='me-2' />, label: 'My Report' },
             ],
         },
 
