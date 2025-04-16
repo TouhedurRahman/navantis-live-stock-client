@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import MyOrders from "../MyOrders/MyOrders";
 
-const MyDeliveredOrders = () => "";
-
 const MyOrder = () => {
     const [activeTab, setActiveTab] = useState("pending orders");
 
@@ -12,7 +10,7 @@ const MyOrder = () => {
             case "pending orders":
                 return <MyOrders status={'pending'} />;
             case "delivered orders":
-                return <MyDeliveredOrders />;
+                return <MyOrders status={'delivered'} />;
             default:
                 return null;
         }

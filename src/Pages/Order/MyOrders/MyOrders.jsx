@@ -3,18 +3,35 @@ import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
 import { ImSearch } from 'react-icons/im';
 import Loader from '../../../Components/Loader/Loader';
 import useOrders from '../../../Hooks/useOrders';
+import useSingleUser from '../../../Hooks/useSingleUser';
 import MyOrderscard from '../MyOrderscard/MyOrderscard';
 
 const MyOrders = ({ status }) => {
+    const [singleUser] = useSingleUser();
+
     const [orders, loading, refetch] = useOrders();
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [myOrdersPerPage, setMyOrdersPerPage] = useState(5);
 
-    const myOrders = orders.filter(
+    const pendingOrders = status === 'pending' ? true : false;
+
+    const statusWiseOrders = orders.filter(
         mOrder =>
-            mOrder.status === status
+            pendingOrders
+                ?
+                mOrder.status === 'pending'
+                :
+                mOrder.status !== 'pending'
+    );
+
+    const AreaManagerNotexists = statusWiseOrders.some(order => order.email === singleUser.email);
+
+    const myOrders = statusWiseOrders.filter(order =>
+        AreaManagerNotexists
+            ? order.email === singleUser.email
+            : order.areaManager === singleUser.name
     );
 
     const filteredMyOrders = myOrders.filter(mOrder =>
