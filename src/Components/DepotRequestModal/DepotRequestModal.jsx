@@ -76,6 +76,14 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
             .find(product => product.approvedQuantity)?.approvedQuantity || 0
         : 0;
 
+    const dptReqProcessing = selectedProduct
+        ? depotReqProducts
+            .some(product =>
+                product.productName === selectedProduct.productName &&
+                ['requested', 'approved'].includes(product?.status)
+            )
+        : false;
+
     const addDptReqMutation = useMutation({
         mutationFn: async (data) => {
             const newProduct = {
@@ -178,7 +186,7 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
 
                             {/* Selected Product Details */}
                             {selectedProduct && (
-                                <div className="felx justify-center items-center bg-white p-6 rounded-lg shadow-lg transform transition duration-300">
+                                <div className="felx justify-center items-center bg-white p-6 transform transition duration-300">
                                     <h3 className="text-2xl font-extrabold text-green-900 mb-4 text-center border-b-2 border-green-300 pb-2">
                                         {selectedProduct.productName}
                                     </h3>
@@ -209,45 +217,64 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
                                         </div>
 
                                     }
+                                    {
+                                        dptReqProcessing && !dptReqApprovedQuantity > 0
+                                        &&
+                                        <div className="p-6 bg-white rounded-lg shadow-md text-center">
+                                            <p className="text-sm font-medium text-green-700">
+                                                <span className="processing-text">Processing<span className="dots"></span></span>
+                                            </p>
+                                            <div className="mt-4 text-sm text-center font-medium text-gray-800 flex justify-center items-center">
+                                                Your request is currently being processed.
+                                            </div>
+                                        </div>
+
+                                    }
                                 </div>
                             )}
 
                             {/* Requested Quantity */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Request Quantity <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                    {...register('requestedQuantity', {
-                                        required: 'Requested quantity is required.',
-                                        min: {
-                                            value: 1,
-                                            message: 'Requested quantity must be at least 1.',
-                                        },
-                                        max: {
-                                            value: (selectedProQinWh - (depotRequestQuantity + dptReqApprovedQuantity)),
-                                            message: 'Requested quantity exceeds warehouse stock.',
-                                        },
-                                    })}
-                                    type="number"
-                                    className="w-full px-3 py-2 bg-white text-gray-700 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="Enter requested quantity"
-                                    disabled={!selectedProduct}
-                                    onWheel={(e) => e.target.blur()}
-                                />
-                                {errors.requestedQuantity && (
-                                    <p className="mt-1 text-sm text-red-500">{errors.requestedQuantity.message}</p>
-                                )}
-                            </div>
+                            {
+                                !dptReqProcessing
+                                &&
+                                <>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            Request Quantity <span className="text-red-500">*</span>
+                                        </label>
+                                        <input
+                                            {...register('requestedQuantity', {
+                                                required: 'Requested quantity is required.',
+                                                min: {
+                                                    value: 1,
+                                                    message: 'Requested quantity must be at least 1.',
+                                                },
+                                                max: {
+                                                    value: (selectedProQinWh - (depotRequestQuantity + dptReqApprovedQuantity)),
+                                                    message: 'Requested quantity exceeds warehouse stock.',
+                                                },
+                                            })}
+                                            type="number"
+                                            className="w-full px-3 py-2 bg-white text-gray-700 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder="Enter requested quantity"
+                                            disabled={!selectedProduct}
+                                            onWheel={(e) => e.target.blur()}
+                                        />
+                                        {errors.requestedQuantity && (
+                                            <p className="mt-1 text-sm text-red-500">{errors.requestedQuantity.message}</p>
+                                        )}
+                                    </div>
 
-                            {/* Submit Button */}
-                            <button
-                                type="submit"
-                                className="w-full px-4 py-2 text-white bg-blue-500 rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                disabled={!selectedProduct}
-                            >
-                                Submit Request
-                            </button>
+                                    {/* Submit Button */}
+                                    <button
+                                        type="submit"
+                                        className="w-full px-4 py-2 text-white bg-blue-500 rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        disabled={!selectedProduct}
+                                    >
+                                        Submit Request
+                                    </button>
+                                </>
+                            }
                         </form>
                     )}
                 </div>
