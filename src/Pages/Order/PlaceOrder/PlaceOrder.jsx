@@ -180,7 +180,37 @@ const PlaceOrder = () => {
         }
 
         if (data.payMode === "Cash" && !selectedPharmacy?.payMode?.includes("STC")) {
-            makeOrder(data);
+            // Check for any cash order placed today
+            const hasCashOrderToday = orders.some(order =>
+                order.pharmacyId === selectedPharmacy.customerId &&
+                order.payMode === "Cash" &&
+                new Date(order.date).toDateString() === new Date().toDateString()
+            );
+
+            // Check for any unpaid cash order (any date)
+            const hasAnyUnpaidCash = orders.some(order =>
+                order.pharmacyId === selectedPharmacy.customerId &&
+                order.payMode === "Cash" &&
+                order.status.toLowerCase() !== "paid"
+            );
+
+            if (hasCashOrderToday) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Order Restricted",
+                    text: "A cash order has already been placed today. Only one cash order per day is allowed."
+                });
+                return;
+            } else if (hasAnyUnpaidCash) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Order Blocked",
+                    text: "Unpaid cash order found. Please clear the payment before placing a new order."
+                });
+                return;
+            } else {
+                makeOrder(data);
+            }
         } else if (data.payMode === "Credit" && selectedPharmacy?.payMode?.includes("Credit")) {
             const today = new Date();
 
@@ -305,7 +335,37 @@ const PlaceOrder = () => {
                             });
                         }
                     } else {
-                        makeOrder(data);
+                        // Check for any cash order placed today
+                        const hasCashOrderToday = orders.some(order =>
+                            order.pharmacyId === selectedPharmacy.customerId &&
+                            order.payMode === "Cash" &&
+                            new Date(order.date).toDateString() === new Date().toDateString()
+                        );
+
+                        // Check for any unpaid cash order (any date)
+                        const hasAnyUnpaidCash = orders.some(order =>
+                            order.pharmacyId === selectedPharmacy.customerId &&
+                            order.payMode === "Cash" &&
+                            order.status.toLowerCase() !== "paid"
+                        );
+
+                        if (hasCashOrderToday) {
+                            Swal.fire({
+                                icon: "warning",
+                                title: "Order Restricted",
+                                text: "A cash order has already been placed today. Only one cash order per day is allowed."
+                            });
+                            return;
+                        } else if (hasAnyUnpaidCash) {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Order Blocked",
+                                text: "Unpaid cash order found. Please clear the payment before placing a new order."
+                            });
+                            return;
+                        } else {
+                            makeOrder(data);
+                        }
                     }
                 }
             }
