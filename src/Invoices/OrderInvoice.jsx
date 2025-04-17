@@ -137,7 +137,7 @@ const OrderInvoice = ({ order }) => {
                         <td class="p-2 border border-[#B2BEB5] w-1/3 align-top">
                             <p class="m-0 text-[11px]">
                                 <span class="font-bold">Dhaka Sales Depot</span> <br />
-                                House - 00 , Road - 06 <br />
+                                House No - 43 , Road No - 06 <br />
                                 South Bishil <br />
                                 Mirpur - 01 <br />
                                 Dhaka - 1216 <br />
@@ -383,7 +383,7 @@ const OrderInvoice = ({ order }) => {
                                 white-space: nowrap;
                             }
                             /* Footer styles for all pages */
-                            body::after {
+                            /* body::after {
                                 content: "Printed on ${finalFormattedDateTime}";
                                 position: fixed;
                                 bottom: 0;
@@ -393,7 +393,7 @@ const OrderInvoice = ({ order }) => {
                                 font-size: 11px;
                                 font-style: italic;
                                 color: #555;
-                            }
+                            } */
                         }
                     </style>
                 </head>
