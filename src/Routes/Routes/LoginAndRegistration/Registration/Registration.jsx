@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../../../../Hooks/useAuth';
 import SocialLogin from '../SocialLogin/SocialLogin';
 import useApiConfig from '../../../../Hooks/useApiConfig';
+import Swal from 'sweetalert2';
 
 const Registration = () => {
     const { createUser, updateUserProfile } = useAuth();
