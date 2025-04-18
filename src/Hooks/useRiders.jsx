@@ -1,10 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
+import useApiConfig from "./useApiConfig";
 
 const useRiders = () => {
+    const baseUrl = useApiConfig();
+
     const { data: riders = [], isLoading: loading, refetch } = useQuery({
         queryKey: ['riders'],
         queryFn: async () => {
-            const url = 'http://localhost:5000/riders';
+            const url = `${baseUrl}/riders`;
             const result = await fetch(url);
             return result.json();
         }

@@ -1,10 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
+import useApiConfig from "./useApiConfig";
 
 const useDamagedProductsWh = () => {
+    const baseUrl = useApiConfig();
+
     const { data: products = [], isLoading: loading, refetch } = useQuery({
         queryKey: ['products'],
         queryFn: async () => {
-            const url = 'http://localhost:5000/damaged-in-wh';
+            const url = `${baseUrl}/damaged-in-wh`;
             const result = await fetch(url);
             return result.json();
         }
