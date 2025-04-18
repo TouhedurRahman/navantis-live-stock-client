@@ -8,10 +8,12 @@ import PageTitle from '../../../../Components/PageTitle/PageTitle';
 import useAuth from '../../../../Hooks/useAuth';
 import useRiders from '../../../../Hooks/useRiders';
 import useSingleUser from '../../../../Hooks/useSingleUser';
+import useApiConfig from '../../../../Hooks/useApiConfig';
 
 const UpdateRider = () => {
     const { user } = useAuth();
     const [singleUser] = useSingleUser();
+    const baseUrl = useApiConfig();
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
@@ -32,7 +34,7 @@ const UpdateRider = () => {
                 addedBy: data.addedby,
                 addedEmail: data.addedemail
             };
-            const response = await axios.patch(`http://localhost:5000/rider/${id}`, updatedRider);
+            const response = await axios.patch(`${baseUrl}/rider/${id}`, updatedRider);
             return response.data;
         },
         onError: (error) => {

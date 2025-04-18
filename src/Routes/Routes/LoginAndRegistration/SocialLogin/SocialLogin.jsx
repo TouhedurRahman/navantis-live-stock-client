@@ -3,9 +3,11 @@ import { FaGoogle } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
 import useAuth from "../../../../Hooks/useAuth";
+import useApiConfig from "../../../../Hooks/useApiConfig";
 
 const SocialLogin = () => {
     const { googleLogIn } = useAuth();
+    const baseUrl = useApiConfig();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -22,7 +24,7 @@ const SocialLogin = () => {
                     profilePicture: loggedUser.photoURL
                 };
 
-                const url = "http://localhost:5000/users";
+                const url = `${baseUrl}/users`;
                 axios.post(url, user)
                     .then(() => {
                         Swal.fire({

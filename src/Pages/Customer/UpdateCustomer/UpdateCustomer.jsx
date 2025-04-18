@@ -14,6 +14,7 @@ const UpdateCustomer = () => {
     const { user } = useAuth();
     const [singleUser] = useSingleUser();
     const [allUsers] = useAllUsers();
+    const baseUrl = useApiConfig();
 
     const { register, handleSubmit, watch, reset, formState: { errors } } = useForm();
 
@@ -55,7 +56,7 @@ const UpdateCustomer = () => {
                 addedEmail: data.addedemail,
                 status: 'pending'
             };
-            const response = await axios.patch(`http://localhost:5000/customer/${id}`, updatedCustomer);
+            const response = await axios.patch(`${baseUrl}/customer/${id}`, updatedCustomer);
             return response.data;
         },
         onError: (error) => {

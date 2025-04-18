@@ -6,9 +6,12 @@ import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useOrderStockProducts from '../../../Hooks/useOrderStockProducts';
 import useSingleUser from '../../../Hooks/useSingleUser';
+import useApiConfig from '../../../Hooks/useApiConfig';
 
 const WarehouseAddProduct = () => {
+    const baseUrl = useApiConfig();
     const [singleUser] = useSingleUser();
+
     const { register, handleSubmit, reset, formState: { errors }, watch } = useForm();
 
     const [products] = useOrderStockProducts();
@@ -71,7 +74,7 @@ const WarehouseAddProduct = () => {
                 addedby: data.addedby,
                 addedemail: data.addedemail
             };
-            const response = await axios.patch(`http://localhost:5000/wh-req/${selectedProduct._id}`, updatedProduct);
+            const response = await axios.patch(`${baseUrl}/wh-req/${selectedProduct._id}`, updatedProduct);
             return response.data;
         },
         onError: (error) => {

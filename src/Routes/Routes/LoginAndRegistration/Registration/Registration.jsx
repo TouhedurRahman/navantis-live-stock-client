@@ -6,9 +6,12 @@ import { FaUsersCog } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../../../../Hooks/useAuth';
 import SocialLogin from '../SocialLogin/SocialLogin';
+import useApiConfig from '../../../../Hooks/useApiConfig';
 
 const Registration = () => {
     const { createUser, updateUserProfile } = useAuth();
+    const baseUrl = useApiConfig();
+
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
     const [openPassword, setOpenPassword] = useState(false);
@@ -18,7 +21,7 @@ const Registration = () => {
 
     const saveUser = (name, email) => {
         const user = { name, email };
-        const url = "http://localhost:5000/users";
+        const url = `${baseUrl}/users`;
         axios.post(url, user)
             .then(response => {
                 if (response.data.insertedId) {

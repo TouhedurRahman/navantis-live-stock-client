@@ -4,8 +4,11 @@ import { useState } from 'react';
 import { FaEye, FaTimes } from "react-icons/fa";
 import Swal from 'sweetalert2';
 import DepotReqVaAModal from '../../../Components/DepotReqVaAModal/DepotReqVaAModal';
+import useApiConfig from '../../../Hooks/useApiConfig';
 
 const DepotReqProductCard = ({ idx, product, refetch, whProducts, depotProducts, orders }) => {
+    const baseUrl = useApiConfig();
+
     const [isapproveModalOpen, setapproveModalOpen] = useState(false);
 
     const productQinWarehouse = whProducts
@@ -31,7 +34,7 @@ const DepotReqProductCard = ({ idx, product, refetch, whProducts, depotProducts,
 
     const deniedDptReqMutation = useMutation({
         mutationFn: async () => {
-            const response = await axios.delete(`http://localhost:5000/depot-request/${product._id}`);
+            const response = await axios.delete(`${baseUrl}/depot-request/${product._id}`);
             return response.data;
         },
         onError: (error) => {

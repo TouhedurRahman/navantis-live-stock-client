@@ -4,11 +4,14 @@ import React from 'react';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import useApiConfig from '../../../../Hooks/useApiConfig';
 
 const MyDispatchRiderCard = ({ idx, rider, refetch }) => {
+    const baseUrl = useApiConfig();
+
     const deleteRiderMutation = useMutation({
         mutationFn: async () => {
-            const response = await axios.delete(`http://localhost:5000/rider/${rider._id}`);
+            const response = await axios.delete(`${baseUrl}/rider/${rider._id}`);
             return response.data;
         },
         onError: (error) => {

@@ -9,9 +9,12 @@ import useCustomer from '../../../Hooks/useCustomer';
 import useDepotProducts from '../../../Hooks/useDepotProducts';
 import useOrders from '../../../Hooks/useOrders';
 import useSingleUser from '../../../Hooks/useSingleUser';
+import useApiConfig from '../../../Hooks/useApiConfig';
 
 const PlaceOrder = () => {
     const { user } = useAuth();
+    const baseUrl = useApiConfig();
+
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
     const [allUsers] = useAllUsers();
@@ -155,7 +158,7 @@ const PlaceOrder = () => {
             date: getTodayDate()
         };
 
-        axios.post('http://localhost:5000/orders', newOrder)
+        axios.post(`${baseUrl}/orders`, newOrder)
             .then(data => {
                 if (data.data.insertedId) {
                     reset();

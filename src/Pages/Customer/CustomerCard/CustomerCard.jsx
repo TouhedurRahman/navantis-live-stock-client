@@ -6,14 +6,17 @@ import { FaEye } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import useSingleUser from '../../../Hooks/useSingleUser';
+import useApiConfig from '../../../Hooks/useApiConfig';
 
 const CustomerCard = ({ idx, customer, refetch }) => {
     const [singleUser] = useSingleUser();
+    const baseUrl = useApiConfig();
+
     const [isModalOpen, setModalOpen] = useState(false);
 
     const deleteCustomerMutation = useMutation({
         mutationFn: async () => {
-            const response = await axios.delete(`http://localhost:5000/customer/${customer._id}`);
+            const response = await axios.delete(`${baseUrl}/customer/${customer._id}`);
             return response.data;
         },
         onError: (error) => {

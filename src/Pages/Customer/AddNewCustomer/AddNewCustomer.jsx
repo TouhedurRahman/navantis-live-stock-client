@@ -6,11 +6,13 @@ import PageTitle from "../../../Components/PageTitle/PageTitle";
 import useAllUsers from "../../../Hooks/useAllUsers";
 import useAuth from "../../../Hooks/useAuth";
 import useSingleUser from "../../../Hooks/useSingleUser";
+import useApiConfig from "../../../Hooks/useApiConfig";
 
 const AddNewCustomer = () => {
     const { user } = useAuth();
     const [singleUser] = useSingleUser();
     const [allUsers] = useAllUsers();
+    const baseUrl = useApiConfig();
 
     const { register, handleSubmit, watch, reset, formState: { errors } } = useForm();
 
@@ -56,7 +58,7 @@ const AddNewCustomer = () => {
                 status: 'pending',
                 date: getTodayDate()
             };
-            const response = await axios.post('http://localhost:5000/customers', newCustomer);
+            const response = await axios.post(`${baseUrl}/customers`, newCustomer);
             return response.data;
         },
         onError: (error) => {

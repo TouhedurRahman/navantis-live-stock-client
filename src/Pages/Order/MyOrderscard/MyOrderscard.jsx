@@ -3,9 +3,11 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { FaEye, FaTimes, FaTrashAlt } from 'react-icons/fa';
 import Swal from 'sweetalert2';
+import useApiConfig from '../../../Hooks/useApiConfig';
 
 const MyOrderscard = ({ idx, myOrder, refetch }) => {
     const [isModalOpen, setModalOpen] = useState(false);
+    const baseUrl = useApiConfig();
 
     const lessDiscount = Number(myOrder.totalPrice * (myOrder.discount / 100));
 
@@ -13,7 +15,7 @@ const MyOrderscard = ({ idx, myOrder, refetch }) => {
 
     const deleteOrderMutation = useMutation({
         mutationFn: async () => {
-            const response = await axios.delete(`http://localhost:5000/pending-order/${myOrder._id}`);
+            const response = await axios.delete(`${baseUrl}/pending-order/${myOrder._id}`);
             return response.data;
         },
         onError: (error) => {

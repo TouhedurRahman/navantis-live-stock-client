@@ -8,12 +8,14 @@ import useAllUsers from '../../../Hooks/useAllUsers';
 import useAuth from '../../../Hooks/useAuth';
 import useHosting from '../../../Hooks/useHosting';
 import useSingleUser from '../../../Hooks/useSingleUser';
+import useApiConfig from '../../../Hooks/useApiConfig';
 
 const MyProfile = () => {
     const { user, resetPassword, loading } = useAuth();
     const [allUsers] = useAllUsers();
     const [singleUser, loadingSingleUser, refetch] = useSingleUser();
     const img_hosting_url = useHosting();
+    const baseUrl = useApiConfig();
 
     const [file, setFile] = useState(null);
     const [enterUserEmail, setEnterUserEmail] = useState(null);
@@ -24,7 +26,7 @@ const MyProfile = () => {
     const findParent = allUsers.find(allu => allu._id == singleUser.parentId);
 
     const updateInfo = (updatedInfo) => {
-        const url = `http://localhost:5000/user/${user.email}`;
+        const url = `${baseUrl}/user/${user.email}`;
         axios.patch(url, updatedInfo)
             .then((response) => {
                 if (response.data.acknowledged === true) {
