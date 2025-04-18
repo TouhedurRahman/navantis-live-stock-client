@@ -3,10 +3,13 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaTimes } from "react-icons/fa";
 import Swal from "sweetalert2";
+import useApiConfig from "../../Hooks/useApiConfig";
 
 const permissionsList = ["admin", "warehouse", "depot", "customer", "approve-customer", "add-customer", "order", "all-users", "update-users", "reports"];
 
 const UpdateAccessModal = ({ user, refetch, onClose }) => {
+    const baseUrl = useApiConfig();
+
     const { handleSubmit } = useForm();
     const [selectedPermissions, setSelectedPermissions] = useState([]);
 
@@ -26,7 +29,7 @@ const UpdateAccessModal = ({ user, refetch, onClose }) => {
 
     const onSubmit = async () => {
         try {
-            await axios.patch(`http://localhost:5000/user/${user.email}`, {
+            await axios.patch(`${baseUrl}/user/${user.email}`, {
                 permissions: selectedPermissions,
             });
             refetch();

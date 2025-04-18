@@ -6,8 +6,10 @@ import { FaTimes } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import useCustomer from '../../Hooks/useCustomer';
 import useOrders from '../../Hooks/useOrders';
+import useApiConfig from '../../Hooks/useApiConfig';
 
 const ExpireRequestModal = ({ isOpen, onClose }) => {
+    const baseUrl = useApiConfig();
     const [orders, loading] = useOrders();
     const [pharmacies, pharmacyLoading] = useCustomer();
 
@@ -96,7 +98,7 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                 date: getTodayDate()
             };
 
-            const response = await axios.post('http://localhost:5000/expired-returns', newReturn);
+            const response = await axios.post(`${baseUrl}/expired-returns`, newReturn);
             return response.data;
         },
         onError: (error) => {

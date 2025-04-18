@@ -4,9 +4,13 @@ import { useState } from 'react';
 import { FaCheck, FaEye, FaTimes } from "react-icons/fa";
 import Swal from 'sweetalert2';
 import WarehouseDetailsModal from '../../../Components/WarehouseDetailsModal/WarehouseDetailsModal';
+import useAuth from '../../../Hooks/useAuth';
+import useApiConfig from '../../../Hooks/useApiConfig';
 
 const DamageRequestProductCard = ({ idx, product, refetch }) => {
-    const { user } = true;
+    const { user } = useAuth();
+    const baseUrl = useApiConfig();
+
     const [isdetailsModalOpen, setdetailsModalOpen] = useState(false);
 
     const getTodayDate = () => {
@@ -25,7 +29,7 @@ const DamageRequestProductCard = ({ idx, product, refetch }) => {
                 status: "approved",
             };
 
-            const response = await axios.post('http://localhost:5000/damaged-in-wh', newProduct);
+            const response = await axios.post(`${baseUrl}/damaged-in-wh`, newProduct);
             return response.data;
         },
         onError: (error) => {
@@ -45,7 +49,7 @@ const DamageRequestProductCard = ({ idx, product, refetch }) => {
                 totalQuantity: Number(product.totalQuantity) - Number(product.damageQuantity)
             };
 
-            const response = await axios.patch(`http://localhost:5000/wh-product/${product._id}`, updatedProduct);
+            const response = await axios.patch(`${baseUrl}/wh-product/${product._id}`, updatedProduct);
             return response.data;
         },
         onError: (error) => {
@@ -55,7 +59,7 @@ const DamageRequestProductCard = ({ idx, product, refetch }) => {
 
     const deniedDamagedProductMutation = useMutation({
         mutationFn: async () => {
-            const response = await axios.delete(`http://localhost:5000/damaged-in-wh/${product._id}`);
+            const response = await axios.delete(`${baseUrl}/damaged-in-wh/${product._id}`);
             return response.data;
         },
         onError: (error) => {
@@ -78,7 +82,7 @@ const DamageRequestProductCard = ({ idx, product, refetch }) => {
                 addedemail: user?.email || "info@navantispharma.com"
             };
 
-            const response = await axios.post('http://localhost:5000/stock-out-wh', newProduct);
+            const response = await axios.post(`${baseUrl}/stock-out-wh`, newProduct);
             return response.data;
         },
         onError: (error) => {
@@ -102,7 +106,7 @@ const DamageRequestProductCard = ({ idx, product, refetch }) => {
                 addedemail: user?.email || "info@navantispharma.com"
             };
 
-            const response = await axios.post('http://localhost:5000/damaged-expired', newProduct);
+            const response = await axios.post(`${baseUrl}/damaged-expired`, newProduct);
             return response.data;
         },
         onError: (error) => {

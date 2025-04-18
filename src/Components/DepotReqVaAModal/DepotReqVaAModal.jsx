@@ -4,8 +4,11 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { FaTimes } from "react-icons/fa";
 import Swal from 'sweetalert2';
+import useApiConfig from '../../Hooks/useApiConfig';
 
 const DepotReqVaAModal = ({ isOpen, onClose, product, productQinWarehouse, productQinDepot, lastMonthSales, refetch }) => {
+    const baseUrl = useApiConfig();
+
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
     const getTodayDate = () => {
@@ -27,7 +30,7 @@ const DepotReqVaAModal = ({ isOpen, onClose, product, productQinWarehouse, produ
                 status: "approved"
             };
 
-            const response = await axios.patch(`http://localhost:5000/depot-request/${product._id}`, updatedProduct);
+            const response = await axios.patch(`${baseUrl}/depot-request/${product._id}`, updatedProduct);
             return response.data;
         },
         onError: (error) => {

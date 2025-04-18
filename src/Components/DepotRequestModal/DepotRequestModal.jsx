@@ -8,9 +8,13 @@ import useDepotProducts from '../../Hooks/useDepotProducts';
 import useDepotRequest from '../../Hooks/useDepotRequest';
 import useWhProducts from '../../Hooks/useWhProducts';
 import './DepotRequestModal.css';
+import useAuth from '../../Hooks/useAuth';
+import useApiConfig from '../../Hooks/useApiConfig';
 
 const DepotRequestModal = ({ isOpen, onClose }) => {
-    const { user } = true;
+    const { user } = useAuth();
+    const baseUrl = useApiConfig();
+
     const [whProducts, whProductsLoading] = useWhProducts();
     const [products] = useDepotProducts();
     const [depotReqProducts] = useDepotRequest();
@@ -96,7 +100,7 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
                 addedemail: user?.email || "info@navantispharma.com"
             };
 
-            const response = await axios.post('http://localhost:5000/dpot-request', newProduct);
+            const response = await axios.post(`${baseUrl}/dpot-request`, newProduct);
             return response.data;
         },
         onError: (error) => {

@@ -4,8 +4,11 @@ import React, { useEffect, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import Swal from "sweetalert2";
 import useOrders from "../../Hooks/useOrders";
+import useApiConfig from "../../Hooks/useApiConfig";
 
 const ReturnProductsModal = ({ isOpen, onClose }) => {
+    const baseUrl = useApiConfig();
+
     const [orders, , refetch] = useOrders();
     const [invoice, setInvoice] = useState("");
     const [selectedOrder, setSelectedOrder] = useState(null);
@@ -81,7 +84,7 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
                 ...orderData,
             };
 
-            const response = await axios.patch(`http://localhost:5000/order/${_id}`, updatedOrder);
+            const response = await axios.patch(`${baseUrl}/order/${_id}`, updatedOrder);
             return response.data;
         },
         onError: (error) => {
@@ -103,7 +106,7 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
                     totalQuantity: item.quantity,
                 };
 
-                await axios.post('http://localhost:5000/depot-products', newProduct);
+                await axios.post(`${baseUrl}/depot-products`, newProduct);
             }
         },
         onError: (error) => {
@@ -126,7 +129,7 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
                     date: getTodayDate()
                 };
 
-                await axios.post('http://localhost:5000/stock-in-depot', newProduct);
+                await axios.post(`${baseUrl}/stock-in-depot`, newProduct);
             }
         },
         onError: (error) => {
@@ -136,7 +139,7 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
 
     const addReturnedProductsMutation = useMutation({
         mutationFn: async (newReturn) => {
-            const response = await axios.post('http://localhost:5000/returns', newReturn);
+            const response = await axios.post(`${baseUrl}/returns`, newReturn);
             return response.data;
         },
         onError: (error) => {

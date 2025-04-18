@@ -3,8 +3,11 @@ import axios from 'axios';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { FaTimes } from "react-icons/fa";
+import useApiConfig from '../../Hooks/useApiConfig';
 
 const DamagedStockinModal = ({ isOpen, onClose, product, refetch, damagedProducts }) => {
+    const baseUrl = useApiConfig();
+
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
     const matchingProducts = damagedProducts.find(damagedProduct =>
@@ -32,7 +35,7 @@ const DamagedStockinModal = ({ isOpen, onClose, product, refetch, damagedProduct
                 addedemail: product.addedemail
             };
 
-            const response = await axios.post('http://localhost:5000/damaged-in-wh', newProduct);
+            const response = await axios.post(`${baseUrl}/damaged-in-wh`, newProduct);
             return response.data;
         },
         onError: (error) => {

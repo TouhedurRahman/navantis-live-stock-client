@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { FaTimes } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import useAllUsers from '../../Hooks/useAllUsers';
+import useApiConfig from '../../Hooks/useApiConfig';
 
 /* const hierarchy = {
     "Managing Director": [],
@@ -32,6 +33,8 @@ const hierarchy = {
 };
 
 const UserUpdateModal = ({ user, onClose }) => {
+    const baseUrl = useApiConfig();
+
     const [allUsers, loading, refetch] = useAllUsers();
     const { register, handleSubmit, watch, formState: { errors }, reset } = useForm();
     const [managers, setManagers] = useState([]);
@@ -96,7 +99,7 @@ const UserUpdateModal = ({ user, onClose }) => {
                 };
             }
 
-            const response = await axios.patch(`http://localhost:5000/user/${user.email}`, updatedUser);
+            const response = await axios.patch(`${baseUrl}/user/${user.email}`, updatedUser);
             return response.data;
         },
         onError: (error) => {
