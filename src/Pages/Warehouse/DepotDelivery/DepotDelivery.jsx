@@ -7,9 +7,12 @@ import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useDepotRequest from '../../../Hooks/useDepotRequest';
 import useSingleUser from '../../../Hooks/useSingleUser';
 import useWhProducts from '../../../Hooks/useWhProducts';
+import useApiConfig from '../../../Hooks/useApiConfig';
 
 const DepotDelivery = () => {
     const [singleUser] = useSingleUser();
+    const baseUrl = useApiConfig();
+
     const { register, handleSubmit, reset, formState: { errors }, watch } = useForm();
 
     const [products] = useDepotRequest();
@@ -59,7 +62,7 @@ const DepotDelivery = () => {
                 deliveredDate: getTodayDate(),
                 status: "delivered"
             };
-            const response = await axios.patch(`http://localhost:5000/depot-request/${selectedProduct._id}`, updatedProduct);
+            const response = await axios.patch(`${baseUrl}/depot-request/${selectedProduct._id}`, updatedProduct);
             return response.data;
         },
         onError: (error) => {
@@ -96,7 +99,7 @@ const DepotDelivery = () => {
             const responses = await Promise.all(
                 deliveredProducts.map(async (updatedProduct) => {
                     const response = await axios.patch(
-                        `http://localhost:5000/wh-product/${updatedProduct._id}`,
+                        `${baseUrl}/wh-product/${updatedProduct._id}`,
                         updatedProduct
                     );
                     return response.data;
@@ -138,7 +141,7 @@ const DepotDelivery = () => {
             const responses = await Promise.all(
                 stockOutWhProducts.map(async (newProduct) => {
                     const response = await axios.post(
-                        'http://localhost:5000/stock-out-wh',
+                        `${baseUrl}/stock-out-wh`,
                         newProduct
                     );
                     return response.data;
@@ -180,7 +183,7 @@ const DepotDelivery = () => {
             const responses = await Promise.all(
                 depotReceivedProducts.map(async (newProduct) => {
                     const response = await axios.post(
-                        'http://localhost:5000/depot-receive-req',
+                        `${baseUrl}/depot-receive-req`,
                         newProduct
                     );
                     return response.data;

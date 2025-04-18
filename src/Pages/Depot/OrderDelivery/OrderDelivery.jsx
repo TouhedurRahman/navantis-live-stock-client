@@ -5,8 +5,11 @@ import Swal from "sweetalert2";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import useDepotProducts from "../../../Hooks/useDepotProducts";
 import useOrders from "../../../Hooks/useOrders";
+import useApiConfig from "../../../Hooks/useApiConfig";
 
 const OrderDelivery = () => {
+    const baseUrl = useApiConfig();
+
     const [orders, , ordersRefetch] = useOrders();
     const [products, , productsRefetch] = useDepotProducts();
 
@@ -32,7 +35,7 @@ const OrderDelivery = () => {
 
     const deletePendingOrderMutation = useMutation({
         mutationFn: async () => {
-            const response = await axios.delete(`http://localhost:5000/pending-order/${selectedOrderDetails._id}`);
+            const response = await axios.delete(`${baseUrl}/pending-order/${selectedOrderDetails._id}`);
             return response.data;
         },
         onError: (error) => {
@@ -42,7 +45,7 @@ const OrderDelivery = () => {
 
     const addDeliveredOrderMutation = useMutation({
         mutationFn: async (newOrder) => {
-            const response = await axios.post('http://localhost:5000/orders', newOrder);
+            const response = await axios.post(`${baseUrl}/orders`, newOrder);
             return response.data;
         },
         onError: (error) => {
@@ -56,7 +59,7 @@ const OrderDelivery = () => {
             const responses = await Promise.all(
                 deliveredProducts.map(async (updatedProduct) => {
                     const response = await axios.patch(
-                        `http://localhost:5000/depot-product/${updatedProduct._id}`,
+                        `${baseUrl}/depot-product/${updatedProduct._id}`,
                         updatedProduct
                     );
                     return response.data;
@@ -75,7 +78,7 @@ const OrderDelivery = () => {
             const responses = await Promise.all(
                 deliveredProducts.map(async (newProduct) => {
                     const response = await axios.post(
-                        'http://localhost:5000/stock-out-depot',
+                        `${baseUrl}/stock-out-depot`,
                         newProduct
                     );
                     return response.data;

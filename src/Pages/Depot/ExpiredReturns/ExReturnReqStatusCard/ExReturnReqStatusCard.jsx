@@ -3,8 +3,11 @@ import axios from "axios";
 import { useState } from "react";
 import { FaEye, FaTimes, FaTrashAlt } from "react-icons/fa";
 import Swal from "sweetalert2";
+import useApiConfig from "../../../../Hooks/useApiConfig";
 
 const ExReturnReqStatusCard = ({ idx, returnReq, refetch }) => {
+    const baseUrl = useApiConfig();
+
     const [isModalOpen, setModalOpen] = useState(false);
 
     const reqAgainMutation = useMutation({
@@ -13,7 +16,7 @@ const ExReturnReqStatusCard = ({ idx, returnReq, refetch }) => {
                 ...returnReq,
                 status: 'pending'
             }
-            const response = await axios.patch(`http://localhost:5000/expired-returns/${returnReq._id}`, updatedExReturnReq);
+            const response = await axios.patch(`${baseUrl}/expired-returns/${returnReq._id}`, updatedExReturnReq);
             return response.data;
         },
         onError: (error) => {
@@ -23,7 +26,7 @@ const ExReturnReqStatusCard = ({ idx, returnReq, refetch }) => {
 
     const deniedExReturnReqMutation = useMutation({
         mutationFn: async () => {
-            const response = await axios.delete(`http://localhost:5000/expired-returns/${returnReq._id}`);
+            const response = await axios.delete(`${baseUrl}/expired-returns/${returnReq._id}`);
             return response.data;
         },
         onError: (error) => {

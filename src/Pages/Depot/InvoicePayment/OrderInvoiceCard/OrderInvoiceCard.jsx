@@ -5,8 +5,11 @@ import { MdPrint } from 'react-icons/md';
 import Swal from 'sweetalert2';
 import useExpiredReturnes from '../../../../Hooks/useExpiredReturnes';
 import useRiders from '../../../../Hooks/useRiders';
+import useApiConfig from '../../../../Hooks/useApiConfig';
 
 const OrderInvoiceCard = ({ idx, order, refetch }) => {
+    const baseUrl = useApiConfig();
+
     const [returns] = useExpiredReturnes();
     const [riders] = useRiders();
 
@@ -68,7 +71,7 @@ const OrderInvoiceCard = ({ idx, order, refetch }) => {
 
             printInvoice(updatedOrder);
 
-            const response = await axios.patch(`http://localhost:5000/order/${_id}`, updatedOrder)
+            const response = await axios.patch(`${baseUrl}/order/${_id}`, updatedOrder)
             return response.data;
         },
         onError: (error) => {
@@ -83,7 +86,7 @@ const OrderInvoiceCard = ({ idx, order, refetch }) => {
                     ...exReturn,
                     status: 'adjusted'
                 }
-                await axios.patch(`http://localhost:5000/expired-returns/${exReturn._id}`, updatedExReturnReq);
+                await axios.patch(`${baseUrl}/expired-returns/${exReturn._id}`, updatedExReturnReq);
             }
         },
         onError: (error) => {

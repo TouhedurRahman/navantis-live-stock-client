@@ -4,8 +4,11 @@ import { useState } from 'react';
 import { FaCheck, FaEye, FaTimes } from "react-icons/fa";
 import Swal from 'sweetalert2';
 import WarehouseDetailsModal from '../../../Components/WarehouseDetailsModal/WarehouseDetailsModal';
+import useApiConfig from '../../../Hooks/useApiConfig';
 
 const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
+    const baseUrl = useApiConfig();
+
     const [isdetailsModalOpen, setdetailsModalOpen] = useState(false);
 
     const existingSameBatchProducts = whProducts.filter(
@@ -43,7 +46,7 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
                 tradePrice: Number(product.tradePrice),
                 totalQuantity: Number(product.totalQuantity)
             };
-            const response = await axios.post('http://localhost:5000/wh-products', newProduct);
+            const response = await axios.post(`${baseUrl}/wh-products`, newProduct);
             return response.data;
         },
         onError: (error) => {
@@ -64,7 +67,7 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
                 totalQuantity: Number(existingSameBatchProductQuantity) + Number(product.totalQuantity)
             };
 
-            const response = await axios.patch(`http://localhost:5000/wh-product/${product._id}`, updatedProduct);
+            const response = await axios.patch(`${baseUrl}/wh-product/${product._id}`, updatedProduct);
             return response.data;
         },
         onError: (error) => {
@@ -91,7 +94,7 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
                 addedby: product.addedby,
                 addedemail: product.addedemail
             };
-            const response = await axios.post('http://localhost:5000/stock-in-wh', newProduct);
+            const response = await axios.post(`${baseUrl}/stock-in-wh`, newProduct);
             return response.data;
         },
         onError: (error) => {
@@ -116,7 +119,7 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
 
                 date: product.date
             };
-            const response = await axios.post('http://localhost:5000/price-update', newProduct);
+            const response = await axios.post(`${baseUrl}/price-update`, newProduct);
             return response.data;
         },
         onError: (error) => {
@@ -153,7 +156,7 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
                 addedby: product.addedby,
                 addedemail: product.addedemail
             };
-            const response = await axios.patch(`http://localhost:5000/wh-req/${product._id}`, updatedProduct);
+            const response = await axios.patch(`${baseUrl}/wh-req/${product._id}`, updatedProduct);
             return response.data;
         },
         onError: (error) => {

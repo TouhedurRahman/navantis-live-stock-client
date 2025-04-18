@@ -8,8 +8,11 @@ import DuePayment from "../DuePayment/DuePayment";
 import OrderInvoice from "../OrderInvoice/OrderInvoice";
 import OutstandingPayment from "../OutstandingPayment/OutstandingPayment";
 import PaidOrders from "../PaidOrders/PaidOrders";
+import useApiConfig from "../../../../Hooks/useApiConfig";
 
 const InvoicePayment = () => {
+    const baseUrl = useApiConfig();
+
     const [orders, , refetch] = useOrders();
     const [activeTab, setActiveTab] = useState("invoice");
     const [showModal, setShowModal] = useState(false);
@@ -55,7 +58,7 @@ const InvoicePayment = () => {
                 status: newStatus
             };
 
-            const response = await axios.patch(`http://localhost:5000/order/${_id}`, updatedOrder)
+            const response = await axios.patch(`${baseUrl}/order/${_id}`, updatedOrder)
             return response.data;
         },
         onError: (error) => {
@@ -92,7 +95,7 @@ const InvoicePayment = () => {
                 paidDate: getTodayDate(),
             };
 
-            const response = await axios.post(`http://localhost:5000/payments`, newPayment);
+            const response = await axios.post(`${baseUrl}/payments`, newPayment);
             return response.data;
         },
         onError: (error) => {

@@ -5,8 +5,10 @@ import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useSingleUser from '../../../Hooks/useSingleUser';
+import useApiConfig from '../../../Hooks/useApiConfig';
 
 const PurchaseOrder = () => {
+    const baseUrl = useApiConfig();
     const [singleUser] = useSingleUser();
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
@@ -24,7 +26,7 @@ const PurchaseOrder = () => {
                 addedby: data.addedby,
                 addedemail: data.addedemail
             };
-            const response = await axios.post('http://localhost:5000/purchase-order', newProduct);
+            const response = await axios.post(`${baseUrl}/purchase-order`, newProduct);
             return response.data;
         },
         onError: (error) => {
@@ -47,7 +49,7 @@ const PurchaseOrder = () => {
                 addedby: data.addedby,
                 addedemail: data.addedemail
             };
-            const response = await axios.post('http://localhost:5000/order-stock-wh', newProduct);
+            const response = await axios.post(`${baseUrl}/order-stock-wh`, newProduct);
             return response.data;
         },
         onError: (error) => {

@@ -2,9 +2,12 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { FaCheck, FaTimes } from "react-icons/fa";
 import Swal from 'sweetalert2';
+import useApiConfig from '../../../Hooks/useApiConfig';
+import useAuth from '../../../Hooks/useAuth';
 
 const ExpireRequestCard = ({ idx, product, refetch }) => {
-    const { user } = true;
+    const { user } = useAuth();
+    const baseUrl = useApiConfig();
 
     const getTodayDate = () => {
         const today = new Date();
@@ -28,7 +31,7 @@ const ExpireRequestCard = ({ idx, product, refetch }) => {
                 totalQuantity: Number(product.totalQuantity)
             };
 
-            const response = await axios.post('http://localhost:5000/depot-expired', newProduct);
+            const response = await axios.post(`${baseUrl}/depot-expired`, newProduct);
             return response.data;
         },
         onError: (error) => {
@@ -52,7 +55,7 @@ const ExpireRequestCard = ({ idx, product, refetch }) => {
                 addedemail: user?.email || "info@navantispharma.com"
             };
 
-            const response = await axios.post('http://localhost:5000/stock-out-depot', newProduct);
+            const response = await axios.post(`${baseUrl}/stock-out-depot`, newProduct);
             return response.data;
         },
         onError: (error) => {
@@ -77,7 +80,7 @@ const ExpireRequestCard = ({ idx, product, refetch }) => {
                 addedemail: user?.email || "info@navantispharma.com"
             };
 
-            const response = await axios.post('http://localhost:5000/damaged-expired', newProduct);
+            const response = await axios.post(`${baseUrl}/damaged-expired`, newProduct);
             return response.data;
         },
         onError: (error) => {
@@ -87,7 +90,7 @@ const ExpireRequestCard = ({ idx, product, refetch }) => {
 
     const deleteExpireRequestMutation = useMutation({
         mutationFn: async () => {
-            const response = await axios.delete(`http://localhost:5000/expire-request/${product._id}`);
+            const response = await axios.delete(`${baseUrl}/expire-request/${product._id}`);
             return response.data;
         },
         onError: (error) => {
@@ -107,7 +110,7 @@ const ExpireRequestCard = ({ idx, product, refetch }) => {
                 tradePrice: Number(product.tradePrice),
                 totalQuantity: Number(product.totalQuantity)
             };
-            const response = await axios.post('http://localhost:5000/depot-products', newProduct);
+            const response = await axios.post(`${baseUrl}/depot-products`, newProduct);
             return response.data;
         },
         onError: (error) => {

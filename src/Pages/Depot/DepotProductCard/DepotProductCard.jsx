@@ -5,8 +5,11 @@ import { FaEye } from "react-icons/fa";
 import { FcExpired } from 'react-icons/fc';
 import Swal from 'sweetalert2';
 import DepotDetailsModal from '../../../Components/DepotDetailsModal/DepotDetailsModal';
+import useApiConfig from '../../../Hooks/useApiConfig';
 
 const DepotProductCard = ({ idx, product, refetch }) => {
+    const baseUrl = useApiConfig();
+
     const [isdetailsModalOpen, setdetailsModalOpen] = useState(false);
 
     const totalTradePrice = product.tradePrice * product.totalQuantity;
@@ -35,7 +38,7 @@ const DepotProductCard = ({ idx, product, refetch }) => {
                 date: getTodayDate()
             };
 
-            const response = await axios.post('http://localhost:5000/expire-request', newProduct);
+            const response = await axios.post(`${baseUrl}/expire-request`, newProduct);
             return response.data;
         },
         onError: (error) => {
@@ -45,7 +48,7 @@ const DepotProductCard = ({ idx, product, refetch }) => {
 
     const deleteDepotExpProductMutation = useMutation({
         mutationFn: async () => {
-            const response = await axios.delete(`http://localhost:5000/depot-product/${product._id}`);
+            const response = await axios.delete(`${baseUrl}/depot-product/${product._id}`);
             return response.data;
         },
         onError: (error) => {

@@ -5,9 +5,11 @@ import { FaEye, FaTimes } from "react-icons/fa";
 import Swal from "sweetalert2";
 import useAuth from "../../../Hooks/useAuth";
 import useSingleUser from "../../../Hooks/useSingleUser";
+import useApiConfig from "../../../Hooks/useApiConfig";
 
 const CustomerRequestCard = ({ idx, customer, refetch }) => {
     const { user } = useAuth();
+    const baseUrl = useApiConfig();
     const [singleUser] = useSingleUser();
     const [isModalOpen, setModalOpen] = useState(false);
 
@@ -31,7 +33,7 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
                 approvedBy: singleUser?.name,
                 approvedEmail: user?.email
             }
-            const response = await axios.patch(`http://localhost:5000/customer-status/${customer._id}`, updatedCustomer);
+            const response = await axios.patch(`${baseUrl}/customer-status/${customer._id}`, updatedCustomer);
             return response.data;
         },
         onError: (error) => {
@@ -45,7 +47,7 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
                 ...customer,
                 status: 'denied'
             }
-            const response = await axios.patch(`http://localhost:5000/customer-status/${customer._id}`, updatedCustomer);
+            const response = await axios.patch(`${baseUrl}/customer-status/${customer._id}`, updatedCustomer);
             return response.data;
         },
         onError: (error) => {

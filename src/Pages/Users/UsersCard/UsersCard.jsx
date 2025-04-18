@@ -7,8 +7,11 @@ import UpdateAccessModal from "../../../Components/UpdateAccessModal/UpdateAcces
 import UserDetailsModal from "../../../Components/UserDetailsModal/UserDetailsModal";
 import UserUpdateModal from "../../../Components/UserUpdateModal/UserUpdateModal";
 import useSingleUser from "../../../Hooks/useSingleUser";
+import useApiConfig from "../../../Hooks/useApiConfig";
 
 const UsersCard = ({ user, idx, refetch }) => {
+    const baseUrl = useApiConfig();
+
     const [singleUser] = useSingleUser();
 
     const [selectedUser, setSelectedUser] = useState(null);
@@ -42,7 +45,7 @@ const UsersCard = ({ user, idx, refetch }) => {
                     designation: newRole
                 }
                 axios
-                    .patch(`http://localhost:5000/users/admin/${user._id}`, updatedDesignation)
+                    .patch(`${baseUrl}/users/admin/${user._id}`, updatedDesignation)
                     .then((response) => {
                         if (response.data.modifiedCount > 0) {
                             refetch();
@@ -80,7 +83,7 @@ const UsersCard = ({ user, idx, refetch }) => {
         }).then((result) => {
             if (result.isConfirmed) {
                 axios
-                    .delete(`http://localhost:5000/user/${user._id}`)
+                    .delete(`${baseUrl}/user/${user._id}`)
                     .then((response) => {
                         if (response.data.deletedCount > 0) {
                             refetch();
