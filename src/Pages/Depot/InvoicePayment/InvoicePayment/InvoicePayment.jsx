@@ -81,8 +81,8 @@ const InvoicePayment = () => {
                 updatedPayments.push({
                     totalPayable: currentPayable,
                     paid: paymentAmount,
-                    paymentType: paymentType,
                     totalDue: currentDue,
+                    paymentType: paymentType,
                     paidDate: today,
                 });
             };
@@ -181,6 +181,7 @@ const InvoicePayment = () => {
     const closeModal = () => {
         setInvoiceNumber("");
         setPaymentAmount("");
+        setPaymentType("");
         setShowModal(false);
     }
 
