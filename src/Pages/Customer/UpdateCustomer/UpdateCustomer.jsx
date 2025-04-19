@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useAllUsers from '../../../Hooks/useAllUsers';
+import useApiConfig from '../../../Hooks/useApiConfig';
 import useAuth from '../../../Hooks/useAuth';
 import useCustomer from '../../../Hooks/useCustomer';
 import useSingleUser from '../../../Hooks/useSingleUser';

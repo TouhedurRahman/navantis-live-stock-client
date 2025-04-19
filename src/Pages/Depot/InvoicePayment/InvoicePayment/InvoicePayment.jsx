@@ -3,12 +3,12 @@ import axios from "axios";
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 import PageTitle from "../../../../Components/PageTitle/PageTitle";
+import useApiConfig from "../../../../Hooks/useApiConfig";
 import useOrders from "../../../../Hooks/useOrders";
 import DuePayment from "../DuePayment/DuePayment";
 import OrderInvoice from "../OrderInvoice/OrderInvoice";
 import OutstandingPayment from "../OutstandingPayment/OutstandingPayment";
 import PaidOrders from "../PaidOrders/PaidOrders";
-import useApiConfig from "../../../../Hooks/useApiConfig";
 
 const InvoicePayment = () => {
     const baseUrl = useApiConfig();
@@ -18,6 +18,7 @@ const InvoicePayment = () => {
     const [showModal, setShowModal] = useState(false);
     const [invoiceNumber, setInvoiceNumber] = useState("");
     const [paymentAmount, setPaymentAmount] = useState("");
+    const [paymentType, setPaymentType] = useState("");
 
     const invWiseOrder = orders.find(order => order.invoice === invoiceNumber);
 
@@ -264,6 +265,19 @@ const InvoicePayment = () => {
                                                             setPaymentAmount(inputValue <= maxPayment ? inputValue : maxPayment);
                                                         }}
                                                     />
+                                                    <div className='col-span-1 md:col-span-2'>
+                                                        <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">Payment Type</label>
+                                                        <select
+                                                            value={paymentType}
+                                                            onChange={(e) => setPaymentType(e.target.value)}
+                                                            className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                                                        >
+                                                            <option value="Net sales">Select Payment Type</option>
+                                                            <option value="Cash">Cash</option>
+                                                            <option value="Cheque">Cheque</option>
+                                                            <option value="Bank">Bank</option>
+                                                        </select>
+                                                    </div>
                                                     <button
                                                         className="mt-4 w-full bg-green-500 text-white py-3 px-5 rounded-xl hover:bg-green-600 transition-all font-semibold text-lg shadow-md"
                                                         onClick={() => handlePayment(invWiseOrder)}

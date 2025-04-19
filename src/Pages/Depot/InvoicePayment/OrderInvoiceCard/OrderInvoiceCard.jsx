@@ -3,9 +3,9 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { MdPrint } from 'react-icons/md';
 import Swal from 'sweetalert2';
+import useApiConfig from '../../../../Hooks/useApiConfig';
 import useExpiredReturnes from '../../../../Hooks/useExpiredReturnes';
 import useRiders from '../../../../Hooks/useRiders';
-import useApiConfig from '../../../../Hooks/useApiConfig';
 
 const OrderInvoiceCard = ({ idx, order, refetch }) => {
     const baseUrl = useApiConfig();
@@ -69,7 +69,7 @@ const OrderInvoiceCard = ({ idx, order, refetch }) => {
                 deliveryMan: deliveryManName,
             };
 
-            printInvoice(updatedOrder);
+            // printInvoice(updatedOrder);
 
             const response = await axios.patch(`${baseUrl}/order/${_id}`, updatedOrder)
             return response.data;
