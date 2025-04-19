@@ -48,15 +48,47 @@ const InvoicePayment = () => {
 
     const updateOrderMutation = useMutation({
         mutationFn: async (data) => {
-            const { _id, ...orderData } = data;
+            const { _id, payments = [], ...orderData } = data;
 
             const newStatus = (((parseFloat(orderData?.totalPayable) - parseFloat(orderData?.paid || 0) - parseFloat(paymentAmount))) === 0) ? 'paid' : 'outstanding';
+
+            const today = getTodayDate();
+
+            let updatedPayments = [...payments];
+
+            const existingIndex = payments.findIndex(
+                p =>
+                    p.paidDate === today
+                    &&
+                    p.paymentType === paymentType
+            );
+
+            if (existingIndex !== -1) {
+                const existingPayment = payments[existingIndex];
+                const updatedAmount = parseFloat(existingPayment.paid) + parseFloat(paymentAmount);
+
+                if (updatedAmount === 0) {
+                    updatedPayments.splice(existingIndex, 1);
+                } else {
+                    updatedPayments[existingIndex] = {
+                        ...existingPayment,
+                        paid: updatedAmount,
+                    };
+                }
+            } else {
+                updatedPayments.push({
+                    paid: paymentAmount,
+                    paymentType: paymentType,
+                    paidDate: today,
+                });
+            }
 
             const updatedOrder = {
                 ...orderData,
                 paid: parseFloat(parseFloat(orderData?.paid || 0) + parseFloat(paymentAmount)),
                 due: parseFloat((parseFloat(orderData?.totalPayable) - parseFloat(orderData?.paid || 0) - parseFloat(paymentAmount)).toFixed(2)),
-                status: newStatus
+                status: newStatus,
+                payments: updatedPayments
             };
 
             const response = await axios.patch(`${baseUrl}/order/${_id}`, updatedOrder)
