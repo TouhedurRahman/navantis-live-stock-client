@@ -4,9 +4,9 @@ import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import useAllUsers from "../../../Hooks/useAllUsers";
+import useApiConfig from "../../../Hooks/useApiConfig";
 import useAuth from "../../../Hooks/useAuth";
 import useSingleUser from "../../../Hooks/useSingleUser";
-import useApiConfig from "../../../Hooks/useApiConfig";
 
 const AddNewCustomer = () => {
     const { user } = useAuth();
@@ -120,7 +120,7 @@ const AddNewCustomer = () => {
                             </label>
                             <input
                                 {...register("name", { required: "Name is required" })}
-                                placeholder="Enter product name"
+                                placeholder="Enter customer name"
                                 className="border-gray-500 bg-white border p-2 text-sm"
                             />
                             {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}

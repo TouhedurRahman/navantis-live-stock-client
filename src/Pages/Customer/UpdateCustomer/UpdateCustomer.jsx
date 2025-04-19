@@ -110,7 +110,7 @@ const UpdateCustomer = () => {
                             <input
                                 defaultValue={customer?.name}
                                 {...register("name", { required: "Name is required" })}
-                                placeholder="Enter product name"
+                                placeholder="Enter customer name"
                                 className="border-gray-500 bg-white border p-2 text-sm"
                             />
                             {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
