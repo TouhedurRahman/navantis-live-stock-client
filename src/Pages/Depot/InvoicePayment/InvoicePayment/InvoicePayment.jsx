@@ -53,14 +53,15 @@ const InvoicePayment = () => {
             const newStatus = (((parseFloat(orderData?.totalPayable) - parseFloat(orderData?.paid || 0) - parseFloat(paymentAmount))) === 0) ? 'paid' : 'outstanding';
 
             const today = getTodayDate();
-
+            const currentPayable = parseFloat(orderData?.due || 0);
+            const currentDue = parseFloat((orderData?.due - paymentAmount) || 0);
             let updatedPayments = [...payments];
 
             const existingIndex = payments.findIndex(
                 p =>
-                    p.paidDate === today
-                    &&
                     p.paymentType === paymentType
+                    &&
+                    p.paidDate === today
             );
 
             if (existingIndex !== -1) {
@@ -73,15 +74,18 @@ const InvoicePayment = () => {
                     updatedPayments[existingIndex] = {
                         ...existingPayment,
                         paid: updatedAmount,
+                        totalDue: currentDue
                     };
                 }
             } else {
                 updatedPayments.push({
+                    totalPayable: currentPayable,
                     paid: paymentAmount,
                     paymentType: paymentType,
+                    totalDue: currentDue,
                     paidDate: today,
                 });
-            }
+            };
 
             const updatedOrder = {
                 ...orderData,
