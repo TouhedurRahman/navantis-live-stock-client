@@ -1,5 +1,4 @@
 import React from 'react';
-import { MdPrint } from 'react-icons/md';
 
 const PaidOrderCard = ({ idx, order, refetch }) => {
     const handlePrint = () => {
@@ -34,9 +33,9 @@ const PaidOrderCard = ({ idx, order, refetch }) => {
                     {order.totalUnit}
                 </td>
                 <td className='text-right'>
-                    {(order.totalPayable).toLocaleString('en-IN')}/-
+                    {(order.paid).toLocaleString('en-IN')}/-
                 </td>
-                <th>
+                {/* <th>
                     <div className="flex justify-center items-center space-x-4 text-md">
                         <button
                             onClick={handlePrint}
@@ -46,7 +45,7 @@ const PaidOrderCard = ({ idx, order, refetch }) => {
                             <MdPrint className="text-green-500" />
                         </button>
                     </div>
-                </th>
+                </th> */}
             </tr>
         </>
     );

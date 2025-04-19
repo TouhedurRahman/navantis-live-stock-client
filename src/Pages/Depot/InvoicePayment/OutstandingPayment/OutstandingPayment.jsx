@@ -99,7 +99,8 @@ const OutstandingPayment = () => {
                                                         <th className='text-left'>Customer</th>
                                                         <th className='text-right'>Total Products</th>
                                                         <th className='text-right'>Total Unit</th>
-                                                        <th className='text-right'>Total Payable</th>
+                                                        <th className='text-right'>Total Paid</th>
+                                                        <th className='text-right'>Total Due</th>
                                                         <th className="text-center">Action</th>
                                                     </tr>
                                                 </thead>

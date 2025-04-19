@@ -32,7 +32,10 @@ const OutstandingPaymentCard = ({ idx, order, refetch }) => {
                     {order.totalUnit}
                 </td>
                 <td className='text-right'>
-                    {(order.totalPayable).toLocaleString('en-IN')}/-
+                    {(order.paid).toLocaleString('en-IN')}/-
+                </td>
+                <td className='text-right'>
+                    {(order.due).toLocaleString('en-IN')}/-
                 </td>
                 <th>
                     <div className="flex justify-center items-center space-x-4 text-md">
