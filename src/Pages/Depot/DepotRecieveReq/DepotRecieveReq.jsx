@@ -14,7 +14,7 @@ const DepotRecieveReq = () => {
     const [productsPerPage, setProductsPerPage] = useState(5);
 
     const filteredProducts = products.filter(product =>
-        product.productName.toLowerCase().includes(searchTerm.toLowerCase())
+        product.productName?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const totalPages = Math.ceil(filteredProducts.length / productsPerPage);

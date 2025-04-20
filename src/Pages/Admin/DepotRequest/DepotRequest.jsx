@@ -22,7 +22,7 @@ const DepotRequest = () => {
     const requestedProducts = depotReqProducts.filter(product => product.status === "requested");
 
     const filteredProducts = requestedProducts.filter(product =>
-        product.productName.toLowerCase().includes(searchTerm.toLowerCase())
+        product.productName?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const totalPages = Math.ceil(filteredProducts.length / productsPerPage);

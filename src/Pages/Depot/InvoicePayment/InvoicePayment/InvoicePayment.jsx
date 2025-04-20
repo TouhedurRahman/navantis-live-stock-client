@@ -301,6 +301,7 @@ const InvoicePayment = () => {
                                                             const maxPayment = invWiseOrder?.due;
                                                             setPaymentAmount(inputValue <= maxPayment ? inputValue : maxPayment);
                                                         }}
+                                                        onWheel={(e) => e.target.blur()}
                                                     />
                                                     <div className='col-span-1 md:col-span-2'>
                                                         <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">Payment Type</label>

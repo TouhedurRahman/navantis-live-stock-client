@@ -1,6 +1,12 @@
 const AdminPriceUpdateInvoice = ({ invoiceWithAP, firstDate, lastDate, totalUniqueProducts, filteredProducts }) => {
     const accessAP = invoiceWithAP ?? false;
 
+    const now = new Date().toLocaleString("en-US", {
+        year: "numeric", month: "long", day: "numeric",
+        hour: "2-digit", minute: "2-digit", second: "2-digit",
+        hour12: true
+    });
+
     const handlePrint = () => {
         const companyHeader = `
         <div>
@@ -27,6 +33,9 @@ const AdminPriceUpdateInvoice = ({ invoiceWithAP, firstDate, lastDate, totalUniq
                 `Date <b>${firstDate}</b>`
             }</p>
             </div>
+            <div class="mb-1 text-sm text-gray-400 text-right italic">
+                    <h3 class="">Printed on ${now}</h3>
+            </div>
             <div style="margin-bottom: 20px; padding: 5px 15px; border: 1px solid #B2BEB5; border-radius: 3px;">
                 <p style="font-size: 11px; font-weight: bold; text-align: center; text-transform: uppercase;">
                     Summary
@@ -45,6 +54,7 @@ const AdminPriceUpdateInvoice = ({ invoiceWithAP, firstDate, lastDate, totalUniq
                             <tr>
                                 <th style="text-align: center;">Sl.</th>
                                 <th style="text-align: left;">Product Name</th>
+                                <th style="text-align: center;">Pack Size</th>
                                 <th style="text-align: right;">New Quantity</th>
                                 <th style="text-align: right;">Previous Quantity</th>
                                 ${accessAP ? `
@@ -62,6 +72,7 @@ const AdminPriceUpdateInvoice = ({ invoiceWithAP, firstDate, lastDate, totalUniq
                 <tr class="border-b">
                     <th class="text-center">${idx + 1}</th>
                     <td>${product.productName}</td>
+                    <td style="text-align: center;">${product.netWeight}</td>
                     <td class="text-right">${product.newQuantity}</td>
                     <td class="text-right">${product.initialQuantity}</td>
                     ${accessAP ? `
@@ -116,23 +127,6 @@ const AdminPriceUpdateInvoice = ({ invoiceWithAP, firstDate, lastDate, totalUniq
             </table>
         `;
 
-        const currentDateTime = new Date();
-        const formattedDateTime = currentDateTime.toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: true,
-        });
-
-        const formattedDateTimeWithAt = formattedDateTime.replace(', ', ', ');
-        const finalFormattedDateTime = formattedDateTimeWithAt.replace(
-            ", ",
-            ", "
-        );
-
         const newWindow = window.open();
         const styles = [...document.querySelectorAll('link[rel="stylesheet"], style')].map(
             (style) => style.outerHTML
@@ -173,8 +167,8 @@ const AdminPriceUpdateInvoice = ({ invoiceWithAP, firstDate, lastDate, totalUniq
                                 white-space: nowrap;
                             }
                             /* Footer styles for all pages */
-                            body::after {
-                                content: "Printed on ${finalFormattedDateTime}";
+                            /* body::after {
+                                content: "Printed on ${now}";
                                 position: fixed;
                                 bottom: 0;
                                 left: 0;
@@ -183,7 +177,7 @@ const AdminPriceUpdateInvoice = ({ invoiceWithAP, firstDate, lastDate, totalUniq
                                 font-size: 12px;
                                 font-style: italic;
                                 color: #555;
-                            }
+                            } */
                         }
                     </style>
                 </head>
