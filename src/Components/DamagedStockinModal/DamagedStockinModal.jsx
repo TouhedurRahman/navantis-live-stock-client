@@ -12,6 +12,7 @@ const DamagedStockinModal = ({ isOpen, onClose, product, refetch, damagedProduct
 
     const matchingProducts = damagedProducts.find(damagedProduct =>
         damagedProduct.productName === product.productName &&
+        damagedProduct.netWeight === product.netWeight &&
         damagedProduct.batch === product.batch &&
         damagedProduct.expire === product.expire &&
         damagedProduct.status === "pending"
@@ -21,6 +22,7 @@ const DamagedStockinModal = ({ isOpen, onClose, product, refetch, damagedProduct
         mutationFn: async (data) => {
             const newProduct = {
                 productName: product.productName,
+                netWeight: product.netWeight,
                 productCode: product.productCode,
                 batch: product.batch,
                 expire: product.expire,

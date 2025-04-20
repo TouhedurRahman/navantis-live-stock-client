@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { FaCheck, FaEye, FaTimes } from "react-icons/fa";
 import Swal from 'sweetalert2';
 import WarehouseDetailsModal from '../../../Components/WarehouseDetailsModal/WarehouseDetailsModal';
-import useAuth from '../../../Hooks/useAuth';
 import useApiConfig from '../../../Hooks/useApiConfig';
+import useAuth from '../../../Hooks/useAuth';
 
 const DamageRequestProductCard = ({ idx, product, refetch }) => {
     const { user } = useAuth();
@@ -41,6 +41,7 @@ const DamageRequestProductCard = ({ idx, product, refetch }) => {
         mutationFn: async () => {
             const updatedProduct = {
                 productName: product.productName,
+                netWeight: product.netWeight,
                 productCode: product.productCode,
                 batch: product.batch,
                 expire: product.expire,
@@ -71,6 +72,7 @@ const DamageRequestProductCard = ({ idx, product, refetch }) => {
         mutationFn: async () => {
             const newProduct = {
                 productName: product.productName,
+                netWeight: product.netWeight,
                 productCode: product.productCode,
                 batch: product.batch,
                 expire: product.expire,
@@ -94,6 +96,7 @@ const DamageRequestProductCard = ({ idx, product, refetch }) => {
         mutationFn: async () => {
             const newProduct = {
                 productName: product.productName,
+                netWeight: product.netWeight,
                 productCode: product.productCode,
                 batch: product.batch,
                 expire: product.expire,
