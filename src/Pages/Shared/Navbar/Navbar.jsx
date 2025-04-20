@@ -50,15 +50,15 @@ const Navbar = () => {
                 {
                     isSidebarOpen
                         ? <div className='flex flex-col justify-center items-center'>
-                            <div className="w-full p-2 pt-0">
+                            <div className="w-full p-2 pt-0 mb-10">
                                 <Link to='/' className="w-fullm">
                                     <img src="https://i.ibb.co/pfr6VxM/Logo-Navantis-png-white.png" />
                                 </Link>
                             </div>
-                            <label className='mt-20 font-bold font-playwrite text-xl text-center'>
+                            {/* <label className='mt-20 font-bold font-playwrite text-xl text-center'>
                                 <p>Live Stock</p>
-                            </label>
-                            <hr className='text-center w-[25%] border-2 border-white' />
+                            </label> */}
+                            {/* <hr className='text-center w-[25%] border-2 border-white' /> */}
                         </div>
                         : <div className="avatar p-2 pt-0">
                             <div
