@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Main from "../../Layout/Main/Main";
+import AccountsReport from "../../Pages/Accounts/AccountsReport/AccountsReport";
 import AdminDamagedExpiredList from "../../Pages/Admin/AdminDamagedExpiredList/AdminDamagedExpiredList";
 import Customer from "../../Pages/Admin/Customer/Customer";
 import DamageRequest from "../../Pages/Admin/DamageRequest/DamageRequest";
@@ -184,6 +185,10 @@ const router = createBrowserRouter([
             {
                 path: "/delivery-report",
                 element: <DeliveryReport />
+            },
+            {
+                path: "/acc-report",
+                element: <AccountsReport />
             },
             {
                 path: "/place-order",

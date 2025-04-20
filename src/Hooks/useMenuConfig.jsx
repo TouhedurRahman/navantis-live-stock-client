@@ -6,7 +6,7 @@ import {
 import { FcExpired } from 'react-icons/fc';
 import { GiDustCloud, GiReturnArrow, GiStorkDelivery } from 'react-icons/gi';
 import { IoIosAddCircle } from 'react-icons/io';
-import { MdAssignmentReturned, MdOutlineShoppingBag, MdPayment } from 'react-icons/md';
+import { MdAccountBalance, MdAssignmentReturned, MdOutlineShoppingBag, MdPayment } from 'react-icons/md';
 import { TbCoinTakaFilled, TbReportAnalytics, TbReportSearch } from 'react-icons/tb';
 import { VscGitPullRequestGoToChanges } from 'react-icons/vsc';
 import useSingleUser from './useSingleUser';
@@ -83,6 +83,13 @@ const useMenuConfig = () => {
                 { to: '/place-order', icon: <FaCartPlus className='me-2' />, label: 'Place Order' },
                 { to: '/my-order', icon: <FaCartPlus className='me-2' />, label: 'My Order' },
                 { to: '/my-order-report', icon: <FaCartPlus className='me-2' />, label: 'My Report' },
+            ],
+        },
+
+        accounts: {
+            icon: <MdAccountBalance className="mr-2" />,
+            links: [
+                { to: '/acc-report', icon: <TbReportAnalytics className='me-2' />, label: 'Reports' }
             ],
         },
 

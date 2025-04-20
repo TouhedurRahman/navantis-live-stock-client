@@ -5,7 +5,7 @@ import { FaTimes } from "react-icons/fa";
 import Swal from "sweetalert2";
 import useApiConfig from "../../Hooks/useApiConfig";
 
-const permissionsList = ["admin", "warehouse", "depot", "customer", "approve-customer", "add-customer", "order", "all-users", "update-users", "reports"];
+const permissionsList = ["admin", "warehouse", "depot", "accounts", "customer", "approve-customer", "add-customer", "order", "all-users", "update-users", "reports"];
 
 const UpdateAccessModal = ({ user, refetch, onClose }) => {
     const baseUrl = useApiConfig();
