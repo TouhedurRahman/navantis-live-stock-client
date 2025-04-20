@@ -87,7 +87,7 @@ const AdminPurchaseInvoice = ({ invoiceWithAP, firstDate, lastDate, totalUniqueP
                             <tr>
                                 <td style="text-align: center;">${idx + 1}</td>
                                 <td>${product.productName}</td>
-                                <td5 style="text-align: center;">${product.netWeight}</td5
+                                <td style="text-align: center;">${product.netWeight}</td>
                                 <td style="text-align: center;">${product.batch}</td>
                                 <td style="text-align: center;">${product.expire}</td>
                                 <td style="text-align: right;">${product.totalQuantity}</td>
