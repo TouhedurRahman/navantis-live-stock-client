@@ -102,13 +102,13 @@ const DepotExpiredProduct = () => {
         <div>
             <div>
                 <PageTitle
-                    from={"Warehouse"}
-                    to={"Damaged"}
+                    from={"Depot"}
+                    to={"Expired"}
                 />
             </div>
             <div className="bg-white pb-1">
                 <div>
-                    <h1 className="px-6 py-3 font-bold">Warehouse damaged products list</h1>
+                    <h1 className="px-6 py-3 font-bold">Depot Expired products list</h1>
                     <hr className='text-center border border-gray-500 mb-5' />
                 </div>
                 {
@@ -320,6 +320,7 @@ const DepotExpiredProduct = () => {
                                                 <th className="text-center">Quantity</th>
                                                 <th className="text-right">Price/Unit</th>
                                                 <th className="text-right">Total Price</th>
+                                                <th className="text-center">Date</th>
                                                 <th className="text-center">Action</th>
                                             </tr>
                                         </thead>
@@ -335,9 +336,10 @@ const DepotExpiredProduct = () => {
                                                     <td>{product.netWeight}</td>
                                                     <td className="text-center">{product.batch}</td>
                                                     <td className="text-center">{product.expire}</td>
-                                                    <td className="text-center">{product.totalQuantity}</td>
+                                                    <td className="text-right">{product.totalQuantity}</td>
                                                     <td className="text-right">{(product.tradePrice).toLocaleString('en-IN')}/-</td>
                                                     <td className="text-right">{(product.tradePrice * product.totalQuantity).toLocaleString('en-IN')}/-</td>
+                                                    <td className="text-center">{new Date(product.date).toLocaleDateString('en-GB').replace(/\//g, '-')}</td>
                                                     <td>
                                                         <div className="flex justify-center items-center space-x-4 text-md">
                                                             <button

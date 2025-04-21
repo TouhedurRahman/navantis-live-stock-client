@@ -49,12 +49,12 @@ const ExpireRequest = () => {
             <div>
                 <PageTitle
                     from={"Admin"}
-                    to={"Damage request"}
+                    to={"Expire request"}
                 />
             </div>
             <div className="bg-white pb-1">
                 <div>
-                    <h1 className="px-6 py-3 font-bold">Damage request list</h1>
+                    <h1 className="px-6 py-3 font-bold">Expire request list</h1>
                     <hr className='text-center border border-gray-500 mb-5' />
                 </div>
                 {
@@ -67,7 +67,7 @@ const ExpireRequest = () => {
                         <>
                             {/* Product Info */}
                             <div className="m-6 p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-md">
-                                <p className="text-md text-gray-700 text-center mb-4 font-medium">Damage Request Summary</p>
+                                <p className="text-md text-gray-700 text-center mb-4 font-medium">Expire Request Summary</p>
 
                                 <div className="bg-white p-3 rounded-md rounded-b-none shadow-sm flex flex-col md:flex-row justify-around items-center text-gray-600">
                                     <p className="text-sm">
