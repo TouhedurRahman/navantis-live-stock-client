@@ -102,7 +102,7 @@ const DamageRequestProductCard = ({ idx, product, refetch }) => {
                 expire: product.expire,
                 actualPrice: Number(product.actualPrice),
                 tradePrice: Number(product.tradePrice),
-                totalQuantity: Number(product.totalQuantity),
+                totalQuantity: Number(product.damageQuantity),
                 status: 'damaged',
                 date: getTodayDate(),
                 addedby: user?.displayName || "Navantis Pharma Limited",
