@@ -28,7 +28,8 @@ const ExpireRequestCard = ({ idx, product, refetch }) => {
                 expire: product.expire,
                 actualPrice: Number(product.actualPrice),
                 tradePrice: Number(product.tradePrice),
-                totalQuantity: Number(product.totalQuantity)
+                totalQuantity: Number(product.totalQuantity),
+                date: getTodayDate()
             };
 
             const response = await axios.post(`${baseUrl}/depot-expired`, newProduct);
