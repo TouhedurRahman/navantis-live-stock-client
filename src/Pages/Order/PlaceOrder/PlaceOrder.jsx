@@ -4,12 +4,12 @@ import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useAllUsers from '../../../Hooks/useAllUsers';
+import useApiConfig from '../../../Hooks/useApiConfig';
 import useAuth from '../../../Hooks/useAuth';
 import useCustomer from '../../../Hooks/useCustomer';
 import useDepotProducts from '../../../Hooks/useDepotProducts';
 import useOrders from '../../../Hooks/useOrders';
 import useSingleUser from '../../../Hooks/useSingleUser';
-import useApiConfig from '../../../Hooks/useApiConfig';
 
 const PlaceOrder = () => {
     const { user } = useAuth();
@@ -459,7 +459,7 @@ const PlaceOrder = () => {
 
                             {isModalOpen && (
                                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                                    <div className="bg-white p-8 rounded-lg shadow-2xl w-3/4 max-w-4xl">
+                                    <div className="bg-white p-8 rounded-lg shadow-2xl w-3/4 max-w-4xl max-h-[80vh] overflow-y-auto">
                                         <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Select Products</h2>
 
                                         <div className="overflow-x-auto">
