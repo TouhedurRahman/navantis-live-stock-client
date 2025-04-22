@@ -7,7 +7,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LoadCanvasTemplate, loadCaptchaEnginge, validateCaptcha } from "react-simple-captcha";
 import Swal from 'sweetalert2';
 import useAuth from "../../../../Hooks/useAuth";
-import SocialLogin from "../SocialLogin/SocialLogin";
 
 const Login = () => {
     const { logIn, resetPassword } = useAuth();
@@ -215,9 +214,9 @@ const Login = () => {
                         <span>New Here?</span> <Link className='text-blue-600  hover:link' to='/registration'>Create an Account</Link>
                     </p>
 
-                    <div className='w-full max-w-xs'>
+                    {/* <div className='w-full max-w-xs'>
                         <SocialLogin />
-                    </div>
+                    </div> */}
 
                 </div>
             </div>

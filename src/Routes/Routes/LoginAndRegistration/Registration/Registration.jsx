@@ -4,10 +4,9 @@ import { useForm } from 'react-hook-form';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import { FaUsersCog } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
-import useAuth from '../../../../Hooks/useAuth';
-import SocialLogin from '../SocialLogin/SocialLogin';
-import useApiConfig from '../../../../Hooks/useApiConfig';
 import Swal from 'sweetalert2';
+import useApiConfig from '../../../../Hooks/useApiConfig';
+import useAuth from '../../../../Hooks/useAuth';
 
 const Registration = () => {
     const { createUser, updateUserProfile } = useAuth();
@@ -198,9 +197,9 @@ const Registration = () => {
                         <span>Already have an account?</span> <Link className='text-blue-600 hover:link' to='/login'>Please Login</Link>
                     </p>
 
-                    <div className='w-full max-w-xs'>
+                    {/* <div className='w-full max-w-xs'>
                         <SocialLogin />
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>

@@ -219,9 +219,11 @@ const AddNewCustomer = () => {
                                 Discount
                             </label>
                             <input
+                                defaultValue={0}
                                 {...register("discount")}
                                 placeholder="Enter parcentage rate"
                                 className="border-gray-500 bg-white border p-2 text-sm"
+                                readOnly
                             />
                             {errors.discount && <p className="text-red-500 text-sm">{errors.discount.message}</p>}
                         </div>
