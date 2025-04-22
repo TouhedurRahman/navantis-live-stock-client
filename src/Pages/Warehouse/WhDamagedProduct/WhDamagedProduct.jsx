@@ -7,8 +7,8 @@ import Loader from "../../../Components/Loader/Loader";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import WarehouseDetailsModal from "../../../Components/WarehouseDetailsModal/WarehouseDetailsModal";
 import findDateRange from "../../../Hooks/findDateRange";
-import useDamagedProductsWh from "../../../Hooks/useDamagedProductsWh";
 import useSingleUser from "../../../Hooks/useSingleUser";
+import useWarehoseDamage from "../../../Hooks/useWarehoseDamage";
 import WarehouseDamagedProductsInvoice from "../../../Invoices/WarehouseDamagedProductsInvoice";
 
 const WhDamagedProduct = () => {
@@ -16,7 +16,7 @@ const WhDamagedProduct = () => {
 
     const invoiceWithAP = 1;
 
-    const [products, loading] = useDamagedProductsWh();
+    const [products, loading] = useWarehoseDamage();
     const [searchTerm, setSearchTerm] = useState('');
     const [year, setYear] = useState('');
     const [month, setMonth] = useState('');
@@ -86,15 +86,6 @@ const WhDamagedProduct = () => {
         setToDate('');
         setCurrentPage(1);
     };
-
-    // Print filtered product list
-    /* const handlePrint = () => {
-        const printContent = document.getElementById("printable-section").innerHTML;
-        const newWindow = window.open();
-        newWindow.document.write(`<html><head><title>Invoice</title></head><body>${printContent}</body></html>`);
-        newWindow.print();
-        newWindow.close();
-    }; */
 
     const handlePrintWithAP = WarehouseDamagedProductsInvoice({ invoiceWithAP, firstDate, lastDate, totalUniqueProducts, totalUnit, totalTP, totalAP, filteredProducts });
 
@@ -348,9 +339,9 @@ const WhDamagedProduct = () => {
                                                     <td>{product.netWeight}</td>
                                                     <td className="text-center">{product.batch}</td>
                                                     <td className="text-center">{product.expire}</td>
-                                                    <td className="text-center">{product.damageQuantity}</td>
+                                                    <td className="text-center">{product.totalQuantity}</td>
                                                     <td className="text-right">{(product.tradePrice).toLocaleString('en-IN')}/-</td>
-                                                    <td className="text-right">{(product.tradePrice * product.damageQuantity).toLocaleString('en-IN')}/-</td>
+                                                    <td className="text-right">{(product.tradePrice * product.totalQuantity).toLocaleString('en-IN')}/-</td>
                                                     <td className="text-center">
                                                         {new Date(product.date).toLocaleDateString('en-GB').replace(/\//g, '-')}
                                                     </td>

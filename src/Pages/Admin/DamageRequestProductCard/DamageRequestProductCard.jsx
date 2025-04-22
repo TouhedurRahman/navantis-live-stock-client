@@ -25,11 +25,19 @@ const DamageRequestProductCard = ({ idx, product, refetch }) => {
     const whDamagedProductMutation = useMutation({
         mutationFn: async () => {
             const newProduct = {
-                ...product,
+                productName: product.productName,
+                netWeight: product.netWeight,
+                productCode: product.productCode,
+                batch: product.batch,
+                expire: product.expire,
+                actualPrice: Number(product.actualPrice),
+                tradePrice: Number(product.tradePrice),
+                totalQuantity: Number(product.damageQuantity),
                 status: "approved",
+                date: getTodayDate()
             };
 
-            const response = await axios.post(`${baseUrl}/damaged-in-wh`, newProduct);
+            const response = await axios.post(`${baseUrl}/warehouse-damaged`, newProduct);
             return response.data;
         },
         onError: (error) => {
@@ -58,7 +66,7 @@ const DamageRequestProductCard = ({ idx, product, refetch }) => {
         },
     });
 
-    const deniedDamagedProductMutation = useMutation({
+    const deleteDamagedProductMutation = useMutation({
         mutationFn: async () => {
             const response = await axios.delete(`${baseUrl}/damaged-in-wh/${product._id}`);
             return response.data;
@@ -133,7 +141,8 @@ const DamageRequestProductCard = ({ idx, product, refetch }) => {
                         whDamagedProductMutation.mutateAsync(),
                         updateProductMutation.mutateAsync(),
                         whSoutProductMutation.mutateAsync(),
-                        addDamagedExpiredMutation.mutateAsync()
+                        addDamagedExpiredMutation.mutateAsync(),
+                        deleteDamagedProductMutation.mutateAsync() // after approval delete data
                     ]);
 
                     refetch();
@@ -174,7 +183,7 @@ const DamageRequestProductCard = ({ idx, product, refetch }) => {
             if (result.isConfirmed) {
                 try {
                     await Promise.all([
-                        deniedDamagedProductMutation.mutateAsync(),
+                        deleteDamagedProductMutation.mutateAsync(),
                     ]);
 
                     refetch();

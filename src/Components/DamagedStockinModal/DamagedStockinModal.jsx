@@ -3,6 +3,7 @@ import axios from 'axios';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { FaTimes } from "react-icons/fa";
+import Swal from 'sweetalert2';
 import useApiConfig from '../../Hooks/useApiConfig';
 
 const DamagedStockinModal = ({ isOpen, onClose, product, refetch, damagedProducts }) => {
@@ -52,14 +53,30 @@ const DamagedStockinModal = ({ isOpen, onClose, product, refetch, damagedProduct
             ]);
 
             reset();
-            alert('Damaged product added!');
+
+            Swal.fire({
+                title: "Success!",
+                text: "damaged request added.",
+                icon: "success",
+                showConfirmButton: false,
+                confirmButtonColor: "#3B82F6",
+                timer: 1500
+            });
+
             refetch();
             onClose();
             window.location.reload();
             reset();
         } catch (error) {
-            console.error("Error adding product:", error);
-            alert("Failed to stock in.");
+            // console.error("Error adding product:", error);
+            Swal.fire({
+                title: "Error!",
+                text: "Faild. Please try again.",
+                icon: "error",
+                showConfirmButton: false,
+                confirmButtonColor: "#d33",
+                timer: 1500
+            });
         }
     };
 
