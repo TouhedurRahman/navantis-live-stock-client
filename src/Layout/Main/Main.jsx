@@ -1,6 +1,7 @@
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import Loader from '../../Components/Loader/Loader';
+import NonVerified from '../../Components/NonVerified/NonVerified';
 import NotAssignedDesignation from '../../Components/NotAssignedDesignation/NotAssignedDesignation';
 import useAuth from '../../Hooks/useAuth';
 import useSingleUser from '../../Hooks/useSingleUser';
@@ -17,9 +18,9 @@ const Main = () => {
         return <Login />;
     }
 
-    /* if (!user.emailVerified) {
+    if (!user.emailVerified) {
         return <NonVerified />;
-    } */
+    }
 
     return (
         <div className="font-nunito">

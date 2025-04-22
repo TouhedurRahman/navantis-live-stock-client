@@ -52,7 +52,7 @@ const Navbar = () => {
                         ? <div className='flex flex-col justify-center items-center'>
                             <div className="w-full p-2 pt-0 mb-10">
                                 <Link to='/' className="w-fullm">
-                                    <img src="https://i.ibb.co/pfr6VxM/Logo-Navantis-png-white.png" />
+                                    <img src="https://i.ibb.co.com/j9d727Dz/npl-updated-logo-white.png" />
                                 </Link>
                             </div>
                             {/* <label className='mt-20 font-bold font-playwrite text-xl text-center'>
