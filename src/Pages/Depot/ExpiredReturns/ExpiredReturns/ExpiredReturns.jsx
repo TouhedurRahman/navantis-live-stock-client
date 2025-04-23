@@ -91,7 +91,7 @@ const ExpiredReturns = () => {
             </div>
             <div className="bg-white pb-1">
                 <div>
-                    <h1 className="px-6 py-3 font-bold">Depot stock in products list</h1>
+                    <h1 className="px-6 py-3 font-bold">Expired returns products list</h1>
                     <hr className='text-center border border-gray-500 mb-5' />
                 </div>
                 {

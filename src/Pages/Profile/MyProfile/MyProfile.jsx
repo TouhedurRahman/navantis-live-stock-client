@@ -5,10 +5,10 @@ import { MdContactPhone, MdLockReset } from 'react-icons/md';
 import Swal from 'sweetalert2';
 import Loader from '../../../Components/Loader/Loader';
 import useAllUsers from '../../../Hooks/useAllUsers';
+import useApiConfig from '../../../Hooks/useApiConfig';
 import useAuth from '../../../Hooks/useAuth';
 import useHosting from '../../../Hooks/useHosting';
 import useSingleUser from '../../../Hooks/useSingleUser';
-import useApiConfig from '../../../Hooks/useApiConfig';
 
 const MyProfile = () => {
     const { user, resetPassword, loading } = useAuth();
@@ -78,6 +78,7 @@ const MyProfile = () => {
         const mobileNo = mobileNoRef.current.value;
         const updateMobileNo = { mobile: mobileNo }
         updateInfo(updateMobileNo);
+        mobileNoRef.current.value = '';
     }
 
     const handleEmailOnBlur = (e) => {
