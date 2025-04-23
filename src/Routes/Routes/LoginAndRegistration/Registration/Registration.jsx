@@ -19,10 +19,10 @@ const Registration = () => {
 
     const navigate = useNavigate();
 
-    const saveUser = (name, email) => {
+    const saveUser = async (name, email) => {
         const user = { name, email };
         const url = `${baseUrl}/users`;
-        axios.post(url, user)
+        await axios.post(url, user)
             .then(response => {
                 if (response.data.insertedId) {
                     reset();
@@ -34,34 +34,44 @@ const Registration = () => {
                     })
                     navigate('/');
                 }
-            })
-    }
+            });
+    };
 
     const handleRegister = async (data) => {
-        const userName = data.name;
-        const userEmail = data.email;
-        const userPass = data.password;
-        const userConPass = data.confirmPassword;
+        const { name: userName, email: userEmail, password: userPass, confirmPassword: userConPass } = data;
+
+        if (userPass !== userConPass) {
+            Swal.fire({
+                title: "Error!",
+                text: "Password & confirm password must be the same.",
+                icon: "error",
+                showConfirmButton: false,
+                confirmButtonColor: "#d33",
+                timer: 1500
+            });
+            return;
+        }
 
         try {
-            if (userPass === userConPass) {
-                const userCredential = await createUser(userEmail, userPass);
-                const registeredUser = userCredential.user;
+            const userCredential = await createUser(userEmail, userPass);
+            const registeredUser = userCredential.user;
 
-                const userInfo = {
-                    displayName: userName
-                };
+            await updateUserProfile({ displayName: userName });
 
-                await updateUserProfile(userInfo);
-
-                saveUser(userName, userEmail);
-            } else {
-                console.log("Password & confirm password must be the same.");
+            if (registeredUser) {
+                await saveUser(userName, userEmail);
             }
         } catch (error) {
-            console.error("Error during registration: ", error);
+            Swal.fire({
+                title: "Error!",
+                text: "Error during registration.",
+                icon: "error",
+                showConfirmButton: false,
+                confirmButtonColor: "#d33",
+                timer: 1500
+            });
         }
-    }
+    };
 
     return (
         <div className='py-10 justify-center flex items-center'>
