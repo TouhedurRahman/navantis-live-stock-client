@@ -142,14 +142,14 @@ const AddNewCustomer = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
-                                Trade License No. <span className="text-red-500">*</span>
+                                Trade License No.
                             </label>
                             <input
-                                {...register("trl", { required: "Trade license is required" })}
+                                {...register("trl")}
                                 placeholder="Enter trade license no"
                                 className="border-gray-500 bg-white border p-2 text-sm"
                             />
-                            {errors.trl && <p className="text-red-500 text-sm">{errors.trl.message}</p>}
+                            {/* {errors.trl && <p className="text-red-500 text-sm">{errors.trl.message}</p>} */}
                         </div>
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
@@ -160,7 +160,7 @@ const AddNewCustomer = () => {
                                 placeholder="Enter drug license no"
                                 className="border-gray-500 bg-white border p-2 text-sm"
                             />
-                            {errors.drl && <p className="text-red-500 text-sm">{errors.drl.message}</p>}
+                            {/* {errors.drl && <p className="text-red-500 text-sm">{errors.drl.message}</p>} */}
                         </div>
                     </div>
 
