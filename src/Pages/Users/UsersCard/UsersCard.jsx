@@ -147,6 +147,7 @@ const UsersCard = ({ user, idx, refetch }) => {
                         <button
                             onClick={() => handleViewDetails(user)}
                             className="p-2 rounded-[5px] hover:bg-green-100 focus:outline-none"
+                            title="Details"
                         >
                             <FaEye className="text-green-500" />
                         </button>
@@ -157,6 +158,7 @@ const UsersCard = ({ user, idx, refetch }) => {
                             <button
                                 onClick={() => setShowRolePopup(true)}
                                 className="p-2 rounded-[5px] hover:bg-orange-100 focus:outline-none"
+                                title="Update Designation"
                             >
                                 <FaUserShield className="text-orange-500" />
                             </button>
@@ -168,6 +170,7 @@ const UsersCard = ({ user, idx, refetch }) => {
                             <button
                                 onClick={() => setUserUpdateModal(true)}
                                 className="p-2 rounded-[5px] hover:bg-orange-100 focus:outline-none"
+                                title="Update Details"
                             >
                                 <FaEdit className="text-orange-500" />
                             </button>
@@ -179,6 +182,7 @@ const UsersCard = ({ user, idx, refetch }) => {
                             <button
                                 onClick={() => setAccessModal(true)}
                                 className="p-2 rounded-[5px] hover:bg-yellow-100 focus:outline-none"
+                                title="Update Access"
                             >
                                 <FaUserClock className="text-yellow-500" />
                             </button>
@@ -190,6 +194,7 @@ const UsersCard = ({ user, idx, refetch }) => {
                             <button
                                 onClick={() => handleDelete()}
                                 className="p-2 rounded-[5px] hover:bg-red-100 focus:outline-none"
+                                title="Delete User"
                             >
                                 <FaTrashAlt className="text-red-500" />
                             </button>

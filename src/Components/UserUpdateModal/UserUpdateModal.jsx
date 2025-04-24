@@ -95,10 +95,10 @@ const UserUpdateModal = ({ user, onClose }) => {
                 updatedUser = {
                     base: data.base,
                     territory: data.territory,
-                    parentId: data.parent || null,
-                    parentName: selectedParent ? selectedParent.name : null,
-                    grandParentId: data.grandparent || null,
-                    grandParentName: selectedGrandparent ? selectedGrandparent.name : null
+                    parentId: data.parent || "Vacant",
+                    parentName: selectedParent ? selectedParent.name : "Vacant",
+                    grandParentId: data.grandparent || "Vacant",
+                    grandParentName: selectedGrandparent ? selectedGrandparent.name : "Vacant"
                 };
             }
 
