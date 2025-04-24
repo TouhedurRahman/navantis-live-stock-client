@@ -24,8 +24,11 @@ const hierarchy = {
     "Area Manager": ["Zonal Manager", "Sales Manager"],
     "Sr. Area Manager": ["Zonal Manager", "Sales Manager"],
     "Medical Promotion Officer": ["Area Manager", "Zonal Manager"],
+    "Sr. Medical Promotion Officer": ["Area Manager", "Zonal Manager"],
     "Skin Care Coordinator": ["Area Manager", "Zonal Manager"],
+    "Sr. Skin Care Coordinator": ["Area Manager", "Zonal Manager"],
     "Area Sales Executive": ["Area Manager", "Zonal Manager"],
+    "Sr. Area Sales Executive": ["Area Manager", "Zonal Manager"],
     "AM/Sr. AM": ["Zonal Manager", "Sales Manager"],
     "MPO/Sr. MPO": ["Area Manager", "Zonal Manager"],
     "SCC/Sr. SCC": ["Area Manager", "Zonal Manager"],
@@ -226,7 +229,7 @@ const UserUpdateModal = ({ user, onClose }) => {
                                         id="parent"
                                         {...register('parent')}
                                         className="w-full mt-1 border-gray-500 bg-white border p-2 text-sm"
-                                        defaultValue=""
+                                        defaultValue={user?.parentId}
                                     >
                                         <option value="">Select {parent}</option>
                                         {/* {managers.filter(u => u.designation === parent).map(manager => (
@@ -251,7 +254,7 @@ const UserUpdateModal = ({ user, onClose }) => {
                                         id="grandparent"
                                         {...register('grandparent')}
                                         className="w-full mt-1 border-gray-500 bg-white border p-2 text-sm"
-                                        defaultValue=""
+                                        defaultValue={user?.grandParentId}
                                     >
                                         <option value="">Select {grandparent}</option>
                                         {managers.filter(u => u.designation === grandparent).map(manager => (

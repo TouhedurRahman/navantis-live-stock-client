@@ -1,13 +1,13 @@
 import axios from "axios";
-import { useState } from "react";
-import { FaEdit, FaTrashAlt, FaUserClock } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { FaEdit, FaTimes, FaTrashAlt, FaUserClock } from "react-icons/fa";
 import { FaEye, FaUserShield } from "react-icons/fa6";
 import Swal from "sweetalert2";
 import UpdateAccessModal from "../../../Components/UpdateAccessModal/UpdateAccessModal";
 import UserDetailsModal from "../../../Components/UserDetailsModal/UserDetailsModal";
 import UserUpdateModal from "../../../Components/UserUpdateModal/UserUpdateModal";
-import useSingleUser from "../../../Hooks/useSingleUser";
 import useApiConfig from "../../../Hooks/useApiConfig";
+import useSingleUser from "../../../Hooks/useSingleUser";
 
 const UsersCard = ({ user, idx, refetch }) => {
     const baseUrl = useApiConfig();
@@ -20,6 +20,13 @@ const UsersCard = ({ user, idx, refetch }) => {
 
     const [userUpdateModal, setUserUpdateModal] = useState(false);
     const [accessModal, setAccessModal] = useState(false);
+
+
+    useEffect(() => {
+        if (user?.designation) {
+            setNewRole(user.designation);
+        }
+    }, [user]);
 
     const handleUpdateDesignation = () => {
         if (!newRole.trim()) {
@@ -193,43 +200,46 @@ const UsersCard = ({ user, idx, refetch }) => {
 
             {/* Role Update Popup */}
             {showRolePopup && (
-                <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-                    <div className="relative bg-white p-8 rounded-2xl shadow-2xl transform transition-transform duration-300 scale-105">
-                        {/* Close Icon */}
-                        <button
-                            onClick={() => setShowRolePopup(false)}
-                            className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 transition"
-                        >
-                            ✖
-                        </button>
-
-                        {/* Title */}
-                        <h2 className="text-xl font-medium mb-6 text-gray-800 text-center">
-                            Update Designation
-                        </h2>
-
-                        {/* Input */}
-                        <input
-                            type="text"
-                            value={newRole}
-                            onChange={(e) => setNewRole(e.target.value)}
-                            className="border-2 border-gray-300 rounded-lg px-4 py-3 w-full mb-6 focus:ring-4 focus:ring-blue-300 focus:outline-none shadow-md transition"
-                            placeholder="Enter designation"
-                        />
-
-                        {/* Action Buttons */}
-                        <div className="flex justify-end space-x-4">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+                    <div className="bg-white rounded-lg shadow-lg w-full max-w-lg max-h-4/5 flex flex-col">
+                        {/* Header */}
+                        <div className="flex justify-between items-center px-5 py-4 border-b border-gray-200">
+                            <h2 className="text-xl font-semibold">Update User</h2>
                             <button
                                 onClick={() => setShowRolePopup(false)}
-                                className="px-5 py-2 bg-gray-300 text-gray-700 rounded-lg shadow hover:bg-gray-400 hover:shadow-md transition duration-300"
+                                aria-label="Close modal"
+                                className="text-gray-500 hover:text-gray-700 transition-transform transform hover:scale-125"
                             >
-                                Cancel
+                                <FaTimes size={20} />
                             </button>
+                        </div>
+                        <div className="p-6 space-y-3">
+                            {/* Input Field */}
+                            <input
+                                type="text"
+                                value={newRole}
+                                onChange={(e) => setNewRole(e.target.value)}
+                                placeholder="Enter designation"
+                                className="w-full border-gray-500 bg-white border p-2 text-sm rounded-md"
+                            />
+
+                            {/* Submit Button */}
+                            <div>
+                                <button
+                                    onClick={handleUpdateDesignation}
+                                    className="w-full mx-auto py-2 text-white bg-blue-500 rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                >
+                                    Update
+                                </button>
+                            </div>
+                        </div>
+                        {/* Footer */}
+                        <div className="flex justify-end px-5 py-4 border-t border-gray-200">
                             <button
-                                onClick={handleUpdateDesignation}
-                                className="px-5 py-2 bg-[#3B82F6] text-white rounded-lg shadow-lg hover:shadow-xl hover:from-blue-600 hover:to-blue-800 transition duration-300"
+                                onClick={() => setShowRolePopup(false)}
+                                className="px-4 py-2 text-white bg-red-500 rounded-md shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
                             >
-                                Update
+                                Close
                             </button>
                         </div>
                     </div>
