@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import { FaUserCircle } from "react-icons/fa";
-import { GrValidate } from "react-icons/gr";
+// import { GrValidate } from "react-icons/gr";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LoadCanvasTemplate, loadCaptchaEnginge, validateCaptcha } from "react-simple-captcha";
+// import { LoadCanvasTemplate, loadCaptchaEnginge, validateCaptcha } from "react-simple-captcha";
 import Swal from 'sweetalert2';
 import useAuth from "../../../../Hooks/useAuth";
 
@@ -14,9 +14,9 @@ const Login = () => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
     const [isOpen, setIsOpen] = useState(false);
-    const [loginDisabled, setLoginDisabled] = useState(true);
     const [enterUserEmail, setEnterUserEmail] = useState('');
-    const [isCaptchaValid, setIsCaptchaValid] = useState(false);
+    // const [loginDisabled, setLoginDisabled] = useState(true);
+    // const [isCaptchaValid, setIsCaptchaValid] = useState(false);
 
     const navigate = useNavigate();
 
@@ -27,11 +27,11 @@ const Login = () => {
 
     const from = location.state?.from?.pathname || "/";
 
-    useEffect(() => {
+    /* useEffect(() => {
         loadCaptchaEnginge(5);
-    }, []);
+    }, []); */
 
-    const handleValidateCaptcha = () => {
+    /* const handleValidateCaptcha = () => {
         const captchaValue = captchaRef.current.value;
 
         if (validateCaptcha(captchaValue)) {
@@ -41,7 +41,7 @@ const Login = () => {
             setLoginDisabled(true);
             setIsCaptchaValid(false);
         }
-    }
+    } */
 
     const handleEmailOnBlur = (e) => {
         const email = e.target.value;
@@ -49,10 +49,10 @@ const Login = () => {
     }
 
     const handleLogin = (data) => {
-        if (!isCaptchaValid) {
+        /* if (!isCaptchaValid) {
             alert('Please validate the CAPTCHA before logging in.');
             return;
-        }
+        } */
 
         const email = data.email;
         const password = data.password;
@@ -171,7 +171,7 @@ const Login = () => {
                                 errors.password && <p className='text-red-600'>{errors.password?.message}</p>
                             }
 
-                            <div className="form-control">
+                            {/* <div className="form-control">
                                 <div className='w-full max-w-xs flex justify-center items-center'>
                                     <label className="label">
                                         <LoadCanvasTemplate />
@@ -194,9 +194,9 @@ const Login = () => {
                                         Validate<GrValidate />
                                     </button>
                                 </div>
-                            </div>
+                            </div> */}
 
-                            <label className="label mb-5">
+                            <label className="label mb-1">
                                 <span
                                     className="label-text-alt text-blue-600 hover:link"
                                     onClick={handleResetPassword}
@@ -206,7 +206,8 @@ const Login = () => {
                             </label>
                         </div>
                         <div className="form-control w-full max-w-xs">
-                            <input type="submit" className='w-full btn bg-transparent border-2 border-[#3B82F6] text-black font-bold hover:bg-[#3B82F6] hover:text-white' value='Login' disabled={loginDisabled} />
+                            {/* <input type="submit" className='w-full btn bg-transparent border-2 border-[#3B82F6] text-black font-bold hover:bg-[#3B82F6] hover:text-white' value='Login' disabled={loginDisabled} /> */}
+                            <input type="submit" className='w-full btn bg-transparent border-2 border-[#3B82F6] text-black font-bold hover:bg-[#3B82F6] hover:text-white' value='Login' />
                         </div>
                     </form>
 
