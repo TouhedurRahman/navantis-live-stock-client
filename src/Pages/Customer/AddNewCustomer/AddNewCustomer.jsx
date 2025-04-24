@@ -24,6 +24,13 @@ const AddNewCustomer = () => {
             ? ["Cash", "STC"]
             : ["Credit"];
 
+    const statusType =
+        singleUser?.parentId !== null && singleUser?.parentId !== "Vacant"
+            ? "pending"
+            : singleUser?.grandParentId !== null && singleUser?.grandParentId !== "Vacant"
+                ? "initialized"
+                : "requested";
+
     const getTodayDate = () => {
         const today = new Date();
         const year = today.getFullYear();
@@ -40,9 +47,9 @@ const AddNewCustomer = () => {
             const newCustomer = {
                 name: data.name,
                 territory: data.territory,
-                parentTerritory: parentTerritory,
-                parentId: singleUser?.parentId,
-                grandParentId: singleUser?.grandParentId,
+                parentTerritory: parentTerritory || 'Vacant',
+                parentId: singleUser?.parentId || 'Vacant',
+                grandParentId: singleUser?.grandParentId || 'Vacant',
                 tradeLicense: data.trl,
                 drugLicense: data.drl,
                 address: data.address,
@@ -55,7 +62,7 @@ const AddNewCustomer = () => {
                 dayLimit: Number(data.dayLimit) || 0,
                 addedBy: data.addedby,
                 addedEmail: data.addedemail,
-                status: 'pending',
+                status: statusType,
                 date: getTodayDate()
             };
             const response = await axios.post(`${baseUrl}/customers`, newCustomer);
