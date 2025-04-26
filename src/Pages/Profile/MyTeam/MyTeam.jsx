@@ -15,12 +15,18 @@ const MyTeam = () => {
 
     const currentUserInfos = allUsers.find(allu => allu.email === user?.email);
 
-    const myTeamMembers = allUsers.filter(allu =>
-        allu.parentId === currentUserInfos._id
-    );
+    const myTeamMembers = currentUserInfos
+        ? !currentUserInfos.parentId && !currentUserInfos.grandParentId
+            ? allUsers.filter(allu =>
+                allu.grandParentId === currentUserInfos._id || allu.parentId === currentUserInfos._id
+            )
+            : currentUserInfos.parentId && !currentUserInfos.grandParentId
+                ? allUsers.filter(allu => allu.parentId === currentUserInfos._id)
+                : []
+        : [];
 
-    const filteredUsers = myTeamMembers.filter(teamMember =>
-        teamMember?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredUsers = myTeamMembers.filter(user =>
+        user?.name?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const totalPages = Math.ceil(filteredUsers.length / usersPerPage);

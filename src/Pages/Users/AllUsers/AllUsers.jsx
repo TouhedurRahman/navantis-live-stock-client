@@ -113,7 +113,7 @@ const AllUsers = () => {
                                                     <UsersCard
                                                         key={user._id}
                                                         user={user}
-                                                        idx={idx}
+                                                        idx={startIndex + idx + 1}
                                                         refetch={refetch}
                                                     />
                                                 ))

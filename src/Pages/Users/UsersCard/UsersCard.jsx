@@ -115,7 +115,7 @@ const UsersCard = ({ user, idx, refetch }) => {
         <>
             <tr>
                 <td className="text-center">
-                    {(idx + 1) < 10 ? `0${idx + 1}` : `${idx + 1}`}
+                    {(idx) < 10 ? `0${idx}` : `${idx}`}
                 </td>
                 <td className="flex justify-center items-center">
                     <div className="flex items-center gap-3">
