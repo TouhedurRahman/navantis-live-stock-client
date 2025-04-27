@@ -41,9 +41,11 @@ const PlaceOrder = () => {
         pharmacy.status === 'approved'
     );
 
-    const parentName = allUsers.find(parent => parent._id === singleUser.parentId)?.name || null;
-    const parentTerritory = allUsers.find(pt => pt._id === singleUser.parentId)?.territory || null;
-    const gParentName = allUsers.find(gparent => gparent._id === singleUser.grandParentId)?.name || null;
+    const parentName = allUsers.find(parent => parent._id === singleUser.parentId)?.name || "Vacant";
+    const parentTerritory = allUsers.find(pt => pt._id === singleUser.parentId)?.territory || "Vacant";
+    const parentEmail = allUsers.find(pe => pe._id === singleUser.parentId)?.email || null;
+    const gParentName = allUsers.find(gparent => gparent._id === singleUser.grandParentId)?.name || "Vacant";
+    const gParentEmail = allUsers.find(gpe => gpe._id === singleUser.grandParentId)?.email || null;
 
     const getTodayDate = () => {
         const today = new Date();
@@ -133,8 +135,6 @@ const PlaceOrder = () => {
     };
 
     const makeOrder = (data) => {
-        // console.log("Order successfully placed.");
-
         const totalOrderedProducts = receiptProducts.length;
         const totalOrderUnits = receiptProducts.reduce((sum, product) => sum + product.quantity, 0);
         const totalOrderedTradePrice = receiptProducts.reduce((sum, product) => sum + (product.quantity * product.tradePrice), 0);
@@ -143,7 +143,9 @@ const PlaceOrder = () => {
             email: user?.email,
             orderedBy: data.name,
             areaManager: parentName,
+            amEmail: parentEmail,
             zonalManager: gParentName,
+            zmEmail: gParentEmail,
             territory: userTerritory,
             parentTerritory,
             pharmacy: selectedPharmacy?.name,
