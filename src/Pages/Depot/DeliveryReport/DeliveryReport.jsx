@@ -23,13 +23,18 @@ const DeliveryReport = () => {
     const years = Array.from({ length: currentYear - 1999 }, (_, i) => currentYear - i);
 
     const uniqueOrderedBy = useMemo(() => {
-        const names = new Set();
+        const orderByMap = new Map();
+
         deliveredOrders.forEach(order => {
-            if (order.orderedBy) {
-                names.add(order.orderedBy.trim());
+            if (order.orderedBy && order.email) {
+                orderByMap.set(order.orderedBy.trim(), order.email.trim());
             }
         });
-        return Array.from(names);
+
+        return Array.from(orderByMap.entries()).map(([orderedBy, email]) => ({
+            orderedBy,
+            email,
+        }));
     }, [deliveredOrders]);
 
     const uniqueDeliveryMen = useMemo(() => {
@@ -170,7 +175,7 @@ const DeliveryReport = () => {
                         </div>
 
                         {/* Ordered By Filter */}
-                        <div>
+                        <div className='col-span-1 md:col-span-2'>
                             <label className="block font-semibold text-gray-700 mb-1">Ordered By</label>
                             <select
                                 value={orderedBy}
@@ -178,14 +183,16 @@ const DeliveryReport = () => {
                                 className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm"
                             >
                                 <option value="">Select a person</option>
-                                {uniqueOrderedBy.map(name => (
-                                    <option key={name} value={name}>{name}</option>
+                                {uniqueOrderedBy.map(({ orderedBy, email }) => (
+                                    <option key={email} value={orderedBy}>
+                                        {orderedBy} - {email}
+                                    </option>
                                 ))}
                             </select>
                         </div>
 
                         {/* Delivery Man Filter */}
-                        <div>
+                        <div className='col-span-1 md:col-span-2'>
                             <label className="block font-semibold text-gray-700 mb-1">Delivery Man</label>
                             <select
                                 value={deliveryMan}

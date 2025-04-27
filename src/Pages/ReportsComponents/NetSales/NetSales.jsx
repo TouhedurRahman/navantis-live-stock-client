@@ -66,29 +66,48 @@ const NetSales = () => {
     const { firstDate, lastDate } = findDateRange(filteredOrders);
 
     const uniqueOrderedBy = useMemo(() => {
-        const names = new Set();
-        filteredOrders.forEach(order => {
-            if (order.orderedBy) {
-                names.add(order.orderedBy.trim());
+        const orderByMap = new Map();
+
+        deliveredOrders.forEach(order => {
+            if (order.orderedBy && order.email) {
+                orderByMap.set(order.orderedBy.trim(), order.email.trim());
             }
         });
-        return Array.from(names);
-    }, [filteredOrders]);
+
+        return Array.from(orderByMap.entries()).map(([orderedBy, email]) => ({
+            orderedBy,
+            email,
+        }));
+    }, [deliveredOrders]);
 
     const uniqueAreaManager = useMemo(() => {
-        const names = new Set();
-        filteredOrders.forEach(order => {
+        const amMap = new Map();
+        let vacantAdded = false;
+
+        deliveredOrders.forEach(order => {
             if (order.areaManager) {
-                names.add(order.areaManager.trim());
+                const areaManager = order.areaManager.trim();
+                const amEmail = order.amEmail ? order.amEmail.trim() : null;
+
+                if (areaManager === "Vacant" && !vacantAdded) {
+                    amMap.set(areaManager, null);
+                    vacantAdded = true;
+                } else if (areaManager !== "Vacant") {
+                    amMap.set(areaManager, amEmail);
+                }
             }
         });
-        return Array.from(names);
-    }, [filteredOrders]);
+
+        return Array.from(amMap.entries()).map(([areaManager, amEmail]) => ({
+            areaManager,
+            amEmail
+        }));
+    }, [deliveredOrders]);
 
     const uniquePharmacies = useMemo(() => {
         const pharmacyMap = new Map();
 
-        filteredOrders.forEach(order => {
+        deliveredOrders.forEach(order => {
             if (order.pharmacyId && order.pharmacy) {
                 pharmacyMap.set(order.pharmacyId.trim(), order.pharmacy.trim());
             }
@@ -98,7 +117,7 @@ const NetSales = () => {
             pharmacyId,
             pharmacy,
         }));
-    }, [filteredOrders]);
+    }, [deliveredOrders]);
 
     const orderWithPharmacyId = filteredOrders.find(order => order.pharmacyId);
     const selectedCustomerCode = orderWithPharmacyId ? orderWithPharmacyId.pharmacyId : null;
@@ -213,7 +232,7 @@ const NetSales = () => {
                         </div>
 
                         {/* Ordered By Filter */}
-                        <div>
+                        <div className='col-span-1 md:col-span-2'>
                             <label className="block font-semibold text-gray-700 mb-1">Ordered By</label>
                             <select
                                 value={orderedBy}
@@ -221,14 +240,16 @@ const NetSales = () => {
                                 className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
                             >
                                 <option value="">Select a person</option>
-                                {uniqueOrderedBy.map(name => (
-                                    <option key={name} value={name}>{name}</option>
+                                {uniqueOrderedBy.map(({ orderedBy, email }) => (
+                                    <option key={email} value={orderedBy}>
+                                        {orderedBy} - {email}
+                                    </option>
                                 ))}
                             </select>
                         </div>
 
                         {/* Area Manager Filter */}
-                        <div>
+                        <div className='col-span-1 md:col-span-2'>
                             <label className="block font-semibold text-gray-700 mb-1">Area Manager</label>
                             <select
                                 value={areaManager}
@@ -236,8 +257,10 @@ const NetSales = () => {
                                 className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
                             >
                                 <option value="">Select an Area Manager</option>
-                                {uniqueAreaManager.map(name => (
-                                    <option key={name} value={name}>{name}</option>
+                                {uniqueAreaManager.map(({ areaManager, amEmail }) => (
+                                    <option key={areaManager} value={areaManager}>
+                                        {areaManager} {amEmail && `- ${amEmail}`}
+                                    </option>
                                 ))}
                             </select>
                         </div>
