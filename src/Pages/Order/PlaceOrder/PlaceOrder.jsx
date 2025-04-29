@@ -419,16 +419,16 @@ const PlaceOrder = () => {
                             </div>
 
                             <div className="flex flex-col">
-                                <label className="text-sm mb-2">Pharmacy Name <span className="text-red-500">*</span></label>
+                                <label className="text-sm mb-2">Customer Name <span className="text-red-500">*</span></label>
                                 <select
-                                    {...register('pharmId', { required: 'Please select a pharmacy' })}
+                                    {...register('pharmId', { required: 'Please select a customer' })}
                                     onChange={handlePharmacyChange}
                                     className="border-gray-500 bg-white border p-2 text-sm"
                                 >
-                                    <option value="">~~ Select a Pharmacy ~~</option>
+                                    <option value="">~~ Select a customer ~~</option>
                                     {userPharmacies.map(pharmacy => (
                                         <option key={pharmacy._id} value={pharmacy._id}>
-                                            {pharmacy.name}
+                                            {pharmacy.name} - {pharmacy.customerId}
                                         </option>
                                     ))}
                                 </select>
