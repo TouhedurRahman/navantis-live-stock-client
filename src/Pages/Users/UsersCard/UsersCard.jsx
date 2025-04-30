@@ -177,7 +177,7 @@ const UsersCard = ({ user, idx, refetch }) => {
                         }
 
                         {
-                            singleUser?.permissions?.includes("update-users")
+                            singleUser?.permissions?.includes("update-access")
                             &&
                             <button
                                 onClick={() => setAccessModal(true)}
