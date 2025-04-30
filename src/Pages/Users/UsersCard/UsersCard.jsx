@@ -192,8 +192,8 @@ const UsersCard = ({ user, idx, refetch }) => {
                             singleUser?.permissions?.includes("update-users")
                             &&
                             <button
-                                onClick={() => handleDelete()}
-                                className="p-2 rounded-[5px] hover:bg-red-100 focus:outline-none"
+                                // onClick={() => handleDelete()}
+                                className="p-2 rounded-[5px] hover:bg-red-100 focus:outline-none cursor-not-allowed"
                                 title="Delete User"
                             >
                                 <FaTrashAlt className="text-red-500" />
