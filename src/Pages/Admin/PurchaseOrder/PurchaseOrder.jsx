@@ -4,8 +4,8 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
-import useSingleUser from '../../../Hooks/useSingleUser';
 import useApiConfig from '../../../Hooks/useApiConfig';
+import useSingleUser from '../../../Hooks/useSingleUser';
 
 const PurchaseOrder = () => {
     const baseUrl = useApiConfig();
@@ -196,7 +196,7 @@ const PurchaseOrder = () => {
                                 Actual Price (AP) <span className="text-red-500">*</span>
                             </label>
                             <input
-                                type="number"
+                                // type="number"
                                 {...register("ap", { required: "Actual price is required" })}
                                 placeholder="Enter actual price"
                                 className="border-gray-500 bg-white border p-2 text-sm"
@@ -209,7 +209,7 @@ const PurchaseOrder = () => {
                                 Trade Price (TP) <span className="text-red-500">*</span>
                             </label>
                             <input
-                                type="number"
+                                // type="number"
                                 {...register("tp", { required: "Trade price is required" })}
                                 placeholder="Enter trade price"
                                 className="border-gray-500 bg-white border p-2 text-sm"

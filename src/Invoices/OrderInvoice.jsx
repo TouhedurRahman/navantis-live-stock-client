@@ -230,7 +230,7 @@ const OrderInvoice = ({ order }) => {
                         <td colspan="7" style="text-align: right; font-weight: bold;">Sub Total</td>
                         <td style="text-align: right;">${totalUnit}</td>
                         <td style="text-align: right;">${0.00}</td>
-                        <td style="text-align: right;">${totalTP}</td>
+                        <td style="text-align: right;">${(Number((Number(totalTP)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-</td>
                     </tr>
                 </tbody>
             </table>

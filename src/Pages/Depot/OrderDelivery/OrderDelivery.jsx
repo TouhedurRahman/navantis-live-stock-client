@@ -3,9 +3,9 @@ import axios from "axios";
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
+import useApiConfig from "../../../Hooks/useApiConfig";
 import useDepotProducts from "../../../Hooks/useDepotProducts";
 import useOrders from "../../../Hooks/useOrders";
-import useApiConfig from "../../../Hooks/useApiConfig";
 
 const OrderDelivery = () => {
     const baseUrl = useApiConfig();
@@ -398,6 +398,8 @@ const OrderDelivery = () => {
                                     <th className="p-2">Product</th>
                                     <th className="p-2">Order Qty</th>
                                     <th className="p-2">Available</th>
+                                    <th className="p-2 text-center">Net Weight</th>
+                                    <th className="p-2 text-right">TP</th>
                                     <th className="p-2">Expire</th>
                                     <th className="p-2">Delivery</th>
                                 </tr>
@@ -456,6 +458,12 @@ const OrderDelivery = () => {
                                                             )}
                                                             <td className="p-2">
                                                                 {depotProduct.totalQuantity}
+                                                            </td>
+                                                            <td className="p-2 text-center">
+                                                                {depotProduct.netWeight}
+                                                            </td>
+                                                            <td className="p-2 text-right">
+                                                                {depotProduct.tradePrice}/-
                                                             </td>
                                                             <td className="p-2">
                                                                 {depotProduct.expire}
