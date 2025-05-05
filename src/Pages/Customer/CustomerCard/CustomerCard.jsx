@@ -5,8 +5,8 @@ import { FaEdit, FaTimes, FaTrashAlt } from 'react-icons/fa';
 import { FaEye } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import useSingleUser from '../../../Hooks/useSingleUser';
 import useApiConfig from '../../../Hooks/useApiConfig';
+import useSingleUser from '../../../Hooks/useSingleUser';
 
 const CustomerCard = ({ idx, customer, refetch }) => {
     const [singleUser] = useSingleUser();
@@ -99,7 +99,7 @@ const CustomerCard = ({ idx, customer, refetch }) => {
                             </>
                         }
                         <button
-                            onClick={handleRemove}
+                            // onClick={handleRemove}
                             title="Remove customer"
                             className="p-2 rounded-[5px] hover:bg-red-100 focus:outline-none"
                         >

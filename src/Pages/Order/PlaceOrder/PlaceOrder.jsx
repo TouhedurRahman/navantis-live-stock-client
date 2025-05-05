@@ -186,11 +186,11 @@ const PlaceOrder = () => {
 
         if (data.payMode === "Cash" && !selectedPharmacy?.payMode?.includes("STC")) {
             // Check for any cash order placed today
-            const hasCashOrderToday = orders.some(order =>
+            /* const hasCashOrderToday = orders.some(order =>
                 order.pharmacyId === selectedPharmacy.customerId &&
                 order.payMode === "Cash" &&
                 new Date(order.date).toDateString() === new Date().toDateString()
-            );
+            ); */
 
             // Check for any unpaid cash order (any date)
             const hasAnyUnpaidCash = orders.some(order =>
@@ -199,14 +199,16 @@ const PlaceOrder = () => {
                 order.status.toLowerCase() !== "paid"
             );
 
-            if (hasCashOrderToday) {
+            /* if (hasCashOrderToday) {
                 Swal.fire({
                     icon: "warning",
                     title: "Order Restricted",
                     text: "A cash order has already been placed today. Only one cash order per day is allowed."
                 });
                 return;
-            } else if (hasAnyUnpaidCash) {
+            } */
+
+            if (hasAnyUnpaidCash) {
                 Swal.fire({
                     icon: "error",
                     title: "Order Blocked",
@@ -341,11 +343,11 @@ const PlaceOrder = () => {
                         }
                     } else {
                         // Check for any cash order placed today
-                        const hasCashOrderToday = orders.some(order =>
+                        /* const hasCashOrderToday = orders.some(order =>
                             order.pharmacyId === selectedPharmacy.customerId &&
                             order.payMode === "Cash" &&
                             new Date(order.date).toDateString() === new Date().toDateString()
-                        );
+                        ); */
 
                         // Check for any unpaid cash order (any date)
                         const hasAnyUnpaidCash = orders.some(order =>
@@ -354,14 +356,16 @@ const PlaceOrder = () => {
                             order.status.toLowerCase() !== "paid"
                         );
 
-                        if (hasCashOrderToday) {
+                        /* if (hasCashOrderToday) {
                             Swal.fire({
                                 icon: "warning",
                                 title: "Order Restricted",
                                 text: "A cash order has already been placed today. Only one cash order per day is allowed."
                             });
                             return;
-                        } else if (hasAnyUnpaidCash) {
+                        } */
+
+                        if (hasAnyUnpaidCash) {
                             Swal.fire({
                                 icon: "error",
                                 title: "Order Blocked",
