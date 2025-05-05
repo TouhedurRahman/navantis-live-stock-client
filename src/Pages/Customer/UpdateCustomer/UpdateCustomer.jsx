@@ -27,6 +27,22 @@ const UpdateCustomer = () => {
             ? ["Cash", "STC"]
             : ["Credit"];
 
+    const statusType =
+        singleUser?.parentId !== null && singleUser?.parentId !== "Vacant"
+            ? "pending"
+            : singleUser?.grandParentId !== null && singleUser?.grandParentId !== "Vacant"
+                ? "initialized"
+                : "requested";
+
+    const getTodayDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    };
+
     const [customers, loading, refetch] = useCustomer();
     const { id } = useParams();
     const customer = customers.find(customer => customer._id == id);
@@ -55,7 +71,8 @@ const UpdateCustomer = () => {
                 dayLimit: Number(data.dayLimit) || 0,
                 addedBy: data.addedby,
                 addedEmail: data.addedemail,
-                status: 'pending'
+                status: statusType,
+                date: getTodayDate()
             };
             const response = await axios.patch(`${baseUrl}/customer/${id}`, updatedCustomer);
             return response.data;
