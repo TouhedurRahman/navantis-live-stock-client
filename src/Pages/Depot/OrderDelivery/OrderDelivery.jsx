@@ -284,17 +284,21 @@ const OrderDelivery = () => {
         setDeliveryQuantities({});
     };
 
-    const getSortedProductsByExpiry = (productName) => {
+    const getSortedProductsByExpiry = (productName, netWeight) => {
         return products
-            .filter((product) => product.productName === productName)
+            .filter(
+                (product) =>
+                    product.productName.trim() === productName.trim() &&
+                    product.netWeight.trim() === netWeight.trim()
+            )
             .sort((a, b) => new Date(a.expire) - new Date(b.expire));
     };
 
     const initializeDeliveryQuantities = (orderProducts) => {
         const newQuantities = {};
         orderProducts.forEach((orderProduct) => {
-            const { name, quantity: orderQty } = orderProduct;
-            const sortedDepotProducts = getSortedProductsByExpiry(name);
+            const { name, netWeight, quantity: orderQty } = orderProduct;
+            const sortedDepotProducts = getSortedProductsByExpiry(name, netWeight);
 
             let remainingOrderQty = orderQty;
 
@@ -396,100 +400,89 @@ const OrderDelivery = () => {
                             <thead>
                                 <tr className="border-b">
                                     <th className="p-2">Product</th>
-                                    <th className="p-2">Order Qty</th>
-                                    <th className="p-2">Available</th>
                                     <th className="p-2 text-center">Net Weight</th>
                                     <th className="p-2 text-right">TP</th>
-                                    <th className="p-2">Expire</th>
+                                    <th className="p-2 text-right">Order Qty</th>
+                                    <th className="p-2 text-right">Available Qty</th>
+                                    <th className="p-2 text-center">Expire</th>
                                     <th className="p-2">Delivery</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {Object.entries(
                                     selectedProducts.reduce((acc, product) => {
-                                        if (!acc[product.name]) acc[product.name] = [];
-                                        acc[product.name].push(product);
+                                        const key = `${product.name} - ${product.netWeight}`;
+                                        if (!acc[key]) acc[key] = [];
+                                        acc[key].push(product);
                                         return acc;
                                     }, {})
-                                ).map(([productName, products]) => {
+                                ).map(([productKey, products]) => {
                                     const totalOrderQty = products.reduce(
                                         (sum, p) => sum + p.quantity,
                                         0
                                     );
-                                    const sortedDepotProducts = getSortedProductsByExpiry(
-                                        productName
-                                    );
+
+                                    const [productName, netWeight] = productKey.split(" - ");
+
+                                    const sortedDepotProducts = getSortedProductsByExpiry(productName, netWeight);
+
                                     let remainingOrderQty = totalOrderQty;
 
                                     return (
-                                        <React.Fragment key={productName}>
-                                            {sortedDepotProducts.map(
-                                                (depotProduct, index) => {
-                                                    const deliverableQty = Math.min(
-                                                        remainingOrderQty,
-                                                        depotProduct.totalQuantity
-                                                    );
-                                                    remainingOrderQty -= deliverableQty;
+                                        <React.Fragment key={productKey}>
+                                            {sortedDepotProducts.map((depotProduct, index) => {
+                                                const deliverableQty = Math.min(
+                                                    remainingOrderQty,
+                                                    depotProduct.totalQuantity
+                                                );
+                                                remainingOrderQty -= deliverableQty;
 
-                                                    return (
-                                                        <tr
-                                                            key={depotProduct._id}
-                                                            className="border-b"
-                                                        >
-                                                            {index === 0 && (
-                                                                <>
-                                                                    <td
-                                                                        className="p-2"
-                                                                        rowSpan={
-                                                                            sortedDepotProducts.length
-                                                                        }
-                                                                    >
-                                                                        {productName}
-                                                                    </td>
-                                                                    <td
-                                                                        className="p-2"
-                                                                        rowSpan={
-                                                                            sortedDepotProducts.length
-                                                                        }
-                                                                    >
-                                                                        {totalOrderQty}
-                                                                    </td>
-                                                                </>
-                                                            )}
-                                                            <td className="p-2">
-                                                                {depotProduct.totalQuantity}
-                                                            </td>
-                                                            <td className="p-2 text-center">
-                                                                {depotProduct.netWeight}
-                                                            </td>
-                                                            <td className="p-2 text-right">
-                                                                {depotProduct.tradePrice}/-
-                                                            </td>
-                                                            <td className="p-2">
-                                                                {depotProduct.expire}
-                                                            </td>
-                                                            <td className="p-2">
-                                                                <input
-                                                                    type="number"
-                                                                    className="border rounded p-1 w-16"
-                                                                    placeholder="Qty"
-                                                                    value={
-                                                                        deliveryQuantities[
-                                                                        depotProduct._id
-                                                                        ] ?? 0
-                                                                    }
-                                                                    onChange={(e) =>
+                                                const [name, unitSize] = productKey.split(" - ");
+
+                                                return (
+                                                    <tr key={depotProduct._id} className="border-b">
+                                                        {index === 0 && (
+                                                            <>
+                                                                <td className="p-2" rowSpan={sortedDepotProducts.length}>
+                                                                    {name}
+                                                                </td>
+                                                                <td className="p-2 text-center" rowSpan={sortedDepotProducts.length}>
+                                                                    {unitSize}
+                                                                </td>
+                                                                <td className="p-2 text-right" rowSpan={sortedDepotProducts.length}>
+                                                                    {depotProduct.tradePrice}/-
+                                                                </td>
+                                                                <td className="p-2 text-right" rowSpan={sortedDepotProducts.length}>
+                                                                    {totalOrderQty}
+                                                                </td>
+                                                            </>
+                                                        )}
+                                                        <td className="p-2 text-right">{depotProduct.totalQuantity}</td>
+                                                        <td className="p-2 text-center">{depotProduct.expire}</td>
+                                                        <td className="p-2">
+                                                            <input
+                                                                type="number"
+                                                                className="border rounded p-1 w-16"
+                                                                placeholder="Qty"
+                                                                value={
+                                                                    deliveryQuantities[
+                                                                    depotProduct._id
+                                                                    ] ?? 0
+                                                                }
+                                                                onChange={(e) => {
+                                                                    const dQty = Number(e.target.value);
+                                                                    if (dQty <= totalOrderQty) {
                                                                         handleDeliveryChange(
                                                                             depotProduct._id,
                                                                             Number(e.target.value)
                                                                         )
                                                                     }
-                                                                />
-                                                            </td>
-                                                        </tr>
-                                                    );
-                                                }
-                                            )}
+                                                                }}
+                                                            />
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
                                         </React.Fragment>
                                     );
                                 })}

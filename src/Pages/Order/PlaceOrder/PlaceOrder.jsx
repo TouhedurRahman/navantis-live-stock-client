@@ -57,7 +57,13 @@ const PlaceOrder = () => {
     };
 
     const groupedProducts = products.reduce((acc, product) => {
-        const existingProduct = acc.find(item => item.productName === product.productName);
+        const existingProduct = acc.find(
+            item =>
+                item.productName === product.productName
+                &&
+                item.netWeight === product.netWeight
+        );
+
         if (existingProduct) {
             existingProduct.totalQuantity += product.totalQuantity;
         } else {
@@ -123,7 +129,8 @@ const PlaceOrder = () => {
                 const product = products.find(p => p._id === id);
                 return {
                     id,
-                    name: product?.productName || 'Unknown Product',
+                    name: product?.productName,
+                    netWeight: product?.netWeight,
                     productCode: product?.productCode,
                     quantity,
                     tradePrice: product?.tradePrice || 0,
@@ -473,6 +480,7 @@ const PlaceOrder = () => {
                                                 <thead>
                                                     <tr className="bg-gray-100 border-b">
                                                         <th className="text-left p-4 font-medium text-gray-600">Product Name</th>
+                                                        <th className="text-center p-4 font-medium text-gray-600">Net Weight</th>
                                                         <th className="text-right p-4 font-medium text-gray-600">Trade Price</th>
                                                         <th className="text-center p-4 font-medium text-gray-600">Order Quantity</th>
                                                     </tr>
@@ -484,6 +492,10 @@ const PlaceOrder = () => {
                                                             <td className="p-4">
                                                                 <p className="font-medium text-gray-900">{product.productName}</p>
                                                                 <p className="text-sm text-gray-500">Code: {product.productCode}</p>
+                                                            </td>
+
+                                                            <td className="p-4">
+                                                                <p className="text-center font-medium text-gray-900">{product.netWeight}</p>
                                                             </td>
 
                                                             <td className="text-right p-4">
