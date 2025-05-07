@@ -294,6 +294,7 @@ const InvoicePayment = () => {
                                                     </label>
                                                     <input
                                                         type="number"
+                                                        required
                                                         className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
                                                         value={paymentAmount}
                                                         onChange={(e) => {
@@ -303,22 +304,53 @@ const InvoicePayment = () => {
                                                         }}
                                                         onWheel={(e) => e.target.blur()}
                                                     />
-                                                    <div className='col-span-1 md:col-span-2'>
+
+                                                    <div className="col-span-1 md:col-span-2">
                                                         <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">Payment Type</label>
                                                         <select
+                                                            required
                                                             value={paymentType}
                                                             onChange={(e) => setPaymentType(e.target.value)}
                                                             className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
                                                         >
-                                                            <option value="Net sales">Select Payment Type</option>
+                                                            <option value="">Select Payment Type</option>
                                                             <option value="Cash">Cash</option>
                                                             <option value="Cheque">Cheque</option>
                                                             <option value="Bank">Bank</option>
                                                         </select>
                                                     </div>
+
                                                     <button
                                                         className="mt-4 w-full bg-green-500 text-white py-3 px-5 rounded-xl hover:bg-green-600 transition-all font-semibold text-lg shadow-md"
-                                                        onClick={() => handlePayment(invWiseOrder)}
+                                                        onClick={() => {
+                                                            if (!paymentAmount && !paymentType) {
+                                                                Swal.fire({
+                                                                    icon: 'error',
+                                                                    title: 'Missing Fields',
+                                                                    text: 'Please enter a paid amount and select a payment type.',
+                                                                });
+                                                                return;
+                                                            }
+
+                                                            if (!paymentAmount) {
+                                                                Swal.fire({
+                                                                    icon: 'error',
+                                                                    title: 'Missing Paid Amount',
+                                                                    text: 'Please enter the paid amount before proceeding.',
+                                                                });
+                                                                return;
+                                                            }
+
+                                                            if (!paymentType) {
+                                                                Swal.fire({
+                                                                    icon: 'error',
+                                                                    title: 'Missing Payment Type',
+                                                                    text: 'Please select a payment type before proceeding.',
+                                                                });
+                                                                return;
+                                                            }
+                                                            handlePayment(invWiseOrder);
+                                                        }}
                                                     >
                                                         Make Payment
                                                     </button>
