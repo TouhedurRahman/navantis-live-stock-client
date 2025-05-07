@@ -50,7 +50,11 @@ const InvoicePayment = () => {
         mutationFn: async (data) => {
             const { _id, payments = [], ...orderData } = data;
 
-            const newStatus = (((parseFloat(orderData?.totalPayable) - parseFloat(orderData?.paid || 0) - parseFloat(paymentAmount))) === 0) ? 'paid' : 'outstanding';
+            /* const newStatus = (((parseFloat(orderData?.totalPayable) - parseFloat(orderData?.paid || 0) - parseFloat(paymentAmount))) === 0) ? 'paid' : 'outstanding'; */
+
+            const difference = parseFloat(orderData?.totalPayable) - parseFloat(orderData?.paid || 0) - parseFloat(paymentAmount);
+            const newStatus = (difference > -1 && difference < 1) ? 'paid' : 'outstanding';
+
 
             const today = getTodayDate();
             const currentPayable = parseFloat(orderData?.due || 0);
