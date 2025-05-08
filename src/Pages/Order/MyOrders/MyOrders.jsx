@@ -128,6 +128,11 @@ const MyOrders = ({ status }) => {
                                                                         {
                                                                             status === "pending"
                                                                             &&
+                                                                            <th className="text-center">Update</th>
+                                                                        }
+                                                                        {
+                                                                            status === "pending"
+                                                                            &&
                                                                             <th className="text-center">Delete</th>
                                                                         }
                                                                     </tr>

@@ -1,13 +1,19 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import React, { useState } from 'react';
-import { FaEye, FaTimes, FaTrashAlt } from 'react-icons/fa';
+import { FaEdit, FaEye, FaTimes, FaTrashAlt } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import useApiConfig from '../../../Hooks/useApiConfig';
+import useDepotProducts from '../../../Hooks/useDepotProducts';
 
 const MyOrderscard = ({ idx, myOrder, refetch }) => {
     const [isModalOpen, setModalOpen] = useState(false);
     const baseUrl = useApiConfig();
+
+    const [depotProducts] = useDepotProducts();
+
+    const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
+    const [updatedProducts, setUpdatedProducts] = useState([]);
 
     const lessDiscount = Number(myOrder.totalPrice * (myOrder.discount / 100));
 
@@ -20,6 +26,63 @@ const MyOrderscard = ({ idx, myOrder, refetch }) => {
         },
         onError: (error) => {
             console.error("Error delete order:", error);
+        }
+    });
+
+    const handleUpdate = () => {
+        setUpdatedProducts(myOrder.products.map(p => ({ ...p, quantity: p.quantity })));
+        setUpdateModalOpen(true);
+    };
+
+    const uniqueDepotProducts = depotProducts.filter(
+        (prod, index, self) =>
+            index === self.findIndex(
+                (p) => p.productName === prod.productName && p.netWeight === prod.netWeight
+            )
+    );
+
+    const handleInputChange = (product, newQty) => {
+        setUpdatedProducts(prev => {
+            const existingIndex = prev.findIndex(
+                p => p.productName === product.productName && p.netWeight === product.netWeight
+            );
+
+            if (newQty <= 0) {
+                if (existingIndex !== -1) {
+                    const updated = [...prev];
+                    updated.splice(existingIndex, 1);
+                    return updated;
+                }
+                return prev;
+            }
+
+            if (existingIndex !== -1) {
+                const updated = [...prev];
+                updated[existingIndex].quantity = newQty;
+                return updated;
+            } else {
+                return [...prev, { ...product, quantity: newQty }];
+            }
+        });
+    };
+
+    const updateOrderMutation = useMutation({
+        mutationFn: async () => {
+            const payload = {
+                products: updatedProducts,
+                totalPrice: updatedProducts.reduce((sum, p) => sum + (p.quantity * p.tradePrice), 0),
+            };
+            // return await axios.patch(`${baseUrl}/pending-order/${myOrder._id}`, payload);
+            console.log(payload);
+        },
+        onSuccess: () => {
+            // refetch();
+            Swal.fire("Success", "Order updated successfully", "success");
+            setUpdateModalOpen(false);
+        },
+        onError: (error) => {
+            console.error(error);
+            Swal.fire("Error", "Failed to update order", "error");
         }
     });
 
@@ -76,6 +139,19 @@ const MyOrderscard = ({ idx, myOrder, refetch }) => {
                         <FaEye className="text-orange-500" />
                     </button>
                 </td>
+                {
+                    myOrder.status === "pending"
+                    &&
+                    <td className="text-center">
+                        <button
+                            onClick={() => handleUpdate()}
+                            title="Update Order"
+                            className="p-2 rounded-[5px] hover:bg-yellow-100 focus:outline-none"
+                        >
+                            <FaEdit className="text-yellow-500" />
+                        </button>
+                    </td>
+                }
                 {
                     myOrder.status === "pending"
                     &&
@@ -201,6 +277,52 @@ const MyOrderscard = ({ idx, myOrder, refetch }) => {
                                     className="px-4 py-2 text-white bg-red-500 rounded-md shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
                                 >
                                     Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
+            {
+                isUpdateModalOpen && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+                        <div className="bg-white w-full max-w-3xl p-6 rounded shadow-md max-h-[90vh] overflow-y-auto">
+                            <h2 className="text-xl font-bold mb-4">Update Order</h2>
+
+                            <table className="w-full text-sm mb-4">
+                                <thead>
+                                    <tr>
+                                        <th className="text-left">Product</th>
+                                        <th className="text-left">Quantity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {uniqueDepotProducts.map((p) => {
+                                        return (
+                                            <tr key={`${p.productName}-${p.netWeight}`}>
+                                                <td>{p.productName} - {p.netWeight}</td>
+                                                <td>
+                                                    <input
+                                                        type="number"
+                                                        min="0"
+                                                        className="border px-2 py-1 rounded w-20"
+                                                        value={updatedProducts.find((prod) => prod.name === p.productName && prod.netWeight === p.netWeight)?.quantity}
+                                                        onChange={(e) => handleInputChange(p, parseInt(e.target.value))}
+                                                    />
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+
+                            <div className="flex justify-end mt-6 gap-4">
+                                <button onClick={() => setUpdateModalOpen(false)} className="bg-gray-300 px-4 py-2 rounded">Cancel</button>
+                                <button
+                                    onClick={() => updateOrderMutation.mutate()}
+                                    className="bg-blue-600 text-white px-4 py-2 rounded"
+                                >
+                                    Update Order
                                 </button>
                             </div>
                         </div>
