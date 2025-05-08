@@ -284,6 +284,11 @@ const OrderDelivery = () => {
         setDeliveryQuantities({});
     };
 
+    const parseExpiry = (mmYY) => {
+        const [month, year] = mmYY.trim().split('/').map(Number);
+        return new Date(2000 + year, month - 1);
+    };
+
     const getSortedProductsByExpiry = (productName, netWeight) => {
         return products
             .filter(
@@ -291,7 +296,7 @@ const OrderDelivery = () => {
                     product.productName.trim() === productName.trim() &&
                     product.netWeight.trim() === netWeight.trim()
             )
-            .sort((a, b) => new Date(a.expire) - new Date(b.expire));
+            .sort((a, b) => parseExpiry(a.expire) - parseExpiry(b.expire));
     };
 
     const initializeDeliveryQuantities = (orderProducts) => {

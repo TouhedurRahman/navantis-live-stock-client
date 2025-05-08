@@ -571,7 +571,9 @@ const PlaceOrder = () => {
                                         <tbody>
                                             {receiptProducts.map((product) => (
                                                 <tr key={product.id} className="border-b border-gray-200">
-                                                    <td className="py-2">{product.name}</td>
+                                                    <td className="py-2">
+                                                        {product.name} - {product.netWeight}
+                                                    </td>
                                                     <td className="py-2 text-right px-3">{product.quantity}</td>
                                                     <td className="py-2 text-right px-3">{product.tradePrice}/-</td>
                                                     <td className="py-2 text-right px-3">{product.quantity * product.tradePrice}/-</td>

@@ -3,8 +3,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import Swal from "sweetalert2";
-import useOrders from "../../Hooks/useOrders";
 import useApiConfig from "../../Hooks/useApiConfig";
+import useOrders from "../../Hooks/useOrders";
 
 const ReturnProductsModal = ({ isOpen, onClose }) => {
     const baseUrl = useApiConfig();
@@ -147,6 +147,18 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
         },
     });
 
+    const deleteOrderMutation = useMutation({
+        mutationFn: async (data) => {
+            const { _id } = data;
+
+            const response = await axios.delete(`${baseUrl}/pending-order/${_id}`);
+            return response.data;
+        },
+        onError: (error) => {
+            console.log("Error delete order: ", error);
+        }
+    });
+
     const handleReturnSubmit = async () => {
         if (!selectedOrder) return;
 
@@ -226,12 +238,18 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
         }
 
         try {
-            await Promise.all([
+            const mutations = [
                 updateOrderMutation.mutateAsync(updatedOrder),
                 addDepotProductMutation.mutateAsync(productsReturned),
                 stockInDepotProductMutation.mutateAsync(productsReturned),
                 addReturnedProductsMutation.mutateAsync(returnedProducts)
-            ]);
+            ];
+
+            if (updatedOrder.totalUnit === 0) {
+                mutations.push(deleteOrderMutation.mutateAsync(updatedOrder));
+            }
+
+            await Promise.all(mutations);
 
             onClose();
 
