@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import React, { useState } from 'react';
-import { FaEye, FaTimes, FaTrashAlt } from 'react-icons/fa';
+import { FaEdit, FaEye, FaTimes, FaTrashAlt } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import useApiConfig from '../../../Hooks/useApiConfig';
 import useDepotProducts from '../../../Hooks/useDepotProducts';
@@ -30,7 +30,16 @@ const MyOrderscard = ({ idx, myOrder, refetch }) => {
     });
 
     const handleUpdate = () => {
-        setUpdatedProducts(myOrder.products.map(p => ({ ...p, quantity: p.quantity })));
+        setUpdatedProducts(myOrder.products.map(p => (
+            {
+                id: p.id,
+                name: p.name,
+                netWeight: p.netWeight,
+                productCode: p.productCode,
+                quantity: p.quantity,
+                tradePrice: p.tradePrice
+            }
+        )));
         setUpdateModalOpen(true);
     };
 
@@ -44,7 +53,7 @@ const MyOrderscard = ({ idx, myOrder, refetch }) => {
     const handleInputChange = (product, newQty) => {
         setUpdatedProducts(prev => {
             const existingIndex = prev.findIndex(
-                p => p.productName === product.productName && p.netWeight === product.netWeight
+                p => p.name === product.productName && p.netWeight === product.netWeight
             );
 
             if (newQty <= 0) {
@@ -68,15 +77,23 @@ const MyOrderscard = ({ idx, myOrder, refetch }) => {
 
     const updateOrderMutation = useMutation({
         mutationFn: async () => {
-            const payload = {
+            const totalOrderedProducts = updatedProducts.length;
+            const totalOrderUnits = updatedProducts.reduce((sum, product) => sum + product.quantity, 0);
+            const totalOrderedTradePrice = updatedProducts.reduce((sum, product) => sum + (product.quantity * product.tradePrice), 0);
+
+            const updatedOrder = {
+                ...myOrder,
                 products: updatedProducts,
-                totalPrice: updatedProducts.reduce((sum, p) => sum + (p.quantity * p.tradePrice), 0),
+                totalProduct: totalOrderedProducts,
+                totalUnit: totalOrderUnits,
+                totalPrice: totalOrderedTradePrice
             };
-            // return await axios.patch(`${baseUrl}/pending-order/${myOrder._id}`, payload);
-            console.log(payload);
+            console.log(updatedOrder);
+
+            // return await axios.patch(`${baseUrl}/order/${myOrder._id}`, updatedOrder);
         },
         onSuccess: () => {
-            // refetch();
+            refetch();
             Swal.fire("Success", "Order updated successfully", "success");
             setUpdateModalOpen(false);
         },
@@ -139,7 +156,7 @@ const MyOrderscard = ({ idx, myOrder, refetch }) => {
                         <FaEye className="text-orange-500" />
                     </button>
                 </td>
-                {/* {
+                {
                     myOrder.status === "pending"
                     &&
                     <td className="text-center">
@@ -151,7 +168,7 @@ const MyOrderscard = ({ idx, myOrder, refetch }) => {
                             <FaEdit className="text-yellow-500" />
                         </button>
                     </td>
-                } */}
+                }
                 {
                     myOrder.status === "pending"
                     &&
@@ -306,7 +323,12 @@ const MyOrderscard = ({ idx, myOrder, refetch }) => {
                                                         type="number"
                                                         min="0"
                                                         className="border px-2 py-1 rounded w-20"
-                                                        value={updatedProducts.find((prod) => prod.name === p.productName && prod.netWeight === p.netWeight)?.quantity}
+                                                        value={
+                                                            updatedProducts.find(
+                                                                (prod) =>
+                                                                    prod.name === p.productName && prod.netWeight === p.netWeight
+                                                            )?.quantity
+                                                        }
                                                         onChange={(e) => handleInputChange(p, parseInt(e.target.value))}
                                                     />
                                                 </td>
