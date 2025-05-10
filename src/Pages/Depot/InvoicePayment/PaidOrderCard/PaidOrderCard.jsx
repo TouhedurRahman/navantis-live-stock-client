@@ -1,10 +1,9 @@
 import React from 'react';
+import { MdPrint } from 'react-icons/md';
+import OrderInvoice from '../../../../Invoices/OrderInvoice';
 
-const PaidOrderCard = ({ idx, order, refetch }) => {
-    const handlePrint = () => {
-        console.log("Remove product:", product._id);
-        refetch();
-    };
+const PaidOrderCard = ({ idx, order }) => {
+    const handlePrint = OrderInvoice({ order });
 
     return (
         <>
@@ -33,19 +32,19 @@ const PaidOrderCard = ({ idx, order, refetch }) => {
                     {order.totalUnit}
                 </td>
                 <td className='text-right'>
-                    {(order.paid).toLocaleString('en-IN')}/-
+                    {(order?.paid)?.toLocaleString('en-IN')}/-
                 </td>
-                {/* <th>
+                <th>
                     <div className="flex justify-center items-center space-x-4 text-md">
                         <button
                             onClick={handlePrint}
-                            title="Remove order from warehouse"
+                            title="Print Invoice"
                             className="p-2 rounded-[5px] hover:bg-green-100 focus:outline-none"
                         >
                             <MdPrint className="text-green-500" />
                         </button>
                     </div>
-                </th> */}
+                </th>
             </tr>
         </>
     );

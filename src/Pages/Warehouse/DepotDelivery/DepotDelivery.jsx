@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
+import useApiConfig from '../../../Hooks/useApiConfig';
 import useDepotRequest from '../../../Hooks/useDepotRequest';
 import useSingleUser from '../../../Hooks/useSingleUser';
 import useWhProducts from '../../../Hooks/useWhProducts';
-import useApiConfig from '../../../Hooks/useApiConfig';
 
 const DepotDelivery = () => {
     const [singleUser] = useSingleUser();
@@ -38,11 +38,19 @@ const DepotDelivery = () => {
         }
     }, [selectedProductDetails]);
 
+    const parseExpiry = (mmYY) => {
+        const [month, year] = mmYY.trim().split('/').map(Number);
+        return new Date(2000 + year, month - 1);
+    };
+
     const whProductsByName = selectedProductName
         && whProducts
-            .filter(product => product.productName === selectedProductName)
-            .sort((a, b) => new Date(a.expire) - new Date(b.expire));
-
+            .filter(product =>
+                product.productName === selectedProductName
+                &&
+                product.netWeight === selectedProductDetails?.netWeight
+            )
+            .sort((a, b) => parseExpiry(a.expire) - parseExpiry(b.expire));
 
     const getTodayDate = () => {
         const today = new Date();

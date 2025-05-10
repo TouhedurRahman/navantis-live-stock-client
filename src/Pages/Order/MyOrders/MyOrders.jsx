@@ -125,11 +125,11 @@ const MyOrders = ({ status }) => {
                                                                         <th className='text-center'>
                                                                             View
                                                                         </th>
-                                                                        {
+                                                                        {/* {
                                                                             status === "pending"
                                                                             &&
                                                                             <th className="text-center">Update</th>
-                                                                        }
+                                                                        } */}
                                                                         {
                                                                             status === "pending"
                                                                             &&

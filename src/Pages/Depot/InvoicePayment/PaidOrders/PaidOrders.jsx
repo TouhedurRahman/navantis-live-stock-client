@@ -100,7 +100,7 @@ const PaidOrders = () => {
                                                         <th className='text-right'>Total Products</th>
                                                         <th className='text-right'>Total Unit</th>
                                                         <th className='text-right'>Total Paid</th>
-                                                        {/* <th className="text-center">Action</th> */}
+                                                        <th className="text-center">Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>

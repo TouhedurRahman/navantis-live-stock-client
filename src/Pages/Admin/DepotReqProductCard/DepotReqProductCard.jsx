@@ -12,25 +12,33 @@ const DepotReqProductCard = ({ idx, product, refetch, whProducts, depotProducts,
     const [isapproveModalOpen, setapproveModalOpen] = useState(false);
 
     const productQinWarehouse = whProducts
-        .filter(whProduct => whProduct.productName === product.productName)
+        .filter(whProduct =>
+            whProduct.productName === product.productName
+            &&
+            whProduct.netWeight === product.netWeight
+        )
         .reduce((sum, whProduct) => sum + whProduct.totalQuantity, 0) || 0;
 
     const productQinDepot = depotProducts
-        .filter(depotProduct => depotProduct.productName === product.productName)
+        .filter(depotProduct =>
+            depotProduct.productName === product.productName
+            &&
+            depotProduct.netWeight === product.netWeight
+        )
         .reduce((sum, depotProduct) => sum + depotProduct.totalQuantity, 0) || 0;
 
-    const getLastMonthSales = (pname) => {
+    const getLastMonthSales = (pname, netWeight) => {
         const oneMonthAgo = new Date();
         oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
 
         return orders
             .filter(order => new Date(order.date) >= oneMonthAgo)
             .flatMap(order => order.products)
-            .filter(product => product.name === pname)
+            .filter(product => product.name === pname && product.netWeight === netWeight)
             .reduce((total, product) => total + product.quantity, 0);
     };
 
-    const lastMonthSales = getLastMonthSales(product.productName);
+    const lastMonthSales = getLastMonthSales(product.productName, product.netWeight);
 
     const deniedDptReqMutation = useMutation({
         mutationFn: async () => {

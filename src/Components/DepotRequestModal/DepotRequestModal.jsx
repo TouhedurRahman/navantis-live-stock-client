@@ -4,12 +4,12 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaTimes } from 'react-icons/fa';
 import Swal from 'sweetalert2';
+import useApiConfig from '../../Hooks/useApiConfig';
+import useAuth from '../../Hooks/useAuth';
 import useDepotProducts from '../../Hooks/useDepotProducts';
 import useDepotRequest from '../../Hooks/useDepotRequest';
 import useWhProducts from '../../Hooks/useWhProducts';
 import './DepotRequestModal.css';
-import useAuth from '../../Hooks/useAuth';
-import useApiConfig from '../../Hooks/useApiConfig';
 
 const DepotRequestModal = ({ isOpen, onClose }) => {
     const { user } = useAuth();
@@ -52,20 +52,31 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
 
     const selectedProQinDepot = selectedProduct
         ? products
-            .filter((product) => product.productName === selectedProduct.productName)
+            .filter((product) =>
+                product.productName === selectedProduct.productName
+                &&
+                product.netWeight === selectedProduct.netWeight
+            )
             .reduce((sum, product) => sum + product.totalQuantity, 0)
         : 0;
 
     const selectedProQinWh = selectedProduct
         ? whProducts
-            .filter(product => product.productName === selectedProduct.productName)
+            .filter(product =>
+                product.productName === selectedProduct.productName
+                &&
+                product.netWeight === selectedProduct.netWeight
+            )
             .reduce((sum, product) => sum + product.totalQuantity, 0)
         : 0;
 
     const depotRequestQuantity = selectedProduct
         ? depotReqProducts
             .filter(product =>
-                product.productName === selectedProduct.productName &&
+                product.productName === selectedProduct.productName
+                &&
+                product.netWeight === selectedProduct.netWeight
+                &&
                 product.status === "requested"
             )
             .find(product => product.requestedQuantity)?.requestedQuantity || 0
@@ -74,7 +85,10 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
     const dptReqApprovedQuantity = selectedProduct
         ? depotReqProducts
             .filter(product =>
-                product.productName === selectedProduct.productName &&
+                product.productName === selectedProduct.productName
+                &&
+                product.netWeight === selectedProduct.netWeight
+                &&
                 product.status === "approved"
             )
             .find(product => product.approvedQuantity)?.approvedQuantity || 0
@@ -83,7 +97,10 @@ const DepotRequestModal = ({ isOpen, onClose }) => {
     const dptReqProcessing = selectedProduct
         ? depotReqProducts
             .some(product =>
-                product.productName === selectedProduct.productName &&
+                product.productName === selectedProduct.productName
+                &&
+                product.netWeight === selectedProduct.netWeight
+                &&
                 ['requested', 'approved'].includes(product?.status)
             )
         : false;

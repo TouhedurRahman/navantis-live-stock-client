@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import React, { useState } from 'react';
-import { FaEdit, FaEye, FaTimes, FaTrashAlt } from 'react-icons/fa';
+import { FaEye, FaTimes, FaTrashAlt } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import useApiConfig from '../../../Hooks/useApiConfig';
 import useDepotProducts from '../../../Hooks/useDepotProducts';
@@ -139,7 +139,7 @@ const MyOrderscard = ({ idx, myOrder, refetch }) => {
                         <FaEye className="text-orange-500" />
                     </button>
                 </td>
-                {
+                {/* {
                     myOrder.status === "pending"
                     &&
                     <td className="text-center">
@@ -151,7 +151,7 @@ const MyOrderscard = ({ idx, myOrder, refetch }) => {
                             <FaEdit className="text-yellow-500" />
                         </button>
                     </td>
-                }
+                } */}
                 {
                     myOrder.status === "pending"
                     &&
