@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Swal from "sweetalert2";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import useApiConfig from "../../../Hooks/useApiConfig";
+import useCustomer from "../../../Hooks/useCustomer";
 import useDepotProducts from "../../../Hooks/useDepotProducts";
 import useOrders from "../../../Hooks/useOrders";
 
@@ -12,6 +13,7 @@ const OrderDelivery = () => {
 
     const [orders, , ordersRefetch] = useOrders();
     const [products, , productsRefetch] = useDepotProducts();
+    const [customers] = useCustomer();
 
     const pendingOrders = orders.filter(order => order.status === 'pending');
 
@@ -336,34 +338,76 @@ const OrderDelivery = () => {
                     {pendingOrders.map((order) => (
                         <div
                             key={order._id}
-                            className="border rounded-lg mb-4 p-4 shadow-sm bg-gray-100"
+                            className="relative bg-gradient-to-br from-white/60 to-gray-100 backdrop-blur-md border border-gray-200 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition duration-300 mb-6"
                         >
-                            <p>
-                                <strong>Pharmacy:</strong> {order.pharmacy}
-                            </p>
-                            <p>
-                                <strong>Territory:</strong> {order.territory}
-                            </p>
-                            <p>
-                                <strong>Order Date:</strong> {order.date}
-                            </p>
-                            <div className="mt-3 flex gap-4">
-                                {/* Button to view assigned person information */}
+                            <div className="space-y-4 text-gray-700">
+                                {/* Pharmacy */}
+                                <div className="flex items-center gap-3">
+                                    <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                        <path d="M3 21V7a2 2 0 012-2h3V3h8v2h3a2 2 0 012 2v14" />
+                                        <path d="M9 10h6M9 14h6" />
+                                    </svg>
+                                    <p className="text-lg font-semibold">
+                                        {order.pharmacy}
+                                    </p>
+                                </div>
+
+                                {/* Address */}
+                                <div className="flex items-start gap-3">
+                                    <svg className="w-5 h-5 mt-1 text-gray-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                        <path d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5s-3 1.343-3 3 1.343 3 3 3z" />
+                                        <path d="M12 22s8-4.5 8-10a8 8 0 10-16 0c0 5.5 8 10 8 10z" />
+                                    </svg>
+                                    <p>
+                                        {
+                                            customers.find(customer => customer.customerId === order.pharmacyId)?.address
+                                        }
+                                    </p>
+                                </div>
+
+                                {/* Territory */}
+                                <div className="flex items-start gap-3">
+                                    <svg className="w-5 h-5 mt-1 text-purple-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                        <path d="M12 2a10 10 0 00-7.546 16.953l-1.69 1.69a1 1 0 001.414 1.414l1.69-1.69A10 10 0 1012 2z" />
+                                    </svg>
+                                    <p>
+                                        <span className="font-medium text-gray-500">Territory:</span> {order.territory}
+                                    </p>
+                                </div>
+
+                                {/* Order Date */}
+                                <div className="flex items-start gap-3">
+                                    <svg className="w-5 h-5 mt-1 text-red-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                        <path d="M8 7V3m8 4V3M3 11h18M5 19h14a2 2 0 002-2V7H3v10a2 2 0 002 2z" />
+                                    </svg>
+                                    <p>
+                                        {new Date(order?.date).toLocaleDateString('en-GB').replace(/\//g, '-')}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="mt-5 flex flex-wrap gap-4">
                                 <button
-                                    className="bg-blue-500 text-white px-4 py-2 rounded"
+                                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl transition duration-200 shadow-md"
                                     onClick={() => setSelectedOrder(order)}
                                 >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                        <path d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
                                     View Assign Info
                                 </button>
-                                {/* Button to view ordered products */}
+
                                 <button
-                                    className="bg-green-500 text-white px-4 py-2 rounded"
+                                    className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-2.5 rounded-xl transition duration-200 shadow-md"
                                     onClick={() => {
                                         setSelectedOrderDetails(order);
                                         setSelectedProducts(order.products);
                                         initializeDeliveryQuantities(order.products);
                                     }}
                                 >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                        <path d="M3 7h18M3 12h18M3 17h18" />
+                                    </svg>
                                     View Ordered Products
                                 </button>
                             </div>
