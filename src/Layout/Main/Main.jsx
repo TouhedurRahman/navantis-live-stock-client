@@ -1,4 +1,3 @@
-import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import Loader from '../../Components/Loader/Loader';
 import NonVerified from '../../Components/NonVerified/NonVerified';

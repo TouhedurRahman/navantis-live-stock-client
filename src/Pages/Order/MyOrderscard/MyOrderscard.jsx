@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FaEdit, FaEye, FaTimes, FaTrashAlt } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import useApiConfig from '../../../Hooks/useApiConfig';
@@ -33,7 +33,7 @@ const MyOrderscard = ({ idx, myOrder, refetch }) => {
         setUpdatedProducts(myOrder.products.map(p => (
             {
                 id: p.id,
-                name: p.name,
+                name: p.productName || p.name,
                 netWeight: p.netWeight,
                 productCode: p.productCode,
                 quantity: p.quantity,
@@ -70,27 +70,44 @@ const MyOrderscard = ({ idx, myOrder, refetch }) => {
                 updated[existingIndex].quantity = newQty;
                 return updated;
             } else {
-                return [...prev, { ...product, quantity: newQty }];
+                return [
+                    ...prev,
+                    {
+                        id: product._id,
+                        name: product.productName || product.name,
+                        netWeight: product.netWeight,
+                        productCode: product.productCode,
+                        tradePrice: product.tradePrice,
+                        quantity: newQty
+                    }
+                ];
             }
         });
     };
 
     const updateOrderMutation = useMutation({
         mutationFn: async () => {
-            const totalOrderedProducts = updatedProducts.length;
-            const totalOrderUnits = updatedProducts.reduce((sum, product) => sum + product.quantity, 0);
-            const totalOrderedTradePrice = updatedProducts.reduce((sum, product) => sum + (product.quantity * product.tradePrice), 0);
+            const { _id, ...orderData } = myOrder;
+
+            const filteredProducts = updatedProducts.filter(product => product.quantity > 0);
+
+            const totalOrderedProducts = filteredProducts.length;
+            const totalOrderUnits = filteredProducts.reduce((sum, product) => sum + product.quantity, 0);
+            const totalOrderedTradePrice = filteredProducts.reduce((sum, product) => sum + (product.quantity * product.tradePrice), 0);
 
             const updatedOrder = {
-                ...myOrder,
-                products: updatedProducts,
+                ...orderData,
+                products: filteredProducts,
                 totalProduct: totalOrderedProducts,
                 totalUnit: totalOrderUnits,
                 totalPrice: totalOrderedTradePrice
             };
-            console.log(updatedOrder);
+            // console.log(updatedOrder);
 
-            // return await axios.patch(`${baseUrl}/order/${myOrder._id}`, updatedOrder);
+            if (updatedOrder.totalUnit === 0)
+                return await deleteOrderMutation.mutateAsync();
+            else
+                return await axios.patch(`${baseUrl}/order/${_id}`, updatedOrder);
         },
         onSuccess: () => {
             refetch();
@@ -304,25 +321,39 @@ const MyOrderscard = ({ idx, myOrder, refetch }) => {
                 isUpdateModalOpen && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
                         <div className="bg-white w-full max-w-3xl p-6 rounded shadow-md max-h-[90vh] overflow-y-auto">
-                            <h2 className="text-xl font-bold mb-4">Update Order</h2>
+                            <h2 className="text-xl font-bold mb-4 text-center">Update Order</h2>
 
                             <table className="w-full text-sm mb-4">
                                 <thead>
-                                    <tr>
-                                        <th className="text-left">Product</th>
-                                        <th className="text-left">Quantity</th>
+                                    <tr className="bg-gray-100 border-b">
+                                        <th className="text-left p-4 font-medium text-gray-600">Product Name</th>
+                                        <th className="text-center p-4 font-medium text-gray-600">Net Weight</th>
+                                        <th className="text-right p-4 font-medium text-gray-600">Trade Price</th>
+                                        <th className="text-center p-4 font-medium text-gray-600">Order Quantity</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {uniqueDepotProducts.map((p) => {
                                         return (
                                             <tr key={`${p.productName}-${p.netWeight}`}>
-                                                <td>{p.productName} - {p.netWeight}</td>
-                                                <td>
+                                                <td className="p-4">
+                                                    <p className="font-medium text-gray-900">{p.productName}</p>
+                                                    <p className="text-sm text-gray-500">Code: {p.productCode}</p>
+                                                </td>
+
+                                                <td className="p-4">
+                                                    <p className="text-center font-medium text-gray-900">{p.netWeight}</p>
+                                                </td>
+
+                                                <td className='text-right'>
+                                                    {(Number((Number(p.tradePrice)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-
+                                                </td>
+
+                                                <td className='text-center'>
                                                     <input
                                                         type="number"
                                                         min="0"
-                                                        className="border px-2 py-1 rounded w-20"
+                                                        className="border px-2 py-1 rounded w-20 text-center"
                                                         value={
                                                             updatedProducts.find(
                                                                 (prod) =>
@@ -338,7 +369,7 @@ const MyOrderscard = ({ idx, myOrder, refetch }) => {
                                 </tbody>
                             </table>
 
-                            <div className="flex justify-end mt-6 gap-4">
+                            <div className="flex justify-center items-center mt-6 gap-4">
                                 <button onClick={() => setUpdateModalOpen(false)} className="bg-gray-300 px-4 py-2 rounded">Cancel</button>
                                 <button
                                     onClick={() => updateOrderMutation.mutate()}
