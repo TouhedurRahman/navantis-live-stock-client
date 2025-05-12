@@ -10,8 +10,6 @@ const OrderInvoice = ({ order }) => {
     const orderedBy = allUsers.find(alu => alu.email === order.email);
 
     const customer = customers.find(c =>
-        c.name === order.pharmacy
-        &&
         c.customerId === order.pharmacyId
     );
 
