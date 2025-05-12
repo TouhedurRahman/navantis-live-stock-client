@@ -1,6 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -126,11 +125,11 @@ const UpdateCustomer = () => {
                             </label>
                             <input
                                 defaultValue={customer?.name}
-                                {...register("name", { required: "Name is required" })}
+                                {...register("name")}
                                 placeholder="Enter customer name"
-                                className="border-gray-500 bg-white border p-2 text-sm"
+                                className="border-gray-500 bg-gray-50 border p-2 text-sm cursor-not-allowed"
+                                readOnly
                             />
-                            {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
                         </div>
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
