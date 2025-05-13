@@ -322,6 +322,246 @@ const OrderDelivery = () => {
         setDeliveryQuantities(newQuantities);
     };
 
+    const handleDeliver = () => {
+        const selectedPharmacy = customers.find(
+            customer =>
+                customer.customerId === selectedOrderDetails.pharmacyId
+        );
+
+        const unpaidCashOrder = orders.find(
+            order =>
+                order._id !== selectedOrderDetails._id
+                &&
+                order.pharmacyId === selectedOrderDetails.pharmacyId
+                &&
+                order.status !== "paid"
+        );
+
+        if (selectedOrderDetails.payMode === "Cash" && !selectedPharmacy?.payMode?.includes("STC")) {
+            // Check for any cash order placed today
+            const hasCashOrderToday = orders.some(
+                order =>
+                    order.pharmacyId === selectedPharmacy.customerId
+                    &&
+                    order.payMode === "Cash"
+                    &&
+                    (
+                        order.status === "delivered"
+                        ||
+                        order.status === "due"
+                        ||
+                        order.status === "outstanding"
+                        ||
+                        order.status === "paid"
+                    )
+                    &&
+                    new Date(order.date).toDateString() === new Date().toDateString()
+            );
+
+            // Check for any unpaid cash order (any date)
+            const hasAnyUnpaidCash = orders.some(
+                order =>
+                    order.pharmacyId === selectedPharmacy.customerId
+                    &&
+                    order.payMode === "Cash"
+                    &&
+                    order.status.toLowerCase() !== "paid"
+            );
+
+            if (hasCashOrderToday) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Order Restricted",
+                    text: "A cash order has already been placed today. Only one cash order per day is allowed."
+                });
+                return;
+            } else if (hasAnyUnpaidCash) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Order Blocked",
+                    text: `Unpaid order found (Invoice No. ${unpaidCashOrder?.invoice}). Please clear payment first.`
+                });
+                return;
+            } else {
+                handleDeliverySubmit();
+            }
+        } else if (selectedOrderDetails.payMode === "Credit" && selectedPharmacy?.payMode?.includes("Credit")) {
+            const today = new Date();
+
+            const overdueOrders = orders.filter(order => {
+                const orderDate = new Date(order.date);
+                const diffInDays = Math.floor((today - orderDate) / (1000 * 60 * 60 * 24));
+
+                return (
+                    order.pharmacyId === selectedPharmacy?.customerId &&
+                    order.payMode === "Credit" &&
+                    order.status === "due" &&
+                    diffInDays > selectedPharmacy.dayLimit
+                );
+            });
+
+            if (overdueOrders.length === 0) {
+                const creditDues = orders.filter(
+                    order =>
+                        order.pharmacyId == selectedPharmacy.customerId
+                        &&
+                        order.status === "due"
+                ).reduce(
+                    (sum, order) => sum + order.due, 0
+                )
+
+                const availableCrLimit = selectedPharmacy?.crLimit - creditDues;
+
+                if (availableCrLimit > 0 && availableCrLimit >= totalPayable) {
+                    handleDeliverySubmit();
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Credit Limit Exceeded",
+                        text: "Customer do not have a sufficient credit limit!"
+                    });
+                }
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Order Blocked",
+                    text: "Overdue orders found!"
+                });
+            }
+        } else {
+            const currentDate = new Date();
+            const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            const stcOrderLastDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 10);
+            const lastDayAllowed = new Date(currentDate.getFullYear(), currentDate.getMonth(), 28);
+
+            const previousUnpaidSTC = orders.some(order =>
+                order.pharmacyId === selectedPharmacy?.customerId
+                &&
+                order.payMode === "STC"
+                &&
+                order.status.toLowerCase() === "due"
+                &&
+                new Date(order.date) < firstDayOfMonth
+            );
+
+            if (previousUnpaidSTC) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Order Blocked",
+                    text: "Overdue STC orders found!"
+                });
+            } else {
+                const stcOrders = orders.filter(order =>
+                    order.pharmacyId === selectedPharmacy?.customerId
+                    &&
+                    order.payMode === "STC"
+                    &&
+                    new Date(order.date) >= firstDayOfMonth
+                    &&
+                    new Date(order.date) <= lastDayAllowed
+                );
+
+                const hasUnpaidSTC = stcOrders.some(order => order.status.toLowerCase() === "due");
+
+                if (hasUnpaidSTC) {
+                    if (currentDate <= lastDayAllowed) {
+                        if (selectedOrderDetails.payMode === "Cash") {
+                            handleDeliverySubmit();
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Order Restricted",
+                                text: "Due STC orders found! Only Cash payments are allowed until payment is cleared."
+                            });
+                        }
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Order Blocked",
+                            text: "Overdue STC orders found! You cannot place any new orders until payment is made."
+                        });
+                    }
+                } else {
+                    if (selectedOrderDetails.payMode === "STC") {
+                        if (currentDate <= stcOrderLastDay) {
+                            const hasAnySTCOrderThisMonth = stcOrders.length > 0;
+
+                            if (hasAnySTCOrderThisMonth) {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Order Not Allowed",
+                                    text: "An STC order has already been placed this month. You can't place another."
+                                });
+                            } else if (selectedPharmacy?.crLimit >= totalPayable) {
+                                handleDeliverySubmit();
+                            } else {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Credit Limit Exceeded",
+                                    text: "Customer do not have a sufficient credit limit!"
+                                });
+                            }
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Order Restriction Notice",
+                                text: "STC orders cannot be placed after the 10th day of the current month. However, you may still place a cash order."
+                            });
+                        }
+                    } else {
+                        // Check for any cash order placed today
+                        const hasCashOrderToday = orders.some(
+                            order =>
+                                order.pharmacyId === selectedPharmacy.customerId
+                                &&
+                                order.payMode === "Cash"
+                                &&
+                                (
+                                    order.status === "delivered"
+                                    ||
+                                    order.status === "due"
+                                    ||
+                                    order.status === "outstanding"
+                                    ||
+                                    order.status === "paid"
+                                )
+                                &&
+                                new Date(order.date).toDateString() === new Date().toDateString()
+                        );
+
+                        // Check for any unpaid cash order (any date)
+                        const hasAnyUnpaidCash = orders.some(
+                            order =>
+                                order.pharmacyId === selectedPharmacy.customerId
+                                &&
+                                order.payMode === "Cash"
+                                &&
+                                order.status.toLowerCase() !== "paid"
+                        );
+
+                        if (hasCashOrderToday) {
+                            Swal.fire({
+                                icon: "warning",
+                                title: "Order Restricted",
+                                text: "A cash order has already been placed today. Only one cash order per day is allowed."
+                            });
+                            return;
+                        } else if (hasAnyUnpaidCash) {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Order Blocked",
+                                text: `Unpaid order found (Invoice No. ${unpaidCashOrder?.invoice}). Please clear payment first.`
+                            });
+                            return;
+                        } else {
+                            handleDeliverySubmit();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     return (
         <>
             <div>
@@ -549,7 +789,8 @@ const OrderDelivery = () => {
                             </button>
                             <button
                                 className="bg-green-500 text-white px-4 py-2 rounded"
-                                onClick={handleDeliverySubmit}
+                                onClick={handleDeliver}
+                            // onClick={handleDeliverySubmit}
                             >
                                 Deliver
                             </button>

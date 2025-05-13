@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
@@ -19,7 +19,6 @@ const PlaceOrder = () => {
 
     const [allUsers] = useAllUsers();
     const [singleUser] = useSingleUser();
-    // const [tempUsers] = useTempUsers();
     const [pharmacies] = useCustomer();
     const [products] = useDepotProducts();
     const [orders] = useOrders();
@@ -174,8 +173,8 @@ const PlaceOrder = () => {
                     Swal.fire({
                         icon: "success",
                         title: "Order successfully placed.",
-                        showConfirmButton: false,
-                        timer: 1000
+                        showConfirmButton: true,
+                        // timer: 1000
                     });
                 }
             })
@@ -183,6 +182,7 @@ const PlaceOrder = () => {
         reset();
         setProductQuantities({});
         setReceiptProducts([]);
+        window.location.reload();
     }
 
     const onSubmit = (data) => {
@@ -191,13 +191,35 @@ const PlaceOrder = () => {
             return;
         }
 
-        if (data.payMode === "Cash" && !selectedPharmacy?.payMode?.includes("STC")) {
+        const orderAlreadyPending = orders.some(
+            order =>
+                order.pharmacyId === selectedPharmacy.customerId
+                &&
+                order.status === "pending"
+        );
+
+        if (!orderAlreadyPending) {
+            makeOrder(data);
+        }
+        else {
+            Swal.fire({
+                icon: "error",
+                title: "Order Blocked",
+                html: `Order already placed for this customer. Please update if needed.<br><strong>My Order → Pending → Update → 📝</strong>`
+            });
+            reset();
+            setProductQuantities({});
+            setReceiptProducts([]);
+            return;
+        }
+
+        /* if (data.payMode === "Cash" && !selectedPharmacy?.payMode?.includes("STC")) {
             // Check for any cash order placed today
-            /* const hasCashOrderToday = orders.some(order =>
+            const hasCashOrderToday = orders.some(order =>
                 order.pharmacyId === selectedPharmacy.customerId &&
                 order.payMode === "Cash" &&
                 new Date(order.date).toDateString() === new Date().toDateString()
-            ); */
+            );
 
             // Check for any unpaid cash order (any date)
             const hasAnyUnpaidCash = orders.some(order =>
@@ -206,14 +228,14 @@ const PlaceOrder = () => {
                 order.status.toLowerCase() !== "paid"
             );
 
-            /* if (hasCashOrderToday) {
+            if (hasCashOrderToday) {
                 Swal.fire({
                     icon: "warning",
                     title: "Order Restricted",
                     text: "A cash order has already been placed today. Only one cash order per day is allowed."
                 });
                 return;
-            } */
+            }
 
             if (hasAnyUnpaidCash) {
                 Swal.fire({
@@ -350,11 +372,11 @@ const PlaceOrder = () => {
                         }
                     } else {
                         // Check for any cash order placed today
-                        /* const hasCashOrderToday = orders.some(order =>
+                        const hasCashOrderToday = orders.some(order =>
                             order.pharmacyId === selectedPharmacy.customerId &&
                             order.payMode === "Cash" &&
                             new Date(order.date).toDateString() === new Date().toDateString()
-                        ); */
+                        );
 
                         // Check for any unpaid cash order (any date)
                         const hasAnyUnpaidCash = orders.some(order =>
@@ -363,14 +385,14 @@ const PlaceOrder = () => {
                             order.status.toLowerCase() !== "paid"
                         );
 
-                        /* if (hasCashOrderToday) {
+                        if (hasCashOrderToday) {
                             Swal.fire({
                                 icon: "warning",
                                 title: "Order Restricted",
                                 text: "A cash order has already been placed today. Only one cash order per day is allowed."
                             });
                             return;
-                        } */
+                        }
 
                         if (hasAnyUnpaidCash) {
                             Swal.fire({
@@ -385,7 +407,7 @@ const PlaceOrder = () => {
                     }
                 }
             }
-        }
+        } */
     };
 
     return (
