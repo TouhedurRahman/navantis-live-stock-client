@@ -19,6 +19,15 @@ const MyOrderscard = ({ idx, myOrder, refetch }) => {
 
     const totalPayable = Number(myOrder.totalPrice - lessDiscount);
 
+    const getTodayDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    };
+
     const deleteOrderMutation = useMutation({
         mutationFn: async () => {
             const response = await axios.delete(`${baseUrl}/pending-order/${myOrder._id}`);
@@ -100,7 +109,8 @@ const MyOrderscard = ({ idx, myOrder, refetch }) => {
                 products: filteredProducts,
                 totalProduct: totalOrderedProducts,
                 totalUnit: totalOrderUnits,
-                totalPrice: totalOrderedTradePrice
+                totalPrice: totalOrderedTradePrice,
+                date: getTodayDate()
             };
             // console.log(updatedOrder);
 

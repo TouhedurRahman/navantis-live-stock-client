@@ -22,6 +22,15 @@ const OrderDelivery = () => {
     const [selectedOrderDetails, setSelectedOrderDetails] = useState(null);
     const [deliveryQuantities, setDeliveryQuantities] = useState({});
 
+    const getTodayDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    };
+
     const handleDeliveryChange = (batchId, value) => {
         setDeliveryQuantities((prev) => ({
             ...prev,
@@ -248,7 +257,8 @@ const OrderDelivery = () => {
 
             totalPrice: Number(totalPrice),
             totalPayable: Number(totalPayable),
-            status: "delivered"
+            status: "delivered",
+            date: getTodayDate()
         };
 
         try {
