@@ -412,7 +412,7 @@ const OrderDelivery = () => {
 
                 const availableCrLimit = selectedPharmacy?.crLimit - creditDues;
 
-                if (availableCrLimit > 0 && availableCrLimit >= totalPayable) {
+                if (availableCrLimit > 0 && availableCrLimit >= selectedOrderDetails.totalPayable) {
                     handleDeliverySubmit();
                 } else {
                     Swal.fire({
@@ -492,7 +492,7 @@ const OrderDelivery = () => {
                                     title: "Order Not Allowed",
                                     text: "An STC order has already been placed this month. You can't place another."
                                 });
-                            } else if (selectedPharmacy?.crLimit >= totalPayable) {
+                            } else if (selectedPharmacy?.crLimit >= selectedOrderDetails.totalPayable) {
                                 handleDeliverySubmit();
                             } else {
                                 Swal.fire({
@@ -574,62 +574,106 @@ const OrderDelivery = () => {
                 </div>
 
                 {/* Order List */}
-                <div className="px-6">
+                <div className="px-6 space-y-4 mb-4">
                     {pendingOrders.map((order) => (
                         <div
                             key={order._id}
-                            className="relative bg-gradient-to-br from-white/60 to-gray-100 backdrop-blur-md border border-gray-200 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition duration-300 mb-6"
+                            className="w-full bg-white/80 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-2xl p-5 shadow-md hover:shadow-xl transition duration-300"
                         >
-                            <div className="space-y-4 text-gray-700">
-                                {/* Pharmacy */}
+                            {/* Top Row: Pharmacy Name, ID, Territory */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                {/* Pharmacy Name */}
                                 <div className="flex items-center gap-3">
-                                    <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                        <path d="M3 21V7a2 2 0 012-2h3V3h8v2h3a2 2 0 012 2v14" />
-                                        <path d="M9 10h6M9 14h6" />
-                                    </svg>
-                                    <p className="text-lg font-semibold">
-                                        {order.pharmacy}
-                                    </p>
+                                    <div className="bg-blue-500/10 text-blue-600 p-2 rounded-lg">
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                            <path d="M3 21V7a2 2 0 012-2h3V3h8v2h3a2 2 0 012 2v14" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">Customer</p>
+                                        <p className="font-semibold text-base">{order.pharmacy}</p>
+                                    </div>
                                 </div>
 
-                                {/* Address */}
-                                <div className="flex items-start gap-3">
-                                    <svg className="w-5 h-5 mt-1 text-gray-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                        <path d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5s-3 1.343-3 3 1.343 3 3 3z" />
-                                        <path d="M12 22s8-4.5 8-10a8 8 0 10-16 0c0 5.5 8 10 8 10z" />
-                                    </svg>
-                                    <p>
-                                        {
-                                            customers.find(customer => customer.customerId === order.pharmacyId)?.address
-                                        }
-                                    </p>
+                                {/* Customer ID */}
+                                <div className="flex items-center gap-3">
+                                    <div className="bg-indigo-500/10 text-indigo-600 p-2 rounded-lg">
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                            <path d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">Customer ID</p>
+                                        <p className="font-medium">{order.pharmacyId}</p>
+                                    </div>
                                 </div>
 
                                 {/* Territory */}
+                                <div className="flex items-center gap-3">
+                                    <div className="bg-purple-500/10 text-purple-600 p-2 rounded-lg">
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                            <path d="M12 2a10 10 0 00-7.546 16.953l-1.69 1.69a1 1 0 001.414 1.414l1.69-1.69A10 10 0 1012 2z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">Territory</p>
+                                        <p className="font-medium">{order.territory}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Second Row: Address, Payment Mode, Order Date */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                {/* Address */}
                                 <div className="flex items-start gap-3">
-                                    <svg className="w-5 h-5 mt-1 text-purple-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                        <path d="M12 2a10 10 0 00-7.546 16.953l-1.69 1.69a1 1 0 001.414 1.414l1.69-1.69A10 10 0 1012 2z" />
-                                    </svg>
-                                    <p>
-                                        <span className="font-medium text-gray-500">Territory:</span> {order.territory}
-                                    </p>
+                                    <div className="bg-gray-500/10 text-gray-700 dark:text-gray-300 p-2 rounded-lg">
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                            <path d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5s-3 1.343-3 3 1.343 3 3 3z" />
+                                            <path d="M12 22s8-4.5 8-10a8 8 0 10-16 0c0 5.5 8 10 8 10z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">Address</p>
+                                        <p className="text-sm">
+                                            {customers.find(c => c.customerId === order.pharmacyId)?.address || 'N/A'}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Payment Mode */}
+                                <div className="flex items-start gap-3">
+                                    <div className="bg-green-500/10 text-green-600 p-2 rounded-lg">
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                            <path d="M17 9V7a4 4 0 00-8 0v2m-4 0h16v10a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">Payment Mode</p>
+                                        <p className="text-sm">{order.payMode}</p>
+                                    </div>
                                 </div>
 
                                 {/* Order Date */}
                                 <div className="flex items-start gap-3">
-                                    <svg className="w-5 h-5 mt-1 text-red-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                        <path d="M8 7V3m8 4V3M3 11h18M5 19h14a2 2 0 002-2V7H3v10a2 2 0 002 2z" />
-                                    </svg>
-                                    <p>
-                                        {new Date(order?.date).toLocaleDateString('en-GB').replace(/\//g, '-')}
-                                    </p>
+                                    <div className="bg-red-500/10 text-red-600 p-2 rounded-lg">
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                            <path d="M8 7V3m8 4V3M3 11h18M5 19h14a2 2 0 002-2V7H3v10a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">Order Date</p>
+                                        <p className="text-sm">
+                                            {new Date(order.date).toLocaleDateString('en-GB').replace(/\//g, '-')}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="mt-5 flex flex-wrap gap-4">
+                            {/* Action Buttons */}
+                            <div className="flex flex-col sm:flex-row sm:flex-wrap sm:justify-start items-center gap-3 mt-3">
                                 <button
-                                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl transition duration-200 shadow-md"
                                     onClick={() => setSelectedOrder(order)}
+                                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition"
                                 >
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                         <path d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -638,12 +682,12 @@ const OrderDelivery = () => {
                                 </button>
 
                                 <button
-                                    className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-2.5 rounded-xl transition duration-200 shadow-md"
                                     onClick={() => {
                                         setSelectedOrderDetails(order);
                                         setSelectedProducts(order.products);
                                         initializeDeliveryQuantities(order.products);
                                     }}
+                                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold transition"
                                 >
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                         <path d="M3 7h18M3 12h18M3 17h18" />
@@ -659,17 +703,25 @@ const OrderDelivery = () => {
             {/* Modal for Assign Person Info */}
             {selectedOrder && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-96 text-center">
                         <h2 className="text-lg font-bold mb-4">Assign Person Info</h2>
-                        <p>
-                            <strong>Ordered By:</strong> {selectedOrder.orderedBy}
-                        </p>
-                        <p>
-                            <strong>Area Manager:</strong> {selectedOrder.areaManager}
-                        </p>
-                        <p>
-                            <strong>Zonal Manager:</strong> {selectedOrder.zonalManager}
-                        </p>
+                        <hr />
+                        <div className="space-y-2 text-gray-800 dark:text-gray-100 my-3">
+                            <div>
+                                <p className="text-gray-500 dark:text-gray-400 mb-1">Ordered By</p>
+                                <p className="font-medium">{selectedOrder.orderedBy}</p>
+                            </div>
+
+                            <div>
+                                <p className="text-gray-500 dark:text-gray-400 mb-1">Area Manager</p>
+                                <p className="font-medium">{selectedOrder.areaManager}</p>
+                            </div>
+
+                            <div>
+                                <p className="text-gray-500 dark:text-gray-400 mb-1">Zonal Manager</p>
+                                <p className="font-medium">{selectedOrder.zonalManager}</p>
+                            </div>
+                        </div>
                         <button
                             className="bg-red-500 text-white px-4 py-2 rounded mt-4"
                             onClick={() => setSelectedOrder(null)}
@@ -685,6 +737,7 @@ const OrderDelivery = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                     <div className="bg-white p-6 rounded-lg shadow-lg w-[800px]">
                         <h2 className="text-lg font-bold mb-4">Ordered Products</h2>
+                        <hr />
                         <table className="w-full text-left">
                             <thead>
                                 <tr className="border-b">
