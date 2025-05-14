@@ -365,7 +365,7 @@ const OrderDelivery = () => {
                     &&
                     order.payMode === "Cash"
                     &&
-                    order.status.toLowerCase() !== "paid"
+                    !["paid", "pending"].includes(order.status.toLowerCase())
             );
 
             if (hasCashOrderToday) {
@@ -536,7 +536,7 @@ const OrderDelivery = () => {
                                 &&
                                 order.payMode === "Cash"
                                 &&
-                                order.status.toLowerCase() !== "paid"
+                                !["paid", "pending"].includes(order.status.toLowerCase())
                         );
 
                         if (hasCashOrderToday) {
