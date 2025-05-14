@@ -15,13 +15,13 @@ const PlaceOrder = () => {
     const { user } = useAuth();
     const baseUrl = useApiConfig();
 
-    const { register, handleSubmit, reset, formState: { errors } } = useForm();
+    const { register, handleSubmit, reset, getValues, formState: { errors } } = useForm();
 
     const [allUsers] = useAllUsers();
     const [singleUser] = useSingleUser();
     const [pharmacies] = useCustomer();
     const [products] = useDepotProducts();
-    const [orders] = useOrders();
+    const [orders, , refetch] = useOrders();
 
     // const [filteredPharmacies, setFilteredPharmacies] = useState([]);
     const [selectedPharmacy, setSelectedPharmacy] = useState({});
@@ -169,28 +169,21 @@ const PlaceOrder = () => {
         axios.post(`${baseUrl}/orders`, newOrder)
             .then(data => {
                 if (data.data.insertedId) {
+                    refetch();
                     reset();
+                    setProductQuantities({});
+                    setReceiptProducts([]);
+
                     Swal.fire({
                         icon: "success",
                         title: "Order successfully placed.",
                         showConfirmButton: true,
-                        // timer: 1000
                     });
                 }
             })
-
-        reset();
-        setProductQuantities({});
-        setReceiptProducts([]);
-        window.location.reload();
     }
 
     const onSubmit = (data) => {
-        if (!selectedPharmacy) {
-            alert("Please select a pharmacy.");
-            return;
-        }
-
         const orderAlreadyPending = orders.some(
             order =>
                 order.pharmacyId === selectedPharmacy.customerId
@@ -200,8 +193,7 @@ const PlaceOrder = () => {
 
         if (!orderAlreadyPending) {
             makeOrder(data);
-        }
-        else {
+        } else {
             Swal.fire({
                 icon: "error",
                 title: "Order Blocked",
@@ -459,7 +451,7 @@ const PlaceOrder = () => {
                                     className="border-gray-500 bg-white border p-2 text-sm"
                                 >
                                     <option value="">~~ Select a customer ~~</option>
-                                    {userPharmacies.map(pharmacy => (
+                                    {userPharmacies?.map(pharmacy => (
                                         <option key={pharmacy._id} value={pharmacy._id}>
                                             {pharmacy.name} - {pharmacy.customerId}
                                         </option>
@@ -475,7 +467,7 @@ const PlaceOrder = () => {
                                     className="border-gray-500 bg-white border p-2 text-sm"
                                 >
                                     <option value="">~~ Select a Pay Mode ~~</option>
-                                    {selectedPharmacy.payMode?.map((mode) => (
+                                    {selectedPharmacy?.payMode?.map((mode) => (
                                         <option key={mode} value={mode}>
                                             {mode}
                                         </option>
@@ -486,7 +478,29 @@ const PlaceOrder = () => {
 
                             <button
                                 type="button"
-                                onClick={() => setIsModalOpen(true)}
+                                onClick={() => {
+                                    const { pharmId, payMode } = getValues();
+
+                                    if (!pharmId) {
+                                        Swal.fire({
+                                            icon: "error",
+                                            title: "Customer Missing",
+                                            text: "Please, select a customer first",
+                                            showConfirmButton: true
+                                        });
+                                        return;
+                                    } else if (!payMode) {
+                                        Swal.fire({
+                                            icon: "error",
+                                            title: "PayMode Missing",
+                                            text: "Please, select a payment mode",
+                                            showConfirmButton: true
+                                        });
+                                        return;
+                                    } else {
+                                        setIsModalOpen(true);
+                                    }
+                                }}
                                 className="bg-blue-500 text-white mt-5 p-2 rounded"
                             >
                                 Add Products
