@@ -422,7 +422,7 @@ const OrderDelivery = () => {
 
                 const availableCrLimit = selectedPharmacy?.crLimit - creditDues;
 
-                if (availableCrLimit > 0 && availableCrLimit >= selectedOrderDetails.totalPrice) {
+                if (availableCrLimit > 0 && availableCrLimit >= selectedOrderDetails.totalPayable) {
                     handleDeliverySubmit();
                 } else {
                     Swal.fire({
@@ -504,7 +504,7 @@ const OrderDelivery = () => {
                                     title: "Order Not Allowed",
                                     text: "An STC order has already been placed this month. You can't place another."
                                 });
-                            } else if (selectedPharmacy?.crLimit >= selectedOrderDetails.totalPrice) {
+                            } else if (selectedPharmacy?.crLimit >= selectedOrderDetails.totalPayable) {
                                 handleDeliverySubmit();
                             } else {
                                 Swal.fire({

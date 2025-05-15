@@ -104,12 +104,17 @@ const MyOrderscard = ({ idx, myOrder, refetch }) => {
             const totalOrderUnits = filteredProducts.reduce((sum, product) => sum + product.quantity, 0);
             const totalOrderedTradePrice = filteredProducts.reduce((sum, product) => sum + (product.quantity * product.tradePrice), 0);
 
+            const pharmacyDiscount = orderData?.discount;
+            const lessDiscount = Number(totalOrderedTradePrice * (pharmacyDiscount / 100));
+            const totalPayable = Number(totalOrderedTradePrice - lessDiscount);
+
             const updatedOrder = {
                 ...orderData,
                 products: filteredProducts,
                 totalProduct: totalOrderedProducts,
                 totalUnit: totalOrderUnits,
                 totalPrice: totalOrderedTradePrice,
+                totalPayable,
                 date: getTodayDate()
             };
             // console.log(updatedOrder);

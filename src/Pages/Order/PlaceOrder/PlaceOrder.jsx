@@ -115,7 +115,7 @@ const PlaceOrder = () => {
     )
 
     const pharmacyDiscount = pharmacies
-        .find(pharmacy => pharmacy.name === selectedPharmacy?.name)?.discount;
+        .find(pharmacy => pharmacy.customerId === selectedPharmacy?.customerId)?.discount;
 
     const lessDiscount = Number(totalPrice * (pharmacyDiscount / 100));
 
@@ -161,6 +161,7 @@ const PlaceOrder = () => {
             totalUnit: Number(totalOrderUnits),
             totalPrice: Number(totalOrderedTradePrice),
             discount: Number(pharmacyDiscount) || 0,
+            totalPayable,
             payMode: data.payMode,
             status: "pending",
             date: getTodayDate()
