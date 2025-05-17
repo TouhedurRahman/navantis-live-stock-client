@@ -5,6 +5,12 @@ const OrderDespatchSheet = ({ filteredOrders = [], firstDate, lastDate }) => {
     const [orders, setOrders] = useState(filteredOrders);
     const [customers] = useCustomer();
 
+    const now = new Date().toLocaleString("en-US", {
+        year: "numeric", month: "long", day: "numeric",
+        hour: "2-digit", minute: "2-digit", second: "2-digit",
+        hour12: true
+    });
+
     useEffect(() => {
         setOrders(filteredOrders);
     }, [filteredOrders]);
@@ -37,6 +43,9 @@ const OrderDespatchSheet = ({ filteredOrders = [], firstDate, lastDate }) => {
                 :
                 `Date <b>${firstDate}</b>`
             }</p>
+                </div>
+                <div class="mb-1 text-sm text-gray-400 text-right italic">
+                    <h3>Printed on ${now}</h3>
                 </div>
                 <div style="margin-bottom: 20px; padding: 5px 15px; border: 1px solid #B2BEB5; border-radius: 3px;">
                     <p style="font-size: 11px; font-weight: bold; text-align: center; text-transform: uppercase;">
@@ -150,7 +159,7 @@ const OrderDespatchSheet = ({ filteredOrders = [], firstDate, lastDate }) => {
                                 white-space: nowrap;
                             }
                             /* Footer styles for all pages */
-                            body::after {
+                            /* body::after {
                                 content: "Printed on ${finalFormattedDateTime}";
                                 position: fixed;
                                 bottom: 0;
@@ -160,7 +169,7 @@ const OrderDespatchSheet = ({ filteredOrders = [], firstDate, lastDate }) => {
                                 font-size: 12px;
                                 font-style: italic;
                                 color: #555;
-                            }
+                            } */
                         }
                     </style>
                 </head>

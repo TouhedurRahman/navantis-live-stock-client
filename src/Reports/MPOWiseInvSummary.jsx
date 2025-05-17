@@ -7,6 +7,12 @@ const MPOWiseInvSummary = ({ filteredOrders = [], firstDate, lastDate }) => {
     const [customers] = useCustomer();
     const [allUsers] = useAllUsers();
 
+    const now = new Date().toLocaleString("en-US", {
+        year: "numeric", month: "long", day: "numeric",
+        hour: "2-digit", minute: "2-digit", second: "2-digit",
+        hour12: true
+    });
+
     const orderByPersonEmail = orders.find(order => order.email);
     const orderByPersonDetails = orderByPersonEmail ? allUsers.find(u => u.email === orderByPersonEmail.email) : null;
 
@@ -43,6 +49,9 @@ const MPOWiseInvSummary = ({ filteredOrders = [], firstDate, lastDate }) => {
                 `Date <b>${firstDate}</b>`
             }
             </p>
+            </div>
+            <div class="mb-1 text-sm text-gray-400 text-right italic">
+                    <h3>Printed on ${now}</h3>
             </div>
             <div style="display: flex; flex-direction: column; gap: 2px; font-size: 11px; font-weight: 600; margin-bottom: 10px;">
                 <div class="grid grid-cols-[max-content_15px_auto] text-[11px] gap-y-1">
@@ -179,7 +188,7 @@ const MPOWiseInvSummary = ({ filteredOrders = [], firstDate, lastDate }) => {
                                 white-space: nowrap;
                             }
                             /* Footer styles for all pages */
-                            body::after {
+                            /* body::after {
                                 content: "Printed on ${finalFormattedDateTime}";
                                 position: fixed;
                                 bottom: 0;
@@ -189,7 +198,7 @@ const MPOWiseInvSummary = ({ filteredOrders = [], firstDate, lastDate }) => {
                                 font-size: 12px;
                                 font-style: italic;
                                 color: #555;
-                            }
+                            } */
                         }
                     </style>
                 </head>
