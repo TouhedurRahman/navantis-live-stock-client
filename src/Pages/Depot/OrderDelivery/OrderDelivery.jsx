@@ -257,6 +257,7 @@ const OrderDelivery = () => {
 
             totalPrice: Number(totalPrice),
             totalPayable: Number(totalPayable),
+            soldAmount: Number(totalPrice),
             status: "delivered",
             date: getTodayDate()
         };

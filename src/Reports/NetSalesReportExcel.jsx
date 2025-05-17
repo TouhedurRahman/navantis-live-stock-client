@@ -66,7 +66,7 @@ const NetSalesReportExcel = ({ reportType, filteredOrders = [], orderReturns = [
         orders.forEach(order => {
             const areaManager = order?.areaManager || "Unknown Area Manager";
             const mpo = order?.orderedBy || "Unknown MPO";
-            const soldAmount = Number(order.totalPrice || 0);
+            const soldAmount = Number(order.soldAmount || 0);
 
             if (!groupedOrders[areaManager]) {
                 groupedOrders[areaManager] = {};
