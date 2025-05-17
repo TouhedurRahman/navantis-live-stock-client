@@ -193,7 +193,12 @@ const WarehouseStockOutInvoice = ({ invoiceWithAP, firstDate, lastDate, totalUni
         `);
 
         newWindow.document.close();
-        newWindow.print();
+        newWindow.onload = () => {
+            setTimeout(() => {
+                newWindow.focus();
+                newWindow.print();
+            }, 500);
+        };
     };
 
     return handlePrint;

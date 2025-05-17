@@ -161,7 +161,12 @@ const ExpiredReturnsInvoice = ({ firstDate, lastDate, totalUniqueProducts, total
         `);
 
         newWindow.document.close();
-        newWindow.print();
+        newWindow.onload = () => {
+            setTimeout(() => {
+                newWindow.focus();
+                newWindow.print();
+            }, 500);
+        };
     };
 
     return handlePrint;

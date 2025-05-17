@@ -128,10 +128,11 @@ const OrderInvoice = ({ order }) => {
                             <p class="m-0 text-lg font-bold">INVOICE</p>
                         </td>
                         <td class="p-2 border border-[#B2BEB5] text-center w-1/3">
-                            <div class="flex justify-between items-center">
-                                <img src='/images/NPL-Updated-Logo.png' class="w-20 h-auto mr-1">
-                                <img src='/images/noiderma-logo.png' class="w-20 h-auto mr-1">
-                                <img src='/images/bionike-logo.png' alt="Logo 3" class="w-20 h-auto">
+                            <div class="flex justify-center items-center">
+                                <img src='/images/combined-logo.png' class="w-full h-auto mx-1">
+                                <!-- <img src='/images/NPL-Updated-Logo.png' class="w-20 h-auto mr-1"> -->
+                                <!-- <img src='/images/noiderma-logo.png' class="w-20 h-auto mr-1"> -->
+                                <!-- <img src='/images/bionike-logo.png' alt="Logo 3" class="w-20 h-auto"> -->
                             </div>
                         </td>
                     </tr>
@@ -408,7 +409,12 @@ const OrderInvoice = ({ order }) => {
         `);
 
         newWindow.document.close();
-        newWindow.print();
+        newWindow.onload = () => {
+            setTimeout(() => {
+                newWindow.focus();
+                newWindow.print();
+            }, 500);
+        };
     };
 
     return handlePrint;

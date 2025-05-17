@@ -201,7 +201,12 @@ const MPOWiseInvSummary = ({ filteredOrders = [], firstDate, lastDate }) => {
         `);
 
         newWindow.document.close();
-        newWindow.print();
+        newWindow.onload = () => {
+            setTimeout(() => {
+                newWindow.focus();
+                newWindow.print();
+            }, 500);
+        };
     };
 
     return handlePrint;
