@@ -167,6 +167,18 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
     const handleReturnSubmit = async () => {
         if (!selectedOrder) return;
 
+        const hasValidReturn = Object.values(returnData).some(qty => qty > 0);
+
+        if (!hasValidReturn) {
+            Swal.fire({
+                icon: "error",
+                title: "Invalid Quantity",
+                text: "Please enter a return quantity greater than zero.",
+                showConfirmButton: true
+            });
+            return;
+        }
+
         const productsReturned = [];
         const updatedProducts = selectedOrder.products
             .map((product) => {
@@ -355,6 +367,7 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
                                             value={returnData[`${product.productCode}-${product.batch}`] || 0}
                                             onChange={(e) => handleReturnChange(product.productCode, product.batch, parseInt(e.target.value) || 0)}
                                             className="w-1/2 h-7 text-center mt-1 px-3 py-2 border rounded-md transition"
+                                            onWheel={(e) => e.target.blur()}
                                         />
                                     </span>
                                 </label>
