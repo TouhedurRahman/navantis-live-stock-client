@@ -159,7 +159,7 @@ const ReturnedOrders = () => {
                     :
                     <>
                         <p className="text-gray-600 font-mono font-extrabold">
-                            No paid order(s) found.
+                            No full returned order(s) found.
                         </p>
                     </>
             }
