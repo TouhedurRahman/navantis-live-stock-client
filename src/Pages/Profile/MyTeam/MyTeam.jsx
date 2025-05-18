@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
 import { ImSearch } from 'react-icons/im';
 import useAllUsers from '../../../Hooks/useAllUsers';
@@ -15,12 +15,17 @@ const MyTeam = () => {
 
     const currentUserInfos = allUsers.find(allu => allu.email === user?.email);
 
+    const isEmptyRelation = value =>
+        value === null || value === undefined || value === "Vacant";
+
     const myTeamMembers = currentUserInfos
-        ? !currentUserInfos.parentId && !currentUserInfos.grandParentId
-            ? allUsers.filter(allu =>
-                allu.grandParentId === currentUserInfos._id || allu.parentId === currentUserInfos._id
+        ? isEmptyRelation(currentUserInfos.parentId) && isEmptyRelation(currentUserInfos.grandParentId)
+            ? allUsers.filter(
+                allu =>
+                    allu.grandParentId === currentUserInfos._id ||
+                    allu.parentId === currentUserInfos._id
             )
-            : currentUserInfos.parentId && !currentUserInfos.grandParentId
+            : !isEmptyRelation(currentUserInfos.parentId) && isEmptyRelation(currentUserInfos.grandParentId)
                 ? allUsers.filter(allu => allu.parentId === currentUserInfos._id)
                 : []
         : [];
