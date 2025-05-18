@@ -345,7 +345,7 @@ const OrderDelivery = () => {
                 &&
                 order.pharmacyId === selectedOrderDetails.pharmacyId
                 &&
-                order.status !== "paid"
+                !["paid", "returned"].includes(order.status.toLowerCase())
         );
 
         if (selectedOrderDetails.payMode === "Cash" && !selectedPharmacy?.payMode?.includes("STC")) {
@@ -376,7 +376,7 @@ const OrderDelivery = () => {
                     &&
                     order.payMode === "Cash"
                     &&
-                    !["paid", "pending"].includes(order.status.toLowerCase())
+                    !["paid", "pending", "returned"].includes(order.status.toLowerCase())
             );
 
             if (hasCashOrderToday) {
@@ -549,7 +549,7 @@ const OrderDelivery = () => {
                                 &&
                                 order.payMode === "Cash"
                                 &&
-                                !["paid", "pending"].includes(order.status.toLowerCase())
+                                !["paid", "pending", "returned"].includes(order.status.toLowerCase())
                         );
 
                         if (hasCashOrderToday) {

@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import Swal from "sweetalert2";
 import useApiConfig from "../../Hooks/useApiConfig";
@@ -80,9 +80,14 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
         mutationFn: async (data) => {
             const { _id, ...orderData } = data;
 
-            const updatedOrder = {
-                ...orderData,
-            };
+            const updatedOrder = data.totalUnit !== 0
+                ?
+                { ...orderData }
+                :
+                {
+                    ...orderData,
+                    status: 'returned'
+                }
 
             const response = await axios.patch(`${baseUrl}/order/${_id}`, updatedOrder);
             return response.data;
@@ -147,7 +152,7 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
         },
     });
 
-    const deleteOrderMutation = useMutation({
+    /* const deleteOrderMutation = useMutation({
         mutationFn: async (data) => {
             const { _id } = data;
 
@@ -157,7 +162,7 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
         onError: (error) => {
             console.log("Error delete order: ", error);
         }
-    });
+    }); */
 
     const handleReturnSubmit = async () => {
         if (!selectedOrder) return;
@@ -245,9 +250,9 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
                 addReturnedProductsMutation.mutateAsync(returnedProducts)
             ];
 
-            if (updatedOrder.totalUnit === 0) {
+            /* if (updatedOrder.totalUnit === 0) {
                 mutations.push(deleteOrderMutation.mutateAsync(updatedOrder));
-            }
+            } */
 
             await Promise.all(mutations);
 

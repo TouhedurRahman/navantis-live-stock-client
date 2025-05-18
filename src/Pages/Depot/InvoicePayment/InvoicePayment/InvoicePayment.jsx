@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import React, { useState } from "react";
+import { useState } from "react";
 import Swal from "sweetalert2";
 import PageTitle from "../../../../Components/PageTitle/PageTitle";
 import useApiConfig from "../../../../Hooks/useApiConfig";
@@ -9,6 +9,7 @@ import DuePayment from "../DuePayment/DuePayment";
 import OrderInvoice from "../OrderInvoice/OrderInvoice";
 import OutstandingPayment from "../OutstandingPayment/OutstandingPayment";
 import PaidOrders from "../PaidOrders/PaidOrders";
+import ReturnedOrders from "../ReturnedOrders/ReturnedOrders";
 
 const InvoicePayment = () => {
     const baseUrl = useApiConfig();
@@ -32,6 +33,8 @@ const InvoicePayment = () => {
                 return <OutstandingPayment />;
             case "paid":
                 return <PaidOrders />;
+            case "returned":
+                return <ReturnedOrders />;
             default:
                 return null;
         }
@@ -206,6 +209,7 @@ const InvoicePayment = () => {
                             { label: "DUE", value: "due", color: "bg-red-500", hover: "hover:bg-red-700" },
                             { label: "Outstanding", value: "outstanding", color: "bg-yellow-500", hover: "hover:bg-yellow-700" },
                             { label: "Paid", value: "paid", color: "bg-green-500", hover: "hover:bg-green-700" },
+                            { label: "Returned", value: "returned", color: "bg-orange-500", hover: "hover:bg-orange-700" },
                         ].map((button) => (
                             <button
                                 key={button.value}
