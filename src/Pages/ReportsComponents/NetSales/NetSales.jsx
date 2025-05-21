@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { FaFileExcel, FaFilePdf } from "react-icons/fa6";
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useCustomer from '../../../Hooks/useCustomer';
@@ -16,6 +16,7 @@ const NetSales = () => {
     const [month, setMonth] = useState('');
     const [fromDate, setFromDate] = useState('');
     const [toDate, setToDate] = useState('');
+    const [productKey, setProductKey] = useState('');
     const [orderedBy, setOrderedBy] = useState('');
     const [areaManager, setAreaManager] = useState('');
     const [customer, setCustomer] = useState('');
@@ -26,7 +27,7 @@ const NetSales = () => {
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: currentYear - 1999 }, (_, i) => currentYear - i);
 
-    const filteredOrders = useMemo(() => {
+    /* const filteredOrders = useMemo(() => {
         return deliveredOrders.filter(order => {
             const orderDate = new Date(order.date);
             const matchesYear = year ? orderDate.getFullYear() === parseInt(year) : true;
@@ -40,7 +41,44 @@ const NetSales = () => {
 
             return matchesYear && matchesMonth && matchesDateRange && matchesOrderedBy && matchesAreaManager && matchesCustomer;
         });
-    }, [orders, year, month, fromDate, toDate, orderedBy, areaManager, customer]);
+    }, [orders, year, month, fromDate, toDate, orderedBy, areaManager, customer]); */
+
+    const filteredOrders = useMemo(() => {
+        return deliveredOrders
+            .map(order => {
+                const orderDate = new Date(order.date);
+                const matchesYear = year ? orderDate.getFullYear() === parseInt(year) : true;
+                const matchesMonth = month ? orderDate.getMonth() + 1 === parseInt(month) : true;
+                const matchesDateRange = fromDate && toDate
+                    ? orderDate >= new Date(fromDate) && orderDate <= new Date(toDate)
+                    : true;
+                const matchesOrderedBy = orderedBy ? order.orderedBy?.toLowerCase().includes(orderedBy.toLowerCase()) : true;
+                const matchesAreaManager = areaManager ? order.areaManager?.toLowerCase().includes(areaManager.toLowerCase()) : true;
+                const matchesCustomer = customer ? order.pharmacyId?.toLowerCase().includes(customer.toLowerCase()) : true;
+
+                if (!(matchesYear && matchesMonth && matchesDateRange && matchesOrderedBy && matchesAreaManager && matchesCustomer)) {
+                    return null;
+                }
+
+                let filteredProducts = order.products;
+                if (productKey) {
+                    const [filterName, filterWeight] = productKey.toLowerCase().split('|').map(s => s.trim());
+                    filteredProducts = order.products?.filter(p => {
+                        const name = p.name?.trim().toLowerCase() || '';
+                        const weight = p.netWeight?.trim().toLowerCase() || '';
+                        return name === filterName && weight === filterWeight;
+                    });
+                }
+
+                if (filteredProducts?.length === 0) return null;
+
+                return {
+                    ...order,
+                    products: filteredProducts
+                };
+            })
+            .filter(Boolean);
+    }, [orders, year, month, fromDate, toDate, productKey, orderedBy, areaManager, customer]);
 
     const orderReturns = useMemo(() => {
         return returns.filter(ret => {
@@ -58,12 +96,35 @@ const NetSales = () => {
 
         const sortedDates = orders.map(order => new Date(order.date)).sort((a, b) => a - b);
         const firstDate = sortedDates[0].toLocaleDateString('en-GB').replace(/\//g, '-');
-        const lastDate = sortedDates[sortedDates.length - 1].toLocaleDateString('en-GB').replace(/\//g, '-');
+        // const lastDate = sortedDates[sortedDates.length - 1].toLocaleDateString('en-GB').replace(/\//g, '-');
+        const today = new Date();
+        const lastDate = today.toLocaleDateString('en-GB').replace(/\//g, '-');
 
         return { firstDate, lastDate };
     };
 
     const { firstDate, lastDate } = findDateRange(filteredOrders);
+
+    const uniqueProducts = useMemo(() => {
+        const productMap = new Map();
+
+        deliveredOrders.forEach(order => {
+            order.products?.forEach(product => {
+                const name = product.name?.trim().toLowerCase() || '';
+                const netWeight = product.netWeight?.trim().toLowerCase() || '';
+                const key = `${name}|${netWeight}`;
+
+                if (!productMap.has(key)) {
+                    productMap.set(key, {
+                        name: product.name?.trim() || '',
+                        netWeight: product.netWeight?.trim() || '',
+                    });
+                }
+            });
+        });
+
+        return Array.from(productMap.values());
+    }, [deliveredOrders]);
 
     const uniqueOrderedBy = useMemo(() => {
         const orderByMap = new Map();
@@ -134,6 +195,7 @@ const NetSales = () => {
         setMonth('');
         setFromDate('');
         setToDate('');
+        setProductKey('');
         setOrderedBy('');
         setAreaManager('');
         setCustomer('');
@@ -229,6 +291,29 @@ const NetSales = () => {
                                 onChange={(e) => setToDate(e.target.value)}
                                 className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
                             />
+                        </div>
+
+                        {/* Product Filter */}
+                        <div className='col-span-1 md:col-span-2'>
+                            <label className="block font-semibold text-gray-700 mb-1">Product</label>
+                            <select
+                                value={productKey}
+                                onChange={(e) => setProductKey(e.target.value)}
+                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
+                            >
+                                <option value="">Select a Product</option>
+                                {uniqueProducts.map((p) => {
+                                    const name = p.name?.trim().toLowerCase() || '';
+                                    const weight = p.netWeight?.trim().toLowerCase() || '';
+                                    const key = `${name}|${weight}`;
+
+                                    return (
+                                        <option key={key} value={key}>
+                                            {p.name} - {p.netWeight}
+                                        </option>
+                                    );
+                                })}
+                            </select>
                         </div>
 
                         {/* Ordered By Filter */}

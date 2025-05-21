@@ -95,6 +95,7 @@ const ProductSummaryReport = ({ reportType, filteredOrders = [], firstDate, last
                         groupedOrders[areaManager][mpo].products[productKey] = {
                             productCode: product.productCode,
                             productName: product.name,
+                            netWeight: product.netWeight,
                             quantity: 0,
                             totalPrice: 0
                         };
@@ -132,8 +133,9 @@ const ProductSummaryReport = ({ reportType, filteredOrders = [], firstDate, last
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
                         <thead>
                             <tr>
-                                <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 20%";>Product Code</th>
-                                <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 40%";">Product Name</th>
+                                <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 15%";>Product Code</th>
+                                <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 35%";">Product Name</th>
+                                <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 10%";text-align: center;">Pack Size</th>
                                 <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 20%";">Quantity</th>
                                 <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 20%";">Total Price</th>
                             </tr>
@@ -143,6 +145,7 @@ const ProductSummaryReport = ({ reportType, filteredOrders = [], firstDate, last
                                 <tr>
                                     <td style="padding: 8px; border: 1px solid #ccc;">${product.productCode}</td>
                                     <td style="padding: 8px; border: 1px solid #ccc;">${product.productName}</td>
+                                    <td style="padding: 8px; border: 1px solid #ccc;text-align: center;">${product.netWeight}</td>
                                     <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${product.quantity}</td>
                                     <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
                                         ${product.totalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
@@ -150,7 +153,7 @@ const ProductSummaryReport = ({ reportType, filteredOrders = [], firstDate, last
                                 </tr>
                             `).join('')}
                             <tr>
-                                <td colspan="2" style="padding: 8px; border: 1px solid #aaa; font-weight: bold;">MPO/SCC/ASE Total</td>
+                                <td colspan="3" style="padding: 8px; border: 1px solid #aaa; font-weight: bold;">MPO/SCC/ASE Total</td>
                                 <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right;">
                                     ${mpoTotalQty.toLocaleString('en-IN')}
                                 </td>
@@ -174,7 +177,7 @@ const ProductSummaryReport = ({ reportType, filteredOrders = [], firstDate, last
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
                         <tbody>
                             <tr>
-                                <td colspan="2" style="padding: 8px; border: 1px solid #aaa; font-weight: bold; width: 60%";">Area Manager Total</td>
+                                <td colspan="3" style="padding: 8px; border: 1px solid #aaa; font-weight: bold; width: 60%";">Area Manager Total</td>
                                 <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right; width: 20%";">
                                     ${areaTotalQty.toLocaleString('en-IN')}
                                 </td>
@@ -192,7 +195,7 @@ const ProductSummaryReport = ({ reportType, filteredOrders = [], firstDate, last
             <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
                 <tbody>
                     <tr>
-                        <td colspan="2" style="padding: 8px; border: 1px solid #aaa; font-weight: bold; width: 60%";">Grand Total</td>
+                        <td colspan="3" style="padding: 8px; border: 1px solid #aaa; font-weight: bold; width: 60%";">Grand Total</td>
                         <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right; width: 20%";">
                             ${grandTotalQty.toLocaleString('en-IN')}
                         </td>
