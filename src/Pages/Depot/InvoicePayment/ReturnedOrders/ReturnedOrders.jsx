@@ -98,7 +98,7 @@ const ReturnedOrders = () => {
                                                         <th className='text-left'>Ordered by</th>
                                                         <th className='text-left'>Customer</th>
                                                         <th className='text-right'>Total Products</th>
-                                                        <th className='text-right'>Total Unit</th>
+                                                        <th className='text-right'>Total Payable</th>
                                                         <th className="text-center">Action</th>
                                                     </tr>
                                                 </thead>

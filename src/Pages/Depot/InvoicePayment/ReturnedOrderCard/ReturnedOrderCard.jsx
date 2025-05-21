@@ -28,7 +28,7 @@ const ReturnedOrderCard = ({ idx, order }) => {
                     {order.totalProduct}
                 </td>
                 <td className='text-right'>
-                    {order.totalUnit}
+                    {order.totalPayable}
                 </td>
                 <th>
                     <div className="flex justify-center items-center space-x-4 text-md">
