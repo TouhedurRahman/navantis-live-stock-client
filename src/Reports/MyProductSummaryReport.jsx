@@ -135,7 +135,7 @@ const MyProductSummaryReport = ({ reportType, filteredOrders = [], firstDate, la
                             <tr>
                                 <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 15%";>Product Code</th>
                                 <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 35%";">Product Name</th>
-                                <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 10%";text-align: center;">Pack Size</th>
+                                <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: center; width: 10%";">Pack Size</th>
                                 <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 20%";">Quantity</th>
                             </tr>
                         </thead>
