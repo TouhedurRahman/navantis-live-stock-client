@@ -89,7 +89,7 @@ const useMenuConfig = () => {
         accounts: {
             icon: <MdAccountBalance className="mr-2" />,
             links: [
-                { to: '/acc-report', icon: <TbReportAnalytics className='me-2' />, label: 'Reports' }
+                { to: '/daily-collections', icon: <TbReportAnalytics className='me-2' />, label: 'Daily Collections' }
             ],
         },
 
