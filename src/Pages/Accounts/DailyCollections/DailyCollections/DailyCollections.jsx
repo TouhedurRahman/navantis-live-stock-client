@@ -275,21 +275,21 @@ const DailyCollections = () => {
                                 onChange={(e) => setReportType(e.target.value)}
                                 className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
                             >
-                                <option value="Net sales">Daily Collections</option>
+                                <option value="Daily Collections">Daily Collections</option>
                                 {
                                     orderedBy !== ''
                                     &&
-                                    < option value="MPO wise Net Sales">MPO wise Daily Collections</option>
+                                    < option value="MPO wise Daily Collections">MPO wise Daily Collections</option>
                                 }
                                 {
                                     areaManager !== ''
                                     &&
-                                    < option value="Area Manager wise Net Sales">Area Manager wise Daily Collections</option>
+                                    < option value="Area Manager wise Daily Collections">Area Manager wise Daily Collections</option>
                                 }
                                 {
                                     customer !== ''
                                     &&
-                                    <option value="Customer wise Net Sales">Customer wise Daily Collections</option>
+                                    <option value="Customer wise Daily Collections">Customer wise Daily Collections</option>
                                 }
                             </select>
                         </div>
