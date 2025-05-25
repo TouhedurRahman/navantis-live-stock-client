@@ -111,6 +111,8 @@ const DailyCollectionsReport = ({ reportType, filteredOrders = [], firstDate, la
                                 const cheque = pharmacy.paymentType === "cheque" ? pharmacy.paidAmount : 0;
                                 const bank = pharmacy.paymentType === "bank" ? pharmacy.paidAmount : 0;
 
+                                const total = cash + cheque + bank;
+
                                 mpoTotals.cash += cash;
                                 mpoTotals.cheque += cheque;
                                 mpoTotals.bank += bank;
@@ -122,10 +124,13 @@ const DailyCollectionsReport = ({ reportType, filteredOrders = [], firstDate, la
                                         <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${cash ? cash.toLocaleString("en-IN", { minimumFractionDigits: 2 }) : ""}</td>
                                         <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${cheque ? cheque.toLocaleString("en-IN", { minimumFractionDigits: 2 }) : ""}</td>
                                         <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${bank ? bank.toLocaleString("en-IN", { minimumFractionDigits: 2 }) : ""}</td>
+                                        <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${total ? total.toLocaleString("en-IN", { minimumFractionDigits: 2 }) : ""}</td>
                                     </tr>
                                 `;
                             })
                             .join("");
+
+                        const mpoTotalAll = mpoTotals.cash + mpoTotals.cheque + mpoTotals.bank;
 
                         areaManagerTotals.cash += mpoTotals.cash;
                         areaManagerTotals.cheque += mpoTotals.cheque;
@@ -137,11 +142,12 @@ const DailyCollectionsReport = ({ reportType, filteredOrders = [], firstDate, la
                                 <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; table-layout: fixed;">
                                     <thead>
                                         <tr>
-                                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left;">Pharmacy ID</th>
-                                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left;">Pharmacy Name</th>
+                                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left;">Customer ID</th>
+                                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left;">Customer Name</th>
                                             <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Cash</th>
                                             <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Cheque</th>
                                             <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Bank</th>
+                                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Total</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -151,6 +157,7 @@ const DailyCollectionsReport = ({ reportType, filteredOrders = [], firstDate, la
                                             <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${mpoTotals.cash.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
                                             <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${mpoTotals.cheque.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
                                             <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${mpoTotals.bank.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${mpoTotalAll.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -158,6 +165,9 @@ const DailyCollectionsReport = ({ reportType, filteredOrders = [], firstDate, la
                         `;
                     })
                     .join("");
+
+
+                const areaTotalAll = areaManagerTotals.cash + areaManagerTotals.cheque + areaManagerTotals.bank;
 
                 grandTotals.cash += areaManagerTotals.cash;
                 grandTotals.cheque += areaManagerTotals.cheque;
@@ -178,6 +188,7 @@ const DailyCollectionsReport = ({ reportType, filteredOrders = [], firstDate, la
                                     <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${areaManagerTotals.cash.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
                                     <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${areaManagerTotals.cheque.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
                                     <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${areaManagerTotals.bank.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
+                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${areaTotalAll.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -185,6 +196,8 @@ const DailyCollectionsReport = ({ reportType, filteredOrders = [], firstDate, la
                 `;
             })
             .join("");
+
+        const grandTotalAll = grandTotals.cash + grandTotals.cheque + grandTotals.bank;
 
         const grandTotalHTML = `
             <table style="width: 100%; border-collapse: collapse; margin-top: 20px; table-layout: fixed;">
@@ -194,6 +207,7 @@ const DailyCollectionsReport = ({ reportType, filteredOrders = [], firstDate, la
                         <td style="padding: 10px; border: 1px solid #000; text-align: right;">${grandTotals.cash.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
                         <td style="padding: 10px; border: 1px solid #000; text-align: right;">${grandTotals.cheque.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
                         <td style="padding: 10px; border: 1px solid #000; text-align: right;">${grandTotals.bank.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
+                        <td style="padding: 10px; border: 1px solid #000; text-align: right;">${grandTotalAll.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
                     </tr>
                 </tbody>
             </table>
