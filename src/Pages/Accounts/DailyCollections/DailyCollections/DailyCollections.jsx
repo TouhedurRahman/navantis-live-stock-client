@@ -26,11 +26,12 @@ const DailyCollections = () => {
 
     const filteredOrders = useMemo(() => {
         return deliveredOrders.filter(order => {
-            const orderDate = new Date(order.date);
-            const matchesYear = year ? orderDate.getFullYear() === parseInt(year) : true;
-            const matchesMonth = month ? orderDate.getMonth() + 1 === parseInt(month) : true;
+            const latestPayment = order.payments?.[order.payments.length - 1];
+            const paidDate = latestPayment ? new Date(latestPayment.paidDate) : null;
+            const matchesYear = year ? paidDate?.getFullYear() === parseInt(year) : true;
+            const matchesMonth = month ? paidDate?.getMonth() + 1 === parseInt(month) : true;
             const matchesDateRange = fromDate && toDate
-                ? orderDate >= new Date(fromDate) && orderDate <= new Date(toDate)
+                ? paidDate && paidDate >= new Date(fromDate) && paidDate <= new Date(toDate)
                 : true;
             const matchesOrderedBy = orderedBy ? order.orderedBy?.toLowerCase().includes(orderedBy.toLowerCase()) : true;
             const matchesAreaManager = areaManager ? order.areaManager?.toLowerCase().includes(areaManager.toLowerCase()) : true;
@@ -38,19 +39,23 @@ const DailyCollections = () => {
 
             return matchesYear && matchesMonth && matchesDateRange && matchesOrderedBy && matchesAreaManager && matchesCustomer;
         });
-    }, [orders, year, month, fromDate, toDate, orderedBy, areaManager, customer]);
+    }, [deliveredOrders, year, month, fromDate, toDate, orderedBy, areaManager, customer]);
 
-    const findDateRange = (orders) => {
-        if (!orders.length) return { firstDate: null, lastDate: null };
+    const findPaidDateRange = (orders) => {
+        const paidDates = orders
+            .flatMap(order => order.payments?.map(p => new Date(p.paidDate)) || [])
+            .filter(date => !isNaN(date));
 
-        const sortedDates = orders.map(order => new Date(order.date)).sort((a, b) => a - b);
-        const firstDate = sortedDates[0].toLocaleDateString('en-GB').replace(/\//g, '-');
-        const lastDate = sortedDates[sortedDates.length - 1].toLocaleDateString('en-GB').replace(/\//g, '-');
+        if (!paidDates.length) return { firstDate: null, lastDate: null };
+
+        const sorted = paidDates.sort((a, b) => a - b);
+        const firstDate = sorted[0].toLocaleDateString('en-GB').replace(/\//g, '-');
+        const lastDate = sorted[sorted.length - 1].toLocaleDateString('en-GB').replace(/\//g, '-');
 
         return { firstDate, lastDate };
     };
 
-    const { firstDate, lastDate } = findDateRange(filteredOrders);
+    const { firstDate, lastDate } = findPaidDateRange(filteredOrders);
 
     const uniqueOrderedBy = useMemo(() => {
         const orderByMap = new Map();
