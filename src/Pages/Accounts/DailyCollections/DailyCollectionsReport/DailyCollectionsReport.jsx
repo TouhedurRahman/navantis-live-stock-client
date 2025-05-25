@@ -82,12 +82,21 @@ const DailyCollectionsReport = ({ reportType, filteredOrders = [], firstDate, la
 
             payments.forEach((payment) => {
                 if (payment.paid && payment.paymentType) {
-                    groupedOrders[areaManager][mpo].push({
-                        pharmacyId,
-                        pharmacyName,
-                        paymentType: payment.paymentType.toLowerCase(),
-                        paidAmount: Number(payment.paid),
-                    });
+                    const existing = groupedOrders[areaManager][mpo].find(p => p.pharmacyId === pharmacyId);
+
+                    if (existing) {
+                        const type = payment.paymentType.toLowerCase();
+                        existing[type] = (existing[type] || 0) + Number(payment.paid);
+                    } else {
+                        const type = payment.paymentType.toLowerCase();
+                        groupedOrders[areaManager][mpo].push({
+                            pharmacyId,
+                            pharmacyName,
+                            cash: type === "cash" ? Number(payment.paid) : 0,
+                            cheque: type === "cheque" ? Number(payment.paid) : 0,
+                            bank: type === "bank" ? Number(payment.paid) : 0,
+                        });
+                    }
                 }
             });
         });
@@ -107,9 +116,9 @@ const DailyCollectionsReport = ({ reportType, filteredOrders = [], firstDate, la
 
                         const rows = pharmacies
                             .map((pharmacy) => {
-                                const cash = pharmacy.paymentType === "cash" ? pharmacy.paidAmount : 0;
-                                const cheque = pharmacy.paymentType === "cheque" ? pharmacy.paidAmount : 0;
-                                const bank = pharmacy.paymentType === "bank" ? pharmacy.paidAmount : 0;
+                                const cash = pharmacy.cash || 0;
+                                const cheque = pharmacy.cheque || 0;
+                                const bank = pharmacy.bank || 0;
 
                                 const total = cash + cheque + bank;
 
