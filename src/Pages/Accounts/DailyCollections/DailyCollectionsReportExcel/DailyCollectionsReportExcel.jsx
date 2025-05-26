@@ -203,7 +203,7 @@ const DailyCollectionsReportExcel = ({ reportType, filteredOrders = [], firstDat
         const grandTotalAll = grandTotals.cash + grandTotals.cheque + grandTotals.bank;
 
         const grandTotalHTML = `
-            <table style="width: 100%; border-collapse: collapse; margin-top: 20px; table-layout: fixed;">
+            <table style="width: 100%; border-collapse: collapse; margin-top: 10px; table-layout: fixed;">
                 <tbody>
                     <tr />
                     <tr style="font-weight: bold; background-color: #ccc;">

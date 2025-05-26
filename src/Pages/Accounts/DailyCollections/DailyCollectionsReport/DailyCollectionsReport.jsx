@@ -209,7 +209,7 @@ const DailyCollectionsReport = ({ reportType, filteredOrders = [], firstDate, la
         const grandTotalAll = grandTotals.cash + grandTotals.cheque + grandTotals.bank;
 
         const grandTotalHTML = `
-            <table style="width: 100%; border-collapse: collapse; margin-top: 20px; table-layout: fixed;">
+            <table style="width: 100%; border-collapse: collapse; margin-top: 10px; table-layout: fixed;">
                 <tbody>
                     <tr style="font-weight: bold; background-color: #ccc;">
                         <td colspan="2" style="padding: 10px; border: 1px solid #000; text-align: left;">Grand Total</td>
@@ -230,28 +230,51 @@ const DailyCollectionsReport = ({ reportType, filteredOrders = [], firstDate, la
         newWindow.document.write(`
             <html>
                 <head>
-                <title>Daily Collections</title>
-                ${styles}
-                <style>
-                    @media print {
-                    @page {
-                        size: A4;
-                        margin: 5mm;
-                    }
-                    body {
-                        margin: 0;
-                        padding: 0;
-                        font-family: Arial, sans-serif;
-                        position: relative;
-                    }
-                    th, td { font-size: 10px; }
-                    }
-                </style>
+                    <title>Daily Collections</title>
+                    ${styles}
+                    <style>
+                        @media print {
+                            @page {
+                                size: A4;
+                                margin: 5mm;
+                            }
+                            body {
+                                margin: 0;
+                                padding: 0;
+                                font-family: Arial, sans-serif;
+                                position: relative;
+                            }
+                            th, td {
+                                font-size: 10px;
+                            }
+                            thead {
+                                display: table-header-group;
+                            }
+                        }
+                    </style>
                 </head>
                 <body>
-                    ${companyHeader}
-                    ${groupedHTML}
-                    ${grandTotalHTML}
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <td colspan="100%">
+                                    ${companyHeader}
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="100%">
+                                    ${groupedHTML}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="100%">
+                                    ${grandTotalHTML}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </body>
             </html>
         `);
