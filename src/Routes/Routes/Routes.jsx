@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import Main from "../../Layout/Main/Main";
 import DailyCollections from "../../Pages/Accounts/DailyCollections/DailyCollections/DailyCollections";
+import DueList from "../../Pages/Accounts/DueList/DueList/DueList";
 import AdminDamagedExpiredList from "../../Pages/Admin/AdminDamagedExpiredList/AdminDamagedExpiredList";
 import Customer from "../../Pages/Admin/Customer/Customer";
 import DamageRequest from "../../Pages/Admin/DamageRequest/DamageRequest";
@@ -189,6 +190,10 @@ const router = createBrowserRouter([
             {
                 path: "/daily-collections",
                 element: <DailyCollections />
+            },
+            {
+                path: "/due-list",
+                element: <DueList />
             },
             {
                 path: "/place-order",
