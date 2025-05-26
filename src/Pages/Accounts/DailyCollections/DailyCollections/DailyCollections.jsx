@@ -25,20 +25,45 @@ const DailyCollections = () => {
     const years = Array.from({ length: currentYear - 1999 }, (_, i) => currentYear - i);
 
     const filteredOrders = useMemo(() => {
-        return deliveredOrders.filter(order => {
-            const latestPayment = order.payments?.[order.payments.length - 1];
-            const paidDate = latestPayment ? new Date(latestPayment.paidDate) : null;
-            const matchesYear = year ? paidDate?.getFullYear() === parseInt(year) : true;
-            const matchesMonth = month ? paidDate?.getMonth() + 1 === parseInt(month) : true;
-            const matchesDateRange = fromDate && toDate
-                ? paidDate && paidDate >= new Date(fromDate) && paidDate <= new Date(toDate)
-                : true;
-            const matchesOrderedBy = orderedBy ? order.orderedBy?.toLowerCase().includes(orderedBy.toLowerCase()) : true;
-            const matchesAreaManager = areaManager ? order.areaManager?.toLowerCase().includes(areaManager.toLowerCase()) : true;
-            const matchesCustomer = customer ? order.pharmacyId?.toLowerCase().includes(customer.toLowerCase()) : true;
+        return deliveredOrders
+            .map(order => {
+                const filteredPayments = order.payments?.filter(payment => {
+                    const paidDate = new Date(payment.paidDate);
+                    const matchesYear = year ? paidDate.getFullYear() === parseInt(year) : true;
+                    const matchesMonth = month ? paidDate.getMonth() + 1 === parseInt(month) : true;
+                    const matchesDateRange = fromDate && toDate
+                        ? paidDate >= new Date(fromDate) && paidDate <= new Date(toDate)
+                        : true;
 
-            return matchesYear && matchesMonth && matchesDateRange && matchesOrderedBy && matchesAreaManager && matchesCustomer;
-        });
+                    return matchesYear && matchesMonth && matchesDateRange;
+                });
+
+                if (filteredPayments && filteredPayments.length > 0) {
+                    return {
+                        ...order,
+                        payments: filteredPayments,
+                    };
+                }
+
+                return null;
+            })
+            .filter(order => {
+                if (!order) return false;
+
+                const matchesOrderedBy = orderedBy
+                    ? order.orderedBy?.toLowerCase().includes(orderedBy.toLowerCase())
+                    : true;
+
+                const matchesAreaManager = areaManager
+                    ? order.areaManager?.toLowerCase().includes(areaManager.toLowerCase())
+                    : true;
+
+                const matchesCustomer = customer
+                    ? order.pharmacyId?.toLowerCase().includes(customer.toLowerCase())
+                    : true;
+
+                return matchesOrderedBy && matchesAreaManager && matchesCustomer;
+            });
     }, [deliveredOrders, year, month, fromDate, toDate, orderedBy, areaManager, customer]);
 
     const findPaidDateRange = (orders) => {
