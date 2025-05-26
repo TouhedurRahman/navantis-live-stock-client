@@ -192,7 +192,7 @@ const router = createBrowserRouter([
                 element: <DailyCollections />
             },
             {
-                path: "/due-list",
+                path: "/due-payments",
                 element: <DueList />
             },
             {
