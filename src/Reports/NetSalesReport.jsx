@@ -228,7 +228,7 @@ const NetSalesReport = ({ reportType, filteredOrders = [], orderReturns = [], fi
         newWindow.document.write(`
             <html>
                 <head>
-                    <title>MPO Wise Net Sales</title>
+                    <title>Net Sales</title>
                     ${styles}
                     <style>
                         @media print {
@@ -242,25 +242,37 @@ const NetSalesReport = ({ reportType, filteredOrders = [], orderReturns = [], fi
                                 font-family: Arial, sans-serif;
                                 position: relative;
                             }
-                            th, td { font-size: 10px; }
-                            /* body::after {
-                                content: "Printed on ${now}";
-                                position: fixed;
-                                bottom: 0;
-                                left: 0;
-                                width: 100%;
-                                text-align: center;
-                                font-size: 12px;
-                                color: #555;
-                                font-style: italic;
-                            } */
+                            th, td {
+                                font-size: 10px;
+                            }
+                            thead {
+                                display: table-header-group;
+                            }
                         }
                     </style>
                 </head>
                 <body>
-                    ${companyHeader}
-                    ${groupedHTML}
-                    ${finalTotalHTML}
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <td colspan="100%">
+                                    ${companyHeader}
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="100%">
+                                    ${groupedHTML}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="100%">
+                                    ${finalTotalHTML}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </body>
             </html>
         `);
