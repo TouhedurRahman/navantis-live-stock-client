@@ -216,14 +216,37 @@ const MyProductSummaryReport = ({ reportType, filteredOrders = [], firstDate, la
                                 font-family: Arial, sans-serif;
                                 position: relative;
                             }
-                            th, td { font-size: 10px; }
+                            th, td {
+                                font-size: 10px;
+                            }
+                            thead {
+                                display: table-header-group;
+                            }
                         }
                     </style>
                 </head>
                 <body>
-                    ${companyHeader}
-                    ${groupedHTML}
-                    ${finalTotalHTML}
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <td colspan="100%">
+                                    ${companyHeader}
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="100%">
+                                    ${groupedHTML}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="100%">
+                                    ${finalTotalHTML}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </body>
             </html>
         `);
