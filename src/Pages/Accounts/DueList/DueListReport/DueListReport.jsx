@@ -129,17 +129,17 @@ const DueListReport = ({ reportType, filteredOrders = [], firstDate, lastDate, c
 
                             return `
                         <tr>
-                            <td style="padding: 8px; border: 1px solid #ccc;">${pharmacy.pharmacyId}</td>
+                            <td style="padding: 8px; border: 1px solid #ccc;  width: 8%;">${pharmacy.pharmacyId}</td>
                             <td style="padding: 8px; border: 1px solid #ccc;">${pharmacy.pharmacyName}</td>
                             <td style="padding: 8px; border: 1px solid #ccc;">${customers.find(cus => cus.customerId === pharmacy.pharmacyId)?.address
                                 }</td>
-                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right; width: 12%;">
                                 ${pharmacy.totalPayable.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                             </td>
-                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right; width: 12%;">
                                 ${pharmacy.totalPaid.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                             </td>
-                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right; width: 12%;">
                                 ${pharmacy.due.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                             </td>
                         </tr>
@@ -158,25 +158,25 @@ const DueListReport = ({ reportType, filteredOrders = [], firstDate, lastDate, c
                         <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
                             <thead>
                                 <tr>
-                                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0;">Customer ID</th>
-                                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0;">Customer Name</th>
-                                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0;">Customer Address</th>
-                                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Payable</th>
-                                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Paid</th>
-                                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Due</th>
+                                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; width: 8%;">Customer ID</th>
+                                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left;">Customer Name</th>
+                                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left;">Customer Address</th>
+                                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 12%;">Payable</th>
+                                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 12%;">Paid</th>
+                                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 12%;">Due</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 ${rows}
                                 <tr style="font-weight: bold; background-color: #fafafa;">
                                     <td colspan="3" style="padding: 8px; border: 1px solid #ccc;">MPO/SCC/ASE Total</td>
-                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right; width: 12%;">
                                         ${mpoPayble.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                                     </td>
-                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right; width: 12%;">
                                         ${mpoPaid.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                                     </td>
-                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right; width: 12%;">
                                         ${mpoDue.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                                     </td>
                                 </tr>
@@ -203,13 +203,13 @@ const DueListReport = ({ reportType, filteredOrders = [], firstDate, lastDate, c
                     <tbody>
                         <tr style="font-weight: bold; background-color: #eee;">
                             <td colspan="3" style="padding: 8px; border: 1px solid #ccc;">Area Manager Total</td>
-                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right; width: 12%;">
                                 ${areaPayble.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-
                             </td>
-                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right; width: 12%;">
                                 ${areaPaid.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-
                             </td>
-                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right; width: 12%;">
                                 ${areaDue.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-
                             </td>
                         </tr>
@@ -224,13 +224,13 @@ const DueListReport = ({ reportType, filteredOrders = [], firstDate, lastDate, c
                 <tbody>
                     <tr style="font-weight: bold; background-color: #ccc;">
                         <td colspan="3" style="padding: 10px; border: 1px solid #000;">Grand Due Total</td>
-                        <td style="padding: 10px; border: 1px solid #000; text-align: right;">
+                        <td style="padding: 10px; border: 1px solid #000; text-align: right; width: 12%;">
                             ${grandPayble.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-
                         </td>
-                        <td style="padding: 10px; border: 1px solid #000; text-align: right;">
+                        <td style="padding: 10px; border: 1px solid #000; text-align: right; width: 12%;">
                             ${grandPaid.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-
                         </td>
-                        <td style="padding: 10px; border: 1px solid #000; text-align: right;">
+                        <td style="padding: 10px; border: 1px solid #000; text-align: right; width: 12%;">
                             ${grandDue.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-
                         </td>
                     </tr>
