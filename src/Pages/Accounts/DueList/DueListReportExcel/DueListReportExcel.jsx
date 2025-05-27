@@ -34,7 +34,7 @@ const DueListReportExcel = ({ reportType, filteredOrders = [], firstDate, lastDa
                         Downloaded on ${now}
                     </p>
                 </div>
-                ${reportType === "Customer wise Products Summary"
+                ${reportType === "Customer wise Due Payments"
                 ?
                 `
                         <div style="font-weight: bold;">

@@ -36,7 +36,7 @@ const DueListReport = ({ reportType, filteredOrders = [], firstDate, lastDate, c
                 <div class="mb-1 text-sm text-gray-400 text-right italic">
                     <h3 class="">Printed on ${now}</h3>
                 </div>
-                ${reportType === "Customer wise Net Sales"
+                ${reportType === "Customer wise Due Payments"
                 ?
                 `
                 <div style="display: flex; flex-direction: column; gap: 2px; font-size: 11px; font-weight: 600; margin-bottom: 10px;">
