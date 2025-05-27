@@ -72,6 +72,8 @@ const DueListReport = ({ reportType, filteredOrders = [], firstDate, lastDate, c
             const mpo = order?.orderedBy || "Unknown MPO";
             const pharmacyId = order?.pharmacyId || "Unknown Pharmacy ID";
             const pharmacyName = order?.pharmacy || "Unknown Pharmacy Name";
+            const totalPayable = Number(order?.totalPayable || 0);
+            const totalPaid = Number(order?.paid || 0);
             const due = Number(order?.due || 0);
 
             if (due <= 0) return;
@@ -87,20 +89,28 @@ const DueListReport = ({ reportType, filteredOrders = [], firstDate, lastDate, c
             const existing = groupedDues[areaManager][mpo].find(p => p.pharmacyId === pharmacyId);
 
             if (existing) {
+                existing.totalPayable += totalPayable;
+                existing.totalPaid += totalPaid;
                 existing.due += due;
             } else {
                 groupedDues[areaManager][mpo].push({
                     pharmacyId,
                     pharmacyName,
-                    due,
+                    totalPayable,
+                    totalPaid,
+                    due
                 });
             }
         });
 
+        let grandPayble = 0;
+        let grandPaid = 0;
         let grandDue = 0;
 
         const groupedHTML = Object.entries(groupedDues)
             .map(([areaManager, mpoData]) => {
+                let areaPayble = 0;
+                let areaPaid = 0;
                 let areaDue = 0;
 
                 const mpoSections = Object.entries(mpoData)
@@ -108,9 +118,13 @@ const DueListReport = ({ reportType, filteredOrders = [], firstDate, lastDate, c
                         const mpoOrder = orders.find(order => order.orderedBy === mpoName && order.areaManager === areaManager);
                         const mpoTerritory = mpoOrder?.territory || "Unknown Territory";
 
+                        let mpoPayble = 0;
+                        let mpoPaid = 0;
                         let mpoDue = 0;
 
                         const rows = pharmacies.map((pharmacy) => {
+                            mpoPayble += pharmacy.totalPayable;
+                            mpoPaid += pharmacy.totalPaid;
                             mpoDue += pharmacy.due;
 
                             return `
@@ -120,12 +134,20 @@ const DueListReport = ({ reportType, filteredOrders = [], firstDate, lastDate, c
                             <td style="padding: 8px; border: 1px solid #ccc;">${customers.find(cus => cus.customerId === pharmacy.pharmacyId)?.address
                                 }</td>
                             <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+                                ${pharmacy.totalPayable.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                            </td>
+                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+                                ${pharmacy.totalPaid.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                            </td>
+                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
                                 ${pharmacy.due.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                             </td>
                         </tr>
                     `;
                         }).join("");
 
+                        areaPayble += mpoPayble;
+                        areaPaid += mpoPaid;
                         areaDue += mpoDue;
 
                         return `
@@ -139,6 +161,8 @@ const DueListReport = ({ reportType, filteredOrders = [], firstDate, lastDate, c
                                     <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0;">Customer ID</th>
                                     <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0;">Customer Name</th>
                                     <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0;">Customer Address</th>
+                                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Payable</th>
+                                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Paid</th>
                                     <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Due</th>
                                 </tr>
                             </thead>
@@ -146,6 +170,12 @@ const DueListReport = ({ reportType, filteredOrders = [], firstDate, lastDate, c
                                 ${rows}
                                 <tr style="font-weight: bold; background-color: #fafafa;">
                                     <td colspan="3" style="padding: 8px; border: 1px solid #ccc;">MPO/SCC/ASE Total</td>
+                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+                                        ${mpoPayble.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                                    </td>
+                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+                                        ${mpoPaid.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                                    </td>
                                     <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
                                         ${mpoDue.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                                     </td>
@@ -156,6 +186,8 @@ const DueListReport = ({ reportType, filteredOrders = [], firstDate, lastDate, c
                 `;
                     }).join("");
 
+                grandPayble += areaPayble;
+                grandPaid += areaPaid;
                 grandDue += areaDue;
 
                 return `
@@ -172,6 +204,12 @@ const DueListReport = ({ reportType, filteredOrders = [], firstDate, lastDate, c
                         <tr style="font-weight: bold; background-color: #eee;">
                             <td colspan="3" style="padding: 8px; border: 1px solid #ccc;">Area Manager Total</td>
                             <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+                                ${areaPayble.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-
+                            </td>
+                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+                                ${areaPaid.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-
+                            </td>
+                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
                                 ${areaDue.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-
                             </td>
                         </tr>
@@ -186,6 +224,12 @@ const DueListReport = ({ reportType, filteredOrders = [], firstDate, lastDate, c
                 <tbody>
                     <tr style="font-weight: bold; background-color: #ccc;">
                         <td colspan="3" style="padding: 10px; border: 1px solid #000;">Grand Due Total</td>
+                        <td style="padding: 10px; border: 1px solid #000; text-align: right;">
+                            ${grandPayble.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-
+                        </td>
+                        <td style="padding: 10px; border: 1px solid #000; text-align: right;">
+                            ${grandPaid.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-
+                        </td>
                         <td style="padding: 10px; border: 1px solid #000; text-align: right;">
                             ${grandDue.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-
                         </td>
@@ -202,7 +246,7 @@ const DueListReport = ({ reportType, filteredOrders = [], firstDate, lastDate, c
         newWindow.document.write(`
             <html>
                 <head>
-                    <title>Net Sales</title>
+                    <title>Due Payments</title>
                     ${styles}
                     <style>
                         @media print {
