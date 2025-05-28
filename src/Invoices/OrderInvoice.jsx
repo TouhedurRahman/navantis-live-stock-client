@@ -173,13 +173,17 @@ const OrderInvoice = ({ order }) => {
                                 <span class="font-bold">:</span>
                                 <span>${order?.territory}</span>
 
-                                <span class="font-bold">${orderedBy?.designation?.split(" ").map(word => word[0].toUpperCase()).join("")}</span>
+                                <span class="font-bold">${orderedBy?.designation?.split(" ").map(word => word[0].toUpperCase()).join("") || "Ordered by"}</span>
                                 <span class="font-bold">:</span>
-                                <span>${orderedBy?.name}</span>
+                                <span>${orderedBy?.name || order.orderedBy}</span>
 
                                 <span class="font-bold">Cell</span>
                                 <span class="font-bold">:</span>
-                                <span>+880 ${orderedBy?.mobile.slice(-10, -6)}-${orderedBy?.mobile.slice(-6)}</span>
+                                <span>
+                                    ${orderedBy?.mobile
+                ? `+880 ${orderedBy.mobile.slice(-10, -6)}-${orderedBy.mobile.slice(-6)}`
+                : '+880 1322-852183'}
+                                </span>
 
                                 <span class="font-bold">Delivered by</span>
                                 <span class="font-bold">:</span>
