@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { AiFillMedicineBox } from "react-icons/ai";
 import {
-    FaArrowDown, FaArrowUp, FaCartPlus, FaExclamationCircle, FaListUl, FaShoppingCart, FaTrashAlt, FaTruck, FaUserCog, FaWarehouse
+    FaArrowDown, FaArrowUp, FaCartPlus, FaExclamationCircle, FaHospital, FaListUl, FaShoppingCart, FaTrashAlt, FaTruck, FaUserCog, FaWarehouse
 } from 'react-icons/fa';
 import { FcExpired } from 'react-icons/fc';
 import { GiDustCloud, GiReturnArrow, GiStorkDelivery } from 'react-icons/gi';
@@ -64,6 +64,14 @@ const useMenuConfig = () => {
                 { to: '/order-delivery', icon: <FaShoppingCart className='me-2' />, label: 'Order Delivery' },
                 { to: '/invoice-payment', icon: <MdPayment className='me-2' />, label: 'Invoice & Payment' },
                 { to: '/delivery-report', icon: <TbReportSearch className='me-2' />, label: 'Delivery Report' },
+            ],
+        },
+        institute: {
+            icon: <FaHospital className="mr-2" />,
+            links: [
+                { to: '/add-institute', icon: <IoIosAddCircle className='me-2' />, label: 'Add new' },
+                { to: '/institute-list', icon: <FaListUl className='me-2' />, label: 'List' },
+                { to: '/institute-order', icon: <FaCartPlus className='me-2' />, label: 'Place Order' },
             ],
         },
         customer: {

@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaTimes } from "react-icons/fa";
 import Swal from "sweetalert2";
@@ -14,6 +14,7 @@ const permissionsList = [
     "depot",
     "accounts",
     "reports",
+    "institute",
     "customer",
     "order"
 ];
