@@ -70,7 +70,7 @@ const useMenuConfig = () => {
             icon: <FaHospital className="mr-2" />,
             links: [
                 { to: '/add-institute', icon: <IoIosAddCircle className='me-2' />, label: 'Add new' },
-                { to: '/institute-list', icon: <FaListUl className='me-2' />, label: 'List' },
+                // { to: '/institute-list', icon: <FaListUl className='me-2' />, label: 'List' },
                 { to: '/institute-order', icon: <FaCartPlus className='me-2' />, label: 'Place Order' },
             ],
         },

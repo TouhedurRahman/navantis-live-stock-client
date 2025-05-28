@@ -30,6 +30,8 @@ import ExpiredReturnsStatus from "../../Pages/Depot/ExpiredReturns/ExpiredReturn
 import InvoicePayment from "../../Pages/Depot/InvoicePayment/InvoicePayment/InvoicePayment";
 import OrderDelivery from "../../Pages/Depot/OrderDelivery/OrderDelivery";
 import Home from "../../Pages/Home/Home/Home";
+import AddNewInstitute from "../../Pages/Institute/AddNewInstitute/AddNewInstitute";
+import PlaceInstituteOrder from "../../Pages/Institute/PlaceInstituteOrder/PlaceInstituteOrder";
 import MyOrder from "../../Pages/Order/MyOrder/MyOrder";
 import MyOrderReport from "../../Pages/Order/MyOrderReport/MyOrderReport";
 import PlaceOrder from "../../Pages/Order/PlaceOrder/PlaceOrder";
@@ -54,6 +56,14 @@ const router = createBrowserRouter([
             {
                 path: "/",
                 element: <Home />
+            },
+            {
+                path: "/add-institute",
+                element: <AddNewInstitute />
+            },
+            {
+                path: "/institute-order",
+                element: <PlaceInstituteOrder />
             },
             {
                 path: "/add-customer",

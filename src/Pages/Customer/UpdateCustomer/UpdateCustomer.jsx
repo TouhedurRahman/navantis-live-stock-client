@@ -278,6 +278,7 @@ const UpdateCustomer = () => {
                                     placeholder="Enter Day Limit"
                                     className="border-gray-500 bg-white border p-2 text-sm"
                                     type="number"
+                                    onWheel={(e) => e.target.blur()}
                                 />
                                 {errors.dayLimit && <p className="text-red-500 text-sm">{errors.dayLimit.message}</p>}
                             </div>
