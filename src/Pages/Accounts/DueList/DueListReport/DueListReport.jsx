@@ -130,8 +130,8 @@ const DueListReport = ({ reportType, filteredOrders = [], firstDate, lastDate, c
                             return `
                         <tr>
                             <td style="padding: 8px; border: 1px solid #ccc;  width: 8%;">${pharmacy.pharmacyId}</td>
-                            <td style="padding: 8px; border: 1px solid #ccc;">${pharmacy.pharmacyName}</td>
-                            <td style="padding: 8px; border: 1px solid #ccc;">${customers.find(cus => cus.customerId === pharmacy.pharmacyId)?.address
+                            <td style="padding: 8px; border: 1px solid #ccc; width: 28%;">${pharmacy.pharmacyName}</td>
+                            <td style="padding: 8px; border: 1px solid #ccc; width: 28%;">${customers.find(cus => cus.customerId === pharmacy.pharmacyId)?.address
                                 }</td>
                             <td style="padding: 8px; border: 1px solid #ccc; text-align: right; width: 12%;">
                                 ${pharmacy.totalPayable.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
@@ -159,8 +159,8 @@ const DueListReport = ({ reportType, filteredOrders = [], firstDate, lastDate, c
                             <thead>
                                 <tr>
                                     <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; width: 8%;">Customer ID</th>
-                                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left;">Customer Name</th>
-                                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left;">Customer Address</th>
+                                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 28%;">Customer Name</th>
+                                    <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 28%;">Customer Address</th>
                                     <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 12%;">Payable</th>
                                     <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 12%;">Paid</th>
                                     <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 12%;">Due</th>
