@@ -1,17 +1,18 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaTimes } from 'react-icons/fa';
 import Swal from 'sweetalert2';
+import useApiConfig from '../../Hooks/useApiConfig';
 import useCustomer from '../../Hooks/useCustomer';
 import useOrders from '../../Hooks/useOrders';
-import useApiConfig from '../../Hooks/useApiConfig';
 
 const ExpireRequestModal = ({ isOpen, onClose }) => {
     const baseUrl = useApiConfig();
     const [orders, loading] = useOrders();
     const [pharmacies, pharmacyLoading] = useCustomer();
+    const [productInputType, setProductInputType] = useState('select');
 
     const {
         register,
@@ -155,33 +156,72 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                         <p className="text-center text-gray-700">Loading products...</p>
                     ) : (
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                            {/* Select Product */}
                             <div>
                                 <label className="block mb-1 font-semibold">
                                     Product Name <span className="text-red-500">*</span>
                                 </label>
-                                <select
-                                    {...register('productName', { required: 'Product name is required' })}
-                                    onChange={handleProductChange}
-                                    className="w-full px-3 py-2 border"
-                                >
-                                    <option value="">Select a product</option>
-                                    {uniqueProducts.map(product => (
-                                        <option key={product.name} value={product.name}>
-                                            {product.name}
-                                        </option>
-                                    ))}
-                                </select>
-                                {errors.productName && <p className="text-red-500 text-sm">{errors.productName.message}</p>}
+
+                                <div className="flex justify-center items-center gap-2 mb-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => setProductInputType('select')}
+                                        className={`px-3 py-1 rounded border ${productInputType === 'select' ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}
+                                    >
+                                        Select
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setProductInputType('manual')}
+                                        className={`px-3 py-1 rounded border ${productInputType === 'manual' ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}
+                                    >
+                                        Manual
+                                    </button>
+                                </div>
+
+                                {productInputType === 'select' && (
+                                    <select
+                                        {...register('productName', { required: 'Product name is required' })}
+                                        onChange={handleProductChange}
+                                        className="w-full px-3 py-2 border"
+                                    >
+                                        <option value="">Select a product</option>
+                                        {uniqueProducts.map(product => (
+                                            <option key={product.name} value={product.name}>
+                                                {product.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                )}
+
+                                {productInputType === 'manual' && (
+                                    <input
+                                        type="text"
+                                        {...register('productName', { required: 'Product name is required' })}
+                                        placeholder="Enter product name"
+                                        className="w-full px-3 py-2 border"
+                                    />
+                                )}
+
+                                {errors.productName && (
+                                    <p className="text-red-500 text-sm">{errors.productName.message}</p>
+                                )}
                             </div>
 
                             <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-2'>
                                 <div className="flex flex-col">
                                     <label className="block mb-1 text-center font-semibold">Product Short Code</label>
                                     <input
-                                        value={selectedProductCode}
+                                        {...register('productCode', {
+                                            required: 'Product short code is required',
+                                        })}
+                                        value={productInputType === 'manual' ? undefined : selectedProductCode}
+                                        readOnly={productInputType !== 'manual'}
+                                        placeholder="Enter short code"
                                         className="w-full px-3 py-2 text-center border"
                                     />
+                                    {errors.productCode && (
+                                        <p className="text-red-500 text-sm text-center">{errors.productCode.message}</p>
+                                    )}
                                 </div>
                                 <div className="flex flex-col">
                                     <label className="block mb-1 text-center font-semibold">
