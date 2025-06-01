@@ -15,6 +15,7 @@ const ProductSummary = () => {
     const [fromDate, setFromDate] = useState('');
     const [toDate, setToDate] = useState('');
     const [productKey, setProductKey] = useState('');
+    const [territory, setTerritory] = useState('');
     const [orderedBy, setOrderedBy] = useState('');
     const [areaManager, setAreaManager] = useState('');
     const [customer, setCustomer] = useState('');
@@ -50,11 +51,12 @@ const ProductSummary = () => {
                 const matchesDateRange = fromDate && toDate
                     ? orderDate >= new Date(fromDate) && orderDate <= new Date(toDate)
                     : true;
+                const matchesTerritory = territory ? order.territory?.toLowerCase().includes(territory.toLowerCase()) : true;
                 const matchesOrderedBy = orderedBy ? order.orderedBy?.toLowerCase().includes(orderedBy.toLowerCase()) : true;
                 const matchesAreaManager = areaManager ? order.areaManager?.toLowerCase().includes(areaManager.toLowerCase()) : true;
                 const matchesCustomer = customer ? order.pharmacyId?.toLowerCase().includes(customer.toLowerCase()) : true;
 
-                if (!(matchesYear && matchesMonth && matchesDateRange && matchesOrderedBy && matchesAreaManager && matchesCustomer)) {
+                if (!(matchesYear && matchesMonth && matchesDateRange && matchesTerritory && matchesOrderedBy && matchesAreaManager && matchesCustomer)) {
                     return null;
                 }
 
@@ -76,8 +78,7 @@ const ProductSummary = () => {
                 };
             })
             .filter(Boolean);
-    }, [orders, year, month, fromDate, toDate, productKey, orderedBy, areaManager, customer]);
-
+    }, [orders, year, month, fromDate, toDate, productKey, territory, orderedBy, areaManager, customer]);
 
     const findDateRange = (orders) => {
         if (!orders.length) return { firstDate: null, lastDate: null };
@@ -94,7 +95,7 @@ const ProductSummary = () => {
     const uniqueProducts = useMemo(() => {
         const productMap = new Map();
 
-        deliveredOrders.forEach(order => {
+        filteredOrders.forEach(order => {
             order.products?.forEach(product => {
                 const name = product.name?.trim().toLowerCase() || '';
                 const netWeight = product.netWeight?.trim().toLowerCase() || '';
@@ -110,12 +111,24 @@ const ProductSummary = () => {
         });
 
         return Array.from(productMap.values());
-    }, [deliveredOrders]);
+    }, [filteredOrders]);
+
+    const uniqueTerritory = useMemo(() => {
+        const territoryMap = new Map();
+
+        filteredOrders.forEach(order => {
+            if (order.territory) {
+                territoryMap.set(order.territory.trim(), true);
+            }
+        });
+
+        return Array.from(territoryMap.keys());
+    }, [filteredOrders]);
 
     const uniqueOrderedBy = useMemo(() => {
         const orderByMap = new Map();
 
-        deliveredOrders.forEach(order => {
+        filteredOrders.forEach(order => {
             if (order.orderedBy && order.email) {
                 orderByMap.set(order.orderedBy.trim(), order.email.trim());
             }
@@ -125,13 +138,13 @@ const ProductSummary = () => {
             orderedBy,
             email,
         }));
-    }, [deliveredOrders]);
+    }, [filteredOrders]);
 
     const uniqueAreaManager = useMemo(() => {
         const amMap = new Map();
         let vacantAdded = false;
 
-        deliveredOrders.forEach(order => {
+        filteredOrders.forEach(order => {
             if (order.areaManager) {
                 const areaManager = order.areaManager.trim();
                 const amEmail = order.amEmail ? order.amEmail.trim() : null;
@@ -149,12 +162,12 @@ const ProductSummary = () => {
             areaManager,
             amEmail
         }));
-    }, [deliveredOrders]);
+    }, [filteredOrders]);
 
     const uniquePharmacies = useMemo(() => {
         const pharmacyMap = new Map();
 
-        deliveredOrders.forEach(order => {
+        filteredOrders.forEach(order => {
             if (order.pharmacyId && order.pharmacy) {
                 pharmacyMap.set(order.pharmacyId.trim(), order.pharmacy.trim());
             }
@@ -164,7 +177,7 @@ const ProductSummary = () => {
             pharmacyId,
             pharmacy,
         }));
-    }, [deliveredOrders]);
+    }, [filteredOrders]);
 
     const orderWithPharmacyId = filteredOrders.find(order => order.pharmacyId);
     const selectedCustomerCode = orderWithPharmacyId ? orderWithPharmacyId.pharmacyId : null;
@@ -182,6 +195,7 @@ const ProductSummary = () => {
         setFromDate('');
         setToDate('');
         setProductKey('');
+        setTerritory('');
         setOrderedBy('');
         setAreaManager('');
         setCustomer('');
@@ -300,8 +314,25 @@ const ProductSummary = () => {
                             </select>
                         </div>
 
-                        {/* Ordered By Filter */}
+                        {/* Territory Filter */}
                         <div className='col-span-1 md:col-span-2'>
+                            <label className="block font-semibold text-gray-700 mb-1">Territory</label>
+                            <select
+                                value={territory}
+                                onChange={(e) => setTerritory(e.target.value)}
+                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
+                            >
+                                <option value="">Select a territory</option>
+                                {uniqueTerritory.map((territory) => (
+                                    <option key={territory} value={territory}>
+                                        {territory}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Ordered By Filter */}
+                        {/* <div className='col-span-1 md:col-span-2'>
                             <label className="block font-semibold text-gray-700 mb-1">Ordered By</label>
                             <select
                                 value={orderedBy}
@@ -315,7 +346,7 @@ const ProductSummary = () => {
                                     </option>
                                 ))}
                             </select>
-                        </div>
+                        </div> */}
 
                         {/* Area Manager Filter */}
                         <div className='col-span-1 md:col-span-2'>
