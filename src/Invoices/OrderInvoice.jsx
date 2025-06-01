@@ -109,10 +109,10 @@ const OrderInvoice = ({ order }) => {
                 </div>
 
                 <!-- Table Section -->
-                <table class="mt-1 w-full border-collapse text-[11px]">
+                <table class="mt-1 w-full border-collapse text-[10px]">
                     <tr>
                         <td class="p-2 border border-r-0 border-b-0 w-[60%] align-top">
-                            <div class="grid grid-cols-[max-content_15px_auto] text-[11px] gap-y-1">
+                            <div class="grid grid-cols-[max-content_15px_auto] text-[10px] gap-y-1">
                                 <span class="font-bold">Customer ID</span>
                                 <span class="font-bold">:</span>
                                 <span>${customer.customerId}</span>
@@ -133,14 +133,14 @@ const OrderInvoice = ({ order }) => {
                 ?
                 `<span class="font-bold">Territory</span>
                         <span class="font-bold">:</span>
-                        <span>${order?.territory}</span>`
+                        <span class="font-bold">${order?.territory}</span>`
                 :
                 ""
             }
                             </div>
                         </td>
                         <td class="p-2 border border-l-0 border-b-0 w-[40%] align-top">
-                            <div class="grid grid-cols-[max-content_15px_auto] text-[11px] gap-y-1">
+                            <div class="grid grid-cols-[max-content_15px_auto] text-[10px] gap-y-1">
                                 <span class="font-bold">Invoice No.</span>
                                 <span class="font-bold">:</span>
                                 <span>${order.invoice}</span>
@@ -155,7 +155,7 @@ const OrderInvoice = ({ order }) => {
 
                                 ${orderedBy?.name
                 ?
-                `<span class="font-bold">${orderedBy?.designation?.split(" ").map(word => word[0].toUpperCase()).join("")}</span>
+                `<span class="font-bold">Ordered by</span>
                         <span class="font-bold">:</span>
                         <span>${orderedBy?.name}</span>`
                 :
@@ -215,8 +215,8 @@ const OrderInvoice = ({ order }) => {
                     </tr>
                 </tbody>
             </table>
-            <div class="border border-black border-t-0 px-2">
-                <div class="w-[40%] ml-auto text-right font-bold text-[11px] space-y-1">
+            <div class="border border-black border-t-0 px-[2px]">
+                <div class="w-[40%] ml-auto text-right font-bold text-[10px] space-y-1">
                     <div class="grid grid-cols-[1fr_auto_auto] items-center gap-2">
                         <span>Grand Total</span>
                         <span>:</span>
@@ -254,10 +254,10 @@ const OrderInvoice = ({ order }) => {
                     </div>
                 </div>
                 <div class="mt-1">
-                    <p class="text-[11px]"><span class="font-bold">Amount in Words: </span>${amountInWords}.</p>
+                    <p class="text-[10px]"><span class="font-bold">Amount in Words: </span>${amountInWords}.</p>
                 </div>
                 <div class="mt-1 mb-3">
-                    <p class="text-[11px]"><span class="font-bold">Note: </span>Good once sold will not be taken back.</p>
+                    <p class="text-[10px]"><span class="font-bold">Note: </span>Good once sold will not be taken back.</p>
                 </div>
             </div>
             ${outstandingOrders.length > 0 ? `
@@ -278,7 +278,7 @@ const OrderInvoice = ({ order }) => {
                     </table>
 
                     <div class="mt-3 mb-1">
-                        <p class="text-[11px] font-bold">Previous Outstanding Invoices</p>
+                        <p class="text-[10px] font-bold">Previous Outstanding Invoices</p>
                     </div>
                     <table style="width: 100%; border-collapse: collapse;">
                         <thead>
@@ -321,8 +321,8 @@ const OrderInvoice = ({ order }) => {
                     <table style="width: 100%; border-collapse: separate; border-spacing: 30px 0; margin-top: 150px;">
                         <tr>
                             <td style="width: 25%; text-align: center; border: none; border-top: 1px solid #000; padding-top: 5px;  font-weight: bold;">Customer</td>
-                            <td style="width: 25%; text-align: center; border: none; border-top: 1px solid #000; padding-top: 5px;  font-weight: bold;">Accounts</td>
                             <td style="width: 25%; text-align: center; border: none; border-top: 1px solid #000; padding-top: 5px;  font-weight: bold;">Depot In-charge</td>
+                            <td style="width: 25%; text-align: center; border: none; border-top: 1px solid #000; padding-top: 5px;  font-weight: bold;">Accounts</td>
                             <td style="width: 25%; text-align: center; border: none; border-top: 1px solid #000; padding-top: 5px;  font-weight: bold;">Authorised by</td>
                         </tr>
                     </table>
@@ -360,7 +360,7 @@ const OrderInvoice = ({ order }) => {
                         @media print {
                             @page {
                                 size: A4;
-                                margin: 5mm;
+                                margin: 8mm;
                             }
                             body {
                                 margin: 0;
@@ -374,10 +374,10 @@ const OrderInvoice = ({ order }) => {
                             }
                             th, td {
                                 border: 1px solid black;
-                                padding: 8px;
+                                padding: 2px;
                                 text-align: left;
                                 vertical-align: middle;
-                                font-size: 11px;
+                                font-size: 10px;
                             }
                             th {
                                 background-color: #f0f0f0;
@@ -393,7 +393,7 @@ const OrderInvoice = ({ order }) => {
                                 left: 0;
                                 width: 100%;
                                 text-align: center;
-                                font-size: 11px;
+                                font-size: 10px;
                                 font-style: italic;
                                 color: #555;
                             } */
