@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FaEdit, FaTimes, FaTrashAlt } from 'react-icons/fa';
 import { FaEye } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
@@ -90,7 +90,14 @@ const CustomerCard = ({ idx, customer, refetch }) => {
                             &&
                             <>
                                 <Link
-                                    to={`/update-customer/${customer._id}`}
+                                    to={
+                                        customer.territory !== "Institute"
+                                            ?
+                                            `/update-customer/${customer._id}`
+                                            :
+                                            ""
+                                        // `/update-institute/${customer._id}`
+                                    }
                                     title="Edit/update customer"
                                     className="p-2 rounded-[5px] hover:bg-yellow-100 focus:outline-none"
                                 >

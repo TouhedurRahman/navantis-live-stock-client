@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
 import { ImSearch } from 'react-icons/im';
 import { useLocation } from 'react-router-dom';
@@ -21,7 +21,17 @@ const MyCustomer = () => {
             location.pathname.includes('/customer-admin')
             &&
             customer.status === "approved"
-        ) || (
+        )
+        ||
+        (
+            location.pathname.includes('/institute-list')
+            &&
+            customer.territory === "Institute"
+            &&
+            customer.status === "approved"
+        )
+        ||
+        (
             customer.status === "approved"
             && (
                 customer.territory === singleUser.territory
