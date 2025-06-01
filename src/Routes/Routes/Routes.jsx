@@ -31,7 +31,9 @@ import InvoicePayment from "../../Pages/Depot/InvoicePayment/InvoicePayment/Invo
 import OrderDelivery from "../../Pages/Depot/OrderDelivery/OrderDelivery";
 import Home from "../../Pages/Home/Home/Home";
 import AddNewInstitute from "../../Pages/Institute/AddNewInstitute/AddNewInstitute";
+import InstituteList from "../../Pages/Institute/InstituteList/InstituteList";
 import PlaceInstituteOrder from "../../Pages/Institute/PlaceInstituteOrder/PlaceInstituteOrder";
+import UpdateInstitute from "../../Pages/Institute/UpdateInstitute/UpdateInstitute";
 import MyOrder from "../../Pages/Order/MyOrder/MyOrder";
 import MyOrderReport from "../../Pages/Order/MyOrderReport/MyOrderReport";
 import PlaceOrder from "../../Pages/Order/PlaceOrder/PlaceOrder";
@@ -60,6 +62,14 @@ const router = createBrowserRouter([
             {
                 path: "/add-institute",
                 element: <AddNewInstitute />
+            },
+            {
+                path: "/institute-list",
+                element: <InstituteList />
+            },
+            {
+                path: "/update-institute",
+                element: <UpdateInstitute />
             },
             {
                 path: "/institute-order",
