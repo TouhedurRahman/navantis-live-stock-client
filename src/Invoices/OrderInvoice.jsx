@@ -105,7 +105,7 @@ const OrderInvoice = ({ order }) => {
                         House No - 4, Block - C, Road No - 3, Mirpur - 1, Dhaka - 1216
                     </p>
                     <hr class="border border-b-0 border-black my-1"/>
-                    <h1 style="font-size: 20px; font-weight: bold;">INVOICE</h1>
+                    <h1 style="font-size: 18px; font-weight: bold;">INVOICE</h1>
                 </div>
 
                 <!-- Table Section -->
@@ -175,16 +175,16 @@ const OrderInvoice = ({ order }) => {
             <table style="width: 100%; border-collapse: collapse;">
                 <thead>
                     <tr>
-                        <th style="text-align: center;">Sl.</th>
-                        <th style="text-align: left;">Code</th>
+                        <th style="text-align: center; width: 3%;">Sl.</th>
+                        <th style="text-align: left; width: 7%;">Code</th>
                         <th style="text-align: left;">Product Name</th>
-                        <th style="text-align: center;">Pack Size</th>
-                        <th style="text-align: center;">Batch</th>
-                        <th style="text-align: center;">Expire</th>
-                        <th style="text-align: right;">TP</th>
-                        <th style="text-align: right;">Quantity</th>
-                        <th style="text-align: right;">Vat</th>
-                        <th style="text-align: right;">Net Price</th>
+                        <th style="text-align: center; width: 8%;">Pack Size</th>
+                        <th style="text-align: center; width: 6%;">Batch</th>
+                        <th style="text-align: center; width: 6%;">Expire</th>
+                        <th style="text-align: right; width: 7%;">TP</th>
+                        <th style="text-align: right; width: 7%;">Quantity</th>
+                        <th style="text-align: right; width: 3%;">Vat</th>
+                        <th style="text-align: right; width: 12%;">Net Price</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -308,7 +308,7 @@ const OrderInvoice = ({ order }) => {
                         <tbody>
                             <tr>
                                 <!-- Merged first four columns -->
-                                <td colspan="4" style="text-align: right; font-weight: bold;">Sub Total</td>
+                                <td colspan="4" style="text-align: right; font-weight: bold;">Total</td>
                                 <td style="text-align: right;">${(Number((Number(outStandingDue)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
                                 <td></td>
                             </tr>
