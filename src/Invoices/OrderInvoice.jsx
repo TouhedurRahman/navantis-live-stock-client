@@ -184,7 +184,7 @@ const OrderInvoice = ({ order }) => {
                         <th style="text-align: right; width: 7%;">TP</th>
                         <th style="text-align: right; width: 7%;">Quantity</th>
                         <th style="text-align: right; width: 3%;">Vat</th>
-                        <th style="text-align: right; width: 12%;">Net Price</th>
+                        <th style="text-align: right; width: 12%;">Total TP</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -207,61 +207,64 @@ const OrderInvoice = ({ order }) => {
                 </tbody>
                 <tbody>
                     <tr>
-                        <!-- Merged first four columns -->
-                        <td colspan="7" style="text-align: right; font-weight: bold;">Sub Total</td>
-                        <td style="text-align: right;">${totalUnit}</td>
-                        <td style="text-align: right;">${0.00}</td>
-                        <td style="text-align: right;">${(Number((Number(totalTP)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                        <td colspan="9" style="text-align: right; font-weight: bold; border: none; border-left: 1px solid black;">
+                            <span class="me-2">Total Trade Price:</span>
+                        </td>
+                        <td style="text-align: right;">
+                            ${(Number((Number(totalTP)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="9" style="text-align: right; font-weight: bold; border: none; border-left: 1px solid black;">
+                            <span class="me-2">Vat:</span>
+                        </td>
+                        <td style="text-align: right;">
+                            ${(Number((Number(0)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                        </td>
+                    </tr>
+                    <tr>
+                            <td colspan="9" style="text-align: right; font-weight: bold; border: none; border-left: 1px solid black;">
+                                <span class="me-2">Less Discount ${order.discount > 0 ? `(${order.discount}%)` : ``}:</span>
+                            </td>
+                            <td style="text-align: right;">
+                                ${(Number((Number(lessDiscount)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                            </td>
+                    </tr>
+                    ${(order.adjustedPrice > 0) ? `
+                            <tr>
+                                <td colspan="9" style="text-align: right; font-weight: bold; border: none; border-left: 1px solid black;">
+                                    <span class="me-2">Less/(Add): Special Discount/Adj.:</span>
+                                </td>
+                                <td style="text-align: right;">
+                                    ${(Number((Number(order.adjustedPrice)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                </td>
+                            </tr>
+                        `: ``}
+                    ${(order.paid > 0) ? `
+                            <tr>
+                                <td colspan="9" style="text-align: right; font-weight: bold; border: none; border-left: 1px solid black;">
+                                    <span class="me-2">Paid:</span>
+                                </td>
+                                <td style="text-align: right;">
+                                    ${(Number((Number(order.paid)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                </td>
+                            </tr>
+                        `: ``}
+                    <tr>
+                        <td colspan="6" style="text-align: left; border: none; border-left: 1px solid black; border-bottom: 1px solid black;">
+                            <span class="font-bold">Amount in Words: </span>${amountInWords}
+                        </td>
+                        <td colspan="3" style="text-align: right; font-weight: bold; border: none; border-bottom: 1px solid black;">
+                            <span class="me-2">Net Payable Amount:</span>
+                        </td>
+                        <td style="text-align: right;">
+                            ${(Number((Number(netPayable)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                        </td>
                     </tr>
                 </tbody>
             </table>
-            <div class="border border-black border-t-0 px-[2px]">
-                <div class="w-[40%] ml-auto text-right font-bold text-[10px] space-y-1">
-                    <div class="grid grid-cols-[1fr_auto_auto] items-center gap-2">
-                        <span>Grand Total</span>
-                        <span>:</span>
-                        <span class="w-24">${(Number((Number(totalTP)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
-                    </div>
-
-                    <div class="grid grid-cols-[1fr_auto_auto] items-center gap-2">
-                        <span>Less Discount ${order.discount > 0 ? `(${order.discount}%)` : ``}</span>
-                        <span>:</span>
-                        <span class="w-24">${(Number((Number(lessDiscount)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
-                    </div>
-
-                    ${(order.adjustedPrice > 0) ? `
-                        <div class="grid grid-cols-[1fr_auto_auto] items-center gap-2">
-                            <span>Expire Adjust</span>
-                            <span>:</span>
-                            <span class="w-24">${(Number((Number(order.adjustedPrice)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
-                        </div>
-                        `: ``}
-
-                    ${(order.paid > 0) ? `
-                        <div class="grid grid-cols-[1fr_auto_auto] items-center gap-2">
-                            <span>Paid</span>
-                            <span>:</span>
-                            <span class="w-24">${(Number((Number(order.paid)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
-                        </div>
-                        `: ``}
-
-                    <hr class="border-t border-gray-800 my-1">
-
-                    <div class="grid grid-cols-[1fr_auto_auto] items-center gap-2 font-bold">
-                        <span>Net Payable Amount</span>
-                        <span>:</span>
-                        <span class="w-24">${(Number((Number(netPayable)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
-                    </div>
-                </div>
-                <div class="mt-1">
-                    <p class="text-[10px]"><span class="font-bold">Amount in Words: </span>${amountInWords}.</p>
-                </div>
-                <div class="mt-1 mb-3">
-                    <p class="text-[10px]"><span class="font-bold">Note: </span>Good once sold will not be taken back.</p>
-                </div>
-            </div>
             ${outstandingOrders.length > 0 ? `
-                <div class="mt-3">
+                <div class="mt-2">
                     <table border="1" style="border-collapse: collapse; width: 40%;">
                         <tr>
                             <td>Previous Outstanding</td>
@@ -277,7 +280,7 @@ const OrderInvoice = ({ order }) => {
                         </tr>
                     </table>
 
-                    <div class="mt-3 mb-1">
+                    <div class="mt-2 mb-1">
                         <p class="text-[10px] font-bold">Previous Outstanding Invoices</p>
                     </div>
                     <table style="width: 100%; border-collapse: collapse;">
