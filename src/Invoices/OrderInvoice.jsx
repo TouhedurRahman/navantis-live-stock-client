@@ -257,7 +257,7 @@ const OrderInvoice = ({ order }) => {
                         <td colspan="3" style="text-align: right; font-weight: bold; border: none; border-bottom: 1px solid black;">
                             <span class="me-2">Net Payable Amount:</span>
                         </td>
-                        <td style="text-align: right;">
+                        <td style="text-align: right; font-weight: bold;">
                             ${(Number((Number(netPayable)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                         </td>
                     </tr>
