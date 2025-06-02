@@ -14,6 +14,7 @@ const DailyCollections = () => {
     const [month, setMonth] = useState('');
     const [fromDate, setFromDate] = useState('');
     const [toDate, setToDate] = useState('');
+    const [territory, setTerritory] = useState('');
     const [orderedBy, setOrderedBy] = useState('');
     const [areaManager, setAreaManager] = useState('');
     const [customer, setCustomer] = useState('');
@@ -50,6 +51,11 @@ const DailyCollections = () => {
             .filter(order => {
                 if (!order) return false;
 
+                const matchesTerritory = territory
+                    ?
+                    order.territory?.toLowerCase().includes(territory.toLowerCase())
+                    : true;
+
                 const matchesOrderedBy = orderedBy
                     ? order.orderedBy?.toLowerCase().includes(orderedBy.toLowerCase())
                     : true;
@@ -62,9 +68,9 @@ const DailyCollections = () => {
                     ? order.pharmacyId?.toLowerCase().includes(customer.toLowerCase())
                     : true;
 
-                return matchesOrderedBy && matchesAreaManager && matchesCustomer;
+                return matchesTerritory && matchesOrderedBy && matchesAreaManager && matchesCustomer;
             });
-    }, [deliveredOrders, year, month, fromDate, toDate, orderedBy, areaManager, customer]);
+    }, [deliveredOrders, year, month, fromDate, toDate, territory, orderedBy, areaManager, customer]);
 
     const findPaidDateRange = (orders) => {
         const paidDates = orders
@@ -82,10 +88,22 @@ const DailyCollections = () => {
 
     const { firstDate, lastDate } = findPaidDateRange(filteredOrders);
 
+    const uniqueTerritory = useMemo(() => {
+        const territoryMap = new Map();
+
+        filteredOrders.forEach(order => {
+            if (order.territory) {
+                territoryMap.set(order.territory.trim(), true);
+            }
+        });
+
+        return Array.from(territoryMap.keys());
+    }, [filteredOrders]);
+
     const uniqueOrderedBy = useMemo(() => {
         const orderByMap = new Map();
 
-        deliveredOrders.forEach(order => {
+        filteredOrders.forEach(order => {
             if (order.orderedBy && order.email) {
                 orderByMap.set(order.orderedBy.trim(), order.email.trim());
             }
@@ -95,13 +113,13 @@ const DailyCollections = () => {
             orderedBy,
             email,
         }));
-    }, [deliveredOrders]);
+    }, [filteredOrders]);
 
     const uniqueAreaManager = useMemo(() => {
         const amMap = new Map();
         let vacantAdded = false;
 
-        deliveredOrders.forEach(order => {
+        filteredOrders.forEach(order => {
             if (order.areaManager) {
                 const areaManager = order.areaManager.trim();
                 const amEmail = order.amEmail ? order.amEmail.trim() : null;
@@ -119,12 +137,12 @@ const DailyCollections = () => {
             areaManager,
             amEmail
         }));
-    }, [deliveredOrders]);
+    }, [filteredOrders]);
 
     const uniquePharmacies = useMemo(() => {
         const pharmacyMap = new Map();
 
-        deliveredOrders.forEach(order => {
+        filteredOrders.forEach(order => {
             if (order.pharmacyId && order.pharmacy) {
                 pharmacyMap.set(order.pharmacyId.trim(), order.pharmacy.trim());
             }
@@ -134,7 +152,7 @@ const DailyCollections = () => {
             pharmacyId,
             pharmacy,
         }));
-    }, [deliveredOrders]);
+    }, [filteredOrders]);
 
     const orderWithPharmacyId = filteredOrders.find(order => order.pharmacyId);
     const selectedCustomerCode = orderWithPharmacyId ? orderWithPharmacyId.pharmacyId : null;
@@ -151,6 +169,7 @@ const DailyCollections = () => {
         setMonth('');
         setFromDate('');
         setToDate('');
+        setTerritory('');
         setOrderedBy('');
         setAreaManager('');
         setCustomer('');
@@ -246,8 +265,25 @@ const DailyCollections = () => {
                             />
                         </div>
 
-                        {/* Ordered By Filter */}
+                        {/* Territory Filter */}
                         <div className='col-span-1 md:col-span-2'>
+                            <label className="block font-semibold text-gray-700 mb-1">Territory</label>
+                            <select
+                                value={territory}
+                                onChange={(e) => setTerritory(e.target.value)}
+                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
+                            >
+                                <option value="">Select a territory</option>
+                                {uniqueTerritory.map((territory) => (
+                                    <option key={territory} value={territory}>
+                                        {territory}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Ordered By Filter */}
+                        {/* <div className='col-span-1 md:col-span-2'>
                             <label className="block font-semibold text-gray-700 mb-1">Ordered By</label>
                             <select
                                 value={orderedBy}
@@ -261,7 +297,7 @@ const DailyCollections = () => {
                                     </option>
                                 ))}
                             </select>
-                        </div>
+                        </div> */}
 
                         {/* Area Manager Filter */}
                         <div className='col-span-1 md:col-span-2'>

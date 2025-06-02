@@ -183,7 +183,7 @@ const OrderInvoice = ({ order }) => {
                         <th style="text-align: center; width: 6%;">Expire</th>
                         <th style="text-align: right; width: 7%;">TP</th>
                         <th style="text-align: right; width: 7%;">Quantity</th>
-                        <th style="text-align: right; width: 3%;">Vat</th>
+                        <th style="text-align: right; width: 6%;">Vat</th>
                         <th style="text-align: right; width: 12%;">Total TP</th>
                     </tr>
                 </thead>
