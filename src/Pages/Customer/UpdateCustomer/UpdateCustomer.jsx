@@ -88,6 +88,7 @@ const UpdateCustomer = () => {
             ]);
 
             reset();
+            refetch();
             navigate('/customer-list');
             Swal.fire({
                 position: "center",
