@@ -330,16 +330,24 @@ const OrderInvoice = ({ order }) => {
             `: ``}
             <div>
                 <!-- Signature Section -->
-                    <table style="width: 100%; border-collapse: separate; border-spacing: 30px 0; margin-top: 192px;">
+                    <table style="width: 100%; border-collapse: separate; border-spacing: 30px 0; margin-top: 150px;">
                         <tr>
-                            <td style="width: 25%; text-align: center; border: none; border-top: 1px solid #000; padding-top: 5px;  font-weight: bold;">Customer</td>
-                            <td style="width: 25%; text-align: center; border: none; border-top: 1px solid #000; padding-top: 5px;  font-weight: bold;">Depot In-charge</td>
-                            <td style="width: 25%; text-align: center; border: none; border-top: 1px solid #000; padding-top: 5px;  font-weight: bold;">Accounts</td>
-                            <td style="width: 25%; text-align: center; border: none; border-top: 1px solid #000; padding-top: 5px;  font-weight: bold;">Authorised by</td>
+                            <td style="width: 25%; text-align: center; border: none; border-top: 1px solid #000; padding-top: 5px;">
+                                Customer
+                            </td>
+                            <td style="width: 25%; text-align: center; border: none; border-top: 1px solid #000; padding-top: 5px;">
+                                Depot In-charge
+                            </td>
+                            <td style="width: 25%; text-align: center; border: none; border-top: 1px solid #000; padding-top: 5px;">
+                                Accounts
+                            </td>
+                            <td style="width: 25%; text-align: center; border: none; border-top: 1px solid #000; padding-top: 5px;">
+                                Authorised by
+                            </td>
                         </tr>
                     </table>
 
-                    <div style="margin-top: 10px; border: 1px solid black; padding: 2px; font-size: 10px; text-align: justify">
+                    <div style="margin-top: 25px; border: 1px solid black; padding: 2px; font-size: 10px; text-align: justify">
                         <span class="font-bold me-1">Note:</span>Please be advised that all purchases are considered final. Once goods have been sold, they are not eligible for return, refund, or exchange under any circumstances, as per our company policy.
                     </div>
 
