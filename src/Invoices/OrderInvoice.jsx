@@ -1,11 +1,15 @@
 import useAllUsers from "../Hooks/useAllUsers";
+import useAuth from "../Hooks/useAuth";
 import useCustomer from "../Hooks/useCustomer";
 import useOrders from "../Hooks/useOrders";
 
 const OrderInvoice = ({ order }) => {
+    const { user } = useAuth();
     const [orders] = useOrders();
     const [allUsers] = useAllUsers();
     const [customers] = useCustomer();
+
+    const generatedByName = allUsers.find(alu => alu.email === user.email)?.name;
 
     const orderedBy = allUsers.find(alu => alu.email === order.email);
 
@@ -92,6 +96,12 @@ const OrderInvoice = ({ order }) => {
     };
 
     const amountInWords = convertAmountToWords(netPayable);
+
+    const now = new Date().toLocaleString("en-US", {
+        year: "numeric", month: "long", day: "numeric",
+        hour: "2-digit", minute: "2-digit", second: "2-digit",
+        hour12: true
+    });
 
     const handlePrint = () => {
         const companyHeader =
@@ -275,8 +285,8 @@ const OrderInvoice = ({ order }) => {
                             <td class="text-right">${(Number((Number(netPayable)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
                         </tr>
                         <tr>
-                            <td>Total Outstanding</td>
-                            <td class="text-right">${(Number((Number(outStandingDue + netPayable)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                            <td class="font-bold">Total Outstanding</td>
+                            <td class="text-right font-bold">${(Number((Number(outStandingDue + netPayable)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
                         </tr>
                     </table>
 
@@ -310,7 +320,6 @@ const OrderInvoice = ({ order }) => {
                         </tbody>
                         <tbody>
                             <tr>
-                                <!-- Merged first four columns -->
                                 <td colspan="4" style="text-align: right; font-weight: bold;">Total</td>
                                 <td style="text-align: right;">${(Number((Number(outStandingDue)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
                                 <td></td>
@@ -321,7 +330,7 @@ const OrderInvoice = ({ order }) => {
             `: ``}
             <div>
                 <!-- Signature Section -->
-                    <table style="width: 100%; border-collapse: separate; border-spacing: 30px 0; margin-top: 150px;">
+                    <table style="width: 100%; border-collapse: separate; border-spacing: 30px 0; margin-top: 192px;">
                         <tr>
                             <td style="width: 25%; text-align: center; border: none; border-top: 1px solid #000; padding-top: 5px;  font-weight: bold;">Customer</td>
                             <td style="width: 25%; text-align: center; border: none; border-top: 1px solid #000; padding-top: 5px;  font-weight: bold;">Depot In-charge</td>
@@ -329,6 +338,16 @@ const OrderInvoice = ({ order }) => {
                             <td style="width: 25%; text-align: center; border: none; border-top: 1px solid #000; padding-top: 5px;  font-weight: bold;">Authorised by</td>
                         </tr>
                     </table>
+
+                    <div style="margin-top: 10px; border: 1px solid black; padding: 2px; font-size: 10px; text-align: justify">
+                        <span class="font-bold me-1">Note:</span>Please be advised that all purchases are considered final. Once goods have been sold, they are not eligible for return, refund, or exchange under any circumstances, as per our company policy.
+                    </div>
+
+                    <div style="margin-top: 2px; display: flex; justify-content: space-between; font-size: 10px;">
+                        <span><span class="font-bold me-1">Print Date & Time:</span>${now}</span>
+                        <span><span class="font-bold me-1">Prepared by:</span>${generatedByName}</span>
+                        <span><span class="font-bold me-1">Printed by:</span>${generatedByName}</span>
+                    </div>
             </div>
         `;
 
