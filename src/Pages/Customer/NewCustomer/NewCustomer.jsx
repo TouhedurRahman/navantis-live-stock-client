@@ -13,12 +13,19 @@ const NewCustomer = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [customersPerPage, setCustomersPerPage] = useState(5);
 
-    const myCustomers = customers.filter(
-        customer =>
+    const myCustomers = customers.filter(customer =>
+        (
+            location.pathname.includes('/institute-list')
+            &&
+            customer.territory === "Institute"
+            &&
+            ["requested", "denied"].includes(customer.status)
+        )
+        ||
+        (
+            ["pending", "initialized", "requested", "denied"].includes(customer.status)
+            &&
             (
-                ["pending", "initialized", "requested", "denied"].includes(customer.status)
-
-            ) && (
                 customer.territory === singleUser.territory
                 ||
                 customer.parentTerritory === singleUser?.territory
@@ -27,6 +34,7 @@ const NewCustomer = () => {
                 ||
                 customer.grandParentId == singleUser?._id
             )
+        )
     );
 
     const filteredCustomers = myCustomers.filter(customer =>
