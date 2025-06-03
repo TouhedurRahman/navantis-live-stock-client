@@ -95,8 +95,7 @@ const CustomerCard = ({ idx, customer, refetch }) => {
                                             ?
                                             `/update-customer/${customer._id}`
                                             :
-                                            ""
-                                        // `/update-institute/${customer._id}`
+                                            `/update-institute/${customer._id}`
                                     }
                                     title="Edit/update customer"
                                     className="p-2 rounded-[5px] hover:bg-yellow-100 focus:outline-none"

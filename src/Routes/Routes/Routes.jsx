@@ -68,7 +68,7 @@ const router = createBrowserRouter([
                 element: <InstituteList />
             },
             {
-                path: "/update-institute",
+                path: "/update-institute/:id",
                 element: <UpdateInstitute />
             },
             {
