@@ -85,7 +85,7 @@ const UpdateInstitute = () => {
 
             reset();
             refetch();
-            navigate('/customer-list');
+            navigate('/institute-list');
             Swal.fire({
                 position: "center",
                 icon: "success",
