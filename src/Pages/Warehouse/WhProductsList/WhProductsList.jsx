@@ -4,16 +4,21 @@ import { ImSearch } from 'react-icons/im';
 import Loader from "../../../Components/Loader/Loader";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import useDamagedProductsWh from "../../../Hooks/useDamagedProductsWh";
+import useSingleUser from "../../../Hooks/useSingleUser";
 import useWhProducts from "../../../Hooks/useWhProducts";
+import CurrentWarehouseStockInvoice from "../../../Invoices/CurrentWarehouseStockInvoice";
 import WarehouseProductCard from "../WarehouseProductCard/WarehouseProductCard";
 
 const WhProductsList = () => {
+    const [singleUser] = useSingleUser();
     const [whProducts, whProductsLoading, refetch] = useWhProducts();
     const [products] = useDamagedProductsWh();
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [productsPerPage, setProductsPerPage] = useState(5);
+
+    const invoiceWithAP = singleUser?.designation === "Managing Director" ? 1 : 0;
 
     const filteredProducts = whProducts.filter(product =>
         product?.productName?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -44,6 +49,8 @@ const WhProductsList = () => {
         setCurrentPage(1);
     };
 
+    const handlePrint = CurrentWarehouseStockInvoice({ invoiceWithAP, totalUnit, totalActualPrice, totalTradePrice, filteredProducts });
+
     return (
         <>
             <div>
@@ -69,22 +76,34 @@ const WhProductsList = () => {
                             <div className="m-6 p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-md">
                                 <p className="text-md text-gray-700 text-center mb-4 font-medium">Warehouse Summary</p>
 
-                                <div className="bg-white p-3 rounded-md rounded-b-none shadow-sm flex flex-col md:flex-row justify-around items-center text-gray-600">
+                                <div className="bg-white p-3 rounded-md shadow-sm flex flex-col md:flex-row justify-around items-center text-gray-600 gap-2">
                                     <p className="text-sm">
                                         Total Products: <span className="font-medium text-blue-700">{filteredProducts.length}</span>
                                     </p>
                                     <p className="text-sm">
                                         Total Unit: <span className="font-medium text-blue-700">{totalUnit}</span>
                                     </p>
-                                </div>
-
-                                <div className="bg-white p-3 rounded-md rounded-t-none shadow-sm flex flex-col md:flex-row justify-around items-center text-gray-600">
-                                    <p className="text-sm">
-                                        Total Actual Price: <span className="font-medium text-blue-700">{totalActualPrice.toLocaleString('en-IN')}/-</span>
-                                    </p>
                                     <p className="text-sm">
                                         Total Trade Price: <span className="font-medium text-blue-700">{totalTradePrice.toLocaleString('en-IN')}/-</span>
                                     </p>
+                                </div>
+
+                                <div className="flex justify-center mt-4">
+                                    <button
+                                        onClick={handlePrint}
+                                        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-5 rounded-full shadow-lg transition duration-300 ease-in-out flex items-center gap-2 hover:scale-105"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="h-5 w-5"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 9V4h12v5M6 18h12v2H6v-2zM6 14h12v2H6v-2z" />
+                                        </svg>
+                                        Print Current Warehouse Stock
+                                    </button>
                                 </div>
                             </div>
                             <div className="px-6">
