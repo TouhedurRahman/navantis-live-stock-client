@@ -36,7 +36,8 @@ const OrderInvoice = ({ order }) => {
     // net payable amount
     const netPayable = Number(totalTP - lessDiscount - (order.paid || 0) - (order.adjustedPrice || 0));
 
-    const convertAmountToWords = (num) => {
+    // international numbering system
+    /* const convertAmountToWords = (num) => {
         const ones = [
             '', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine',
             'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen',
@@ -93,6 +94,72 @@ const OrderInvoice = ({ order }) => {
             }
             return result.trim();
         }
+    }; */
+
+    // bangladeshi(indian) numbering system
+    const convertAmountToWords = (num) => {
+        const ones = [
+            '', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine',
+            'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen',
+            'Seventeen', 'Eighteen', 'Nineteen'
+        ];
+        const tens = [
+            '', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'
+        ];
+
+        if (num === 0) {
+            return 'Zero Taka Only';
+        }
+
+        const integerPart = Math.floor(num);
+        const decimalPart = Math.round((num - integerPart) * 100);
+
+        const getWords = (n) => {
+            let result = '';
+
+            const crore = Math.floor(n / 10000000);
+            if (crore > 0) {
+                result += `${convertHundreds(crore)} Crore `;
+                n %= 10000000;
+            }
+
+            const lakh = Math.floor(n / 100000);
+            if (lakh > 0) {
+                result += `${convertHundreds(lakh)} Lakh `;
+                n %= 100000;
+            }
+
+            const thousand = Math.floor(n / 1000);
+            if (thousand > 0) {
+                result += `${convertHundreds(thousand)} Thousand `;
+                n %= 1000;
+            }
+
+            const hundred = Math.floor(n / 100);
+            if (hundred > 0) {
+                result += `${ones[hundred]} Hundred `;
+                n %= 100;
+            }
+
+            if (n > 0) {
+                if (result !== '') result += 'and ';
+                if (n < 20) {
+                    result += ones[n] + ' ';
+                } else {
+                    result += tens[Math.floor(n / 10)] + ' ';
+                    if (n % 10 > 0) {
+                        result += ones[n % 10] + ' ';
+                    }
+                }
+            }
+
+            return result.trim();
+        };
+
+        const takaWords = getWords(integerPart);
+        const poishaWords = decimalPart > 0 ? `${getWords(decimalPart)} Poisha` : '';
+
+        return `${takaWords} Taka${poishaWords ? ' and ' + poishaWords : ''} Only`;
     };
 
     const amountInWords = convertAmountToWords(netPayable);
