@@ -111,8 +111,25 @@ const OrderInvoice = ({ order }) => {
             return 'Zero Taka Only';
         }
 
-        const integerPart = Math.floor(num);
-        const decimalPart = Math.round((num - integerPart) * 100);
+        const convertHundreds = (num) => {
+            let result = '';
+            if (num > 99) {
+                result += ones[Math.floor(num / 100)] + ' Hundred ';
+                num %= 100;
+            }
+            if (num > 0) {
+                if (result !== '') result += 'and ';
+                if (num < 20) {
+                    result += ones[num] + ' ';
+                } else {
+                    result += tens[Math.floor(num / 10)] + ' ';
+                    if (num % 10 > 0) {
+                        result += ones[num % 10] + ' ';
+                    }
+                }
+            }
+            return result.trim();
+        };
 
         const getWords = (n) => {
             let result = '';
@@ -135,26 +152,15 @@ const OrderInvoice = ({ order }) => {
                 n %= 1000;
             }
 
-            const hundred = Math.floor(n / 100);
-            if (hundred > 0) {
-                result += `${ones[hundred]} Hundred `;
-                n %= 100;
-            }
-
             if (n > 0) {
-                if (result !== '') result += 'and ';
-                if (n < 20) {
-                    result += ones[n] + ' ';
-                } else {
-                    result += tens[Math.floor(n / 10)] + ' ';
-                    if (n % 10 > 0) {
-                        result += ones[n % 10] + ' ';
-                    }
-                }
+                result += `${convertHundreds(n)} `;
             }
 
             return result.trim();
         };
+
+        const integerPart = Math.floor(num);
+        const decimalPart = Math.round((num - integerPart) * 100);
 
         const takaWords = getWords(integerPart);
         const poishaWords = decimalPart > 0 ? `${getWords(decimalPart)} Poisha` : '';
