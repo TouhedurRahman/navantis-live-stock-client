@@ -98,7 +98,8 @@ const useMenuConfig = () => {
             icon: <MdAccountBalance className="mr-2" />,
             links: [
                 { to: '/daily-collections', icon: <TbReportAnalytics className='me-2' />, label: 'Daily Collections' },
-                { to: '/due-payments', icon: <TbReportAnalytics className='me-2' />, label: 'Due Payments' }
+                { to: '/due-payments', icon: <TbReportAnalytics className='me-2' />, label: 'Due Payments' },
+                { to: '/mpo-statement', icon: <TbReportAnalytics className='me-2' />, label: 'MPO Statement' }
             ],
         },
 

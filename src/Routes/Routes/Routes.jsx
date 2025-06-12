@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Main from "../../Layout/Main/Main";
 import DailyCollections from "../../Pages/Accounts/DailyCollections/DailyCollections/DailyCollections";
 import DueList from "../../Pages/Accounts/DueList/DueList/DueList";
+import MPOStatement from "../../Pages/Accounts/MPOStatement/MPOStatement/MPOStatement";
 import AdminDamagedExpiredList from "../../Pages/Admin/AdminDamagedExpiredList/AdminDamagedExpiredList";
 import Customer from "../../Pages/Admin/Customer/Customer";
 import DamageRequest from "../../Pages/Admin/DamageRequest/DamageRequest";
@@ -214,6 +215,10 @@ const router = createBrowserRouter([
             {
                 path: "/due-payments",
                 element: <DueList />
+            },
+            {
+                path: "/mpo-statement",
+                element: <MPOStatement />
             },
             {
                 path: "/place-order",
