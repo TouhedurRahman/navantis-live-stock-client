@@ -55,9 +55,9 @@ const UpdateCustomer = () => {
             const updatedCustomer = {
                 name: data.name,
                 territory: data.territory,
-                parentTerritory: parentTerritory,
-                parentId: singleUser?.parentId,
-                grandParentId: singleUser?.grandParentId,
+                parentTerritory: parentTerritory || 'Vacant',
+                parentId: singleUser?.parentId || 'Vacant',
+                grandParentId: singleUser?.grandParentId || 'Vacant',
                 tradeLicense: data.trl,
                 drugLicense: data.drl,
                 address: data.address,

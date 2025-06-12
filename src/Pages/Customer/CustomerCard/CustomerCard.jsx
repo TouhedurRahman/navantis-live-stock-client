@@ -85,25 +85,21 @@ const CustomerCard = ({ idx, customer, refetch }) => {
                         >
                             <FaEye className="text-orange-500" />
                         </button>
-                        {
-                            customer.addedEmail === singleUser.email
-                            &&
-                            <>
-                                <Link
-                                    to={
-                                        customer.territory !== "Institute"
-                                            ?
-                                            `/update-customer/${customer._id}`
-                                            :
-                                            `/update-institute/${customer._id}`
-                                    }
-                                    title="Edit/update customer"
-                                    className="p-2 rounded-[5px] hover:bg-yellow-100 focus:outline-none"
-                                >
-                                    <FaEdit className="text-yellow-500" />
-                                </Link>
-                            </>
-                        }
+                        <>
+                            <Link
+                                to={
+                                    customer.territory !== "Institute"
+                                        ?
+                                        `/update-customer/${customer._id}`
+                                        :
+                                        `/update-institute/${customer._id}`
+                                }
+                                title="Edit/update customer"
+                                className="p-2 rounded-[5px] hover:bg-yellow-100 focus:outline-none"
+                            >
+                                <FaEdit className="text-yellow-500" />
+                            </Link>
+                        </>
                         <button
                             // onClick={handleRemove}
                             title="Remove customer"
