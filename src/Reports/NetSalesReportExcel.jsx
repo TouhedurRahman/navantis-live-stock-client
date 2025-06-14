@@ -188,7 +188,8 @@ const NetSalesReportExcel = ({ reportType, filteredOrders = [], orderReturns = [
                         <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-weight: bold; background-color: #f9f9f9;">
                             ${areaNetTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                         </td>
-                    </tr>               
+                    </tr>
+                    <tr />
                 </tbody>
             </table>
         `;
