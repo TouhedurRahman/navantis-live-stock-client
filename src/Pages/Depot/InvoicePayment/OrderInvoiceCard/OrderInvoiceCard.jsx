@@ -1,28 +1,18 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { MdPrint } from 'react-icons/md';
 import Swal from 'sweetalert2';
 import useApiConfig from '../../../../Hooks/useApiConfig';
-import useExpiredReturnes from '../../../../Hooks/useExpiredReturnes';
 import useRiders from '../../../../Hooks/useRiders';
 
 const OrderInvoiceCard = ({ idx, order, refetch }) => {
     const baseUrl = useApiConfig();
 
-    const [returns] = useExpiredReturnes();
     const [riders] = useRiders();
 
     const [showModal, setShowModal] = useState(false);
     const [deliveryManName, setDeliveryManName] = useState("");
-
-    const expireReturns = returns.filter(adReturn =>
-        adReturn.pharmacyId === order.pharmacyId
-        &&
-        adReturn.status === 'approved'
-    );
-
-    const totalAdjustedPrice = expireReturns.reduce((acc, sum) => acc + sum.totalPrice, 0) || 0;
 
     const uniqueRiders = [
         ...new Map(
@@ -61,9 +51,7 @@ const OrderInvoiceCard = ({ idx, order, refetch }) => {
             const { _id, ...orderData } = data;
             const updatedOrder = {
                 ...orderData,
-                adjustedPrice: Number(totalAdjustedPrice),
-                totalPayable: Number(orderData.totalPayable - totalAdjustedPrice),
-                due: Number(orderData.totalPayable - totalAdjustedPrice),
+                due: Number(orderData.totalPayable),
                 status: 'due',
                 deliveryMan: deliveryManName,
             };

@@ -6,6 +6,7 @@ import PageTitle from "../../../Components/PageTitle/PageTitle";
 import useApiConfig from "../../../Hooks/useApiConfig";
 import useCustomer from "../../../Hooks/useCustomer";
 import useDepotProducts from "../../../Hooks/useDepotProducts";
+import useExpiredReturnes from "../../../Hooks/useExpiredReturnes";
 import useOrders from "../../../Hooks/useOrders";
 
 const OrderDelivery = () => {
@@ -14,6 +15,7 @@ const OrderDelivery = () => {
     const [orders, , ordersRefetch] = useOrders();
     const [products, , productsRefetch] = useDepotProducts();
     const [customers] = useCustomer();
+    const [returns] = useExpiredReturnes();
 
     const pendingOrders = orders.filter(order => order.status === 'pending');
 
@@ -30,6 +32,14 @@ const OrderDelivery = () => {
 
         return `${year}-${month}-${day}`;
     };
+
+    const expireReturns = returns.filter(adReturn =>
+        adReturn.pharmacyId === selectedOrderDetails?.pharmacyId
+        &&
+        adReturn.status === 'approved'
+    );
+
+    const totalAdjustedPrice = expireReturns.reduce((acc, sum) => acc + sum.totalPrice, 0) || 0;
 
     const handleDeliveryChange = (batchId, value) => {
         setDeliveryQuantities((prev) => ({
@@ -256,7 +266,8 @@ const OrderDelivery = () => {
             ),
 
             totalPrice: Number(totalPrice),
-            totalPayable: Number(totalPayable),
+            adjustedPrice: Number(totalAdjustedPrice),
+            totalPayable: Number(totalPayable - totalAdjustedPrice),
             soldAmount: Number(totalPrice),
             status: "delivered",
             date: getTodayDate()
@@ -347,6 +358,40 @@ const OrderDelivery = () => {
                 &&
                 !["paid", "returned"].includes(order.status.toLowerCase())
         );
+
+        if (totalAdjustedPrice > 0 && totalAdjustedPrice > selectedOrderDetails.totalPrice) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Adjusted Price Limit Exceeded',
+                html: `
+                    <table style="
+                        width: 100%;
+                        margin: 12px 0;
+                        border-collapse: collapse;
+                        text-align: center;
+                        font-size: 15px;
+                        border: 1px solid #eee;
+                    ">
+                        <thead>
+                            <tr style="background-color: #f9f9f9;">
+                                <th style="padding: 8px; border-bottom: 1px solid #ddd;">Sold</th>
+                                <th style="padding: 8px; border-bottom: 1px solid #ddd;">Adjusted</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 8px; font-weight: 500; color: #333;">${selectedOrderDetails.totalPrice.toFixed(2)}</td>
+                                <td style="padding: 8px; font-weight: 500; color: #333;">${totalAdjustedPrice.toFixed(2)}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>The adjusted amount can't be higher than total sold amount.</p>
+                `,
+                confirmButtonText: 'OK',
+            });
+
+            return;
+        }
 
         if (selectedOrderDetails.payMode === "Cash" && !selectedPharmacy?.payMode?.includes("STC")) {
             // Check for any cash order placed today
