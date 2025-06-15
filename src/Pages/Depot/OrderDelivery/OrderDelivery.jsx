@@ -385,7 +385,7 @@ const OrderDelivery = () => {
                             </tr>
                         </tbody>
                     </table>
-                    <p>The adjusted amount can't be higher than total sold amount.</p>
+                    <p>Adjusted amount can't be higher than total sold amount.</p>
                 `,
                 confirmButtonText: 'OK',
             });
