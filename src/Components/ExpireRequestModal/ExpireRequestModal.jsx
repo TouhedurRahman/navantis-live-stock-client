@@ -337,7 +337,7 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                                     <option value="">Select a pharmacy</option>
                                     {filteredPharmacies.map(pharmacy => (
                                         <option key={pharmacy._id} value={pharmacy._id}>
-                                            {pharmacy.name}
+                                            {pharmacy.name} - {pharmacy.customerId}
                                         </option>
                                     ))}
                                 </select>
