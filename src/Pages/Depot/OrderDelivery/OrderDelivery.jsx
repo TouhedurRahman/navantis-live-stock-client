@@ -15,7 +15,7 @@ const OrderDelivery = () => {
     const [orders, , ordersRefetch] = useOrders();
     const [products, , productsRefetch] = useDepotProducts();
     const [customers] = useCustomer();
-    const [returns] = useExpiredReturnes();
+    const [returns, , exReturnRefetch] = useExpiredReturnes();
 
     const pendingOrders = orders.filter(order => order.status === 'pending');
 
@@ -110,6 +110,22 @@ const OrderDelivery = () => {
         onError: (error) => {
             console.error("Error stock out delivery:", error);
         },
+    });
+
+    const updateExReturnsMutation = useMutation({
+        mutationFn: async (expireReturns) => {
+            for (const exReturn of expireReturns) {
+                const updatedExReturnReq = {
+                    ...exReturn,
+                    status: 'adjusted',
+                    date: getTodayDate()
+                }
+                await axios.patch(`${baseUrl}/expired-returns/${exReturn._id}`, updatedExReturnReq);
+            }
+        },
+        onError: (error) => {
+            console.log('Error update status: ', error);
+        }
     });
 
     const handleDeliverySubmit = async () => {
@@ -278,11 +294,13 @@ const OrderDelivery = () => {
                 deletePendingOrderMutation.mutateAsync(),
                 addDeliveredOrderMutation.mutateAsync(deliveredOrder),
                 updateDepotProductsMutation.mutateAsync(deliveryData),
-                addStockOutDepotMutation.mutateAsync(dptSOutData)
+                addStockOutDepotMutation.mutateAsync(dptSOutData),
+                updateExReturnsMutation.mutateAsync(expireReturns)
             ]);
 
             ordersRefetch();
             productsRefetch();
+            exReturnRefetch();
 
             Swal.fire({
                 title: "Success!",

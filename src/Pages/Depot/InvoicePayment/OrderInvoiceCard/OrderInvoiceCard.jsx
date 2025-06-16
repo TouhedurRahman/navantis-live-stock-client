@@ -66,21 +66,6 @@ const OrderInvoiceCard = ({ idx, order, refetch }) => {
         }
     });
 
-    const updateExReturnsMutation = useMutation({
-        mutationFn: async (expireReturns) => {
-            for (const exReturn of expireReturns) {
-                const updatedExReturnReq = {
-                    ...exReturn,
-                    status: 'adjusted'
-                }
-                await axios.patch(`${baseUrl}/expired-returns/${exReturn._id}`, updatedExReturnReq);
-            }
-        },
-        onError: (error) => {
-            console.log('Error update status: ', error);
-        }
-    });
-
     const handlePrint = async (data) => {
         if (!deliveryManName.trim()) {
             Swal.fire("Warning", "Please provide a Delivery Man name.", "warning");
@@ -89,8 +74,7 @@ const OrderInvoiceCard = ({ idx, order, refetch }) => {
 
         try {
             await Promise.all([
-                updateOrderMutation.mutateAsync(data),
-                updateExReturnsMutation.mutateAsync(expireReturns)
+                updateOrderMutation.mutateAsync(data)
             ]);
 
             refetch();
