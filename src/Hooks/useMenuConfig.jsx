@@ -108,6 +108,7 @@ const useMenuConfig = () => {
             links: [
                 { to: '/net-sales-report', icon: <TbReportAnalytics className='me-2' />, label: 'Net Sales' },
                 { to: '/product-summary', icon: <TbReportAnalytics className='me-2' />, label: 'Product Summary' },
+                { to: '/products-sales-returns', icon: <TbReportAnalytics className='me-2' />, label: 'Products Sales Returns' },
             ],
         },
     };
