@@ -42,6 +42,7 @@ import Profile from "../../Pages/Profile/Profile/Profile";
 import NetSales from "../../Pages/ReportsComponents/NetSales/NetSales";
 import ProductsSalesReturn from "../../Pages/ReportsComponents/ProductsSalesReturn/ProductsSalesReturn";
 import ProductSummary from "../../Pages/ReportsComponents/ProductSummary/ProductSummary";
+import SalesReturns from "../../Pages/ReportsComponents/SalesReturns/SalesReturns";
 import AllUsers from "../../Pages/Users/AllUsers/AllUsers";
 import DepotDelivery from "../../Pages/Warehouse/DepotDelivery/DepotDelivery";
 import StockInList from "../../Pages/Warehouse/StockInList/StockInList";
@@ -248,6 +249,10 @@ const router = createBrowserRouter([
             {
                 path: '/product-summary',
                 element: <ProductSummary />
+            },
+            {
+                path: '/sales-returns',
+                element: <SalesReturns />
             },
             {
                 path: '/products-sales-returns',
