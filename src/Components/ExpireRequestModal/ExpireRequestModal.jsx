@@ -26,6 +26,7 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
     const [orderedByList, setOrderedByList] = useState([]);
     const [selectedProductCode, setSelectedProductCode] = useState('');
     const [territory, setTerritory] = useState('');
+    const [parentTerritory, setParentTerritory] = useState('');
     const [filteredPharmacies, setFilteredPharmacies] = useState([]);
     const [areaManager, setAreaManager] = useState('');
     const [zonalManager, setZonalManager] = useState('');
@@ -72,6 +73,7 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
 
         setTerritory(territoryName);
         setAreaManager(selectedOrder?.areaManager || '');
+        setParentTerritory(selectedOrder?.parentTerritory || '');
         setZonalManager(selectedOrder?.zonalManager || '');
         setFilteredPharmacies(filterPharmacies);
     };
@@ -91,9 +93,10 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                 totalQuantity: Number(data.quantity),
                 pharmacy: selectedPharmacyDetails.name,
                 pharmacyId: selectedPharmacyDetails.customerId,
-                territory,
                 returnedBy: data.returnedBy,
+                territory,
                 areaManager,
+                parentTerritory,
                 zonalManager,
                 status: 'pending',
                 date: getTodayDate()
