@@ -31,12 +31,12 @@ const ExpireReturns = () => {
     const filteredExpireReturns = useMemo(() => {
         return expireReturns
             .filter(expireReturn => {
-                const orderDate = new Date(expireReturn.date);
+                const returnDate = new Date(expireReturn.date);
 
-                const matchesYear = year ? orderDate.getFullYear() === parseInt(year) : true;
-                const matchesMonth = month ? orderDate.getMonth() + 1 === parseInt(month) : true;
+                const matchesYear = year ? returnDate.getFullYear() === parseInt(year) : true;
+                const matchesMonth = month ? returnDate.getMonth() + 1 === parseInt(month) : true;
                 const matchesDateRange = fromDate && toDate
-                    ? orderDate >= new Date(fromDate) && orderDate <= new Date(toDate)
+                    ? returnDate >= new Date(fromDate) && returnDate <= new Date(toDate)
                     : true;
                 const matchesTerritory = territory ? expireReturn.territory?.toLowerCase().includes(territory.toLowerCase()) : true;
                 const matchesReturnedBy = returnedBy ? expireReturn.returnedBy?.toLowerCase().includes(returnedBy.toLowerCase()) : true;
