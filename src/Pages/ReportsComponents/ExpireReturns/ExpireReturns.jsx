@@ -14,6 +14,7 @@ const ExpireReturns = () => {
     const [month, setMonth] = useState('');
     const [fromDate, setFromDate] = useState('');
     const [toDate, setToDate] = useState('');
+    const [exRetStatus, setExRetStatus] = useState('adjusted');
     const [productKey, setProductKey] = useState('');
     const [territory, setTerritory] = useState('');
     const [returnedBy, setReturnedBy] = useState('');
@@ -35,12 +36,13 @@ const ExpireReturns = () => {
                 const matchesYear = year ? returnDate.getFullYear() === parseInt(year) : true;
                 const matchesMonth = month ? returnDate.getMonth() + 1 === parseInt(month) : true;
                 const matchesDateRange = fromDate && toDate ? returnDate >= new Date(fromDate) && returnDate <= new Date(toDate) : true;
+                const matchesStatus = exRetStatus ? exReturn.status?.toLowerCase().includes(exRetStatus.toLowerCase()) : true;
                 const matchesTerritory = territory ? exReturn.territory?.toLowerCase().includes(territory.toLowerCase()) : true;
                 const matchesReturnedBy = returnedBy ? exReturn.returnedBy?.toLowerCase().includes(returnedBy.toLowerCase()) : true;
                 const matchesAreaManager = areaManager ? exReturn.areaManager?.toLowerCase().includes(areaManager.toLowerCase()) : true;
                 const matchesCustomer = customer ? exReturn.pharmacyId?.toLowerCase().includes(customer.toLowerCase()) : true;
 
-                return matchesYear && matchesMonth && matchesDateRange && matchesTerritory && matchesReturnedBy && matchesAreaManager && matchesCustomer;
+                return matchesYear && matchesMonth && matchesDateRange && matchesStatus && matchesTerritory && matchesReturnedBy && matchesAreaManager && matchesCustomer;
             })
             .map(exReturn => {
                 if (!productKey) return exReturn;
@@ -55,7 +57,7 @@ const ExpireReturns = () => {
                 return matchesProduct ? exReturn : null;
             })
             .filter(Boolean);
-    }, [expireReturns, year, month, fromDate, toDate, productKey, territory, returnedBy, areaManager, customer]);
+    }, [expireReturns, year, month, fromDate, toDate, exRetStatus, productKey, territory, returnedBy, areaManager, customer]);
 
     const findDateRange = (returns) => {
         if (!returns.length) return { firstDate: null, lastDate: null };
@@ -168,6 +170,7 @@ const ExpireReturns = () => {
         setMonth('');
         setFromDate('');
         setToDate('');
+        setExRetStatus('adjusted');
         setProductKey('');
         setTerritory('');
         setReturnedBy('');
@@ -263,6 +266,19 @@ const ExpireReturns = () => {
                                 onChange={(e) => setToDate(e.target.value)}
                                 className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
                             />
+                        </div>
+
+                        {/* Status filter */}
+                        <div className='col-span-1 md:col-span-2'>
+                            <label className="block font-semibold text-gray-700 mb-1">Status</label>
+                            <select
+                                value={exRetStatus}
+                                onChange={(e) => setExRetStatus(e.target.value)}
+                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
+                            >
+                                <option value="adjusted">Adjusted</option>
+                                < option value="approved">Approved</option>
+                            </select>
                         </div>
 
                         {/* Product Filter */}
