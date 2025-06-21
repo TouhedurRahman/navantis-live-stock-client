@@ -117,8 +117,8 @@ const ExpireReturnsReport = ({ reportType, filteredExReturns = [], firstDate, la
 
                     return `
                         <tr>
-                        <td style="padding: 8px; border: 1px solid #ccc;">${pharmacy.pharmacyId}</td>
-                        <td style="padding: 8px; border: 1px solid #ccc;">${pharmacy.pharmacyName}</td>
+                        <td style="padding: 8px; border: 1px solid #ccc; text-align: center;">${pharmacy.pharmacyId}</td>
+                        <td style="padding: 8px; border: 1px solid #ccc; text-align: left;">${pharmacy.pharmacyName}</td>
                         <td style="padding: 8px; border: 1px solid #ccc;">${customers.find(c => c.customerId === pharmacy.pharmacyId)?.address || "N/A"}</td>
                         <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${pharmacy.totalQuantity}</td>
                         <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${pharmacy.totalPrice.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
@@ -137,9 +137,9 @@ const ExpireReturnsReport = ({ reportType, filteredExReturns = [], firstDate, la
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
                     <thead>
                         <tr>
-                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0;">Customer ID</th>
-                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0;">Customer Name</th>
-                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0;">Customer Address</th>
+                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: center;">Customer ID</th>
+                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left;">Customer Name</th>
+                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left;">Customer Address</th>
                         <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 12%;">Total Qty</th>
                         <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 12%;">Total Price</th>
                         </tr>

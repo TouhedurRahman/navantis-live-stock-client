@@ -3,6 +3,7 @@ import { FaFileExcel, FaFilePdf } from "react-icons/fa6";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import useCustomer from "../../../Hooks/useCustomer";
 import useExpiredReturnes from "../../../Hooks/useExpiredReturnes";
+import ExpireReturnsExcel from "../../../Reports/ExpireReturnsExcel";
 import ExpireReturnsReport from "../../../Reports/ExpireReturnsReport";
 
 const ExpireReturns = () => {
@@ -186,7 +187,7 @@ const ExpireReturns = () => {
         customerMobile
     });
 
-    const handleDownloadExcel = ExpireReturnsReport({
+    const handleDownloadExcel = ExpireReturnsExcel({
         reportType,
         filteredExReturns,
         firstDate,
