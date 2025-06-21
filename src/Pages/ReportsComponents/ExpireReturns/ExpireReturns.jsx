@@ -3,7 +3,6 @@ import { FaFileExcel, FaFilePdf } from "react-icons/fa6";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import useCustomer from "../../../Hooks/useCustomer";
 import useExpiredReturnes from "../../../Hooks/useExpiredReturnes";
-import ExpireReturnsExcel from "../../../Reports/ExpireReturnsExcel";
 import ExpireReturnsReport from "../../../Reports/ExpireReturnsReport";
 
 const ExpireReturns = () => {
@@ -28,97 +27,100 @@ const ExpireReturns = () => {
         exReturn => ["approved", "adjusted"].includes(exReturn.status)
     );
 
-    const filteredExpireReturns = useMemo(() => {
+    const filteredExReturns = useMemo(() => {
         return expireReturns
-            .filter(expireReturn => {
-                const returnDate = new Date(expireReturn.date);
-
+            .filter(exReturn => {
+                const returnDate = new Date(exReturn.date);
                 const matchesYear = year ? returnDate.getFullYear() === parseInt(year) : true;
                 const matchesMonth = month ? returnDate.getMonth() + 1 === parseInt(month) : true;
-                const matchesDateRange = fromDate && toDate
-                    ? returnDate >= new Date(fromDate) && returnDate <= new Date(toDate)
-                    : true;
-                const matchesTerritory = territory ? expireReturn.territory?.toLowerCase().includes(territory.toLowerCase()) : true;
-                const matchesReturnedBy = returnedBy ? expireReturn.returnedBy?.toLowerCase().includes(returnedBy.toLowerCase()) : true;
-                const matchesAreaManager = areaManager ? expireReturn.areaManager?.toLowerCase().includes(areaManager.toLowerCase()) : true;
-                const matchesCustomer = customer ? expireReturn.pharmacyId?.toLowerCase().includes(customer.toLowerCase()) : true;
+                const matchesDateRange = fromDate && toDate ? returnDate >= new Date(fromDate) && returnDate <= new Date(toDate) : true;
+                const matchesTerritory = territory ? exReturn.territory?.toLowerCase().includes(territory.toLowerCase()) : true;
+                const matchesReturnedBy = returnedBy ? exReturn.returnedBy?.toLowerCase().includes(returnedBy.toLowerCase()) : true;
+                const matchesAreaManager = areaManager ? exReturn.areaManager?.toLowerCase().includes(areaManager.toLowerCase()) : true;
+                const matchesCustomer = customer ? exReturn.pharmacyId?.toLowerCase().includes(customer.toLowerCase()) : true;
 
-                const matchesProductKey = productKey ? (() => {
-                    const [filterName, filterWeight] = productKey.toLowerCase().split('|').map(s => s.trim());
-                    const name = expireReturn.productName?.trim().toLowerCase() || '';
-                    const weight = expireReturn.netWeight?.trim().toLowerCase() || '';
-                    return name === filterName && weight === filterWeight;
-                })() : true;
+                return matchesYear && matchesMonth && matchesDateRange && matchesTerritory && matchesReturnedBy && matchesAreaManager && matchesCustomer;
+            })
+            .map(exReturn => {
+                if (!productKey) return exReturn;
 
-                return matchesYear && matchesMonth && matchesDateRange && matchesTerritory && matchesReturnedBy && matchesAreaManager && matchesCustomer && matchesProductKey;
-            });
+                const [filterName, filterWeight] = productKey.toLowerCase().split('|').map(s => s.trim());
+
+                const name = exReturn.productName?.toLowerCase() || '';
+                const weight = exReturn.netWeight?.toLowerCase() || '';
+
+                const matchesProduct = name === filterName && weight === filterWeight;
+
+                return matchesProduct ? exReturn : null;
+            })
+            .filter(Boolean);
     }, [expireReturns, year, month, fromDate, toDate, productKey, territory, returnedBy, areaManager, customer]);
 
     const findDateRange = (returns) => {
         if (!returns.length) return { firstDate: null, lastDate: null };
 
-        const sortedDates = returns.map(expireReturn => new Date(expireReturn.date)).sort((a, b) => a - b);
+        const sortedDates = returns.map(exReturn => new Date(exReturn.date)).sort((a, b) => a - b);
         const firstDate = sortedDates[0].toLocaleDateString('en-GB').replace(/\//g, '-');
         const lastDate = sortedDates[sortedDates.length - 1].toLocaleDateString('en-GB').replace(/\//g, '-');
 
         return { firstDate, lastDate };
     };
 
-    const { firstDate, lastDate } = findDateRange(filteredExpireReturns);
+    const { firstDate, lastDate } = findDateRange(filteredExReturns);
 
     const uniqueProducts = useMemo(() => {
         const productMap = new Map();
 
-        filteredExpireReturns.forEach(item => {
-            const name = item.productName?.trim().toLowerCase() || '';
-            const netWeight = item.netWeight?.trim().toLowerCase() || '';
+        filteredExReturns.forEach(exReturn => {
+            const name = exReturn.productName?.trim().toLowerCase() || '';
+            const netWeight = exReturn.netWeight?.trim().toLowerCase() || '';
             const key = `${name}|${netWeight}`;
 
             if (!productMap.has(key)) {
                 productMap.set(key, {
-                    productName: item.productName?.trim() || '',
-                    netWeight: item.netWeight?.trim() || '',
+                    name: exReturn.productName?.trim() || '',
+                    netWeight: exReturn.netWeight?.trim() || '',
                 });
             }
         });
 
         return Array.from(productMap.values());
-    }, [filteredExpireReturns]);
+    }, [filteredExReturns]);
 
     const uniqueTerritory = useMemo(() => {
         const territoryMap = new Map();
 
-        filteredExpireReturns.forEach(salesReturn => {
-            if (salesReturn.territory) {
-                territoryMap.set(salesReturn.territory.trim(), true);
+        filteredExReturns.forEach(exReturn => {
+            if (exReturn.territory) {
+                territoryMap.set(exReturn.territory.trim(), true);
             }
         });
 
         return Array.from(territoryMap.keys());
-    }, [filteredExpireReturns]);
+    }, [filteredExReturns]);
 
     const uniqueReturnedBy = useMemo(() => {
-        const returnedByMap = new Map();
+        const orderByMap = new Map();
 
-        filteredExpireReturns.forEach(salesReturn => {
-            if (salesReturn.returnedBy) {
-                returnedByMap.set(salesReturn.returnedBy.trim());
+        filteredExReturns.forEach(exReturn => {
+            if (exReturn.returnedBy) {
+                orderByMap.set(exReturn.returnedBy.trim());
             }
         });
 
-        return Array.from(returnedByMap.entries()).map(([returnedBy]) => ({
+        return Array.from(orderByMap.entries()).map(([returnedBy]) => ({
             returnedBy
         }));
-    }, [filteredExpireReturns]);
+    }, [filteredExReturns]);
 
     const uniqueAreaManager = useMemo(() => {
         const amMap = new Map();
         let vacantAdded = false;
 
-        filteredExpireReturns.forEach(salesReturn => {
-            if (salesReturn.areaManager) {
-                const areaManager = salesReturn.areaManager.trim();
-                const amEmail = salesReturn.amEmail ? salesReturn.amEmail.trim() : null;
+        filteredExReturns.forEach(exReturn => {
+            if (exReturn.areaManager) {
+                const areaManager = exReturn.areaManager.trim();
+                const amEmail = exReturn.amEmail ? exReturn.amEmail.trim() : null;
 
                 if (areaManager === "Vacant" && !vacantAdded) {
                     amMap.set(areaManager, null);
@@ -133,14 +135,14 @@ const ExpireReturns = () => {
             areaManager,
             amEmail
         }));
-    }, [filteredExpireReturns]);
+    }, [filteredExReturns]);
 
     const uniquePharmacies = useMemo(() => {
         const pharmacyMap = new Map();
 
-        filteredExpireReturns.forEach(salesReturn => {
-            if (salesReturn.pharmacyId && salesReturn.pharmacy) {
-                pharmacyMap.set(salesReturn.pharmacyId.trim(), salesReturn.pharmacy.trim());
+        filteredExReturns.forEach(exReturn => {
+            if (exReturn.pharmacyId && exReturn.pharmacy) {
+                pharmacyMap.set(exReturn.pharmacyId.trim(), exReturn.pharmacy.trim());
             }
         });
 
@@ -148,9 +150,9 @@ const ExpireReturns = () => {
             pharmacyId,
             pharmacy,
         }));
-    }, [filteredExpireReturns]);
+    }, [filteredExReturns]);
 
-    const orderWithPharmacyId = filteredExpireReturns.find(salesReturn => salesReturn.pharmacyId);
+    const orderWithPharmacyId = filteredExReturns.find(exReturn => exReturn.pharmacyId);
     const selectedCustomerCode = orderWithPharmacyId ? orderWithPharmacyId.pharmacyId : null;
 
     const customerDetails = customers.find(singleCus => singleCus.customerId === selectedCustomerCode);
@@ -175,7 +177,7 @@ const ExpireReturns = () => {
 
     const handlePrint = ExpireReturnsReport({
         reportType,
-        filteredExpireReturns,
+        filteredExReturns,
         firstDate,
         lastDate,
         customerCode,
@@ -184,9 +186,9 @@ const ExpireReturns = () => {
         customerMobile
     });
 
-    const handleDownloadExcel = ExpireReturnsExcel({
+    const handleDownloadExcel = ExpireReturnsReport({
         reportType,
-        filteredExpireReturns,
+        filteredExReturns,
         firstDate,
         lastDate,
         customerCode,
@@ -272,13 +274,13 @@ const ExpireReturns = () => {
                             >
                                 <option value="">Select a Product</option>
                                 {uniqueProducts.map((p) => {
-                                    const name = p.productName?.trim().toLowerCase() || '';
+                                    const name = p.name?.trim().toLowerCase() || '';
                                     const weight = p.netWeight?.trim().toLowerCase() || '';
                                     const key = `${name}|${weight}`;
 
                                     return (
                                         <option key={key} value={key}>
-                                            {p.productName} - {p.netWeight}
+                                            {p.name} - {p.netWeight}
                                         </option>
                                     );
                                 })}
@@ -311,9 +313,9 @@ const ExpireReturns = () => {
                                 className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
                             >
                                 <option value="">Select a person</option>
-                                {uniqueReturnedBy.map(({ returnedBy, email }) => (
+                                {uniqueReturnedBy.map(({ returnedBy }) => (
                                     <option key={returnedBy} value={returnedBy}>
-                                        {returnedBy} {email && `- ${email}`}
+                                        {returnedBy}
                                     </option>
                                 ))}
                             </select>

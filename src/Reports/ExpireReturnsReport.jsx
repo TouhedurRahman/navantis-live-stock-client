@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
 import useCustomer from "../Hooks/useCustomer";
-// import useExpiredReturnes from "../Hooks/useExpiredReturnes";
 
-const ExpireReturnsReport = ({ reportType, filteredReturns = [], firstDate, lastDate, customerCode, customerName, customerAddress, customerMobile }) => {
-    const [expireReturns, setReturns] = useState(filteredReturns);
-    // const [expireReturns] = useExpiredReturnes();
+const ExpireReturnsReport = ({ reportType, filteredExReturns = [], firstDate, lastDate, customerCode, customerName, customerAddress, customerMobile }) => {
+    const [expireReturns, setReturns] = useState(filteredExReturns);
     const [customers] = useCustomer();
 
     useEffect(() => {
-        setReturns(filteredReturns);
-    }, [filteredReturns]);
+        setReturns(filteredExReturns);
+    }, [filteredExReturns]);
 
     const now = new Date().toLocaleString("en-US", {
         year: "numeric", month: "long", day: "numeric",
