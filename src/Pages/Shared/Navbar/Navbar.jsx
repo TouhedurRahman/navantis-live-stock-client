@@ -2,6 +2,7 @@ import { faAngleDown, faAngleRight, faBars, faTimes } from '@fortawesome/free-so
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import { FaCircleUser, FaUsers } from "react-icons/fa6";
+import { PiMapPinAreaFill } from "react-icons/pi";
 import { RiLogoutCircleRFill } from "react-icons/ri";
 import { Link, Outlet } from 'react-router-dom';
 import useAuth from '../../../Hooks/useAuth';
@@ -142,6 +143,11 @@ const Navbar = () => {
                                             singleUser?.permissions?.includes("all-users")
                                             &&
                                             <li><Link to="all-users" className='text-white' onClick={() => document.activeElement.blur()}><FaUsers />All Users</Link></li>
+                                        }
+                                        {
+                                            singleUser?.permissions?.includes("territory")
+                                            &&
+                                            <li><Link to="territory" className='text-white' onClick={() => document.activeElement.blur()}><PiMapPinAreaFill />Territory</Link></li>
                                         }
                                         <li><Link onClick={() => { handleLogOut(); document.activeElement.blur(); }} className='text-white'><RiLogoutCircleRFill />Log Out</Link></li>
                                     </ul>
