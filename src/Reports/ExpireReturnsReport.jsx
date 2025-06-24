@@ -137,11 +137,11 @@ const ExpireReturnsReport = ({ reportType, filteredExReturns = [], firstDate, la
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
                     <thead>
                         <tr>
-                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: center;">Customer ID</th>
-                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left;">Customer Name</th>
-                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left;">Customer Address</th>
-                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 12%;">Total Qty</th>
-                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 12%;">Total Price</th>
+                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: center; width: 8%;">Cus. ID</th>
+                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 27%;">Customer Name</th>
+                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left;">Customer Address</th>
+                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 12%;">Total Quantity</th>
+                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 12%;">Total Price</th>
                         </tr>
                     </thead>
                     <tbody>
