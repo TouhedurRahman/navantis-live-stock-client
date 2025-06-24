@@ -44,6 +44,7 @@ import NetSales from "../../Pages/ReportsComponents/NetSales/NetSales";
 import ProductsSalesReturn from "../../Pages/ReportsComponents/ProductsSalesReturn/ProductsSalesReturn";
 import ProductSummary from "../../Pages/ReportsComponents/ProductSummary/ProductSummary";
 import SalesReturns from "../../Pages/ReportsComponents/SalesReturns/SalesReturns";
+import SetTarget from "../../Pages/Target/SetTarget/SetTarget";
 import AllUsers from "../../Pages/Users/AllUsers/AllUsers";
 import DepotDelivery from "../../Pages/Warehouse/DepotDelivery/DepotDelivery";
 import StockInList from "../../Pages/Warehouse/StockInList/StockInList";
@@ -163,6 +164,7 @@ const router = createBrowserRouter([
                 path: "/damaged-in-warehouse",
                 element: <WhDamagedProduct />
             },
+            /********** Depot **********/
             {
                 path: "/depot-receive-request",
                 element: <DepotRecieveReq />
@@ -211,6 +213,12 @@ const router = createBrowserRouter([
                 path: "/delivery-report",
                 element: <DeliveryReport />
             },
+            /********** Target **********/
+            {
+                path: '/set-target',
+                element: <SetTarget />
+            },
+            /********** Accounts Reports **********/
             {
                 path: "/daily-collections",
                 element: <DailyCollections />
@@ -223,6 +231,7 @@ const router = createBrowserRouter([
                 path: "/mpo-statement",
                 element: <MPOStatement />
             },
+            /********** Order **********/
             {
                 path: "/place-order",
                 element: <PlaceOrder />
@@ -235,6 +244,7 @@ const router = createBrowserRouter([
                 path: "/my-order-report",
                 element: <MyOrderReport />
             },
+            /********** Profile **********/
             {
                 path: '/profile',
                 element: <Profile />
@@ -243,6 +253,7 @@ const router = createBrowserRouter([
                 path: '/all-users',
                 element: <AllUsers />
             },
+            /********** Sales Reports & Summary **********/
             {
                 path: '/net-sales-report',
                 element: <NetSales />

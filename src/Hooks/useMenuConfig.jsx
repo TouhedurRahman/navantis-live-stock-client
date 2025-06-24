@@ -4,10 +4,11 @@ import {
     FaArrowDown, FaArrowUp, FaCartPlus, FaExclamationCircle, FaHospital, FaListUl, FaShoppingCart, FaTrashAlt, FaTruck, FaUserCog, FaWarehouse
 } from 'react-icons/fa';
 import { FcExpired } from 'react-icons/fc';
+import { FiTarget } from "react-icons/fi";
 import { GiDustCloud, GiReturnArrow, GiStorkDelivery } from 'react-icons/gi';
 import { IoIosAddCircle } from 'react-icons/io';
 import { MdAccountBalance, MdAssignmentReturned, MdOutlineShoppingBag, MdPayment } from 'react-icons/md';
-import { TbCoinTakaFilled, TbReportAnalytics, TbReportSearch } from 'react-icons/tb';
+import { TbCoinTakaFilled, TbReportAnalytics, TbReportSearch, TbTargetArrow } from 'react-icons/tb';
 import { VscGitPullRequestGoToChanges } from 'react-icons/vsc';
 import useSingleUser from './useSingleUser';
 
@@ -66,6 +67,14 @@ const useMenuConfig = () => {
                 { to: '/delivery-report', icon: <TbReportSearch className='me-2' />, label: 'Delivery Report' },
             ],
         },
+
+        target: {
+            icon: <TbTargetArrow className="mr-2" />,
+            links: [
+                { to: '/set-target', icon: <FiTarget className='me-2' />, label: 'Set Target' }
+            ],
+        },
+
         institute: {
             icon: <FaHospital className="mr-2" />,
             links: [

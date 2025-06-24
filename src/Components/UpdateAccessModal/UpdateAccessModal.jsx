@@ -12,6 +12,7 @@ const permissionsList = [
     "admin",
     "warehouse",
     "depot",
+    "target",
     "accounts",
     "reports",
     "institute",
