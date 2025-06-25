@@ -24,9 +24,9 @@ const Territories = () => {
         setEditingId(territory._id);
         setEditData({
             parentTerritory: territory.parentTerritory,
-            areaManager: territory.areaManager || "Vacant",
+            areaManager: territory.areaManager,
             amEmail: territory.amEmail || null,
-            zonalManager: territory.zonalManager || "Vacant",
+            zonalManager: territory.zonalManager,
             zmEmail: territory.zmEmail || null,
         });
     };
@@ -37,7 +37,7 @@ const Territories = () => {
                 parentTerritory: editData.parentTerritory,
                 areaManager: editData.areaManager,
                 amEmail: editData.amEmail,
-                zonalManager: editData.zonalManager || "Vacant",
+                zonalManager: editData.zonalManager,
                 zmEmail: editData.zmEmail,
             });
             if (response.data.modifiedCount > 0) {
@@ -103,17 +103,19 @@ const Territories = () => {
                                 {editingId === t._id ? (
                                     <select
                                         className="border px-2 py-1 rounded w-full"
-                                        value={`${editData.areaManager}|||${editData.amEmail}`}
+                                        value={`${editData.areaManager || ""}|||${editData.amEmail || ""}`}
                                         onChange={(e) => {
                                             const [selectedName, selectedEmail] = e.target.value.split("|||");
                                             setEditData(prev => ({
                                                 ...prev,
-                                                areaManager: selectedName,
-                                                amEmail: selectedEmail
+                                                areaManager: selectedName || "",
+                                                amEmail: selectedEmail || ""
                                             }));
                                         }}
                                     >
-                                        <option value="">Select Area Manager</option>
+                                        <option value="|||">Select Area Manager</option>
+                                        <option value="Vacant|||">Vacant</option>
+
                                         {users
                                             .filter(user =>
                                                 ["Area Manager", "Sr. Area Manager"].includes(user.designation)
@@ -135,17 +137,19 @@ const Territories = () => {
                                 {editingId === t._id ? (
                                     <select
                                         className="border px-2 py-1 rounded w-full"
-                                        value={`${editData.zonalManager}|||${editData.zmEmail}`}
+                                        value={`${editData.zonalManager || ""}|||${editData.zmEmail || ""}`}
                                         onChange={(e) => {
                                             const [selectedName, selectedEmail] = e.target.value.split("|||");
                                             setEditData(prev => ({
                                                 ...prev,
-                                                zonalManager: selectedName,
-                                                zmEmail: selectedEmail
+                                                zonalManager: selectedName || "",
+                                                zmEmail: selectedEmail || ""
                                             }));
                                         }}
                                     >
-                                        <option value="">Select Zonal Manager</option>
+                                        <option value="|||">Select Zonal Manager</option>
+                                        <option value="Vacant|||">Vacant</option>
+
                                         {users
                                             .filter(user =>
                                                 ["Zonal Manager"].includes(user.designation)
