@@ -8,6 +8,7 @@ import PageTitle from "../../../Components/PageTitle/PageTitle";
 import useApiConfig from "../../../Hooks/useApiConfig";
 import useAuth from "../../../Hooks/useAuth";
 import useSingleUser from "../../../Hooks/useSingleUser";
+import Territories from "../Territories/Territories";
 
 const Territory = () => {
     const { user } = useAuth();
@@ -96,6 +97,9 @@ const Territory = () => {
                         <FaPlus className="text-sm" />
                         Add Territory
                     </button>
+                </div>
+                <div className="p-6">
+                    <Territories />
                 </div>
             </div>
 
