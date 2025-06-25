@@ -89,13 +89,13 @@ const Territory = () => {
                     <h1 className="px-6 py-3 font-bold">All territory list</h1>
                     <hr className="text-center border border-gray-500 mb-5" />
                 </div>
-                <div className="h-10 flex justify-between items-center p-6">
+                <div className="h-10 flex justify-center items-center p-6">
                     <button
                         onClick={() => setIsModalOpen(true)}
                         className="flex items-center gap-2 bg-[#2563eb] text-white font-medium px-4 py-2 rounded hover:bg-[#1d4ed8] transition duration-200"
                     >
                         <FaPlus className="text-sm" />
-                        Add Territory
+                        Add New Territory
                     </button>
                 </div>
                 <div className="p-6">
