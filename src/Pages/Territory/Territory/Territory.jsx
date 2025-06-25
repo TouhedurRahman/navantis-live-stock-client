@@ -4,15 +4,18 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaPlus, FaTimes } from "react-icons/fa";
 import Swal from "sweetalert2";
+import Loader from "../../../Components/Loader/Loader";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import useApiConfig from "../../../Hooks/useApiConfig";
 import useAuth from "../../../Hooks/useAuth";
 import useSingleUser from "../../../Hooks/useSingleUser";
+import useTerritories from "../../../Hooks/useTerritories";
 import Territories from "../Territories/Territories";
 
 const Territory = () => {
     const { user } = useAuth();
     const [singleUser] = useSingleUser();
+    const [territories, loading, refetch] = useTerritories();
     const baseUrl = useApiConfig();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
@@ -49,6 +52,7 @@ const Territory = () => {
             ]);
 
             reset();
+            refetch();
             setIsModalOpen(false);
 
             Swal.fire({
@@ -99,7 +103,21 @@ const Territory = () => {
                     </button>
                 </div>
                 <div className="p-6">
-                    <Territories />
+                    {
+                        loading
+                            ?
+                            <>
+                                <Loader />
+                            </>
+                            :
+                            <>
+                                <Territories
+                                    territories={territories}
+                                    loading={loading}
+                                    refetch={refetch}
+                                />
+                            </>
+                    }
                 </div>
             </div>
 

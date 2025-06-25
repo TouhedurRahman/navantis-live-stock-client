@@ -2,15 +2,12 @@ import axios from "axios";
 import { useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import Swal from "sweetalert2";
-import Loader from "../../../Components/Loader/Loader";
 import useAllUsers from "../../../Hooks/useAllUsers";
 import useApiConfig from "../../../Hooks/useApiConfig";
-import useTerritories from "../../../Hooks/useTerritories";
 
-const Territories = () => {
+const Territories = ({ territories, refetch }) => {
     const baseUrl = useApiConfig();
-    const [territories, loading, refetch] = useTerritories();
-    const [users, allUsersLoading, allUsersRefetch] = useAllUsers();
+    const [users] = useAllUsers();
     const [editingId, setEditingId] = useState(null);
     const [editData, setEditData] = useState({
         parentTerritory: "",
@@ -60,8 +57,6 @@ const Territories = () => {
             });
         }
     };
-
-    if (loading) return <Loader />;
 
     return (
         <div className="overflow-x-auto">
