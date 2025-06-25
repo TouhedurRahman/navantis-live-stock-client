@@ -15,7 +15,9 @@ const Territories = () => {
     const [editData, setEditData] = useState({
         parentTerritory: "",
         areaManager: "",
-        amEmail: ""
+        amEmail: "",
+        zonalManager: "",
+        zmEmail: ""
     });
 
     const handleEdit = (territory) => {
@@ -23,7 +25,9 @@ const Territories = () => {
         setEditData({
             parentTerritory: territory.parentTerritory,
             areaManager: territory.areaManager || "Vacant",
-            amEmail: territory.amEmail || null
+            amEmail: territory.amEmail || null,
+            zonalManager: territory.zonalManager || "Vacant",
+            zmEmail: territory.zmEmail || null,
         });
     };
 
@@ -32,7 +36,9 @@ const Territories = () => {
             const response = await axios.patch(`${baseUrl}/territories/${id}`, {
                 parentTerritory: editData.parentTerritory,
                 areaManager: editData.areaManager,
-                amEmail: editData.amEmail
+                amEmail: editData.amEmail,
+                zonalManager: editData.zonalManager || "Vacant",
+                zmEmail: editData.zmEmail,
             });
             if (response.data.modifiedCount > 0) {
                 Swal.fire({
@@ -62,10 +68,11 @@ const Territories = () => {
             <table className="min-w-full border text-sm text-left">
                 <thead className="bg-gray-100 border-b">
                     <tr>
-                        <th className="px-4 py-2 w-[20%]">Territory</th>
-                        <th className="px-4 py-2 w-[20%]">Parent Territory</th>
-                        <th className="px-4 py-2 w-[40%]">Area Manager</th>
-                        <th className="px-4 py-2 text-center w-[20%]">Actions</th>
+                        <th className="px-4 py-2 w-[15%]">Territory</th>
+                        <th className="px-4 py-2 w-[15%]">Parent Territory</th>
+                        <th className="px-4 py-2 w-[27%]">Area Manager</th>
+                        <th className="px-4 py-2 w-[27%]">Zonal Manager</th>
+                        <th className="px-4 py-2 text-center w-[16%]">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -122,6 +129,38 @@ const Territories = () => {
                                     </select>
                                 ) : (
                                     t.areaManager || "-"
+                                )}
+                            </td>
+                            <td className="px-4 py-2">
+                                {editingId === t._id ? (
+                                    <select
+                                        className="border px-2 py-1 rounded w-full"
+                                        value={`${editData.zonalManager}|||${editData.zmEmail}`}
+                                        onChange={(e) => {
+                                            const [selectedName, selectedEmail] = e.target.value.split("|||");
+                                            setEditData(prev => ({
+                                                ...prev,
+                                                zonalManager: selectedName,
+                                                zmEmail: selectedEmail
+                                            }));
+                                        }}
+                                    >
+                                        <option value="">Select Zonal Manager</option>
+                                        {users
+                                            .filter(user =>
+                                                ["Zonal Manager"].includes(user.designation)
+                                            )
+                                            .map(user => (
+                                                <option
+                                                    key={user._id}
+                                                    value={`${user.name}|||${user.email}`}
+                                                >
+                                                    {user.name} - {user.email}
+                                                </option>
+                                            ))}
+                                    </select>
+                                ) : (
+                                    t.zonalManager || "-"
                                 )}
                             </td>
                             <td className="flex justify-center items-center px-4 py-2 space-x-2">
