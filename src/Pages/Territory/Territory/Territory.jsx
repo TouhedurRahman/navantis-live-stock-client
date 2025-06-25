@@ -1,16 +1,81 @@
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaPlus, FaTimes } from "react-icons/fa";
+import Swal from "sweetalert2";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
+import useApiConfig from "../../../Hooks/useApiConfig";
+import useAuth from "../../../Hooks/useAuth";
+import useSingleUser from "../../../Hooks/useSingleUser";
 
 const Territory = () => {
+    const { user } = useAuth();
+    const [singleUser] = useSingleUser();
+    const baseUrl = useApiConfig();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
-    const onSubmit = (data) => {
-        console.log("Territory Submitted:", data);
-        setIsModalOpen(false);
-        reset();
+    const getTodayDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    };
+
+    const addNewTerritoryMutation = useMutation({
+        mutationFn: async (data) => {
+            const territory = {
+                territory: data.territoryName,
+                addedBy: singleUser?.name,
+                addedEmail: user.email,
+                date: getTodayDate()
+            };
+            const response = await axios.post(`${baseUrl}/territories`, territory);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error adding territory", error);
+        },
+    });
+
+    const onSubmit = async (data) => {
+        try {
+            await Promise.all([
+                addNewTerritoryMutation.mutateAsync(data),
+            ]);
+
+            reset();
+            setIsModalOpen(false);
+
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "New territory added.",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        } catch (error) {
+            if (error.response?.status === 409) {
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "Territory already exist",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            } else {
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "Faild to add territory",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        }
     };
 
     return (
