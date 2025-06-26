@@ -251,6 +251,7 @@ const UserUpdateModal = ({ user, onClose }) => {
                                         id="parent"
                                         {...register('parent')}
                                         className="w-full mt-1 border-gray-500 bg-white border p-2 text-sm"
+                                        defaultValue={user?.parentId}
                                     >
                                         <option value="">Select {parent}</option>
                                         {managers.filter(u =>
@@ -273,6 +274,7 @@ const UserUpdateModal = ({ user, onClose }) => {
                                         id="grandparent"
                                         {...register('grandparent')}
                                         className="w-full mt-1 border-gray-500 bg-white border p-2 text-sm"
+                                        defaultValue={user?.grandParentId}
                                     >
                                         <option value="">Select {grandparent}</option>
                                         {managers.filter(u => u.designation === grandparent).map(manager => (
