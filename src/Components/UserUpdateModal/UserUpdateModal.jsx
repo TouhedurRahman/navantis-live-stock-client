@@ -1,21 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaTimes } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import useAllUsers from '../../Hooks/useAllUsers';
 import useApiConfig from '../../Hooks/useApiConfig';
-
-/* const hierarchy = {
-    "Managing Director": [],
-    "Sales Manager": ["Managing Director"],
-    "Zonal Manager": ["Sales Manager", "Managing Director"],
-    "Area Manager": ["Zonal Manager", "Sales Manager"],
-    "Medical Promotion Officer": ["Area Manager", "Zonal Manager"],
-    "Skin Care Coordinator": ["Area Manager", "Zonal Manager"],
-    "Area Sales Executive": ["Area Manager", "Zonal Manager"]
-}; */
 
 const hierarchy = {
     "Managing Director": [],
@@ -46,13 +36,6 @@ const UserUpdateModal = ({ user, onClose }) => {
     useEffect(() => {
         setManagers(allUsers);
     }, [allUsers]);
-
-    /* const getHierarchy = (designation) => {
-        const parents = hierarchy[designation] || [];
-        const parent = parents[0] || null;
-        const grandparent = parents[1] || null;
-        return { parent, grandparent };
-    }; */
 
     const getHierarchy = (designation) => {
         const equivalentTitles = {
