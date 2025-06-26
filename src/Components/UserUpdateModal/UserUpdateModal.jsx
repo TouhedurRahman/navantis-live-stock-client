@@ -6,6 +6,7 @@ import { FaTimes } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import useAllUsers from '../../Hooks/useAllUsers';
 import useApiConfig from '../../Hooks/useApiConfig';
+import useTerritories from '../../Hooks/useTerritories';
 
 const hierarchy = {
     "Managing Director": [],
@@ -28,10 +29,22 @@ const hierarchy = {
 const UserUpdateModal = ({ user, onClose }) => {
     const baseUrl = useApiConfig();
 
-    const [allUsers, loading, refetch] = useAllUsers();
-    const { register, handleSubmit, watch, formState: { errors }, reset } = useForm();
+    const [allUsers, , refetch] = useAllUsers();
+    const [territories] = useTerritories();
+
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { errors },
+        reset,
+        setValue
+    } = useForm();
+
     const [managers, setManagers] = useState([]);
+
     const base = watch('base', '');
+    const selectedTerritory = watch('territory', '');
 
     useEffect(() => {
         setManagers(allUsers);
@@ -63,6 +76,27 @@ const UserUpdateModal = ({ user, onClose }) => {
 
     const { parent, grandparent } = getHierarchy(user.designation);
 
+    useEffect(() => {
+        if (base === "Field" && selectedTerritory) {
+            const selected = territories.find(t => t.territory === selectedTerritory);
+
+            if (selected) {
+                const areaManager = managers.find(user => user.email === selected.amEmail);
+                const zonalManager = managers.find(user => user.email === selected.zmEmail);
+
+                if (parent?.includes("Area")) {
+                    setValue('parent', areaManager?._id || '');
+                    setValue('grandparent', zonalManager?._id || '');
+                } else if (parent?.includes("Zonal")) {
+                    setValue('parent', zonalManager?._id || '');
+                    setValue('grandparent', '');
+                }
+
+                setValue('parentTerritory', selected.parentTerritory || '');
+            }
+        }
+    }, [selectedTerritory, base, parent, grandparent, managers, territories, setValue]);
+
     const updateCustomerMutation = useMutation({
         mutationFn: async (data) => {
             let updatedUser = {};
@@ -78,9 +112,10 @@ const UserUpdateModal = ({ user, onClose }) => {
                 updatedUser = {
                     base: data.base,
                     territory: data.territory,
-                    parentId: data.parent || "Vacant",
+                    parentTerritory: data.parentTerritory || "N/A",
+                    parentId: data.parent || null,
                     parentName: selectedParent ? selectedParent.name : "Vacant",
-                    grandParentId: data.grandparent || "Vacant",
+                    grandParentId: data.grandparent || null,
                     grandParentName: selectedGrandparent ? selectedGrandparent.name : "Vacant"
                 };
             }
@@ -105,10 +140,7 @@ const UserUpdateModal = ({ user, onClose }) => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await Promise.all([
-                        updateCustomerMutation.mutateAsync(data),
-                    ]);
-
+                    await updateCustomerMutation.mutateAsync(data);
                     refetch();
                     reset();
                     onClose();
@@ -123,7 +155,7 @@ const UserUpdateModal = ({ user, onClose }) => {
                     Swal.fire({
                         position: "center",
                         icon: "error",
-                        title: "Faild to update customer",
+                        title: "Failed to update customer",
                         showConfirmButton: false,
                         timer: 1500
                     });
@@ -187,22 +219,29 @@ const UserUpdateModal = ({ user, onClose }) => {
                         {errors.base && <p className="text-red-500 text-sm">{errors.base.message}</p>}
                     </div>
 
-                    {/* Field-specific inputs */}
                     {base === "Field" && (
                         <>
+                            {/* Territory Dropdown */}
                             <div className="flex flex-col mt-4">
                                 <label className="text-[#6E719A] mb-1 text-sm">
                                     Territory <span className="text-red-500">*</span>
                                 </label>
-                                <input
-                                    defaultValue={user?.territory}
+                                <select
                                     {...register("territory", { required: "Territory is required" })}
-                                    placeholder="Enter territory name"
                                     className="border-gray-500 bg-white border p-2 text-sm"
-                                />
+                                    defaultValue={user?.territory}
+                                >
+                                    <option value="">Select Territory</option>
+                                    {territories.map(t => (
+                                        <option key={t._id} value={t.territory}>
+                                            {t.territory}
+                                        </option>
+                                    ))}
+                                </select>
                                 {errors.territory && <p className="text-red-500 text-sm">{errors.territory.message}</p>}
                             </div>
 
+                            {/* Parent Selection */}
                             {parent && (
                                 <div className="mt-4">
                                     <label htmlFor="parent" className="text-[#6E719A] mb-1 text-sm">
@@ -212,12 +251,8 @@ const UserUpdateModal = ({ user, onClose }) => {
                                         id="parent"
                                         {...register('parent')}
                                         className="w-full mt-1 border-gray-500 bg-white border p-2 text-sm"
-                                        defaultValue={user?.parentId}
                                     >
                                         <option value="">Select {parent}</option>
-                                        {/* {managers.filter(u => u.designation === parent).map(manager => (
-                                            <option key={manager._id} value={manager._id}>{manager.name}</option>
-                                        ))} */}
                                         {managers.filter(u =>
                                             u.designation === parent ||
                                             (parent === "Area Manager" && u.designation === "Sr. Area Manager")
@@ -228,6 +263,7 @@ const UserUpdateModal = ({ user, onClose }) => {
                                 </div>
                             )}
 
+                            {/* Grandparent Selection */}
                             {grandparent && (
                                 <div className="mt-4">
                                     <label htmlFor="grandparent" className="text-[#6E719A] mb-1 text-sm">
@@ -237,7 +273,6 @@ const UserUpdateModal = ({ user, onClose }) => {
                                         id="grandparent"
                                         {...register('grandparent')}
                                         className="w-full mt-1 border-gray-500 bg-white border p-2 text-sm"
-                                        defaultValue={user?.grandParentId}
                                     >
                                         <option value="">Select {grandparent}</option>
                                         {managers.filter(u => u.designation === grandparent).map(manager => (
@@ -246,10 +281,16 @@ const UserUpdateModal = ({ user, onClose }) => {
                                     </select>
                                 </div>
                             )}
+
+                            {/* Hidden parentTerritory input */}
+                            <input
+                                type="hidden"
+                                {...register("parentTerritory")}
+                                value={watch("parentTerritory")}
+                            />
                         </>
                     )}
 
-                    {/* Submit Button */}
                     <div>
                         <button
                             type="submit"
