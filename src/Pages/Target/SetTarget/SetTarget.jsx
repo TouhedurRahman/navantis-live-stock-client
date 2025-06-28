@@ -1,17 +1,45 @@
 import { useState } from "react";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
-
-const FieldEmployees = () => "Field Employees"
+import useAllUsers from "../../../Hooks/useAllUsers";
+import FieldEmployees from "../FieldEmployees/FieldEmployees";
 
 const SetTarget = () => {
+    const [users, loading, refetch] = useAllUsers();
     const [activeTab, setActiveTab] = useState("non-managers");
+
+    const fieldUsers = users?.filter(user => user.base === "Field") || [];
+
+    const managerDesignations = [
+        "Zonal Manager",
+        "Sr. Area Manager",
+        "Area Manager",
+    ];
+
+    const managers = fieldUsers.filter(user =>
+        managerDesignations.includes(user.designation)
+    );
+
+    const nonManagers = fieldUsers.filter(user =>
+        !managerDesignations.includes(user.designation)
+    );
 
     const renderContent = () => {
         switch (activeTab) {
             case "non-managers":
-                return <FieldEmployees />;
+                return <FieldEmployees
+                    users={nonManagers}
+                    loading={loading}
+                    refetch={refetch}
+                    managerDesignations={managerDesignations}
+                />;
             case "managers":
-                return <FieldEmployees />;
+                return <FieldEmployees
+                    users={managers}
+                    loading={loading}
+                    refetch={refetch}
+                    managerDesignations={managerDesignations}
+                    managers={managers}
+                />;
             default:
                 return null;
         }
