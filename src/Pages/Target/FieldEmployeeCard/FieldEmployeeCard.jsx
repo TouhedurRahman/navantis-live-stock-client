@@ -41,7 +41,9 @@ const FieldEmployeeCard = ({ idx, user, refetch, managerDesignations }) => {
             order.products?.forEach(addToMap);
         });
 
-        return Array.from(productMap.values());
+        return Array.from(productMap.values()).sort((a, b) =>
+            a.productName.localeCompare(b.productName)
+        );
     }, [wearhouseProducts, depotProducts, orderdProducts]);
 
     const openModal = () => {
