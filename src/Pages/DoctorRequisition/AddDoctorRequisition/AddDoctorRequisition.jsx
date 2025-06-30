@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
@@ -241,7 +242,7 @@ const AddDoctorRequisition = () => {
                                 {...register("paymentType", { required: "Payment type is required" })}
                                 className="border-gray-500 bg-white border p-2 text-sm"
                             >
-                                <option value="">Select Payment Mode</option>
+                                {/* <option value="">Select Payment Mode</option> */}
                                 <option value="Cash">Cash</option>
                                 {/* <option value="Credit">Credit</option> */}
                                 {/* <option value="STC">STC</option> */}
