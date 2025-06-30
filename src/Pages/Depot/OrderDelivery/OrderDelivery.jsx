@@ -419,6 +419,8 @@ const OrderDelivery = () => {
                     &&
                     order.payMode === "Cash"
                     &&
+                    !order.territory === "Doctor"
+                    &&
                     (
                         order.status === "delivered"
                         ||
@@ -438,6 +440,8 @@ const OrderDelivery = () => {
                     order.pharmacyId === selectedPharmacy.customerId
                     &&
                     order.payMode === "Cash"
+                    &&
+                    !order.territory === "Doctor"
                     &&
                     !["paid", "pending", "returned"].includes(order.status.toLowerCase())
             );
