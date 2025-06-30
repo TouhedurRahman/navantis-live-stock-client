@@ -74,6 +74,13 @@ const useMenuConfig = () => {
                 { to: '/institute-order', icon: <FaCartPlus className='me-2' />, label: 'Place Order' },
             ],
         },
+        doctor: {
+            icon: <FaHospital className="mr-2" />,
+            links: [
+                { to: '/add-requision', icon: <IoIosAddCircle className='me-2' />, label: 'Add new' },
+                { to: '/dr-req-order', icon: <FaCartPlus className='me-2' />, label: 'Place Dr. Req. Order' },
+            ],
+        },
         customer: {
             icon: <AiFillMedicineBox className="mr-2" />,
             links: [

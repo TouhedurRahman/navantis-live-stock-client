@@ -17,6 +17,7 @@ const permissionsList = [
     "accounts",
     "reports",
     "institute",
+    "doctor",
     "customer",
     "order"
 ];
