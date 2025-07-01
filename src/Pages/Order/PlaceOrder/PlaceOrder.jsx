@@ -153,7 +153,7 @@ const PlaceOrder = () => {
             zonalManager: gParentName,
             zmEmail: gParentEmail,
             territory: userTerritory,
-            parentTerritory: singleUser?.parentTerritory || parentTerritory,
+            parentTerritory: singleUser?.parentTerritory,
             pharmacy: selectedPharmacy?.name,
             pharmacyId: selectedPharmacy?.customerId,
             products: receiptProducts,
