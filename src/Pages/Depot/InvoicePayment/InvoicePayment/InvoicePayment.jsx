@@ -20,6 +20,66 @@ const InvoicePayment = () => {
     const [invoiceNumber, setInvoiceNumber] = useState("");
     const [paymentAmount, setPaymentAmount] = useState("");
     const [paymentType, setPaymentType] = useState("");
+    const [bankName, setBankName] = useState("");
+    const [chequeOrAcNo, setChequeOrAcNo] = useState("");
+
+    const bangladeshiBanks = [
+        { name: "AB Bank Limited", shortForm: "ABBL" },
+        { name: "Agrani Bank Limited", shortForm: "ABL" },
+        { name: "Al-Arafah Islami Bank Limited", shortForm: "AAIBL" },
+        { name: "Bangladesh Bank", shortForm: "BB" },
+        { name: "Bangladesh Development Bank Limited", shortForm: "BDBL" },
+        { name: "Bangladesh Krishi Bank", shortForm: "BKB" },
+        { name: "Bank Al-Falah", shortForm: "ALFALAH" },
+        { name: "Bank Asia Limited", shortForm: "BAL" },
+        { name: "BRAC Bank Limited", shortForm: "BBL" },
+        { name: "Citibank N.A.", shortForm: "CITI" },
+        { name: "Commercial Bank of Ceylon PLC", shortForm: "CBC" },
+        { name: "Community Bank Bangladesh Limited", shortForm: "CBBL" },
+        { name: "City Bank Limited", shortForm: "CBL" },
+        { name: "Dhaka Bank Limited", shortForm: "DBL" },
+        { name: "Dutch-Bangla Bank Limited", shortForm: "DBBL" },
+        { name: "Eastern Bank Limited", shortForm: "EBL" },
+        { name: "EXIM Bank Limited", shortForm: "EXIM" },
+        { name: "First Security Islami Bank Limited", shortForm: "FSIBL" },
+        { name: "Global Islami Bank Limited", shortForm: "GIBL" },
+        { name: "Habib Bank Limited", shortForm: "HBL" },
+        { name: "HSBC", shortForm: "HSBC" },
+        { name: "ICB Islamic Bank Limited", shortForm: "ICBIBL" },
+        { name: "IFIC Bank Limited", shortForm: "IFIC" },
+        { name: "Islami Bank Bangladesh Limited", shortForm: "IBBL" },
+        { name: "Jamuna Bank Limited", shortForm: "JAMBL" },
+        { name: "Janata Bank Limited", shortForm: "JBL" },
+        { name: "Mercantile Bank Limited", shortForm: "MBL" },
+        { name: "Midland Bank Limited", shortForm: "MDBL" },
+        { name: "Modhumoti Bank Limited", shortForm: "MMBL" },
+        { name: "Mutual Trust Bank Limited", shortForm: "MTB" },
+        { name: "National Bank Limited", shortForm: "NBL" },
+        { name: "National Bank of Pakistan", shortForm: "NBP" },
+        { name: "National Credit & Commerce Bank Limited", shortForm: "NCCBL" },
+        { name: "NRB Commercial Bank Limited", shortForm: "NRBC" },
+        { name: "One Bank Limited", shortForm: "OBL" },
+        { name: "Premier Bank Limited", shortForm: "PBL" },
+        { name: "Prime Bank Limited", shortForm: "PrBL" },
+        { name: "Probashi Kallyan Bank", shortForm: "PKB" },
+        { name: "Pubali Bank Limited", shortForm: "PuBL" },
+        { name: "Rajshahi Krishi Unnayan Bank", shortForm: "RKUB" },
+        { name: "Rupali Bank Limited", shortForm: "RBL" },
+        { name: "Shahjalal Islami Bank Limited", shortForm: "SJIBL" },
+        { name: "Shimanto Bank Limited", shortForm: "SHBL" },
+        { name: "Social Islami Bank Limited", shortForm: "SIBL" },
+        { name: "Sonali Bank Limited", shortForm: "SBL" },
+        { name: "South Bangla Agriculture and Commerce Bank Limited", shortForm: "SBAC" },
+        { name: "Southeast Bank Limited", shortForm: "SEBL" },
+        { name: "Standard Bank Limited", shortForm: "StBL" },
+        { name: "Standard Chartered Bank", shortForm: "SCB" },
+        { name: "State Bank of India", shortForm: "SBI" },
+        { name: "Trust Bank Limited", shortForm: "TBL" },
+        { name: "Uttara Bank Limited", shortForm: "UTBL" },
+        { name: "Union Bank Limited", shortForm: "UBL" },
+        { name: "United Commercial Bank PLC", shortForm: "UCBL" },
+        { name: "Woori Bank", shortForm: "WOORI" }
+    ];
 
     const invWiseOrder = orders.find(order => order.invoice === invoiceNumber);
 
@@ -85,13 +145,35 @@ const InvoicePayment = () => {
                     };
                 }
             } else {
-                updatedPayments.push({
-                    totalPayable: currentPayable,
-                    paid: paymentAmount,
-                    totalDue: currentDue,
-                    paymentType: paymentType,
-                    paidDate: today,
-                });
+                if (paymentType === "Cheque") {
+                    updatedPayments.push({
+                        totalPayable: currentPayable,
+                        paid: paymentAmount,
+                        totalDue: currentDue,
+                        paymentType: paymentType,
+                        bankName,
+                        chequeNo: chequeOrAcNo,
+                        paidDate: today,
+                    });
+                } else if (paymentType === "BEFTN") {
+                    updatedPayments.push({
+                        totalPayable: currentPayable,
+                        paid: paymentAmount,
+                        totalDue: currentDue,
+                        paymentType: paymentType,
+                        bankName,
+                        accountNo: chequeOrAcNo,
+                        paidDate: today,
+                    });
+                } else {
+                    updatedPayments.push({
+                        totalPayable: currentPayable,
+                        paid: paymentAmount,
+                        totalDue: currentDue,
+                        paymentType: paymentType,
+                        paidDate: today,
+                    });
+                }
             };
 
             const updatedOrder = {
@@ -327,12 +409,71 @@ const InvoicePayment = () => {
                                                                             className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
                                                                         >
                                                                             <option value="">Select Payment Type</option>
-                                                                            <option value="Cash">Cash</option>
-                                                                            <option value="Cheque">Cheque</option>
-                                                                            <option value="Bank">Bank</option>
+                                                                            {
+                                                                                ["Cash", "STC"].includes(invWiseOrder.payMode)
+                                                                                &&
+                                                                                <option value="Cash">Cash</option>
+                                                                            }
+                                                                            {
+                                                                                invWiseOrder.payMode === "Credit"
+                                                                                &&
+                                                                                <option value="Cheque">Cheque</option>
+                                                                            }
+                                                                            {
+                                                                                invWiseOrder.payMode === "Credit"
+                                                                                &&
+                                                                                <option value="BEFTN">BEFTN</option>
+                                                                            }
+                                                                            {
+                                                                                ["Cash", "STC"].includes(invWiseOrder.payMode)
+                                                                                &&
+                                                                                <option value="Bank">Bank</option>
+                                                                            }
                                                                         </select>
                                                                     </div>
+                                                                    {
+                                                                        (
+                                                                            invWiseOrder.payMode === "Credit"
+                                                                            && ["Cheque", "BEFTN"].includes(paymentType)
+                                                                        )
+                                                                        &&
+                                                                        <>
+                                                                            <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">
+                                                                                Bank Name
+                                                                            </label>
+                                                                            <select
+                                                                                required
+                                                                                className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                                                                                value={bankName}
+                                                                                onChange={(e) => setBankName(e.target.value)}
+                                                                            >
+                                                                                <option value="" disabled>Select a bank</option>
+                                                                                {bangladeshiBanks.map((bank, index) => (
+                                                                                    <option key={index} value={bank.name}>
+                                                                                        {bank.name} - {bank.shortForm}
+                                                                                    </option>
+                                                                                ))}
+                                                                            </select>
 
+                                                                            <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">
+                                                                                {
+                                                                                    paymentType === "Cheque"
+                                                                                        ?
+                                                                                        "Cheque Number"
+                                                                                        :
+                                                                                        "Account Number"
+                                                                                }
+                                                                            </label>
+                                                                            <input
+                                                                                type="number"
+                                                                                required
+                                                                                className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                                                                                value={chequeOrAcNo}
+                                                                                onChange={(e) => setChequeOrAcNo(e.target.value)}
+                                                                                onWheel={(e) => e.target.blur()}
+                                                                            />
+                                                                        </>
+                                                                    }
                                                                     <button
                                                                         className="mt-4 w-full bg-green-500 text-white py-3 px-5 rounded-xl hover:bg-green-600 transition-all font-semibold text-lg shadow-md"
                                                                         onClick={() => {
@@ -359,6 +500,24 @@ const InvoicePayment = () => {
                                                                                     icon: 'error',
                                                                                     title: 'Missing Payment Type',
                                                                                     text: 'Please select a payment type before proceeding.',
+                                                                                });
+                                                                                return;
+                                                                            }
+
+                                                                            if (["Cheque", "BEFTN"].includes(paymentType) && !bankName) {
+                                                                                Swal.fire({
+                                                                                    icon: 'error',
+                                                                                    title: 'Missing Bank Name',
+                                                                                    text: 'Please enter bank name before proceeding.',
+                                                                                });
+                                                                                return;
+                                                                            }
+
+                                                                            if (["Cheque", "BEFTN"].includes(paymentType) && !chequeOrAcNo) {
+                                                                                Swal.fire({
+                                                                                    icon: 'error',
+                                                                                    title: 'Missing Cheque',
+                                                                                    text: 'Please enter Cheque/AC no. before proceeding.',
                                                                                 });
                                                                                 return;
                                                                             }
