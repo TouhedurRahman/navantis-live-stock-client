@@ -69,6 +69,7 @@ const ProductSummaryReport = ({ reportType, filteredOrders = [], firstDate, last
 
         orders.forEach(order => {
             const areaManager = order?.areaManager || "Unknown Area Manager";
+            const parentTerritory = order?.parentTerritory || "Unknown Territory";
             const mpo = order?.orderedBy || "Unknown MPO";
             const productDetails = order?.products || [];
 
@@ -76,8 +77,12 @@ const ProductSummaryReport = ({ reportType, filteredOrders = [], firstDate, last
                 groupedOrders[areaManager] = {};
             }
 
-            if (!groupedOrders[areaManager][mpo]) {
-                groupedOrders[areaManager][mpo] = {
+            if (!groupedOrders[areaManager][parentTerritory]) {
+                groupedOrders[areaManager][parentTerritory] = {};
+            }
+
+            if (!groupedOrders[areaManager][parentTerritory][mpo]) {
+                groupedOrders[areaManager][parentTerritory][mpo] = {
                     products: {}
                 };
             }
@@ -91,8 +96,8 @@ const ProductSummaryReport = ({ reportType, filteredOrders = [], firstDate, last
                     grandTotalQty += quantity;
                     grandTotalPrice += totalPrice;
 
-                    if (!groupedOrders[areaManager][mpo].products[productKey]) {
-                        groupedOrders[areaManager][mpo].products[productKey] = {
+                    if (!groupedOrders[areaManager][parentTerritory][mpo].products[productKey]) {
+                        groupedOrders[areaManager][parentTerritory][mpo].products[productKey] = {
                             productCode: product.productCode,
                             productName: product.name,
                             netWeight: product.netWeight,
@@ -101,94 +106,132 @@ const ProductSummaryReport = ({ reportType, filteredOrders = [], firstDate, last
                         };
                     }
 
-                    groupedOrders[areaManager][mpo].products[productKey].quantity += quantity;
-                    groupedOrders[areaManager][mpo].products[productKey].totalPrice += totalPrice;
+                    groupedOrders[areaManager][parentTerritory][mpo].products[productKey].quantity += quantity;
+                    groupedOrders[areaManager][parentTerritory][mpo].products[productKey].totalPrice += totalPrice;
                 }
             });
         });
 
-        const groupedHTML = Object.entries(groupedOrders).map(([areaManager, mpoList]) => {
-            let areaTotalQty = 0;
-            let areaTotalPrice = 0;
+        const groupedHTML = Object.entries(groupedOrders).map(([areaManager, territories]) => {
+            return Object.entries(territories).map(([parentTerritory, mpoList]) => {
+                let territoryTotalQty = 0;
+                let territoryTotalPrice = 0;
 
-            const mpoTables = Object.entries(mpoList).map(([mpoName, mpoData]) => {
-                const productsArray = Object.values(mpoData.products);
-                const mpoOrder = orders.find(order => order.orderedBy === mpoName && order.areaManager === areaManager);
-                const mpoTerritory = mpoOrder?.territory || "Unknown Territory";
+                const mpoTables = Object.entries(mpoList).map(([mpoName, mpoData]) => {
+                    const productsArray = Object.values(mpoData.products);
 
-                let mpoTotalQty = 0;
-                let mpoTotalPrice = 0;
+                    let mpoTotalQty = 0;
+                    let mpoTotalPrice = 0;
 
-                productsArray.forEach(product => {
-                    mpoTotalQty += product.quantity;
-                    mpoTotalPrice += product.totalPrice;
-                });
+                    productsArray.forEach(product => {
+                        mpoTotalQty += product.quantity;
+                        mpoTotalPrice += product.totalPrice;
+                    });
 
-                // Accumulate Area Manager total
-                areaTotalQty += mpoTotalQty;
-                areaTotalPrice += mpoTotalPrice;
+                    territoryTotalQty += mpoTotalQty;
+                    territoryTotalPrice += mpoTotalPrice;
+
+                    const mpoOrder = orders.find(order =>
+                        order.orderedBy === mpoName &&
+                        order.areaManager === areaManager &&
+                        order.parentTerritory === parentTerritory
+                    );
+                    const mpoTerritory = mpoOrder?.territory || "Unknown Territory";
+
+                    return `
+                <p style="margin: 5px 0; font-weight: bold; font-size: 12px;">
+                    ${!["Institute", "Doctor"].includes(mpoTerritory)
+                            ?
+                            `MPO/SCC/ASE: ${mpoName} | Territory: ${mpoTerritory}`
+                            :
+                            ""
+                        }
+                </p>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
+                    <thead>
+                        <tr>
+                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 15%";>Product Code</th>
+                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 35%";">Product Name</th>
+                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: center; width: 10%";">Pack Size</th>
+                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 20%";">Quantity</th>
+                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 20%";">Total Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${productsArray.map(product => `
+                            <tr>
+                                <td style="padding: 8px; border: 1px solid #ccc;">${product.productCode}</td>
+                                <td style="padding: 8px; border: 1px solid #ccc;">${product.productName}</td>
+                                <td style="padding: 8px; border: 1px solid #ccc; text-align: center;">${product.netWeight}</td>
+                                <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${product.quantity}</td>
+                                <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+                                    ${product.totalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                </td>
+                            </tr>
+                        `).join('')}
+                        <tr>
+                            <td colspan="3" style="padding: 8px; border: 1px solid #aaa; font-weight: bold;">
+                                ${mpoTerritory === "Institute"
+                            ?
+                            "Institute Total"
+                            :
+                            mpoTerritory === "Doctor"
+                                ?
+                                "Doctor Requisition Total"
+                                :
+                                `${mpoTerritory} Total`}
+                            </td>
+                            <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right;">
+                                ${mpoTotalQty.toLocaleString('en-IN')}
+                            </td>
+                            <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right;">
+                                ${mpoTotalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+                }).join('');
 
                 return `
-                    <p style="margin: 5px 0; font-weight: bold; font-size: 12px;">MPO/SCC/ASE: ${mpoName} | Territory: ${mpoTerritory}</p>
-                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
-                        <thead>
+            <div style="margin-bottom: 30px;">
+                <p style="margin-bottom: 5px; text-align: center; font-weight: bold; font-size: 12px;">
+                    ${parentTerritory === "Institute"
+                        ?
+                        "Institute"
+                        :
+                        parentTerritory === "Doctor"
+                            ?
+                            "Doctor Requisition"
+                            :
+                            `Sr. AM/AM: ${areaManager} | Territory: ${parentTerritory}`}
+                </p>
+                ${mpoTables}
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
+                    <tbody>
+                         ${["Institute", "Doctor"].includes(parentTerritory)
+                        ?
+                        ""
+                        :
+                        `
                             <tr>
-                                <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 15%";>Product Code</th>
-                                <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 35%";">Product Name</th>
-                                <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: center; width: 10%";">Pack Size</th>
-                                <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 20%";">Quantity</th>
-                                <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 20%";">Total Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${productsArray.map(product => `
-                                <tr>
-                                    <td style="padding: 8px; border: 1px solid #ccc;">${product.productCode}</td>
-                                    <td style="padding: 8px; border: 1px solid #ccc;">${product.productName}</td>
-                                    <td style="padding: 8px; border: 1px solid #ccc;text-align: center;">${product.netWeight}</td>
-                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${product.quantity}</td>
-                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
-                                        ${product.totalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                                    </td>
-                                </tr>
-                            `).join('')}
-                            <tr>
-                                <td colspan="3" style="padding: 8px; border: 1px solid #aaa; font-weight: bold;">MPO/SCC/ASE Total</td>
-                                <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right;">
-                                    ${mpoTotalQty.toLocaleString('en-IN')}
+                                <td colspan="3" style="padding: 8px; border: 1px solid #aaa; font-weight: bold; width: 60%";">
+                                    ${parentTerritory} Total
                                 </td>
-                                <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right;">
-                                    ${mpoTotalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right; width: 20%";">
+                                    ${territoryTotalQty.toLocaleString('en-IN')}
                                 </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                `;
+                                <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right; width: 20%";">
+                                    ${territoryTotalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                </td>
+                            </tr> 
+                        `
+                    }
+                    </tbody>
+                </table>
+            </div>
+        `;
             }).join('');
-
-            return `
-                <div style="margin-bottom: 30px;">
-                    <p style="margin-bottom: 5px; text-align: center; font-weight: bold; font-size: 12px;">Sr. AM/AM: ${areaManager} | Territory: ${(() => {
-                    const areaOrder = orders.find(order => order.areaManager === areaManager);
-                    return areaOrder?.parentTerritory || "Unknown Territory";
-                })()}
-                    </p>
-                    ${mpoTables}
-                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
-                        <tbody>
-                            <tr>
-                                <td colspan="3" style="padding: 8px; border: 1px solid #aaa; font-weight: bold; width: 60%";">Area Manager Total</td>
-                                <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right; width: 20%";">
-                                    ${areaTotalQty.toLocaleString('en-IN')}
-                                </td>
-                                <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right; width: 20%";">
-                                    ${areaTotalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            `;
         }).join('');
 
         const finalTotalHTML = `
