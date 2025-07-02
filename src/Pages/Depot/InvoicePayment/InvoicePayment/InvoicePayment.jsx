@@ -34,9 +34,9 @@ const InvoicePayment = () => {
         { name: "Bank Asia Limited", shortForm: "BAL" },
         { name: "BRAC Bank Limited", shortForm: "BBL" },
         { name: "Citibank N.A.", shortForm: "CITI" },
+        { name: "City Bank Limited", shortForm: "CBL" },
         { name: "Commercial Bank of Ceylon PLC", shortForm: "CBC" },
         { name: "Community Bank Bangladesh Limited", shortForm: "CBBL" },
-        { name: "City Bank Limited", shortForm: "CBL" },
         { name: "Dhaka Bank Limited", shortForm: "DBL" },
         { name: "Dutch-Bangla Bank Limited", shortForm: "DBBL" },
         { name: "Eastern Bank Limited", shortForm: "EBL" },
@@ -239,6 +239,8 @@ const InvoicePayment = () => {
             refetch();
             setInvoiceNumber("");
             setPaymentAmount("");
+            setBankName("");
+            setChequeOrAcNo("");
             setShowModal(false);
 
             let timerInterval;
@@ -271,6 +273,8 @@ const InvoicePayment = () => {
         setInvoiceNumber("");
         setPaymentAmount("");
         setPaymentType("");
+        setBankName("");
+        setChequeOrAcNo("");
         setShowModal(false);
     }
 
@@ -320,7 +324,7 @@ const InvoicePayment = () => {
             {/* Modal */}
             {showModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50 transition-opacity duration-300 ease-in-out">
-                    <div className="bg-white rounded-2xl shadow-2xl p-8 w-[400px] relative overflow-hidden animate-scale-up">
+                    <div className="bg-white rounded-2xl shadow-2xl p-8 w-[400px] relative overflow-hidden animate-scale-up max-h-[80vh] overflow-y-auto">
                         {/* Decorative Gradient Corner */}
                         <div className="absolute -top-5 -right-5 w-32 h-32 bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 opacity-20 rounded-full"></div>
 
