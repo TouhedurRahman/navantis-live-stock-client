@@ -3,9 +3,9 @@ import axios from "axios";
 import { useState } from "react";
 import { FaEye, FaTimes } from "react-icons/fa";
 import Swal from "sweetalert2";
+import useApiConfig from "../../../Hooks/useApiConfig";
 import useAuth from "../../../Hooks/useAuth";
 import useSingleUser from "../../../Hooks/useSingleUser";
-import useApiConfig from "../../../Hooks/useApiConfig";
 
 const CustomerRequestCard = ({ idx, customer, refetch }) => {
     const { user } = useAuth();
@@ -13,7 +13,7 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
     const [singleUser] = useSingleUser();
     const [isModalOpen, setModalOpen] = useState(false);
 
-    const statusType = JSON.stringify(customer.payMode) === JSON.stringify(["Cash", "STC"])
+    /* const statusType = JSON.stringify(customer.payMode) === JSON.stringify(["Cash", "STC"])
         ? customer.status === "pending"
             ? "initialized"
             : "approved"
@@ -23,7 +23,21 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
                 : customer.status === "initialized"
                     ? "requested"
                     : "approved"
-            : "approved"
+            : "approved" */
+
+    const statusType = JSON.stringify(customer.payMode) === JSON.stringify(["Cash", "STC"])
+        ? customer.status === "pending"
+            ? "initialized"
+            : customer.status === "initialized"
+                ? "requested"
+                : "approved"
+        : JSON.stringify(customer.payMode) === JSON.stringify(["Credit"])
+            ? customer.status === "pending"
+                ? "initialized"
+                : customer.status === "initialized"
+                    ? "requested"
+                    : "approved"
+            : "approved";
 
     const approvedCustomerMutation = useMutation({
         mutationFn: async () => {
