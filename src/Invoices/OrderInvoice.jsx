@@ -184,7 +184,7 @@ const OrderInvoice = ({ order }) => {
                     <img src='/images/NPL-Updated-Logo.png' alt="Company Logo"
                         style="left: 0; width: 150px; height: auto;" />
                     <h1 style="margin: 0; font-size: 22px; font-weight: bold;">Navantis Pharma Limited</h1>
-                    <p style="margin: 0; font-size: 10px;">
+                    <p style="margin: 0; font-size: 12px;">
                         House No - 4, Block - C, Road No - 3, Mirpur - 1, Dhaka - 1216
                     </p>
                     <hr class="border border-b-0 border-black my-1"/>
@@ -192,10 +192,10 @@ const OrderInvoice = ({ order }) => {
                 </div>
 
                 <!-- Table Section -->
-                <table class="mt-1 w-full border-collapse text-[10px]">
+                <table class="mt-1 w-full border-collapse text-[12px]">
                     <tr>
                         <td class="p-2 border border-r-0 border-b-0 w-[60%] align-top">
-                            <div class="grid grid-cols-[max-content_15px_auto] text-[10px] gap-y-1">
+                            <div class="grid grid-cols-[max-content_15px_auto] text-[12px] gap-y-1">
                                 <span class="font-bold">Customer ID</span>
                                 <span class="font-bold">:</span>
                                 <span>${customer.customerId}</span>
@@ -212,18 +212,23 @@ const OrderInvoice = ({ order }) => {
                                 <span class="font-bold">:</span>
                                 <span>+880 ${customer.mobile.slice(-10, -6)}-${customer.mobile.slice(-6)}</span>
 
-                                ${order?.territory !== "Institute"
+                                ${!["Institute", "Doctor"].includes(order?.territory)
                 ?
-                `<span class="font-bold">Territory</span>
-                        <span class="font-bold">:</span>
-                        <span class="font-bold">${order?.territory}</span>`
+                `   <span class="font-bold">Territory</span>
+                    <span class="font-bold">:</span>
+                    <span class="font-bold">${order?.territory}</span>
+                    
+                    <span class="font-bold">Area</span>
+                    <span class="font-bold">:</span>
+                    <span class="font-bold">${order?.parentTerritory}</span>
+                `
                 :
                 ""
             }
                             </div>
                         </td>
                         <td class="p-2 border border-l-0 border-b-0 w-[40%] align-top">
-                            <div class="grid grid-cols-[max-content_15px_auto] text-[10px] gap-y-1">
+                            <div class="grid grid-cols-[max-content_15px_auto] text-[12px] gap-y-1">
                                 <span class="font-bold">Invoice No.</span>
                                 <span class="font-bold">:</span>
                                 <span>${order.invoice}</span>
@@ -238,9 +243,14 @@ const OrderInvoice = ({ order }) => {
 
                                 ${orderedBy?.name
                 ?
-                `<span class="font-bold">Ordered by</span>
-                        <span class="font-bold">:</span>
-                        <span>${orderedBy?.name}</span>`
+                `   <span class="font-bold">Ordered by</span>
+                    <span class="font-bold">:</span>
+                    <span>${orderedBy?.name}</span>
+
+                    <span class="font-bold">Phone Number</span>
+                    <span class="font-bold">:</span>
+                    <span>+880 ${customer.mobile.slice(-10, -6)}-${orderedBy.mobile.slice(-6)}</span>
+                `
                 :
                 ""
             }
@@ -364,7 +374,7 @@ const OrderInvoice = ({ order }) => {
                     </table>
 
                     <div class="mt-2 mb-1">
-                        <p class="text-[10px] font-bold">Previous Outstanding Invoices</p>
+                        <p class="text-[12px] font-bold">Previous Outstanding Invoices</p>
                     </div>
                     <table style="width: 100%; border-collapse: collapse;">
                         <thead>
@@ -420,11 +430,11 @@ const OrderInvoice = ({ order }) => {
                         </tr>
                     </table>
 
-                    <div style="margin-top: 25px; border: 1px solid black; padding: 2px; font-size: 10px; text-align: justify">
+                    <div style="margin-top: 25px; border: 1px solid black; padding: 2px; font-size: 12px; text-align: justify">
                         <span class="font-bold me-1">Note:</span>Please be advised that all purchases are considered final. Once goods have been sold, they are not eligible for return, refund, or exchange under any circumstances, as per our company policy.
                     </div>
 
-                    <div style="margin-top: 2px; display: flex; justify-content: space-between; font-size: 10px;">
+                    <div style="margin-top: 2px; display: flex; justify-content: space-between; font-size: 12px;">
                         <span><span class="font-bold me-1">Print Date & Time:</span>${now}</span>
                         <span><span class="font-bold me-1">Prepared by:</span>${generatedByName}</span>
                         <span><span class="font-bold me-1">Printed by:</span>${generatedByName}</span>
@@ -480,7 +490,7 @@ const OrderInvoice = ({ order }) => {
                                 padding: 2px;
                                 text-align: left;
                                 vertical-align: middle;
-                                font-size: 10px;
+                                font-size: 12px;
                             }
                             th {
                                 background-color: #f0f0f0;
@@ -496,7 +506,7 @@ const OrderInvoice = ({ order }) => {
                                 left: 0;
                                 width: 100%;
                                 text-align: center;
-                                font-size: 10px;
+                                font-size: 12px;
                                 font-style: italic;
                                 color: #555;
                             } */
