@@ -412,7 +412,7 @@ const OrderDelivery = () => {
         }
 
         if (selectedOrderDetails.payMode === "Cash" && !selectedPharmacy?.payMode?.includes("STC")) {
-            // Check for any cash order placed today
+            /* // Check for any cash order placed today
             const hasCashOrderToday = orders.some(
                 order =>
                     order.pharmacyId === selectedPharmacy.customerId
@@ -458,6 +458,56 @@ const OrderDelivery = () => {
                     icon: "error",
                     title: "Order Blocked",
                     text: `Unpaid order found (Invoice No. ${unpaidCashOrder?.invoice}). Please clear payment first.`
+                });
+                return;
+            } else {
+                handleDeliverySubmit();
+            } */
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const previousUnpaidCashOrders = orders.filter(
+                order =>
+                    order.pharmacyId === selectedPharmacy.customerId &&
+                    order.payMode === "Cash" &&
+                    order.territory !== "Doctor" &&
+                    !["paid", "pending", "returned"].includes(order.status.toLowerCase()) &&
+                    new Date(order.date) < today
+            );
+
+            if (previousUnpaidCashOrders.length > 0) {
+                const invoiceList = previousUnpaidCashOrders
+                    .map(order => order.invoice)
+                    .filter(Boolean)
+                    .join(", ");
+
+                Swal.fire({
+                    icon: "error",
+                    title: "Order Blocked",
+                    html: `
+                        <div style="font-size: 15px; line-height: 1.6; color: #333; text-align: center;">
+                            <p style="margin-bottom: 10px;">
+                                Unpaid cash orders from previous days have been found.
+                            </p>
+                            <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align: center; padding: 6px 8px; border-bottom: 1px solid #ccc;">
+                                            Invoice Number(s)
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${invoiceList.split(',').map(invoice => `
+                                        <tr>
+                                            <td style="padding: 6px 8px; border-bottom: 1px solid #eee;">${invoice.trim()}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    `
                 });
                 return;
             } else {
@@ -589,7 +639,7 @@ const OrderDelivery = () => {
                             });
                         }
                     } else {
-                        // Check for any cash order placed today
+                        /* // Check for any cash order placed today
                         const hasCashOrderToday = orders.some(
                             order =>
                                 order.pharmacyId === selectedPharmacy.customerId
@@ -631,6 +681,56 @@ const OrderDelivery = () => {
                                 icon: "error",
                                 title: "Order Blocked",
                                 text: `Unpaid order found (Invoice No. ${unpaidCashOrder?.invoice}). Please clear payment first.`
+                            });
+                            return;
+                        } else {
+                            handleDeliverySubmit();
+                        } */
+
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+
+                        const previousUnpaidCashOrders = orders.filter(
+                            order =>
+                                order.pharmacyId === selectedPharmacy.customerId &&
+                                order.payMode === "Cash" &&
+                                order.territory !== "Doctor" &&
+                                !["paid", "pending", "returned"].includes(order.status.toLowerCase()) &&
+                                new Date(order.date) < today
+                        );
+
+                        if (previousUnpaidCashOrders.length > 0) {
+                            const invoiceList = previousUnpaidCashOrders
+                                .map(order => order.invoice)
+                                .filter(Boolean)
+                                .join(", ");
+
+                            Swal.fire({
+                                icon: "error",
+                                title: "Order Blocked",
+                                html: `
+                                    <div style="font-size: 15px; line-height: 1.6; color: #333; text-align: center;">
+                                        <p style="margin-bottom: 10px;">
+                                            Unpaid cash orders from previous days have been found.
+                                        </p>
+                                        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                                            <thead>
+                                                <tr>
+                                                    <th style="text-align: center; padding: 6px 8px; border-bottom: 1px solid #ccc;">
+                                                        Invoice Number(s)
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${invoiceList.split(',').map(invoice => `
+                                                    <tr>
+                                                        <td style="padding: 6px 8px; border-bottom: 1px solid #eee;">${invoice.trim()}</td>
+                                                    </tr>
+                                                `).join('')}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                `
                             });
                             return;
                         } else {
