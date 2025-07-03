@@ -149,14 +149,16 @@ const ProductSummaryReport = ({ reportType, filteredOrders = [], firstDate, last
                     const mpoTerritory = mpoOrder?.territory || "Unknown Territory";
 
                     return `
-                <p style="margin: 5px 0; font-weight: bold; font-size: 12px;">
-                    ${!["Institute", "Doctor"].includes(mpoTerritory)
+                        ${!["Institute", "Doctor"].includes(mpoTerritory)
                             ?
-                            `MPO/SCC/ASE: ${mpoName} | Territory: ${mpoTerritory}`
+                            `
+                                <p style="margin: 5px 0; font-weight: bold; font-size: 12px;">
+                                    MPO/SCC/ASE: ${mpoName} | Territory: ${mpoTerritory}
+                                </p>
+                            `
                             :
                             ""
                         }
-                </p>
                 <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
                     <thead>
                         <tr>
