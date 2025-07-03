@@ -4,7 +4,17 @@ const ProductSummaryReport = ({ reportType, filteredOrders = [], firstDate, last
     const [orders, setOrders] = useState(filteredOrders);
 
     useEffect(() => {
-        setOrders(filteredOrders);
+        const sortedOrders = [...filteredOrders].sort((a, b) => {
+            const getPriority = (territory) => {
+                if (territory === "Doctor") return 0;
+                if (territory === "Institute") return 1;
+                return 2;
+            };
+
+            return getPriority(a.territory) - getPriority(b.territory);
+        });
+
+        setOrders(sortedOrders);
     }, [filteredOrders]);
 
     const now = new Date().toLocaleString("en-US", {
@@ -179,7 +189,7 @@ const ProductSummaryReport = ({ reportType, filteredOrders = [], firstDate, last
                                 ?
                                 "Doctor Requisition Total"
                                 :
-                                `${mpoTerritory} Total`}
+                                `${mpoTerritory} Territory Total`}
                             </td>
                             <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right;">
                                 ${mpoTotalQty.toLocaleString('en-IN')}
@@ -216,7 +226,7 @@ const ProductSummaryReport = ({ reportType, filteredOrders = [], firstDate, last
                         `
                             <tr>
                                 <td colspan="3" style="padding: 8px; border: 1px solid #aaa; font-weight: bold; width: 60%";">
-                                    ${parentTerritory} Total
+                                    ${parentTerritory} Area Total
                                 </td>
                                 <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right; width: 20%";">
                                     ${territoryTotalQty.toLocaleString('en-IN')}
