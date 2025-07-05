@@ -5,7 +5,17 @@ const NetSalesReportExcel = ({ reportType, filteredOrders = [], orderReturns = [
     const [returns, setReturns] = useState(orderReturns);
 
     useEffect(() => {
-        setOrders(filteredOrders);
+        const sortedOrders = [...filteredOrders].sort((a, b) => {
+            const getPriority = (territory) => {
+                if (territory === "Doctor") return 0;
+                if (territory === "Institute") return 1;
+                return 2;
+            };
+
+            return getPriority(a.territory) - getPriority(b.territory);
+        });
+
+        setOrders(sortedOrders);
     }, [filteredOrders]);
 
     useEffect(() => {
@@ -149,8 +159,21 @@ const NetSalesReportExcel = ({ reportType, filteredOrders = [], orderReturns = [
                             `;
             }).join("")}
                         <tr>
-                            <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; background-color: #f9f9f9;">${parentTerritory}</td>
-                            <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; background-color: #f9f9f9;">Area Totals</td>
+                        ${["Institute", "Doctor"].includes(parentTerritory)
+                    ?
+                    `
+                        <td colspan="2" style="padding: 8px; border: 1px solid #ddd; font-weight: bold; background-color: #f9f9f9;">
+                                ${parentTerritory === "Doctor" ? `${parentTerritory} Requisition` : `${parentTerritory}`} Total
+                        </td>
+                    `
+                    :
+                    `
+                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; background-color: #f9f9f9;">
+                            ${parentTerritory}
+                        </td>
+                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; background-color: #f9f9f9;">Area Total</td>
+                    `
+                }
                             <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-weight: bold; background-color: #f9f9f9; width: 20%;">
                                 ${areaGrossTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                             </td>
