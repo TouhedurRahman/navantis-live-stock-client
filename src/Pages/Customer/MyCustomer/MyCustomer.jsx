@@ -47,15 +47,21 @@ const MyCustomer = () => {
         )
     );
 
-    const filteredCustomers = myCustomers.filter(customer =>
-        customer?.name?.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        (
+    const filteredCustomers = myCustomers.filter(customer => {
+        const lowerSearch = searchTerm.toLowerCase();
+        const matchName = customer?.name?.toLowerCase().includes(lowerSearch);
+        const matchId = customer?.customerId?.toLowerCase().includes(lowerSearch);
+
+        const matchesSearch = matchName || matchId;
+
+        const matchesPayMode =
             payModeFilter === 'All' ||
             (payModeFilter === 'Cash' && customer?.payMode?.includes('Cash') && customer?.payMode?.length === 1) ||
             (payModeFilter === 'STC' && customer?.payMode?.includes('STC')) ||
-            (payModeFilter === 'Credit' && customer?.payMode?.includes('Credit'))
-        )
-    );
+            (payModeFilter === 'Credit' && customer?.payMode?.includes('Credit'));
+
+        return matchesSearch && matchesPayMode;
+    });
 
     const totalPages = Math.ceil(filteredCustomers.length / customersPerPage);
     const startIndex = (currentPage - 1) * customersPerPage;
@@ -118,7 +124,7 @@ const MyCustomer = () => {
                                                 </div>
                                                 <input
                                                     type="text"
-                                                    placeholder="Search customers"
+                                                    placeholder="Name or Customer ID"
                                                     value={searchTerm}
                                                     onChange={handleSearch}
                                                     className="px-3 py-1 w-full focus:outline-none"
