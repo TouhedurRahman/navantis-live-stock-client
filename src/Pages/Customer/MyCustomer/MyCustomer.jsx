@@ -1,8 +1,12 @@
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 import { useState } from 'react';
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
 import { ImSearch } from 'react-icons/im';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import Loader from '../../../Components/Loader/Loader';
+import useApiConfig from '../../../Hooks/useApiConfig';
 import useCustomer from '../../../Hooks/useCustomer';
 import useSingleUser from '../../../Hooks/useSingleUser';
 import CustomerCard from '../CustomerCard/CustomerCard';
@@ -10,6 +14,7 @@ import CustomerCard from '../CustomerCard/CustomerCard';
 const MyCustomer = () => {
     const [singleUser] = useSingleUser();
     const [customers, loading, refetch] = useCustomer();
+    const baseUrl = useApiConfig();
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
@@ -17,6 +22,7 @@ const MyCustomer = () => {
     const [payModeFilter, setPayModeFilter] = useState('All');
 
     const location = useLocation();
+    const navigate = useNavigate();
 
     const myCustomers = customers.filter(customer =>
         (
@@ -80,6 +86,93 @@ const MyCustomer = () => {
     const handleCustomersPerPageChange = (e) => {
         setCustomersPerPage(Number(e.target.value));
         setCurrentPage(1);
+    };
+
+    const updateCustomerMutation = useMutation({
+        mutationFn: async (data) => {
+            const { id, ...customerData } = data;
+
+            const updatedCustomer = {
+                ...customerData,
+                parentTerritory: singleUser?.parentTerritory,
+                parentId: singleUser?.parentId || null,
+                grandParentId: singleUser?.grandParentId || null,
+                addedBy: data.addedby,
+                addedEmail: data.addedemail
+            };
+            const response = await axios.patch(`${baseUrl}/customer/${id}`, updatedCustomer);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error adding customer", error);
+        },
+    });
+
+    const updateCustomer = async () => {
+        const matchedCustomers = customers.filter(
+            customer => customer.territory === singleUser?.territory
+        );
+
+        if (matchedCustomers.length === 0) {
+            Swal.fire({
+                position: "center",
+                icon: "info",
+                title: "No matching customers to update.",
+                showConfirmButton: false,
+                timer: 1500
+            });
+            return;
+        }
+
+        try {
+            await Promise.all(
+                matchedCustomers.map(customer => {
+                    const updated = {
+                        id: customer._id,
+                        name: customer.name,
+                        territory: customer.territory,
+                        tradeLicense: customer.tradeLicense,
+                        drugLicense: customer.drugLicense,
+                        address: customer.address,
+                        mobile: customer.mobile,
+                        email: customer.email,
+                        contactPerson: customer.contactPerson,
+                        discount: customer.discount,
+                        payMode: customer.payMode,
+                        crLimit: customer.crLimit,
+                        dayLimit: customer.dayLimit,
+                        addedby: singleUser?.name,
+                        addedemail: singleUser?.email,
+                        status: customer.status,
+                        date: customer.date
+                    };
+
+                    return updateCustomerMutation.mutateAsync(updated);
+                })
+            );
+
+            refetch();
+            navigate('/customer-list');
+
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: `${matchedCustomers.length} customer(s) successfully updated.`,
+                showConfirmButton: false,
+                timer: 2000
+            });
+
+        } catch (error) {
+            console.log(error);
+            Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Failed to update customers",
+                text: "Something went wrong.",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
     };
 
     return (
@@ -168,7 +261,7 @@ const MyCustomer = () => {
                                                         : (
                                                             <div className="flex justify-center md:justify-end">
                                                                 <button
-                                                                    // onClick={() => window.print()}
+                                                                    onClick={updateCustomer}
                                                                     className="px-4 py-1 rounded-full border text-sm font-semibold bg-white text-gray-800 border-gray-400 hover:bg-blue-100"
                                                                 >
                                                                     ↻ Refresh
