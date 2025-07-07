@@ -155,16 +155,26 @@ const MyCustomer = () => {
                                             <div>
                                                 {
                                                     singleUser?.base !== 'Field'
-                                                    && (
-                                                        <div className="flex justify-center md:justify-end">
-                                                            <button
-                                                                onClick={() => window.print()}
-                                                                className="px-4 py-1 rounded-full border text-sm font-semibold bg-white text-gray-800 border-gray-400 hover:bg-blue-100"
-                                                            >
-                                                                Print Details
-                                                            </button>
-                                                        </div>
-                                                    )
+                                                        ? (
+                                                            <div className="flex justify-center md:justify-end">
+                                                                <button
+                                                                    onClick={() => window.print()}
+                                                                    className="px-4 py-1 rounded-full border text-sm font-semibold bg-white text-gray-800 border-gray-400 hover:bg-blue-100"
+                                                                >
+                                                                    Print Details
+                                                                </button>
+                                                            </div>
+                                                        )
+                                                        : (
+                                                            <div className="flex justify-center md:justify-end">
+                                                                <button
+                                                                    // onClick={() => window.print()}
+                                                                    className="px-4 py-1 rounded-full border text-sm font-semibold bg-white text-gray-800 border-gray-400 hover:bg-blue-100"
+                                                                >
+                                                                    ↻ Refresh
+                                                                </button>
+                                                            </div>
+                                                        )
                                                 }
                                             </div>
                                         </div>
