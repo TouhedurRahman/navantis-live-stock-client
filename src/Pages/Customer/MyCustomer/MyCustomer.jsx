@@ -133,23 +133,40 @@ const MyCustomer = () => {
                                         </div>
 
                                         {/* PayMode Filter Buttons */}
-                                        <div className="flex flex-wrap justify-center gap-3 mb-6">
-                                            {['All', 'Cash', 'STC', 'Credit'].map(mode => (
-                                                <button
-                                                    key={mode}
-                                                    className={`px-4 py-1 rounded-full border text-sm font-semibold 
+                                        <div className='flex flex-col md:flex-row md:justify-between md:items-center space-y-3 md:space-y-0 mb-3'>
+                                            <div className="flex flex-wrap justify-center gap-3">
+                                                {['All', 'Cash', 'STC', 'Credit'].map(mode => (
+                                                    <button
+                                                        key={mode}
+                                                        className={`px-4 py-1 rounded-full border text-sm font-semibold 
                                                     ${payModeFilter === mode
-                                                            ? 'bg-[#3B82F6] text-white border-[#3B82F6]'
-                                                            : 'bg-white text-gray-800 border-gray-400 hover:bg-blue-100'
-                                                        }`}
-                                                    onClick={() => {
-                                                        setPayModeFilter(mode);
-                                                        setCurrentPage(1);
-                                                    }}
-                                                >
-                                                    {mode}
-                                                </button>
-                                            ))}
+                                                                ? 'bg-[#3B82F6] text-white border-[#3B82F6]'
+                                                                : 'bg-white text-gray-800 border-gray-400 hover:bg-blue-100'
+                                                            }`}
+                                                        onClick={() => {
+                                                            setPayModeFilter(mode);
+                                                            setCurrentPage(1);
+                                                        }}
+                                                    >
+                                                        {mode}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                            <div>
+                                                {
+                                                    singleUser?.base !== 'Field'
+                                                    && (
+                                                        <div className="flex justify-center md:justify-end">
+                                                            <button
+                                                                onClick={() => window.print()}
+                                                                className="px-4 py-1 rounded-full border text-sm font-semibold bg-white text-gray-800 border-gray-400 hover:bg-blue-100"
+                                                            >
+                                                                Print Details
+                                                            </button>
+                                                        </div>
+                                                    )
+                                                }
+                                            </div>
                                         </div>
 
                                         {/* Table */}
