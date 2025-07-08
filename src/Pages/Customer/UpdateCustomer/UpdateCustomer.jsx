@@ -46,8 +46,6 @@ const UpdateCustomer = () => {
     const { id } = useParams();
     const customer = customers.find(customer => customer._id == id);
 
-    const parentTerritory = allUsers.find(u => u._id == singleUser?.parentId)?.territory;
-
     const navigate = useNavigate();
 
     const updateCustomerMutation = useMutation({
@@ -55,9 +53,9 @@ const UpdateCustomer = () => {
             const updatedCustomer = {
                 name: data.name,
                 territory: data.territory,
-                parentTerritory: parentTerritory || 'Vacant',
-                parentId: singleUser?.parentId || 'Vacant',
-                grandParentId: singleUser?.grandParentId || 'Vacant',
+                parentTerritory: singleUser?.parentTerritory,
+                parentId: singleUser?.parentId || null,
+                grandParentId: singleUser?.grandParentId || null,
                 tradeLicense: data.trl,
                 drugLicense: data.drl,
                 address: data.address,

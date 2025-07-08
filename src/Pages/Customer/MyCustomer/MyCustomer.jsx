@@ -11,6 +11,7 @@ import useApiConfig from '../../../Hooks/useApiConfig';
 import useCustomer from '../../../Hooks/useCustomer';
 import useSingleUser from '../../../Hooks/useSingleUser';
 import CustomerCard from '../CustomerCard/CustomerCard';
+import PrintCustomerDetails from '../PrintCustomerDetails/PrintCustomerDetails';
 
 const MyCustomer = () => {
     const [singleUser] = useSingleUser();
@@ -185,6 +186,8 @@ const MyCustomer = () => {
         }
     };
 
+    const handlePrint = PrintCustomerDetails({ filteredCustomers });
+
     return (
         <div className="bg-white mt-3 pb-6">
             {
@@ -307,7 +310,7 @@ const MyCustomer = () => {
                                             <div className='flex justify-center items-center'>
                                                 {singleUser?.base !== 'Field' ? (
                                                     <button
-                                                        onClick={() => window.print()}
+                                                        onClick={handlePrint}
                                                         className="flex justify-center items-center px-4 py-1 rounded-full border text-sm font-semibold bg-white text-gray-800 border-gray-400 hover:bg-blue-100"
                                                     >
                                                         <AiFillPrinter className='me-2' /> Print Details

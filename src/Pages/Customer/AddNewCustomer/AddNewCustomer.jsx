@@ -40,16 +40,14 @@ const AddNewCustomer = () => {
         return `${year}-${month}-${day}`;
     };
 
-    const parentTerritory = allUsers.find(u => u._id == singleUser?.parentId)?.territory;
-
     const addNewCustomerMutation = useMutation({
         mutationFn: async (data) => {
             const newCustomer = {
                 name: data.name,
                 territory: data.territory,
-                parentTerritory: parentTerritory || 'Vacant',
-                parentId: singleUser?.parentId || 'Vacant',
-                grandParentId: singleUser?.grandParentId || 'Vacant',
+                parentTerritory: singleUser?.parentTerritory,
+                parentId: singleUser?.parentId || null,
+                grandParentId: singleUser?.grandParentId || null,
                 tradeLicense: data.trl,
                 drugLicense: data.drl,
                 address: data.address,
