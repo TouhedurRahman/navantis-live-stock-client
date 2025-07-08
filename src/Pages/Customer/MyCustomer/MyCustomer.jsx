@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useState } from 'react';
+import { AiFillPrinter } from 'react-icons/ai';
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
 import { ImSearch } from 'react-icons/im';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -165,7 +166,8 @@ const MyCustomer = () => {
             Swal.fire({
                 position: "center",
                 icon: "success",
-                title: `${matchedCustomers.length} customer(s) successfully updated.`,
+                // title: `${matchedCustomers.length} customer(s) successfully updated.`,
+                title: "You're up to date.",
                 showConfirmButton: false,
                 timer: 2000
             });
@@ -263,7 +265,7 @@ const MyCustomer = () => {
                                                         setTerritoryFilter(e.target.value);
                                                         setCurrentPage(1);
                                                     }}
-                                                    className="border border-gray-400 rounded px-3 py-1 text-sm rounded-full"
+                                                    className="border border-gray-400 rounded px-3 py-1 text-sm font-semibold rounded-full"
                                                 >
                                                     <option value="All">Territory</option>
                                                     {[...new Set(myCustomers.map(c => c.territory))].sort().map(t => (
@@ -278,7 +280,7 @@ const MyCustomer = () => {
                                                         setParentTerritoryFilter(e.target.value);
                                                         setCurrentPage(1);
                                                     }}
-                                                    className="border border-gray-400 rounded px-3 py-1 text-sm rounded-full"
+                                                    className="border border-gray-400 rounded px-3 py-1 text-sm font-semibold rounded-full"
                                                 >
                                                     <option value="All">Area</option>
                                                     {[...new Set(myCustomers.map(c => c.parentTerritory).filter(Boolean))].sort().map(pt => (
@@ -302,13 +304,13 @@ const MyCustomer = () => {
                                             </div>
 
                                             {/* Print / Refresh Buttons */}
-                                            <div>
+                                            <div className='flex justify-center items-center'>
                                                 {singleUser?.base !== 'Field' ? (
                                                     <button
                                                         onClick={() => window.print()}
-                                                        className="px-4 py-1 rounded-full border text-sm font-semibold bg-white text-gray-800 border-gray-400 hover:bg-blue-100"
+                                                        className="flex justify-center items-center px-4 py-1 rounded-full border text-sm font-semibold bg-white text-gray-800 border-gray-400 hover:bg-blue-100"
                                                     >
-                                                        Print Details
+                                                        <AiFillPrinter className='me-2' /> Print Details
                                                     </button>
                                                 ) : (
                                                     !["Zonal Manager", "Area Manager", "Sr. Area Manager"].includes(singleUser?.designation)
@@ -409,8 +411,8 @@ const MyCustomer = () => {
                                                 </>
                                             )
                                                 :
-                                                <p className="text-gray-600 font-mono font-extrabold text-center mb-6">
-                                                    No result found.
+                                                <p className="text-gray-600 font-mono font-extrabold text-center mt-12 mb-6">
+                                                    No customer(s) found.
                                                 </p>
                                         }
                                     </>

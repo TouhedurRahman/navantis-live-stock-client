@@ -86,19 +86,25 @@ const CustomerCard = ({ idx, customer, refetch }) => {
                             <FaEye className="text-orange-500" />
                         </button>
                         <>
-                            <Link
-                                to={
-                                    customer.territory !== "Institute"
-                                        ?
-                                        `/update-customer/${customer._id}`
-                                        :
-                                        `/update-institute/${customer._id}`
-                                }
-                                title="Edit/update customer"
-                                className="p-2 rounded-[5px] hover:bg-yellow-100 focus:outline-none"
-                            >
-                                <FaEdit className="text-yellow-500" />
-                            </Link>
+                            {
+                                (
+                                    !["Managing Director", "Zonal Manager", "Area Manager", "Sr. Area Manager"].includes(singleUser?.designation)
+                                )
+                                &&
+                                <Link
+                                    to={
+                                        customer.territory !== "Institute"
+                                            ?
+                                            `/update-customer/${customer._id}`
+                                            :
+                                            `/update-institute/${customer._id}`
+                                    }
+                                    title="Edit/update customer"
+                                    className="p-2 rounded-[5px] hover:bg-yellow-100 focus:outline-none"
+                                >
+                                    <FaEdit className="text-yellow-500" />
+                                </Link>
+                            }
                         </>
                         <button
                             // onClick={handleRemove}
