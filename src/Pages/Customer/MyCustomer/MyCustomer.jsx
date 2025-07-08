@@ -20,6 +20,8 @@ const MyCustomer = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [customersPerPage, setCustomersPerPage] = useState(5);
     const [payModeFilter, setPayModeFilter] = useState('All');
+    const [territoryFilter, setTerritoryFilter] = useState('All');
+    const [parentTerritoryFilter, setParentTerritoryFilter] = useState('All');
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -66,7 +68,13 @@ const MyCustomer = () => {
             (payModeFilter === 'STC' && customer?.payMode?.includes('STC')) ||
             (payModeFilter === 'Credit' && customer?.payMode?.includes('Credit'));
 
-        return matchesSearch && matchesPayMode;
+        const matchesTerritory =
+            territoryFilter === 'All' || customer.territory === territoryFilter;
+
+        const matchesParentTerritory =
+            parentTerritoryFilter === 'All' || customer.parentTerritory === parentTerritoryFilter;
+
+        return matchesSearch && matchesPayMode && matchesTerritory && matchesParentTerritory;
     });
 
     const totalPages = Math.ceil(filteredCustomers.length / customersPerPage);
@@ -225,14 +233,17 @@ const MyCustomer = () => {
                                             </div>
                                         </div>
 
-                                        {/* PayMode Filter Buttons */}
-                                        <div className='flex flex-col md:flex-row md:justify-between md:items-center space-y-3 md:space-y-0 mb-3'>
-                                            <div className="flex flex-wrap justify-center gap-3">
+                                        {/* Filters & Print/Refresh Buttons */}
+                                        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-3 mb-3">
+
+                                            {/* Filter Buttons */}
+                                            <div className="flex flex-wrap gap-3 justify-center">
+                                                {/* Pay Mode Filter */}
                                                 {['All', 'Cash', 'STC', 'Credit'].map(mode => (
                                                     <button
                                                         key={mode}
                                                         className={`px-4 py-1 rounded-full border text-sm font-semibold 
-                                                    ${payModeFilter === mode
+                                                            ${payModeFilter === mode
                                                                 ? 'bg-[#3B82F6] text-white border-[#3B82F6]'
                                                                 : 'bg-white text-gray-800 border-gray-400 hover:bg-blue-100'
                                                             }`}
@@ -244,31 +255,71 @@ const MyCustomer = () => {
                                                         {mode}
                                                     </button>
                                                 ))}
+
+                                                {/* Territory Filter */}
+                                                <select
+                                                    value={territoryFilter}
+                                                    onChange={(e) => {
+                                                        setTerritoryFilter(e.target.value);
+                                                        setCurrentPage(1);
+                                                    }}
+                                                    className="border border-gray-400 rounded px-3 py-1 text-sm rounded-full"
+                                                >
+                                                    <option value="All">Territory</option>
+                                                    {[...new Set(myCustomers.map(c => c.territory))].sort().map(t => (
+                                                        <option key={t} value={t}>{t}</option>
+                                                    ))}
+                                                </select>
+
+                                                {/* ParentTerritory Filter */}
+                                                <select
+                                                    value={parentTerritoryFilter}
+                                                    onChange={(e) => {
+                                                        setParentTerritoryFilter(e.target.value);
+                                                        setCurrentPage(1);
+                                                    }}
+                                                    className="border border-gray-400 rounded px-3 py-1 text-sm rounded-full"
+                                                >
+                                                    <option value="All">Area</option>
+                                                    {[...new Set(myCustomers.map(c => c.parentTerritory).filter(Boolean))].sort().map(pt => (
+                                                        <option key={pt} value={pt}>{pt}</option>
+                                                    ))}
+                                                </select>
+
+                                                {/* Clear Button */}
+                                                <button
+                                                    onClick={() => {
+                                                        setSearchTerm('');
+                                                        setPayModeFilter('All');
+                                                        setTerritoryFilter('All');
+                                                        setParentTerritoryFilter('All');
+                                                        setCurrentPage(1);
+                                                    }}
+                                                    className="px-4 py-1 rounded-full border text-sm font-semibold bg-white text-gray-800 border-gray-400 hover:bg-blue-100"
+                                                >
+                                                    Clear Filters
+                                                </button>
                                             </div>
+
+                                            {/* Print / Refresh Buttons */}
                                             <div>
-                                                {
-                                                    singleUser?.base !== 'Field'
-                                                        ? (
-                                                            <div className="flex justify-center md:justify-end">
-                                                                <button
-                                                                    onClick={() => window.print()}
-                                                                    className="px-4 py-1 rounded-full border text-sm font-semibold bg-white text-gray-800 border-gray-400 hover:bg-blue-100"
-                                                                >
-                                                                    Print Details
-                                                                </button>
-                                                            </div>
-                                                        )
-                                                        : (
-                                                            <div className="flex justify-center md:justify-end">
-                                                                <button
-                                                                    onClick={updateCustomer}
-                                                                    className="px-4 py-1 rounded-full border text-sm font-semibold bg-white text-gray-800 border-gray-400 hover:bg-blue-100"
-                                                                >
-                                                                    ↻ Refresh
-                                                                </button>
-                                                            </div>
-                                                        )
-                                                }
+                                                {singleUser?.base !== 'Field' ? (
+                                                    <button
+                                                        onClick={() => window.print()}
+                                                        className="px-4 py-1 rounded-full border text-sm font-semibold bg-white text-gray-800 border-gray-400 hover:bg-blue-100"
+                                                    >
+                                                        Print Details
+                                                    </button>
+                                                ) : (
+                                                    !["Zonal Manager", "Area Manager", "Sr. Area Manager"].includes(singleUser?.designation)
+                                                    &&
+                                                    <button
+                                                        onClick={updateCustomer}
+                                                        className="px-4 py-1 rounded-full border text-sm font-semibold bg-white text-gray-800 border-gray-400 hover:bg-blue-100"
+                                                    >
+                                                        ↻ Refresh
+                                                    </button>
+                                                )}
                                             </div>
                                         </div>
 
