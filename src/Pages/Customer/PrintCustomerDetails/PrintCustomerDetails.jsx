@@ -46,25 +46,22 @@ const PrintCustomerDetails = ({ filteredCustomers = [] }) => {
             const rows = custList.map(c => `
                 <tr>
                     <td>
-                        <p>${c.name}</p>
-                        <p>${c.customerId} | <span class="font-semibold">${[...(c.payMode || [])].reverse().join(", ")}</span></p>
-                    </td>
-                    <td style="padding: 6px 8px; vertical-align: middle;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span>Credit</span>
-                            <span>${(c.crLimit || 0).toLocaleString('en-IN')}</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span>Day</span>
-                            <span>${c.dayLimit || 0}</span>
-                        </div>
-                    </td>
-                    <td style="text-align: center">
-                        <p>+880 ${c.mobile.slice(-10, -6)}-${c.mobile.slice(-6)}</p>
-                        <p>${c.email || ""}</p>
+                        <p style="text-align: center">${c.customerId}</p>
                     </td>
                     <td>
-                        <p style="text-align: justify">${c.address}</p>
+                        <p>${c.name}</p>
+                    </td>
+                    <td>
+                        <p>${c.address}</p>
+                    </td>
+                    <td>
+                        <p>${[...(c.payMode || [])].reverse().join(", ")}</p>
+                    </td>
+                    <td>
+                        <p style="text-align: right">${(c.crLimit || 0).toLocaleString('en-IN')}</p>
+                    </td>
+                    <td>
+                        <p style="text-align: right">${c.dayLimit}</p>
                     </td>
                 </tr>
             `).join("");
@@ -77,10 +74,12 @@ const PrintCustomerDetails = ({ filteredCustomers = [] }) => {
                     <table style="width: 100%; border-collapse: collapse;">
                         <thead>
                             <tr>
-                                <th style='width: 30%'>Customer</th>
-                                <th style='text-align: center; width: 15%'>Limits</th>
-                                <th style='text-align: center; width: 25%'>Contact</th>
-                                <th style='width: 30%'>Address</th>
+                                <th style='text-align: center; width: 10%'>Customer<br />ID</th>
+                                <th style='width: 30%'>Customer Name</th>
+                                <th style='width: 30%'>Customer Address</th>
+                                <th style='width: 10%'>Pay Mode</th>
+                                <th style='text-align: right; width: 10%'>Cr. Limit</th>
+                                <th style='text-align: right; width: 10%'>Day Limit</th>
                             </tr>
                         </thead>
                         <tbody>
