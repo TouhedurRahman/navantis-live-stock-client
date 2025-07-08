@@ -47,7 +47,7 @@ const PrintCustomerDetails = ({ filteredCustomers = [] }) => {
                 <tr>
                     <td>
                         <p>${c.name}</p>
-                        <p>${c.customerId} | ${[...(c.payMode || [])].reverse().join(", ")}</p>
+                        <p>${c.customerId} | <span class="font-semibold">${[...(c.payMode || [])].reverse().join(", ")}</span></p>
                     </td>
                     <td style="padding: 6px 8px; vertical-align: middle;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
