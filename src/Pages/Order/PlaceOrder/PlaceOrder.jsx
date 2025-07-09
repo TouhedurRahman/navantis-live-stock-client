@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import Select from 'react-select';
 import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useAllUsers from '../../../Hooks/useAllUsers';
@@ -39,6 +40,15 @@ const PlaceOrder = () => {
         &&
         pharmacy.status === 'approved'
     );
+
+    const pharmacyOptions = userPharmacies?.map(pharmacy => ({
+        value: pharmacy._id,
+        label: `${pharmacy.name} - ${pharmacy.customerId}`,
+        name: pharmacy.name,
+        customerId: pharmacy.customerId,
+        address: pharmacy.address,
+        data: pharmacy,
+    }));
 
     const parentName = allUsers.find(parent => parent._id === singleUser.parentId)?.name || "Vacant";
     const parentTerritory = allUsers.find(pt => pt._id === singleUser.parentId)?.territory || "Vacant";
@@ -438,13 +448,13 @@ const PlaceOrder = () => {
                                 <input
                                     defaultValue={singleUser.name}
                                     {...register("name", { required: "User name is required" })}
-                                    className="border-gray-500 bg-white border p-2 text-sm cursor-not-allowed"
+                                    className="border-gray-500 bg-white border p-2 text-sm rounded-md cursor-not-allowed"
                                     readOnly
                                 />
                                 {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
                             </div>
 
-                            <div className="flex flex-col">
+                            {/* <div className="flex flex-col">
                                 <label className="text-sm mb-2">Customer Name <span className="text-red-500">*</span></label>
                                 <select
                                     {...register('pharmId', { required: 'Please select a customer' })}
@@ -459,13 +469,62 @@ const PlaceOrder = () => {
                                     ))}
                                 </select>
                                 {errors.pharmacy && <p className="text-red-500 text-sm">{errors.pharmacy.message}</p>}
+                            </div> */}
+
+                            <div className="flex flex-col">
+                                <label className="text-sm mb-2">Customer Name <span className="text-red-500">*</span></label>
+                                <Select
+                                    options={pharmacyOptions}
+                                    onChange={(selected) => {
+                                        setSelectedPharmacy(selected.data);
+                                    }}
+                                    placeholder="Select or type a customer name"
+                                    isSearchable
+                                    formatOptionLabel={(data, { context }) => {
+                                        if (context === "menu") {
+                                            return (
+                                                <div>
+                                                    <p className="font-semibold text-sm">{data.name} - {data.customerId}</p>
+                                                    <p className="text-gray-500 text-xs">{data.address}</p>
+                                                </div>
+                                            );
+                                        }
+                                        return `${data.name} - ${data.customerId}`;
+                                    }}
+                                    className='rounded-md'
+                                    styles={{
+                                        control: (base, state) => ({
+                                            ...base,
+                                            borderColor: '#6B7280',
+                                            fontSize: '0.875rem',
+                                            boxShadow: state.isFocused ? '0 0 0 1px #3B82F6' : base.boxShadow,
+                                            '&:hover': {
+                                                borderColor: '#3B82F6',
+                                            },
+                                        }),
+                                        input: (base) => ({
+                                            ...base,
+                                            margin: 0,
+                                            padding: 0,
+                                        }),
+                                        singleValue: (base) => ({
+                                            ...base,
+                                            fontSize: '0.875rem',
+                                            fontWeight: 500,
+                                        }),
+                                        menu: (base) => ({
+                                            ...base,
+                                            zIndex: 9999,
+                                        }),
+                                    }}
+                                />
                             </div>
 
                             <div className="flex flex-col">
                                 <label className="text-sm mb-2">Pay Mode <span className="text-red-500">*</span></label>
                                 <select
                                     {...register('payMode', { required: 'Pay mode is required' })}
-                                    className="border-gray-500 bg-white border p-2 text-sm"
+                                    className="border-gray-500 bg-white border p-2 text-sm rounded-md"
                                 >
                                     <option value="">~~ Select a Pay Mode ~~</option>
                                     {selectedPharmacy?.payMode?.map((mode) => (
@@ -474,15 +533,14 @@ const PlaceOrder = () => {
                                         </option>
                                     ))}
                                 </select>
-                                {errors.PayMode && <p className="text-red-500 text-sm">{errors.PayMode.message}</p>}
                             </div>
 
                             <button
                                 type="button"
                                 onClick={() => {
-                                    const { pharmId, payMode } = getValues();
+                                    const { payMode } = getValues();
 
-                                    if (!pharmId) {
+                                    if (Object.keys(selectedPharmacy).length === 0) {
                                         Swal.fire({
                                             icon: "error",
                                             title: "Customer Missing",
