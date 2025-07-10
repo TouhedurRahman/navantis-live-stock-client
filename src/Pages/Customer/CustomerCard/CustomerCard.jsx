@@ -6,13 +6,23 @@ import { FaEye } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import useApiConfig from '../../../Hooks/useApiConfig';
+import useOrders from '../../../Hooks/useOrders';
 import useSingleUser from '../../../Hooks/useSingleUser';
 
 const CustomerCard = ({ idx, customer, refetch }) => {
     const [singleUser] = useSingleUser();
     const baseUrl = useApiConfig();
+    const [orders] = useOrders();
 
     const [isModalOpen, setModalOpen] = useState(false);
+
+    const unpaidStcCredit = orders.some(order =>
+        order.pharmacyId === customer.customerId
+        &&
+        ["STC", "Credit"].includes(order.payMode)
+        &&
+        ["delivered", "due", "outstanding"].includes(order.status)
+    );
 
     const deleteCustomerMutation = useMutation({
         mutationFn: async () => {
@@ -87,23 +97,53 @@ const CustomerCard = ({ idx, customer, refetch }) => {
                         </button>
                         <>
                             {
-                                (
-                                    !["Managing Director", "Zonal Manager", "Area Manager", "Sr. Area Manager"].includes(singleUser?.designation)
-                                )
-                                &&
-                                <Link
-                                    to={
-                                        customer.territory !== "Institute"
-                                            ?
-                                            `/update-customer/${customer._id}`
-                                            :
-                                            `/update-institute/${customer._id}`
-                                    }
-                                    title="Edit/update customer"
-                                    className="p-2 rounded-[5px] hover:bg-yellow-100 focus:outline-none"
-                                >
-                                    <FaEdit className="text-yellow-500" />
-                                </Link>
+                                unpaidStcCredit
+                                    ?
+                                    <>
+                                        {
+                                            (
+                                                !["Managing Director", "Zonal Manager", "Area Manager", "Sr. Area Manager"].includes(singleUser?.designation)
+                                            )
+                                            &&
+                                            <Link
+                                                onClick={() => {
+                                                    Swal.fire({
+                                                        position: "center",
+                                                        icon: "error",
+                                                        title: "Update Restricted",
+                                                        text: `Unpaid ${customer.payMode?.includes("Credit") ? "Credit" : "STC"} order(s) found. Please clear payment first.`,
+                                                        showConfirmButton: true
+                                                    });
+                                                }}
+                                                title="Edit/update customer"
+                                                className="p-2 rounded-[5px] hover:bg-yellow-100 focus:outline-none"
+                                            >
+                                                <FaEdit className="text-yellow-500" />
+                                            </Link>
+                                        }
+                                    </>
+                                    :
+                                    <>
+                                        {
+                                            (
+                                                !["Managing Director", "Zonal Manager", "Area Manager", "Sr. Area Manager"].includes(singleUser?.designation)
+                                            )
+                                            &&
+                                            <Link
+                                                to={
+                                                    customer.territory !== "Institute"
+                                                        ?
+                                                        `/update-customer/${customer._id}`
+                                                        :
+                                                        `/update-institute/${customer._id}`
+                                                }
+                                                title="Edit/update customer"
+                                                className="p-2 rounded-[5px] hover:bg-yellow-100 focus:outline-none"
+                                            >
+                                                <FaEdit className="text-yellow-500" />
+                                            </Link>
+                                        }
+                                    </>
                             }
                         </>
                         <button
