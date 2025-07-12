@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Main from "../../Layout/Main/Main";
 import DailyCollections from "../../Pages/Accounts/DailyCollections/DailyCollections/DailyCollections";
 import DueList from "../../Pages/Accounts/DueList/DueList/DueList";
+import InvoiceSalesSummary from "../../Pages/Accounts/InvoiceSalesSummary/InvoiceSalesSummary/InvoiceSalesSummary";
 import MPOStatement from "../../Pages/Accounts/MPOStatement/MPOStatement/MPOStatement";
 import AdminDamagedExpiredList from "../../Pages/Admin/AdminDamagedExpiredList/AdminDamagedExpiredList";
 import Customer from "../../Pages/Admin/Customer/Customer";
@@ -244,6 +245,10 @@ const router = createBrowserRouter([
             {
                 path: "/mpo-statement",
                 element: <MPOStatement />
+            },
+            {
+                path: "/inv-sales-summary",
+                element: <InvoiceSalesSummary />
             },
             /********** Order **********/
             {

@@ -106,7 +106,8 @@ const useMenuConfig = () => {
             links: [
                 { to: '/daily-collections', icon: <TbReportAnalytics className='me-2' />, label: 'Daily Collections' },
                 { to: '/due-payments', icon: <TbReportAnalytics className='me-2' />, label: 'Due Payments' },
-                { to: '/mpo-statement', icon: <TbReportAnalytics className='me-2' />, label: 'MPO Statement' }
+                { to: '/mpo-statement', icon: <TbReportAnalytics className='me-2' />, label: 'MPO Statement' },
+                { to: '/inv-sales-summary', icon: <TbReportAnalytics className='me-2' />, label: 'Inv. Sales Summary' },
             ],
         },
 
