@@ -145,13 +145,21 @@ const InvoiceSalesSummaryReport = ({ reportType, filteredOrders = [], orderRetur
 
                         return `
                             <tr>
-                                <td style="padding: 8px; border: 1px solid #ddd;">${invoice}</td>
-                                <td style="padding: 8px; border: 1px solid #ddd;">${data.orderDate}</td>
-                                <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${data.soldAmount.toLocaleString()}</td>
-                                <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${data.returnAmount.toLocaleString()}</td>
-                                <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${data.totalPayable.toLocaleString()}</td>
-                                <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${data.paid.toLocaleString()}</td>
-                                <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${data.due.toLocaleString()}</td>
+                                <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${invoice}</td>
+                                <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">
+                                    ${new Date(data.orderDate).toLocaleDateString('en-GB').replace(/\//g, '-')}
+                                </td>
+                                <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${data.soldAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                                <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${data.returnAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                                <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${data.totalPayable.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                                <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${data.paid.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                                <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${data.due.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                                <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">
+                                    ${data.due === 0
+                                ? 0
+                                : Math.floor((new Date() - new Date(data.orderDate)) / (1000 * 60 * 60 * 24))
+                            }
+                                </td>
                             </tr>
                             `;
                     }).join("");
@@ -176,13 +184,14 @@ const InvoiceSalesSummaryReport = ({ reportType, filteredOrders = [], orderRetur
                         <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
                             <thead>
                                 <tr style="background-color: #f0f0f0;">
-                                    <th style="padding: 8px; border: 1px solid #aaa;">Invoice No.</th>
-                                    <th style="padding: 8px; border: 1px solid #aaa;">Order Date</th>
-                                    <th style="padding: 8px; border: 1px solid #aaa; text-align: right;">Sales Amount</th>
-                                    <th style="padding: 8px; border: 1px solid #aaa; text-align: right;">Return Amount</th>
-                                    <th style="padding: 8px; border: 1px solid #aaa; text-align: right;">Net Sales</th>
-                                    <th style="padding: 8px; border: 1px solid #aaa; text-align: right;">Paid</th>
-                                    <th style="padding: 8px; border: 1px solid #aaa; text-align: right;">Due</th>
+                                    <th style="padding: 8px; border: 1px solid #aaa; text-align: center;">Invoice No.</th>
+                                    <th style="padding: 8px; border: 1px solid #aaa; text-align: center;">Order Date</th>
+                                    <th style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 13%;">Sales Amount</th>
+                                    <th style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 13%;">Return Amount</th>
+                                    <th style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 13%;">Net Sales</th>
+                                    <th style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 13%;">Paid</th>
+                                    <th style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 13%;">Due</th>
+                                    <th style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 13%;">Due Pen. Days</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -200,11 +209,12 @@ const InvoiceSalesSummaryReport = ({ reportType, filteredOrders = [], orderRetur
                                 `${mpoTerritory} Territory Total`
                         }
                                     </td>
-                                    <td style="padding: 8px; border: 1px solid #aaa; text-align: right;">${mpoSold.toLocaleString()}</td>
-                                    <td style="padding: 8px; border: 1px solid #aaa; text-align: right;">${mpoReturn.toLocaleString()}</td>
-                                    <td style="padding: 8px; border: 1px solid #aaa; text-align: right;">${mpoPayable.toLocaleString()}</td>
-                                    <td style="padding: 8px; border: 1px solid #aaa; text-align: right;">${mpoPaid.toLocaleString()}</td>
-                                    <td style="padding: 8px; border: 1px solid #aaa; text-align: right;">${mpoDue.toLocaleString()}</td>
+                                    <td style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 13%;">${mpoSold.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                                    <td style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 13%;">${mpoReturn.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                                    <td style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 13%;">${mpoPayable.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                                    <td style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 13%;">${mpoPaid.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                                    <td style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 13%;">${mpoDue.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                                    <td style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 13%;"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -236,11 +246,12 @@ const InvoiceSalesSummaryReport = ({ reportType, filteredOrders = [], orderRetur
                         `
                             <tr style="font-weight: bold; background-color: #eef;">
                                 <td colspan="2" style="padding: 8px; border: 1px solid #aaa;">${parentTerritory} Area Total</td>
-                                <td style="padding: 8px; border: 1px solid #aaa; text-align: right;">${territorySold.toLocaleString()}</td>
-                                <td style="padding: 8px; border: 1px solid #aaa; text-align: right;">${territoryReturn.toLocaleString()}</td>
-                                <td style="padding: 8px; border: 1px solid #aaa; text-align: right;">${territoryPayable.toLocaleString()}</td>
-                                <td style="padding: 8px; border: 1px solid #aaa; text-align: right;">${territoryPaid.toLocaleString()}</td>
-                                <td style="padding: 8px; border: 1px solid #aaa; text-align: right;">${territoryDue.toLocaleString()}</td>
+                                <td style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 13%;">${territorySold.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                                <td style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 13%;">${territoryReturn.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                                <td style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 13%;">${territoryPayable.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                                <td style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 13%;">${territoryPaid.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                                <td style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 13%;">${territoryDue.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                                <td style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 13%;"></td>
                             </tr>
                         `
                     }
@@ -262,11 +273,12 @@ const InvoiceSalesSummaryReport = ({ reportType, filteredOrders = [], orderRetur
                 <tbody>
                     <tr style="background-color: #d9edf7; font-weight: bold;">
                         <td colspan="2" style="padding: 8px; border: 1px solid #aaa;">Grand Total</td>
-                        <td style="padding: 8px; border: 1px solid #aaa; text-align: right;">${grandSold.toLocaleString()}</td>
-                        <td style="padding: 8px; border: 1px solid #aaa; text-align: right;">${grandReturn.toLocaleString()}</td>
-                        <td style="padding: 8px; border: 1px solid #aaa; text-align: right;">${grandPayable.toLocaleString()}</td>
-                        <td style="padding: 8px; border: 1px solid #aaa; text-align: right;">${grandPaid.toLocaleString()}</td>
-                        <td style="padding: 8px; border: 1px solid #aaa; text-align: right;">${grandDue.toLocaleString()}</td>
+                        <td style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 13%;">${grandSold.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                        <td style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 13%;">${grandReturn.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                        <td style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 13%;">${grandPayable.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                        <td style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 13%;">${grandPaid.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                        <td style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 13%;">${grandDue.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                        <td style="padding: 8px; border: 1px solid #aaa; text-align: right; width: 13%;"></td>
                     </tr>
                 </tbody>
             </table>
