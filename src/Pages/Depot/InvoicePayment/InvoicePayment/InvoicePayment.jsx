@@ -22,6 +22,11 @@ const InvoicePayment = () => {
     const [paymentType, setPaymentType] = useState("");
     const [bankName, setBankName] = useState("");
     const [chequeOrAcNo, setChequeOrAcNo] = useState("");
+    const [cashAmount, setCashAmount] = useState("");
+    const [bankAmount, setBankAmount] = useState("");
+    const [chequeOrBeftnAmount, setChequeOrBeftnAmount] = useState("");
+    const [tdsAmount, setTdsAmount] = useState("");
+    const [payments, setPayments] = useState([]);
 
     const bangladeshiBanks = [
         { name: "AB Bank Limited", shortForm: "ABBL" },
@@ -112,79 +117,32 @@ const InvoicePayment = () => {
     const updateOrderMutation = useMutation({
         mutationFn: async (data) => {
             const { _id, payments = [], ...orderData } = data;
-
-            /* const newStatus = (((parseFloat(orderData?.totalPayable) - parseFloat(orderData?.paid || 0) - parseFloat(paymentAmount))) === 0) ? 'paid' : 'outstanding'; */
-
-            const difference = parseFloat(orderData?.totalPayable) - parseFloat(orderData?.paid || 0) - parseFloat(paymentAmount);
-            const newStatus = (difference > -1 && difference < 1) ? 'paid' : 'outstanding';
-
-
             const today = getTodayDate();
-            const currentPayable = parseFloat(orderData?.due || 0);
-            const currentDue = parseFloat((orderData?.due - paymentAmount) || 0);
-            let updatedPayments = [...payments];
 
-            const existingIndex = payments.findIndex(
-                p =>
-                    p.paymentType === paymentType
-                    &&
-                    p.paidDate === today
-            );
+            const totalNewPayment = payments.reduce((sum, p) => sum + parseFloat(p.paid || 0), 0);
 
-            if (existingIndex !== -1) {
-                const existingPayment = payments[existingIndex];
-                const updatedAmount = parseFloat(existingPayment.paid) + parseFloat(paymentAmount);
+            const updatedPaid = parseFloat(orderData?.paid || 0) + totalNewPayment;
+            const updatedDue = parseFloat((orderData?.totalPayable - updatedPaid).toFixed(2));
+            const newStatus = updatedDue === 0 ? "paid" : "outstanding";
 
-                if (updatedAmount === 0) {
-                    updatedPayments.splice(existingIndex, 1);
-                } else {
-                    updatedPayments[existingIndex] = {
-                        ...existingPayment,
-                        paid: updatedAmount,
-                        totalDue: currentDue
-                    };
-                }
-            } else {
-                if (paymentType === "Cheque") {
-                    updatedPayments.push({
-                        totalPayable: currentPayable,
-                        paid: paymentAmount,
-                        totalDue: currentDue,
-                        paymentType: paymentType,
-                        bankName,
-                        chequeNo: chequeOrAcNo,
-                        paidDate: today,
-                    });
-                } else if (paymentType === "BEFTN") {
-                    updatedPayments.push({
-                        totalPayable: currentPayable,
-                        paid: paymentAmount,
-                        totalDue: currentDue,
-                        paymentType: paymentType,
-                        bankName,
-                        accountNo: chequeOrAcNo,
-                        paidDate: today,
-                    });
-                } else {
-                    updatedPayments.push({
-                        totalPayable: currentPayable,
-                        paid: paymentAmount,
-                        totalDue: currentDue,
-                        paymentType: paymentType,
-                        paidDate: today,
-                    });
-                }
-            };
+            const updatedPayments = payments.map(p => ({
+                ...p,
+                totalPayable: orderData?.totalPayable,
+                totalDue: updatedDue,
+                paidDate: today,
+            }));
+
+            const finalPayments = [...(orderData.payments || []), ...updatedPayments];
 
             const updatedOrder = {
                 ...orderData,
-                paid: parseFloat(parseFloat(orderData?.paid || 0) + parseFloat(paymentAmount)),
-                due: parseFloat((parseFloat(orderData?.totalPayable) - parseFloat(orderData?.paid || 0) - parseFloat(paymentAmount)).toFixed(2)),
+                paid: updatedPaid,
+                due: updatedDue,
                 status: newStatus,
-                payments: updatedPayments
+                payments: finalPayments,
             };
 
-            const response = await axios.patch(`${baseUrl}/order/${_id}`, updatedOrder)
+            const response = await axios.patch(`${baseUrl}/order/${_id}`, updatedOrder);
             return response.data;
         },
         onError: (error) => {
@@ -229,41 +187,40 @@ const InvoicePayment = () => {
         },
     });
 
-    const handlePayment = async (data) => {
+    const handlePayment = async (dataWithPayments) => {
         try {
             await Promise.all([
-                updateOrderMutation.mutateAsync(data),
-                addOrderPaymentMutation.mutateAsync(data)
+                updateOrderMutation.mutateAsync(dataWithPayments),
+                addOrderPaymentMutation.mutateAsync(dataWithPayments)
             ]);
 
-            refetch();
             setInvoiceNumber("");
             setPaymentAmount("");
+            setPaymentType("");
             setBankName("");
             setChequeOrAcNo("");
+            setCashAmount("");
+            setBankAmount("");
+            setChequeOrBeftnAmount("");
+            setTdsAmount("");
+            setPayments([]);
             setShowModal(false);
 
-            let timerInterval;
             Swal.fire({
                 title: "Processing Your Payment",
                 html: "Hang tight! We're securely completing your transaction.",
                 timer: 2000,
                 timerProgressBar: true,
-                didOpen: () => {
-                    Swal.showLoading();
-                },
-                willClose: () => {
-                    clearInterval(timerInterval);
-                },
+                didOpen: () => Swal.showLoading(),
             });
+
         } catch (error) {
             console.error("Error adding product:", error);
             Swal.fire({
                 title: "Error!",
-                text: "Faild. Please try again.",
+                text: "Failed. Please try again.",
                 icon: "error",
                 showConfirmButton: false,
-                confirmButtonColor: "#d33",
                 timer: 1500
             });
         }
@@ -275,6 +232,11 @@ const InvoicePayment = () => {
         setPaymentType("");
         setBankName("");
         setChequeOrAcNo("");
+        setCashAmount("");
+        setBankAmount("");
+        setChequeOrBeftnAmount("");
+        setTdsAmount("");
+        setPayments([]);
         setShowModal(false);
     }
 
@@ -388,144 +350,208 @@ const InvoicePayment = () => {
                                                             )
                                                                 ?
                                                                 <>
-                                                                    <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">
-                                                                        Paid Amount
-                                                                    </label>
-                                                                    <input
-                                                                        type="number"
-                                                                        required
-                                                                        className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
-                                                                        value={paymentAmount}
-                                                                        onChange={(e) => {
-                                                                            const inputValue = Number(e.target.value);
-                                                                            const maxPayment = invWiseOrder?.due;
-                                                                            setPaymentAmount(inputValue <= maxPayment ? inputValue : maxPayment);
-                                                                        }}
-                                                                        onWheel={(e) => e.target.blur()}
-                                                                    />
-
-                                                                    <div className="col-span-1 md:col-span-2">
-                                                                        <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">Payment Type</label>
-                                                                        <select
-                                                                            required
-                                                                            value={paymentType}
-                                                                            onChange={(e) => setPaymentType(e.target.value)}
-                                                                            className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
-                                                                        >
-                                                                            <option value="">Select Payment Type</option>
-                                                                            {
-                                                                                ["Cash", "STC"].includes(invWiseOrder.payMode)
-                                                                                &&
-                                                                                <option value="Cash">Cash</option>
-                                                                            }
-                                                                            {
-                                                                                invWiseOrder.payMode === "Credit"
-                                                                                &&
-                                                                                <option value="Cheque">Cheque</option>
-                                                                            }
-                                                                            {
-                                                                                invWiseOrder.payMode === "Credit"
-                                                                                &&
-                                                                                <option value="BEFTN">BEFTN</option>
-                                                                            }
-                                                                            {
-                                                                                ["Cash", "STC"].includes(invWiseOrder.payMode)
-                                                                                &&
-                                                                                <option value="Bank">Bank</option>
-                                                                            }
-                                                                        </select>
-                                                                    </div>
                                                                     {
-                                                                        (
-                                                                            invWiseOrder.payMode === "Credit"
-                                                                            && ["Cheque", "BEFTN"].includes(paymentType)
-                                                                        )
-                                                                        &&
-                                                                        <>
-                                                                            <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">
-                                                                                Bank Name
-                                                                            </label>
-                                                                            <select
-                                                                                required
-                                                                                className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
-                                                                                value={bankName}
-                                                                                onChange={(e) => setBankName(e.target.value)}
-                                                                            >
-                                                                                <option value="" disabled>Select a bank</option>
-                                                                                {bangladeshiBanks.map((bank, index) => (
-                                                                                    <option key={index} value={bank.name}>
-                                                                                        {bank.name} - {bank.shortForm}
-                                                                                    </option>
-                                                                                ))}
-                                                                            </select>
+                                                                        ["Cash", "STC"].includes(invWiseOrder.payMode) ? (
+                                                                            <>
+                                                                                <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">Bank Amount</label>
+                                                                                <input
+                                                                                    type="number"
+                                                                                    className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                                                                                    value={bankAmount}
+                                                                                    onChange={(e) => setBankAmount(Number(e.target.value))}
+                                                                                    onWheel={(e) => e.target.blur()}
+                                                                                />
 
-                                                                            <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">
+                                                                                <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">Cash Amount</label>
+                                                                                <input
+                                                                                    type="number"
+                                                                                    className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                                                                                    value={cashAmount}
+                                                                                    onChange={(e) => setCashAmount(Number(e.target.value))}
+                                                                                    onWheel={(e) => e.target.blur()}
+                                                                                />
+                                                                            </>
+                                                                        ) : (
+                                                                            <>
+                                                                                <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">
+                                                                                    Payment Type
+                                                                                </label>
+                                                                                <select
+                                                                                    value={paymentType}
+                                                                                    onChange={(e) => setPaymentType(e.target.value)}
+                                                                                    className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                                                                                    required
+                                                                                >
+                                                                                    <option value="">Select Payment Type</option>
+                                                                                    <option value="Cheque">Cheque</option>
+                                                                                    <option value="BEFTN">BEFTN</option>
+                                                                                </select>
+
                                                                                 {
                                                                                     paymentType === "Cheque"
                                                                                         ?
-                                                                                        "Cheque Number"
+                                                                                        <>
+                                                                                            <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">
+                                                                                                Cheque Amount
+                                                                                            </label>
+                                                                                            <input
+                                                                                                type="number"
+                                                                                                className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                                                                                                value={chequeOrBeftnAmount}
+                                                                                                onChange={(e) => setChequeOrBeftnAmount(Number(e.target.value))}
+                                                                                                onWheel={(e) => e.target.blur()}
+                                                                                            />
+                                                                                        </>
                                                                                         :
-                                                                                        "Account Number"
+                                                                                        paymentType === "BEFTN"
+                                                                                            ?
+                                                                                            <>
+                                                                                                <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">
+                                                                                                    BEFTN Amount
+                                                                                                </label>
+                                                                                                <input
+                                                                                                    type="number"
+                                                                                                    className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                                                                                                    value={chequeOrBeftnAmount}
+                                                                                                    onChange={(e) => setChequeOrBeftnAmount(Number(e.target.value))}
+                                                                                                    onWheel={(e) => e.target.blur()}
+                                                                                                />
+                                                                                            </>
+                                                                                            :
+                                                                                            ""
                                                                                 }
-                                                                            </label>
-                                                                            <input
-                                                                                type="number"
-                                                                                required
-                                                                                className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
-                                                                                value={chequeOrAcNo}
-                                                                                onChange={(e) => setChequeOrAcNo(e.target.value)}
-                                                                                onWheel={(e) => e.target.blur()}
-                                                                            />
-                                                                        </>
+
+                                                                                <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">Bank Name</label>
+                                                                                <select
+                                                                                    className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                                                                                    value={bankName}
+                                                                                    onChange={(e) => setBankName(e.target.value)}
+                                                                                    required
+                                                                                >
+                                                                                    <option value="">Select a bank</option>
+                                                                                    {bangladeshiBanks.map((bank, index) => (
+                                                                                        <option key={index} value={bank.name}>
+                                                                                            {bank.name} - {bank.shortForm}
+                                                                                        </option>
+                                                                                    ))}
+                                                                                </select>
+
+                                                                                {
+                                                                                    paymentType === "Cheque"
+                                                                                        ?
+                                                                                        <>
+                                                                                            <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">
+                                                                                                Cheque Number
+                                                                                            </label>
+                                                                                            <input
+                                                                                                type="number"
+                                                                                                className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                                                                                                value={chequeOrAcNo}
+                                                                                                onChange={(e) => setChequeOrAcNo(e.target.value)}
+                                                                                                onWheel={(e) => e.target.blur()}
+                                                                                                required
+                                                                                            />
+                                                                                        </>
+                                                                                        :
+                                                                                        paymentType === "BEFTN"
+                                                                                            ?
+                                                                                            <>
+                                                                                                <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">
+                                                                                                    Account Number
+                                                                                                </label>
+                                                                                                <input
+                                                                                                    type="number"
+                                                                                                    className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                                                                                                    value={chequeOrAcNo}
+                                                                                                    onChange={(e) => setChequeOrAcNo(e.target.value)}
+                                                                                                    onWheel={(e) => e.target.blur()}
+                                                                                                    required
+                                                                                                />
+                                                                                            </>
+                                                                                            :
+                                                                                            ""
+                                                                                }
+
+                                                                                <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">TDS Amount</label>
+                                                                                <input
+                                                                                    type="number"
+                                                                                    className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                                                                                    value={tdsAmount}
+                                                                                    onChange={(e) => setTdsAmount(Number(e.target.value))}
+                                                                                    onWheel={(e) => e.target.blur()}
+                                                                                    required
+                                                                                />
+                                                                            </>
+                                                                        )
                                                                     }
+
                                                                     <button
                                                                         className="mt-4 w-full bg-green-500 text-white py-3 px-5 rounded-xl hover:bg-green-600 transition-all font-semibold text-lg shadow-md"
                                                                         onClick={() => {
-                                                                            if (!paymentAmount && !paymentType) {
-                                                                                Swal.fire({
-                                                                                    icon: 'error',
-                                                                                    title: 'Missing Fields',
-                                                                                    text: 'Please enter a paid amount and select a payment type.',
-                                                                                });
-                                                                                return;
+                                                                            const totalPayable = parseFloat(invWiseOrder?.totalPayable);
+
+                                                                            let totalPaid = 0;
+                                                                            let paymentsToSet = [];
+
+                                                                            if (["Cash", "STC"].includes(invWiseOrder.payMode)) {
+                                                                                totalPaid = parseFloat(cashAmount) + parseFloat(bankAmount);
+                                                                                if (totalPaid !== totalPayable) {
+                                                                                    return Swal.fire("Invalid Payment", `Total payment must equal ${totalPayable}`, "error");
+                                                                                }
+
+                                                                                if (cashAmount > 0) {
+                                                                                    paymentsToSet.push({
+                                                                                        paymentType: "Cash",
+                                                                                        paid: cashAmount,
+                                                                                        paidDate: getTodayDate(),
+                                                                                    });
+                                                                                }
+                                                                                if (bankAmount > 0) {
+                                                                                    paymentsToSet.push({
+                                                                                        paymentType: "Bank",
+                                                                                        paid: bankAmount,
+                                                                                        paidDate: getTodayDate(),
+                                                                                    });
+                                                                                }
+
+                                                                                setPaymentType("Cash");
+                                                                                setPaymentAmount(totalPaid);
+
+                                                                            } else if (invWiseOrder.payMode === "Credit") {
+                                                                                if (tdsAmount <= 0) {
+                                                                                    return Swal.fire("TDS amount must be greater then 0");
+                                                                                }
+
+                                                                                totalPaid = parseFloat(chequeOrBeftnAmount) + parseFloat(tdsAmount);
+
+                                                                                if (totalPaid !== totalPayable) {
+                                                                                    return Swal.fire("Invalid Payment", `Total (Cheque/BEFTN + TDS) must equal ${totalPayable}`, "error");
+                                                                                }
+
+                                                                                if (chequeOrBeftnAmount > 0) {
+                                                                                    const base = {
+                                                                                        paymentType: paymentType,
+                                                                                        paid: chequeOrBeftnAmount,
+                                                                                        paidDate: getTodayDate(),
+                                                                                        bankName,
+                                                                                    };
+                                                                                    base[paymentType === "Cheque" ? "chequeNo" : "accountNo"] = chequeOrAcNo;
+                                                                                    paymentsToSet.push(base);
+                                                                                }
+
+                                                                                if (tdsAmount > 0) {
+                                                                                    paymentsToSet.push({
+                                                                                        paymentType: "TDS",
+                                                                                        paid: tdsAmount,
+                                                                                        paidDate: getTodayDate(),
+                                                                                    });
+                                                                                }
+
+                                                                                setPaymentAmount(chequeOrBeftnAmount);
                                                                             }
 
-                                                                            if (!paymentAmount) {
-                                                                                Swal.fire({
-                                                                                    icon: 'error',
-                                                                                    title: 'Missing Paid Amount',
-                                                                                    text: 'Please enter the paid amount before proceeding.',
-                                                                                });
-                                                                                return;
-                                                                            }
-
-                                                                            if (!paymentType) {
-                                                                                Swal.fire({
-                                                                                    icon: 'error',
-                                                                                    title: 'Missing Payment Type',
-                                                                                    text: 'Please select a payment type before proceeding.',
-                                                                                });
-                                                                                return;
-                                                                            }
-
-                                                                            if (["Cheque", "BEFTN"].includes(paymentType) && !bankName) {
-                                                                                Swal.fire({
-                                                                                    icon: 'error',
-                                                                                    title: 'Missing Bank Name',
-                                                                                    text: 'Please enter bank name before proceeding.',
-                                                                                });
-                                                                                return;
-                                                                            }
-
-                                                                            if (["Cheque", "BEFTN"].includes(paymentType) && !chequeOrAcNo) {
-                                                                                Swal.fire({
-                                                                                    icon: 'error',
-                                                                                    title: 'Missing Cheque',
-                                                                                    text: 'Please enter Cheque/AC no. before proceeding.',
-                                                                                });
-                                                                                return;
-                                                                            }
-                                                                            handlePayment(invWiseOrder);
+                                                                            setPayments(paymentsToSet);
+                                                                            handlePayment({ ...invWiseOrder, payments: paymentsToSet });
                                                                         }}
                                                                     >
                                                                         Make Payment
