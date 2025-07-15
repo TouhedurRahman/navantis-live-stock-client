@@ -281,10 +281,10 @@ const OrderDelivery = () => {
                 0
             ),
 
-            totalPrice: Number(totalPrice),
-            adjustedPrice: Number(totalAdjustedPrice),
-            totalPayable: Number(totalPayable - totalAdjustedPrice),
-            soldAmount: Number(totalPrice),
+            totalPrice: Number(Number(totalPrice).toFixed(2)),
+            adjustedPrice: Number(Number(totalAdjustedPrice).toFixed(2)),
+            totalPayable: Number(Number(totalPayable - totalAdjustedPrice).toFixed(2)),
+            soldAmount: Number(Number(totalPrice).toFixed(2)),
             status: "delivered",
             date: getTodayDate()
         };

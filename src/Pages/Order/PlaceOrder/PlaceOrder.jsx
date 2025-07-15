@@ -169,9 +169,9 @@ const PlaceOrder = () => {
             products: receiptProducts,
             totalProduct: totalOrderedProducts,
             totalUnit: Number(totalOrderUnits),
-            totalPrice: Number(totalOrderedTradePrice),
+            totalPrice: Number(Number(totalOrderedTradePrice).toFixed(2)),
             discount: Number(pharmacyDiscount) || 0,
-            totalPayable,
+            totalPayable: Number(Number(totalPayable).toFixed(2)),
             payMode: data.payMode,
             status: "pending",
             date: getTodayDate()
@@ -190,6 +190,7 @@ const PlaceOrder = () => {
                         title: "Order successfully placed.",
                         showConfirmButton: true,
                     });
+                    // window.location.reload();
                 }
             })
     }
