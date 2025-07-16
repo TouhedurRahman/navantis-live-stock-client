@@ -618,11 +618,11 @@ const InvoicePayment = () => {
                                                                                     return;
                                                                                 }
 
-                                                                                if (tdsAmount <= 0) {
+                                                                                /* if (tdsAmount <= 0) {
                                                                                     return Swal.fire("Invalid TDS", "TDS amount must be greater than 0", "error");
-                                                                                }
+                                                                                } */
 
-                                                                                totalPaid = parseFloat(chequeOrBeftnAmount) + parseFloat(tdsAmount);
+                                                                                totalPaid = parseFloat(chequeOrBeftnAmount) + parseFloat(tdsAmount || 0);
 
                                                                                 if (totalPaid !== totalPayable) {
                                                                                     return Swal.fire("Invalid Payment", `Total (Cheque/BEFTN + TDS) must be equal ${totalPayable}/-`, "error");
