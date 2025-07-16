@@ -26,6 +26,7 @@ const InvoicePayment = () => {
     const [bankAmount, setBankAmount] = useState("");
     const [chequeOrBeftnAmount, setChequeOrBeftnAmount] = useState("");
     const [tdsAmount, setTdsAmount] = useState("");
+    const [chalanNo, setChalanNo] = useState("");
     const [payments, setPayments] = useState([]);
 
     const bangladeshiBanks = [
@@ -203,6 +204,7 @@ const InvoicePayment = () => {
             setBankAmount("");
             setChequeOrBeftnAmount("");
             setTdsAmount("");
+            setChalanNo("");
             setPayments([]);
             setShowModal(false);
 
@@ -238,6 +240,7 @@ const InvoicePayment = () => {
         setBankAmount("");
         setChequeOrBeftnAmount("");
         setTdsAmount("");
+        setChalanNo("");
         setPayments([]);
         setShowModal(false);
     }
@@ -510,6 +513,15 @@ const InvoicePayment = () => {
                                                                                     onWheel={(e) => e.target.blur()}
                                                                                     required
                                                                                 />
+
+                                                                                <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">Chalan Number</label>
+                                                                                <input
+                                                                                    type="number"
+                                                                                    className="w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                                                                                    value={chalanNo}
+                                                                                    onChange={(e) => setChalanNo(e.target.value)}
+                                                                                    onWheel={(e) => e.target.blur()}
+                                                                                />
                                                                             </>
                                                                         )
                                                                     }
@@ -523,6 +535,27 @@ const InvoicePayment = () => {
                                                                             let paymentsToSet = [];
 
                                                                             if (["Cash", "STC"].includes(invWiseOrder.payMode)) {
+                                                                                if (!paymentType) {
+                                                                                    Swal.fire({
+                                                                                        icon: 'error',
+                                                                                        title: 'Missing Payment Type',
+                                                                                        text: 'Please select a payment type before proceeding.',
+                                                                                    });
+                                                                                    return;
+                                                                                }
+
+                                                                                if (
+                                                                                    paymentType === "Both" &&
+                                                                                    ([0, ""].includes(bankAmount) || [0, ""].includes(cashAmount))
+                                                                                ) {
+                                                                                    Swal.fire({
+                                                                                        icon: 'error',
+                                                                                        title: 'Missing Amount',
+                                                                                        text: 'Please give both bank & cash amount.',
+                                                                                    });
+                                                                                    return;
+                                                                                }
+
                                                                                 totalPaid = (parseFloat(cashAmount) || 0) + (parseFloat(bankAmount) || 0);
 
                                                                                 if (totalPaid !== totalPayable) {
@@ -549,6 +582,42 @@ const InvoicePayment = () => {
                                                                                 setPaymentAmount(totalPaid);
 
                                                                             } else if (invWiseOrder.payMode === "Credit") {
+                                                                                if (!paymentType) {
+                                                                                    Swal.fire({
+                                                                                        icon: 'error',
+                                                                                        title: 'Missing Payment Type',
+                                                                                        text: 'Please select a payment type before proceeding.',
+                                                                                    });
+                                                                                    return;
+                                                                                }
+
+                                                                                if (!chequeOrBeftnAmount) {
+                                                                                    Swal.fire({
+                                                                                        icon: 'error',
+                                                                                        title: 'Missing Paid Amount',
+                                                                                        text: 'Please enter the paid amount before proceeding.',
+                                                                                    });
+                                                                                    return;
+                                                                                }
+
+                                                                                if (["Cheque", "BEFTN"].includes(paymentType) && !bankName) {
+                                                                                    Swal.fire({
+                                                                                        icon: 'error',
+                                                                                        title: 'Missing Bank Name',
+                                                                                        text: 'Please enter bank name before proceeding.',
+                                                                                    });
+                                                                                    return;
+                                                                                }
+
+                                                                                if (["Cheque", "BEFTN"].includes(paymentType) && !chequeOrAcNo) {
+                                                                                    Swal.fire({
+                                                                                        icon: 'error',
+                                                                                        title: 'Missing Cheque/AC No.',
+                                                                                        text: 'Please enter Cheque/AC no. before proceeding.',
+                                                                                    });
+                                                                                    return;
+                                                                                }
+
                                                                                 if (tdsAmount <= 0) {
                                                                                     return Swal.fire("Invalid TDS", "TDS amount must be greater than 0", "error");
                                                                                 }
@@ -575,6 +644,7 @@ const InvoicePayment = () => {
                                                                                         paymentType: "TDS",
                                                                                         paid: tdsAmount,
                                                                                         paidDate: getTodayDate(),
+                                                                                        ...(chalanNo && { chalanNo })
                                                                                     });
                                                                                 }
 
