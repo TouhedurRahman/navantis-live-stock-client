@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import Swal from "sweetalert2";
 import useApiConfig from "../../Hooks/useApiConfig";
+import useDepotProducts from "../../Hooks/useDepotProducts";
 import useOrders from "../../Hooks/useOrders";
 
 const ReturnProductsModal = ({ isOpen, onClose }) => {
     const baseUrl = useApiConfig();
 
     const [orders, , refetch] = useOrders();
+    const [depotProducts] = useDepotProducts();
     const [invoice, setInvoice] = useState("");
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [returnData, setReturnData] = useState({});
@@ -100,14 +102,20 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
     const addDepotProductMutation = useMutation({
         mutationFn: async (products) => {
             for (const item of products) {
+                const existingProduct = depotProducts.find(
+                    (p) =>
+                        p.productName === item.name &&
+                        p.netWeight === item.netWeight
+                );
+
                 const newProduct = {
                     productName: item.name,
                     netWeight: item.netWeight,
                     productCode: item.productCode,
                     batch: item.batch,
                     expire: item.expire,
-                    actualPrice: item.actualPrice,
-                    tradePrice: item.tradePrice,
+                    actualPrice: existingProduct ? existingProduct.actualPrice : item.actualPrice,
+                    tradePrice: existingProduct ? existingProduct.tradePrice : item.tradePrice,
                     totalQuantity: item.quantity,
                 };
 
