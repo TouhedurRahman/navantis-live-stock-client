@@ -529,7 +529,7 @@ const InvoicePayment = () => {
                                                                     <button
                                                                         className="mt-4 w-full bg-green-500 text-white py-3 px-5 rounded-xl hover:bg-green-600 transition-all font-semibold text-lg shadow-md"
                                                                         onClick={() => {
-                                                                            const totalPayable = parseFloat(invWiseOrder?.totalPayable);
+                                                                            const totalPayable = parseFloat(invWiseOrder?.totalPayable) - parseFloat(invWiseOrder?.paid || 0);
 
                                                                             let totalPaid = 0;
                                                                             let paymentsToSet = [];
