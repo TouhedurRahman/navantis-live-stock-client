@@ -22,7 +22,9 @@ const AddNewCustomer = () => {
         ? ["Cash"]
         : paymentType === "STC"
             ? ["Cash", "STC"]
-            : ["Credit"];
+            : paymentType === "Credit"
+                ? ["Credit"]
+                : ["SIC"];
 
     const statusType =
         singleUser?.parentId !== null && singleUser?.parentId !== "Vacant"
@@ -230,10 +232,11 @@ const AddNewCustomer = () => {
                                     <option value="Cash">Cash</option>
                                     <option value="STC">STC</option>
                                     <option value="Credit">Credit</option>
+                                    <option value="SIC">SIC</option>
                                 </select>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 mb-2">
-                                {(paymentType === "Credit" || paymentType === "STC") && (
+                                {(["STC", "Credit", "SIC"].includes(paymentType)) && (
                                     <div className="flex flex-col">
                                         <label className="text-[#6E719A] mb-1 text-sm">
                                             Credit Limit
@@ -247,7 +250,7 @@ const AddNewCustomer = () => {
                                     </div>
                                 )}
 
-                                {paymentType === "Credit" && (
+                                {(["Credit", "SIC"].includes(paymentType)) && (
                                     <div className="flex flex-col">
                                         <label className="text-[#6E719A] mb-1 text-sm">Day Limit</label>
                                         <input
@@ -264,16 +267,30 @@ const AddNewCustomer = () => {
                         </div>
                         <div className="flex flex-col mb-2">
                             <label className="text-[#6E719A] mb-1 text-sm">
-                                Discount (Editable only for Credit)
+                                Discount (Editable only for Credit or SIC)
                             </label>
                             <input
+                                type="number"
                                 defaultValue={0}
-                                {...register("discount")}
-                                placeholder="Enter parcentage rate"
+                                {...register("discount", {
+                                    validate: (value) => {
+                                        if ((!["Credit", "SIC"].includes(paymentType)) && parseFloat(value) > 0) {
+                                            return "Discount must be 0 unless payment type is Credit or SIC";
+                                        }
+                                        return true;
+                                    },
+                                })}
+                                placeholder="Enter percentage rate"
                                 className="border-gray-500 bg-white border p-2 text-sm"
-                                readOnly={paymentType !== "Credit"}
+                                onChange={(e) => {
+                                    if ((!["Credit", "SIC"].includes(paymentType)) && parseFloat(e.target.value) > 0) {
+                                        e.target.value = 0;
+                                    }
+                                }}
                             />
-                            {errors.discount && <p className="text-red-500 text-sm">{errors.discount.message}</p>}
+                            {errors.discount && (
+                                <p className="text-red-500 text-sm">{errors.discount.message}</p>
+                            )}
                         </div>
                     </div>
 
