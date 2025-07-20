@@ -134,7 +134,7 @@ const DailyCollectionsReport = ({ reportType, filteredOrders = [], firstDate, la
 
                                 return `
                                     <tr>
-                                        <td style="padding: 8px; border: 1px solid #ccc;">${pharmacy.pharmacyId}</td>
+                                        <td style="padding: 8px; border: 1px solid #ccc; text-align: center;">${pharmacy.pharmacyId}</td>
                                         <td style="padding: 8px; border: 1px solid #ccc;">${pharmacy.pharmacyName}</td>
                                         <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${cash ? cash.toLocaleString("en-IN", { minimumFractionDigits: 2 }) : ""}</td>
                                         <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${cheque ? cheque.toLocaleString("en-IN", { minimumFractionDigits: 2 }) : ""}</td>
@@ -161,7 +161,7 @@ const DailyCollectionsReport = ({ reportType, filteredOrders = [], firstDate, la
                                 <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
                                     <thead>
                                         <tr>
-                                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left;">Customer ID</th>
+                                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: center;">Customer ID</th>
                                             <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left;">Customer Name</th>
                                             <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Cash</th>
                                             <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Cheque</th>
