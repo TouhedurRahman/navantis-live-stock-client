@@ -95,7 +95,7 @@ const DailyCollectionsReport = ({ reportType, filteredOrders = [], firstDate, la
                             cash: type === "cash" ? Number(payment.paid) : 0,
                             cheque: type === "cheque" ? Number(payment.paid) : 0,
                             bank: type === "bank" ? Number(payment.paid) : 0,
-                            bank: type === "beftn" ? Number(payment.paid) : 0,
+                            beftn: type === "beftn" ? Number(payment.paid) : 0,
                             tds: type === "tds" ? Number(payment.paid) : 0,
                         });
                     }
