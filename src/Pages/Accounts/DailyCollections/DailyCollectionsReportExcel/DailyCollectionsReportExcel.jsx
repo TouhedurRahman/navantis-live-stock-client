@@ -88,55 +88,65 @@ const DailyCollectionsReportExcel = ({ reportType, filteredOrders = [], firstDat
                             cash: type === "cash" ? Number(payment.paid) : 0,
                             cheque: type === "cheque" ? Number(payment.paid) : 0,
                             bank: type === "bank" ? Number(payment.paid) : 0,
+                            bank: type === "beftn" ? Number(payment.paid) : 0,
+                            tds: type === "tds" ? Number(payment.paid) : 0,
                         });
                     }
                 }
             });
         });
 
-        let grandTotals = { cash: 0, cheque: 0, bank: 0 };
+        let grandTotals = { cash: 0, cheque: 0, bank: 0, beftn: 0, tds: 0 };
 
         const groupedHTML = Object.entries(groupedOrders)
             .map(([areaManager, mpoData]) => {
-                let areaManagerTotals = { cash: 0, cheque: 0, bank: 0 };
+                let areaManagerTotals = { cash: 0, cheque: 0, bank: 0, beftn: 0, tds: 0 };
 
                 const mpoSections = Object.entries(mpoData)
                     .map(([mpoName, pharmacies]) => {
                         const mpoOrder = orders.find(order => order.orderedBy === mpoName && order.areaManager === areaManager);
                         const mpoTerritory = mpoOrder?.territory || "Unknown Territory";
 
-                        let mpoTotals = { cash: 0, cheque: 0, bank: 0 };
+                        let mpoTotals = { cash: 0, cheque: 0, bank: 0, beftn: 0, tds: 0 };
 
                         const rows = pharmacies
                             .map((pharmacy) => {
                                 const cash = pharmacy.cash || 0;
                                 const cheque = pharmacy.cheque || 0;
                                 const bank = pharmacy.bank || 0;
+                                const beftn = pharmacy.beftn || 0;
+                                const tds = pharmacy.tds || 0;
 
-                                const total = cash + cheque + bank;
+                                const total = cash + cheque + bank + beftn + tds;
 
                                 mpoTotals.cash += cash;
                                 mpoTotals.cheque += cheque;
                                 mpoTotals.bank += bank;
+                                mpoTotals.beftn += beftn;
+                                mpoTotals.tds += tds;
 
                                 return `
                                     <tr>
-                                        <td style="padding: 8px; border: 1px solid #ccc; text-align: left;">${pharmacy.pharmacyId}</td>
+                                        <td style="padding: 8px; border: 1px solid #ccc;">${pharmacy.pharmacyId}</td>
                                         <td style="padding: 8px; border: 1px solid #ccc;">${pharmacy.pharmacyName}</td>
                                         <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${cash ? cash.toLocaleString("en-IN", { minimumFractionDigits: 2 }) : ""}</td>
                                         <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${cheque ? cheque.toLocaleString("en-IN", { minimumFractionDigits: 2 }) : ""}</td>
                                         <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${bank ? bank.toLocaleString("en-IN", { minimumFractionDigits: 2 }) : ""}</td>
+                                        <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${beftn ? beftn.toLocaleString("en-IN", { minimumFractionDigits: 2 }) : ""}</td>
+                                        <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${tds ? tds.toLocaleString("en-IN", { minimumFractionDigits: 2 }) : ""}</td>
                                         <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${total ? total.toLocaleString("en-IN", { minimumFractionDigits: 2 }) : ""}</td>
                                     </tr>
                                 `;
                             })
                             .join("");
 
-                        const mpoTotalAll = mpoTotals.cash + mpoTotals.cheque + mpoTotals.bank;
+                        const mpoTotalAll = mpoTotals.cash + mpoTotals.cheque + mpoTotals.bank + mpoTotals.beftn + mpoTotals.tds;
 
                         areaManagerTotals.cash += mpoTotals.cash;
                         areaManagerTotals.cheque += mpoTotals.cheque;
                         areaManagerTotals.bank += mpoTotals.bank;
+                        areaManagerTotals.beftn += mpoTotals.beftn;
+                        areaManagerTotals.tds += mpoTotals.tds;
 
                         return `
                             <div style="margin-bottom: 20px;">
@@ -149,6 +159,8 @@ const DailyCollectionsReportExcel = ({ reportType, filteredOrders = [], firstDat
                                             <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Cash</th>
                                             <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Cheque</th>
                                             <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Bank</th>
+                                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">BEFTN</th>
+                                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">TDS</th>
                                             <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Total</th>
                                         </tr>
                                     </thead>
@@ -159,6 +171,8 @@ const DailyCollectionsReportExcel = ({ reportType, filteredOrders = [], firstDat
                                             <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${mpoTotals.cash.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
                                             <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${mpoTotals.cheque.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
                                             <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${mpoTotals.bank.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${mpoTotals.beftn.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${mpoTotals.tds.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
                                             <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${mpoTotalAll.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
                                         </tr>
                                     </tbody>
@@ -169,11 +183,13 @@ const DailyCollectionsReportExcel = ({ reportType, filteredOrders = [], firstDat
                     .join("");
 
 
-                const areaTotalAll = areaManagerTotals.cash + areaManagerTotals.cheque + areaManagerTotals.bank;
+                const areaTotalAll = areaManagerTotals.cash + areaManagerTotals.cheque + areaManagerTotals.bank + areaManagerTotals.beftn + areaManagerTotals.tds;
 
                 grandTotals.cash += areaManagerTotals.cash;
                 grandTotals.cheque += areaManagerTotals.cheque;
                 grandTotals.bank += areaManagerTotals.bank;
+                grandTotals.beftn += areaManagerTotals.beftn;
+                grandTotals.tds += areaManagerTotals.tds;
 
                 return `
                     <div style="margin-bottom: 30px;">
@@ -191,6 +207,8 @@ const DailyCollectionsReportExcel = ({ reportType, filteredOrders = [], firstDat
                                     <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${areaManagerTotals.cash.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
                                     <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${areaManagerTotals.cheque.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
                                     <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${areaManagerTotals.bank.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
+                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${areaManagerTotals.beftn.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
+                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${areaManagerTotals.tds.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
                                     <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${areaTotalAll.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
                                 </tr>
                             </tbody>
@@ -200,7 +218,7 @@ const DailyCollectionsReportExcel = ({ reportType, filteredOrders = [], firstDat
             })
             .join("");
 
-        const grandTotalAll = grandTotals.cash + grandTotals.cheque + grandTotals.bank;
+        const grandTotalAll = grandTotals.cash + grandTotals.cheque + grandTotals.bank + grandTotals.beftn + grandTotals.tds;
 
         const grandTotalHTML = `
             <table style="width: 100%; border-collapse: collapse; margin-top: 10px; table-layout: fixed;">
@@ -211,6 +229,8 @@ const DailyCollectionsReportExcel = ({ reportType, filteredOrders = [], firstDat
                         <td style="padding: 10px; border: 1px solid #000; text-align: right;">${grandTotals.cash.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
                         <td style="padding: 10px; border: 1px solid #000; text-align: right;">${grandTotals.cheque.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
                         <td style="padding: 10px; border: 1px solid #000; text-align: right;">${grandTotals.bank.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
+                        <td style="padding: 10px; border: 1px solid #000; text-align: right;">${grandTotals.beftn.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
+                        <td style="padding: 10px; border: 1px solid #000; text-align: right;">${grandTotals.tds.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
                         <td style="padding: 10px; border: 1px solid #000; text-align: right;">${grandTotalAll.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
                     </tr>
                 </tbody>
