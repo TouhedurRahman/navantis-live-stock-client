@@ -123,6 +123,7 @@ const UpdateCustomer = () => {
                                 Customer Name <span className="text-red-500">*</span>
                             </label>
                             <input
+                                required
                                 defaultValue={customer?.name}
                                 {...register("name")}
                                 placeholder="Enter customer name"
@@ -225,63 +226,78 @@ const UpdateCustomer = () => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+                        <div>
+                            <div className="flex flex-col mb-2">
+                                <label className="text-[#6E719A] mb-1 text-sm">Payment Type</label>
+                                <select
+                                    {...register("paymentType", { required: "Payment type is required" })}
+                                    className="border-gray-500 bg-white border p-2 text-sm"
+                                >
+                                    <option value="">Select Payment Mode</option>
+                                    <option value="Cash">Cash</option>
+                                    <option value="STC">STC</option>
+                                    <option value="Credit">Credit</option>
+                                </select>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 mb-2">
+                                {(paymentType === "Credit" || paymentType === "STC") && (
+                                    <div className="flex flex-col">
+                                        <label className="text-[#6E719A] mb-1 text-sm">
+                                            Credit Limit
+                                        </label>
+                                        <input
+                                            defaultValue={customer?.crLimit}
+                                            {...register("crLimit", { required: "Credit limit is required" })}
+                                            placeholder="Enter credit limit"
+                                            className="border-gray-500 bg-white border p-2 text-sm"
+                                        />
+                                        {errors.crLimit && <p className="text-red-500 text-sm">{errors.crLimit.message}</p>}
+                                    </div>
+                                )}
+
+                                {paymentType === "Credit" && (
+                                    <div className="flex flex-col">
+                                        <label className="text-[#6E719A] mb-1 text-sm">Day Limit</label>
+                                        <input
+                                            defaultValue={customer?.dayLimit}
+                                            {...register("dayLimit", { required: "Day limit is required" })}
+                                            placeholder="Enter Day Limit"
+                                            className="border-gray-500 bg-white border p-2 text-sm"
+                                            type="number"
+                                            onWheel={(e) => e.target.blur()}
+                                        />
+                                        {errors.dayLimit && <p className="text-red-500 text-sm">{errors.dayLimit.message}</p>}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                         <div className="flex flex-col mb-2">
                             <label className="text-[#6E719A] mb-1 text-sm">
-                                Discount
+                                Discount (Editable only for Credit)
                             </label>
                             <input
+                                type="number"
                                 defaultValue={customer?.discount}
-                                {...register("discount")}
-                                placeholder="Enter parcentage rate"
+                                {...register("discount", {
+                                    validate: (value) => {
+                                        if (paymentType !== "Credit" && parseFloat(value) > 0) {
+                                            return "Discount must be 0 unless payment type is Credit";
+                                        }
+                                        return true;
+                                    },
+                                })}
+                                placeholder="Enter percentage rate"
                                 className="border-gray-500 bg-white border p-2 text-sm"
+                                onChange={(e) => {
+                                    if (paymentType !== "Credit" && parseFloat(e.target.value) > 0) {
+                                        e.target.value = 0;
+                                    }
+                                }}
                             />
-                            {errors.discount && <p className="text-red-500 text-sm">{errors.discount.message}</p>}
+                            {errors.discount && (
+                                <p className="text-red-500 text-sm">{errors.discount.message}</p>
+                            )}
                         </div>
-
-                        <div className="flex flex-col">
-                            <label className="text-[#6E719A] mb-1 text-sm">Payment Mode</label>
-                            <select
-                                {...register("paymentType", { required: "Payment type is required" })}
-                                className="border-gray-500 bg-white border p-2 text-sm"
-                            >
-                                <option value="">Select Payment Mode</option>
-                                <option value="Cash">Cash</option>
-                                <option value="Credit">Credit</option>
-                                <option value="STC">STC</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 mb-2">
-                        {(paymentType === "Credit" || paymentType === "STC") && (
-                            <div className="flex flex-col">
-                                <label className="text-[#6E719A] mb-1 text-sm">
-                                    Credit Limit
-                                </label>
-                                <input
-                                    defaultValue={customer?.crLimit}
-                                    {...register("crLimit", { required: "Credit limit is required" })}
-                                    placeholder="Enter credit limit"
-                                    className="border-gray-500 bg-white border p-2 text-sm"
-                                />
-                                {errors.crLimit && <p className="text-red-500 text-sm">{errors.crLimit.message}</p>}
-                            </div>
-                        )}
-
-                        {paymentType === "Credit" && (
-                            <div className="flex flex-col">
-                                <label className="text-[#6E719A] mb-1 text-sm">Day Limit</label>
-                                <input
-                                    defaultValue={customer?.dayLimit}
-                                    {...register("dayLimit", { required: "Day limit is required" })}
-                                    placeholder="Enter Day Limit"
-                                    className="border-gray-500 bg-white border p-2 text-sm"
-                                    type="number"
-                                    onWheel={(e) => e.target.blur()}
-                                />
-                                {errors.dayLimit && <p className="text-red-500 text-sm">{errors.dayLimit.message}</p>}
-                            </div>
-                        )}
                     </div>
 
                     <h1 className="mt-10 text-sm">Customer added by</h1>
