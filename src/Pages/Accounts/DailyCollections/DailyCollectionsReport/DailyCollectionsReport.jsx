@@ -158,7 +158,7 @@ const DailyCollectionsReport = ({ reportType, filteredOrders = [], firstDate, la
                         return `
                             <div style="margin-bottom: 20px;">
                                 <p style="margin: 5px 0; font-weight: bold; font-size: 12px;">MPO/SCC/ASE: ${mpoName} | Territory: ${mpoTerritory}</p>
-                                <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; table-layout: fixed;">
+                                <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
                                     <thead>
                                         <tr>
                                             <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left;">Customer ID</th>
