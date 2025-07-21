@@ -513,7 +513,11 @@ const OrderDelivery = () => {
             } else {
                 handleDeliverySubmit();
             }
-        } else if (selectedOrderDetails.payMode === "Credit" && selectedPharmacy?.payMode?.includes("Credit")) {
+        } else if (
+            ["Credit", "SIC"].includes(selectedOrderDetails.payMode)
+            &&
+            ["Credit", "SIC"].some(mode => selectedPharmacy?.payMode?.includes(mode))
+        ) {
             const today = new Date();
 
             const overdueOrders = orders.filter(order => {
