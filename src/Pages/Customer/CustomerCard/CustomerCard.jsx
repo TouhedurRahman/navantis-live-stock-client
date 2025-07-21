@@ -222,7 +222,7 @@ const CustomerCard = ({ idx, customer, refetch }) => {
                                     </tr>
                                     <tr className="border-b">
                                         <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Credit Limit</td>
-                                        <td className="px-4 py-3 text-green-700 font-bold">{customer.crLimit} BDT</td>
+                                        <td className="px-4 py-3 text-green-700 font-bold">{(customer.crLimit).toLocaleString("en-IN")}/- BDT</td>
                                     </tr>
                                     <tr className="border-b bg-gray-50">
                                         <td className="px-4 py-3 font-semibold text-gray-700">Day Limit</td>
@@ -230,7 +230,7 @@ const CustomerCard = ({ idx, customer, refetch }) => {
                                     </tr>
                                     <tr className="border-b">
                                         <td className="px-4 py-3 font-semibold text-gray-700 bg-gray-200">Date</td>
-                                        <td className="px-4 py-3 text-gray-800">{new Date(customer.date).toISOString().split("T")[0]}</td>
+                                        <td className="px-4 py-3 text-gray-800">{new Date(customer.date).toLocaleDateString('en-GB').replace(/\//g, '-')}</td>
                                     </tr>
                                     <tr className="border-b bg-gray-50">
                                         <td className="px-4 py-3 font-semibold text-gray-700">Status</td>
