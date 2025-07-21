@@ -556,7 +556,7 @@ const OrderDelivery = () => {
                     text: "Overdue orders found!"
                 });
             }
-        } else {
+        } else if (["Cash", "STC"].includes(selectedOrderDetails.payMode) && selectedPharmacy?.payMode?.includes("STC")) {
             const currentDate = new Date();
             const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
             const stcOrderLastDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 10);
@@ -739,6 +739,12 @@ const OrderDelivery = () => {
                     }
                 }
             }
+        } else {
+            return Swal.fire({
+                icon: "error",
+                title: "Order Blocked",
+                text: "Invalid pay mode!"
+            });
         }
     }
 
