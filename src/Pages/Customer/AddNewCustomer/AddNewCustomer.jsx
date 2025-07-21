@@ -24,7 +24,7 @@ const AddNewCustomer = () => {
             ? ["Cash", "STC"]
             : paymentType === "Credit"
                 ? ["Credit"]
-                : ["SIC"];
+                : ["SpIC"];
 
     const statusType =
         singleUser?.parentId !== null && singleUser?.parentId !== "Vacant"
@@ -232,11 +232,11 @@ const AddNewCustomer = () => {
                                     <option value="Cash">Cash</option>
                                     <option value="STC">STC</option>
                                     <option value="Credit">Credit</option>
-                                    <option value="SIC">SIC</option>
+                                    <option value="SpIC">SpIC</option>
                                 </select>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 mb-2">
-                                {(["STC", "Credit", "SIC"].includes(paymentType)) && (
+                                {(["STC", "Credit", "SpIC"].includes(paymentType)) && (
                                     <div className="flex flex-col">
                                         <label className="text-[#6E719A] mb-1 text-sm">
                                             Credit Limit
@@ -250,7 +250,7 @@ const AddNewCustomer = () => {
                                     </div>
                                 )}
 
-                                {(["Credit", "SIC"].includes(paymentType)) && (
+                                {(["Credit", "SpIC"].includes(paymentType)) && (
                                     <div className="flex flex-col">
                                         <label className="text-[#6E719A] mb-1 text-sm">Day Limit</label>
                                         <input
@@ -267,15 +267,15 @@ const AddNewCustomer = () => {
                         </div>
                         <div className="flex flex-col mb-2">
                             <label className="text-[#6E719A] mb-1 text-sm">
-                                Discount (Editable only for Credit or SIC)
+                                Discount (Editable only for Credit or SpIC)
                             </label>
                             <input
                                 type="number"
                                 defaultValue={0}
                                 {...register("discount", {
                                     validate: (value) => {
-                                        if ((!["Credit", "SIC"].includes(paymentType)) && parseFloat(value) > 0) {
-                                            return "Discount must be 0 unless payment type is Credit or SIC";
+                                        if ((!["Credit", "SpIC"].includes(paymentType)) && parseFloat(value) > 0) {
+                                            return "Discount must be 0 unless payment type is Credit or SpIC";
                                         }
                                         return true;
                                     },
@@ -283,7 +283,7 @@ const AddNewCustomer = () => {
                                 placeholder="Enter percentage rate"
                                 className="border-gray-500 bg-white border p-2 text-sm"
                                 onChange={(e) => {
-                                    if ((!["Credit", "SIC"].includes(paymentType)) && parseFloat(e.target.value) > 0) {
+                                    if ((!["Credit", "SpIC"].includes(paymentType)) && parseFloat(e.target.value) > 0) {
                                         e.target.value = 0;
                                     }
                                 }}

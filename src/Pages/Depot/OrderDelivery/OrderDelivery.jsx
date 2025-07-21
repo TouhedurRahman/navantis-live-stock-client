@@ -514,9 +514,9 @@ const OrderDelivery = () => {
                 handleDeliverySubmit();
             }
         } else if (
-            ["Credit", "SIC"].includes(selectedOrderDetails.payMode)
+            ["Credit", "SpIC"].includes(selectedOrderDetails.payMode)
             &&
-            ["Credit", "SIC"].some(mode => selectedPharmacy?.payMode?.includes(mode))
+            ["Credit", "SpIC"].some(mode => selectedPharmacy?.payMode?.includes(mode))
         ) {
             const today = new Date();
 

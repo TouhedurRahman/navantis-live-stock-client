@@ -37,7 +37,7 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
                 : customer.status === "initialized"
                     ? "requested"
                     : "approved"
-            : JSON.stringify(customer.payMode) === JSON.stringify(["SIC"])
+            : JSON.stringify(customer.payMode) === JSON.stringify(["SpIC"])
                 ? customer.status === "pending"
                     ? "initialized"
                     : customer.status === "initialized"
