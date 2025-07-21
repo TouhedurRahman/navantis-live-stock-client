@@ -355,7 +355,7 @@ const InvoicePayment = () => {
                                                                 ?
                                                                 <>
                                                                     {
-                                                                        ["Cash", "STC"].includes(invWiseOrder.payMode) ? (
+                                                                        ["Cash", "STC", "SIC"].includes(invWiseOrder.payMode) ? (
                                                                             <>
                                                                                 <label className="block mt-4 mb-2 text-sm font-medium text-gray-700">
                                                                                     Payment Type
@@ -534,7 +534,7 @@ const InvoicePayment = () => {
                                                                             let totalPaid = 0;
                                                                             let paymentsToSet = [];
 
-                                                                            if (["Cash", "STC"].includes(invWiseOrder.payMode)) {
+                                                                            if (["Cash", "STC", "SIC"].includes(invWiseOrder.payMode)) {
                                                                                 if (!paymentType) {
                                                                                     Swal.fire({
                                                                                         icon: 'error',
