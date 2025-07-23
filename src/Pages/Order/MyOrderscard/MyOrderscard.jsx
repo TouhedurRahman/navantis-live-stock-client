@@ -10,7 +10,7 @@ const MyOrderscard = ({ idx, myOrder, refetch }) => {
     const [isModalOpen, setModalOpen] = useState(false);
     const baseUrl = useApiConfig();
 
-    const [depotProducts] = useDepotProducts();
+    const [products] = useDepotProducts();
 
     const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
     const [updatedProducts, setUpdatedProducts] = useState([]);
@@ -18,6 +18,12 @@ const MyOrderscard = ({ idx, myOrder, refetch }) => {
     const lessDiscount = Number(myOrder.totalPrice * (myOrder.discount / 100));
 
     const totalPayable = Number(myOrder.totalPrice - lessDiscount);
+
+    const depotProducts = (myOrder.category === "Noiderma")
+        ?
+        products.filter(dp => dp.category === "Noiderma")
+        :
+        products.filter(dp => dp.category !== "Noiderma");
 
     const getTodayDate = () => {
         const today = new Date();
@@ -174,6 +180,7 @@ const MyOrderscard = ({ idx, myOrder, refetch }) => {
                     <div className="font-bold">{myOrder.pharmacy}</div>
                     <div className="font-medium text-gray-400">{myOrder.pharmacyId}</div>
                 </td>
+                <td className='text-left'>{myOrder.category || "-"}</td>
                 <td className='text-right'>{myOrder.totalUnit}</td>
                 <td className="text-right">{(Number((Number(totalPayable)).toFixed(2))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}/-</td>
                 <td className="text-center">

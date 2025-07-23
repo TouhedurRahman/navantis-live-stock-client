@@ -21,14 +21,21 @@ const PlaceOrder = () => {
     const [allUsers] = useAllUsers();
     const [singleUser] = useSingleUser();
     const [pharmacies] = useCustomer();
-    const [products] = useDepotProducts();
+    const [depotProducts] = useDepotProducts();
     const [orders, , refetch] = useOrders();
 
     // const [filteredPharmacies, setFilteredPharmacies] = useState([]);
+    const [category, setCategory] = useState("");
     const [selectedPharmacy, setSelectedPharmacy] = useState({});
     const [productQuantities, setProductQuantities] = useState({});
     const [receiptProducts, setReceiptProducts] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const products = (category === "Noiderma")
+        ?
+        depotProducts.filter(dp => dp.category === "Noiderma")
+        :
+        depotProducts.filter(dp => dp.category !== "Noiderma")
 
     /* const [areaManager, setAreaManager] = useState('N/A');
     const [zonalManager, setZonalManager] = useState('N/A');
@@ -166,6 +173,7 @@ const PlaceOrder = () => {
             parentTerritory: singleUser?.parentTerritory,
             pharmacy: selectedPharmacy?.name,
             pharmacyId: selectedPharmacy?.customerId,
+            category: category,
             products: receiptProducts,
             totalProduct: totalOrderedProducts,
             totalUnit: Number(totalOrderUnits),
@@ -199,6 +207,8 @@ const PlaceOrder = () => {
         const orderAlreadyPending = orders.some(
             order =>
                 order.pharmacyId === selectedPharmacy.customerId
+                &&
+                order.category === category
                 &&
                 order.status === "pending"
         );
@@ -455,6 +465,19 @@ const PlaceOrder = () => {
                                 {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
                             </div>
 
+                            <div className="flex flex-col">
+                                <label className="text-sm mb-2">Category <span className="text-red-500">*</span></label>
+                                <select
+                                    {...register('category', { required: 'Category is required' })}
+                                    onChange={(e) => setCategory(e.target.value)}
+                                    className="border-gray-500 bg-white border p-2 text-sm rounded-md"
+                                >
+                                    <option value="">~~ Select a Category ~~</option>
+                                    <option value="Bionike">Bionike</option>
+                                    <option value="Noiderma">Noiderma</option>
+                                </select>
+                            </div>
+
                             {/* <div className="flex flex-col">
                                 <label className="text-sm mb-2">Customer Name <span className="text-red-500">*</span></label>
                                 <select
@@ -539,15 +562,25 @@ const PlaceOrder = () => {
                             <button
                                 type="button"
                                 onClick={() => {
-                                    const { payMode } = getValues();
+                                    const { category, payMode } = getValues();
 
-                                    if (Object.keys(selectedPharmacy).length === 0) {
+                                    if (!category) {
+                                        Swal.fire({
+                                            icon: "error",
+                                            title: "Category Missing",
+                                            text: "Please, select a category first",
+                                            showConfirmButton: true
+                                        });
+
+                                        return;
+                                    } else if (Object.keys(selectedPharmacy).length === 0) {
                                         Swal.fire({
                                             icon: "error",
                                             title: "Customer Missing",
                                             text: "Please, select a customer first",
                                             showConfirmButton: true
                                         });
+
                                         return;
                                     } else if (!payMode) {
                                         Swal.fire({
@@ -556,6 +589,7 @@ const PlaceOrder = () => {
                                             text: "Please, select a payment mode",
                                             showConfirmButton: true
                                         });
+
                                         return;
                                     } else {
                                         setIsModalOpen(true);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
 import { ImSearch } from 'react-icons/im';
 import Loader from '../../../Components/Loader/Loader';
@@ -119,6 +119,7 @@ const MyOrders = ({ status }) => {
                                                                     <tr>
                                                                         <th className="text-center">Sl. No.</th>
                                                                         <th>Customer Name & ID</th>
+                                                                        <th className='text-left'>Category</th>
                                                                         <th className='text-right'>Quantity</th>
                                                                         <th className='text-right'>Total Payable</th>
                                                                         <th className='text-center'>Date</th>
