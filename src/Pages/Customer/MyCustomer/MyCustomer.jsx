@@ -68,7 +68,8 @@ const MyCustomer = () => {
             payModeFilter === 'All' ||
             (payModeFilter === 'Cash' && customer?.payMode?.includes('Cash') && customer?.payMode?.length === 1) ||
             (payModeFilter === 'STC' && customer?.payMode?.includes('STC')) ||
-            (payModeFilter === 'Credit' && customer?.payMode?.includes('Credit'));
+            (payModeFilter === 'Credit' && customer?.payMode?.includes('Credit')) ||
+            (payModeFilter === 'SpIC' && customer?.payMode?.includes('SpIC'));
 
         const matchesTerritory =
             territoryFilter === 'All' || customer.territory === territoryFilter;
@@ -244,7 +245,7 @@ const MyCustomer = () => {
                                             {/* Filter Buttons */}
                                             <div className="flex flex-wrap gap-3 justify-center">
                                                 {/* Pay Mode Filter */}
-                                                {['All', 'Cash', 'STC', 'Credit'].map(mode => (
+                                                {['All', 'Cash', 'STC', 'Credit', 'SpIC'].map(mode => (
                                                     <button
                                                         key={mode}
                                                         className={`px-4 py-1 rounded-full border text-sm font-semibold 

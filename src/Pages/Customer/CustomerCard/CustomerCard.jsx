@@ -16,10 +16,10 @@ const CustomerCard = ({ idx, customer, refetch }) => {
 
     const [isModalOpen, setModalOpen] = useState(false);
 
-    const unpaidStcCredit = orders.some(order =>
+    const unpaidStcCreditSpIC = orders.some(order =>
         order.pharmacyId === customer.customerId
         &&
-        ["STC", "Credit"].includes(order.payMode)
+        ["STC", "Credit", "SpIC"].includes(order.payMode)
         &&
         ["delivered", "due", "outstanding"].includes(order.status)
     );
@@ -97,7 +97,7 @@ const CustomerCard = ({ idx, customer, refetch }) => {
                         </button>
                         <>
                             {
-                                unpaidStcCredit
+                                unpaidStcCreditSpIC
                                     ?
                                     <>
                                         {
@@ -111,7 +111,12 @@ const CustomerCard = ({ idx, customer, refetch }) => {
                                                         position: "center",
                                                         icon: "error",
                                                         title: "Update Restricted",
-                                                        text: `Unpaid ${customer.payMode?.includes("Credit") ? "Credit" : "STC"} order(s) found. Please clear payment first.`,
+                                                        text: `Unpaid ${customer.payMode?.includes("Credit")
+                                                            ? "Credit"
+                                                            : customer.payMode?.includes("SpIC")
+                                                                ? "SpIC"
+                                                                : "STC"
+                                                            } order(s) found. Please clear payment first.`,
                                                         showConfirmButton: true
                                                     });
                                                 }}
