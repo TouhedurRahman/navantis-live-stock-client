@@ -234,9 +234,9 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
             ...orderUpdate,
             totalProduct,
             totalUnit,
-            totalPrice,
-            totalPayable,
-            due
+            totalPrice: Number(Number(totalPrice).toFixed(2)),
+            totalPayable: Number(Number(totalPayable).toFixed(2)),
+            due: Number(Number(due).toFixed(2))
         };
 
         const uniqueRerurnedProducts = new Set(productsReturned.map(product => product.name));
