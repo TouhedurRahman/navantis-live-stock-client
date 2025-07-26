@@ -434,7 +434,7 @@ const OrderInvoice = ({ order }) => {
                         <span class="font-bold me-1">Note:</span>Please be advised that all purchases are considered final. Once goods have been sold, they are not eligible for return, refund, or exchange under any circumstances, as per our company policy.
                     </div>
 
-                    <div style="margin-top: 2px; display: flex; justify-content: space-between; font-size: 12px;">
+                    <div style="margin-top: 2px; display: flex; justify-content: space-between; font-size: 11px;">
                         <span><span class="font-bold me-1">Print Date & Time:</span>${now}</span>
                         <span><span class="font-bold me-1">Prepared by:</span>${generatedByName}</span>
                         <span><span class="font-bold me-1">Printed by:</span>${generatedByName}</span>

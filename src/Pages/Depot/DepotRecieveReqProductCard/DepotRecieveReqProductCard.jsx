@@ -22,6 +22,7 @@ const DepotRecieveReqProductCard = ({ idx, product, refetch }) => {
                 productName: product.productName,
                 netWeight: product.netWeight,
                 productCode: product.productCode,
+                category: product.category,
                 batch: product.batch,
                 expire: product.expire,
                 actualPrice: Number(product.actualPrice),

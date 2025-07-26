@@ -93,6 +93,7 @@ const DepotDelivery = () => {
                         productName: selectedProductName,
                         netWeight: selectedProductDetails.netWeight,
                         productCode: data[`psc${i}`],
+                        category: data[`category${i}`],
                         batch: data[`batch${i}`],
                         expire: data[`expire${i}`],
                         actualPrice: Number(data[`ap${i}`]),
@@ -176,6 +177,7 @@ const DepotDelivery = () => {
                         productName: selectedProductName,
                         netWeight: selectedProductDetails?.netWeight,
                         productCode: data[`psc${i}`],
+                        category: data[`category${i}`],
                         batch: data[`batch${i}`],
                         expire: data[`expire${i}`],
                         actualPrice: Number(data[`ap${i}`]),
@@ -344,6 +346,20 @@ const DepotDelivery = () => {
                                                 <input
                                                     value={product._id}
                                                     {...register(`id${index}`)}
+                                                    className="bg-transparent text-center border-none text-[#2A2A72] w-full text-sm focus:outline-none"
+                                                    readOnly
+                                                />
+                                            </div>
+                                        </div>
+                                        {/* Category Section */}
+                                        <div className="hidden w-full md:w-1/4">
+                                            <div className="flex items-center space-x-1">
+                                                <label className="mb-1 text-[#6E719A] font-medium text-xs">Category</label>
+                                            </div>
+                                            <div className="bg-[#F4F5F7] rounded-md p-3 w-full text-center">
+                                                <input
+                                                    value={product.category}
+                                                    {...register(`category${index}`)}
                                                     className="bg-transparent text-center border-none text-[#2A2A72] w-full text-sm focus:outline-none"
                                                     readOnly
                                                 />

@@ -260,7 +260,7 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
     return (
         <>
             <tr>
-                <td className='flex justify-center items-center'>
+                <td className='text-center'>
                     {idx}
                 </td>
                 <td>
