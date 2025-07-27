@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
+import useApiConfig from '../../../Hooks/useApiConfig';
 import useOrderStockProducts from '../../../Hooks/useOrderStockProducts';
 import useSingleUser from '../../../Hooks/useSingleUser';
-import useApiConfig from '../../../Hooks/useApiConfig';
 
 const WarehouseAddProduct = () => {
     const baseUrl = useApiConfig();
@@ -51,6 +51,8 @@ const WarehouseAddProduct = () => {
                 productName: selectedProductName,
                 netWeight: selectedProductDetails.netWeight,
                 productCode: data.psc,
+                category: selectedProductDetails.category,
+
                 batch: data.batch,
                 expire: data.expire,
 

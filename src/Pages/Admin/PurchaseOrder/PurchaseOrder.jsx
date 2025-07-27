@@ -1,6 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
@@ -17,6 +16,7 @@ const PurchaseOrder = () => {
             const newProduct = {
                 productName: data.name,
                 netWeight: `${data.netWeight} ${data.weightUnit}`,
+                category: `${data.category}`,
                 batch: data.batch,
                 expire: data.expire,
                 actualPrice: Number(data.ap),
@@ -39,6 +39,7 @@ const PurchaseOrder = () => {
             const newProduct = {
                 productName: data.name,
                 netWeight: `${data.netWeight} ${data.weightUnit}`,
+                category: `${data.category}`,
                 batch: data.batch,
                 expire: data.expire,
                 actualPrice: Number(data.ap),
@@ -105,8 +106,8 @@ const PurchaseOrder = () => {
                 <h1 className="px-6 py-3 font-bold">New purchase order</h1>
                 <hr className='text-center border border-gray-500 mb-5' />
                 <form onSubmit={handleSubmit(handleAddProduct)} className="p-6 pt-0">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
-                        <div className="flex flex-col">
+                    <div className="flex justify-center items-center mb-2">
+                        <div className="w-full md:w-1/2 flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
                                 Product Name <span className="text-red-500">*</span>
                             </label>
@@ -117,45 +118,57 @@ const PurchaseOrder = () => {
                             />
                             {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
                         </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
                         <div className="flex flex-col">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
-                                <div className="flex flex-col">
-                                    <label className="text-[#6E719A] mb-1 text-sm">
-                                        Net Weight <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="flex items-center">
-                                        <input
-                                            type="number"
-                                            {...register("netWeight", { required: "Net weight is required" })}
-                                            placeholder="Enter net weight"
-                                            className="border-gray-500 border-r-0 bg-white border p-2 text-sm w-full"
-                                            onWheel={(e) => e.target.blur()}
-                                        />
-                                        <select
-                                            {...register("weightUnit", { required: "Unit is required" })}
-                                            className="border-gray-500 border-l-0 bg-white border p-2 text-sm cursor-pointer"
-                                        >
-                                            <option value="ML">ML</option>
-                                            <option value="GM">GM</option>
-                                        </select>
-                                    </div>
-                                    {errors.netWeight && <p className="text-red-500 text-sm">{errors.netWeight.message}</p>}
-                                    {errors.weightUnit && <p className="text-red-500 text-sm">{errors.weightUnit.message}</p>}
-                                </div>
-                                <div className="flex flex-col">
-                                    <label className="text-[#6E719A] mb-1 text-sm">
-                                        Product Quantity <span className="text-red-500">*</span>
-                                    </label>
-                                    <input
-                                        type="number"
-                                        {...register("quantity", { required: "Quantity is required" })}
-                                        placeholder="Enter product quantity"
-                                        className="border-gray-500 bg-white border p-2 text-sm"
-                                        onWheel={(e) => e.target.blur()}
-                                    />
-                                    {errors.quantity && <p className="text-red-500 text-sm">{errors.quantity.message}</p>}
-                                </div>
+                            <label className="text-[#6E719A] mb-1 text-sm">
+                                Net Weight <span className="text-red-500">*</span>
+                            </label>
+                            <div className="flex items-center">
+                                <input
+                                    type="number"
+                                    {...register("netWeight", { required: "Net weight is required" })}
+                                    placeholder="Enter net weight"
+                                    className="border-gray-500 border-r-0 bg-white border p-2 text-sm w-full"
+                                    onWheel={(e) => e.target.blur()}
+                                />
+                                <select
+                                    {...register("weightUnit", { required: "Unit is required" })}
+                                    className="border-gray-500 border-l-0 bg-white border p-2 text-sm cursor-pointer"
+                                >
+                                    <option value="ML">ML</option>
+                                    <option value="GM">GM</option>
+                                </select>
                             </div>
+                            {errors.netWeight && <p className="text-red-500 text-sm">{errors.netWeight.message}</p>}
+                            {errors.weightUnit && <p className="text-red-500 text-sm">{errors.weightUnit.message}</p>}
+                        </div>
+                        <div className="flex flex-col">
+                            <label className="text-[#6E719A] mb-1 text-sm">
+                                Category <span className="text-red-500">*</span>
+                            </label>
+                            <select
+                                {...register("category", { required: "Category is required" })}
+                                className="border-gray-500 bg-white border p-2 text-sm cursor-pointer"
+                            >
+                                <option value="">~~ Select a Category ~~</option>
+                                <option value="Bionike">Bionike</option>
+                                <option value="Noiderma">Noiderma</option>
+                            </select>
+                            {errors.category && <p className="text-red-500 text-sm">{errors.category.message}</p>}
+                        </div>
+                        <div className="flex flex-col">
+                            <label className="text-[#6E719A] mb-1 text-sm">
+                                Product Quantity <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="number"
+                                {...register("quantity", { required: "Quantity is required" })}
+                                placeholder="Enter product quantity"
+                                className="border-gray-500 bg-white border p-2 text-sm"
+                                onWheel={(e) => e.target.blur()}
+                            />
+                            {errors.quantity && <p className="text-red-500 text-sm">{errors.quantity.message}</p>}
                         </div>
                     </div>
 
