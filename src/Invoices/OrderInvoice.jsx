@@ -17,13 +17,23 @@ const OrderInvoice = ({ order }) => {
         c.customerId === order.pharmacyId
     );
 
-    const outstandingOrders = orders.filter(outOrder =>
+    /* const outstandingOrders = orders.filter(outOrder =>
         outOrder._id !== order._id
         &&
         outOrder.pharmacyId === order.pharmacyId
         &&
         outOrder.status === 'outstanding'
-    )
+    ) */
+
+    const outstandingOrders = orders.filter(outOrder =>
+        outOrder._id !== order._id
+        &&
+        outOrder.pharmacyId === order.pharmacyId
+        &&
+        ["Credit", "SpIC"].includes(outOrder.payMode)
+        &&
+        ["due", "outstanding"].includes(outOrder.status)
+    );
 
     const totalUnit = order.products.reduce((sum, product) => sum + Number(product.quantity), 0);
     const totalTP = order.products.reduce((sum, product) => sum + Number(product.quantity * product.tradePrice), 0);
@@ -425,7 +435,7 @@ const OrderInvoice = ({ order }) => {
                                 Accounts
                             </td>
                             <td style="width: 25%; text-align: center; border: none; border-top: 1px solid #000; padding-top: 5px;">
-                                Authorised by
+                                Authorized by
                             </td>
                         </tr>
                     </table>
