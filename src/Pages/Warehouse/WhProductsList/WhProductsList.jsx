@@ -20,9 +20,26 @@ const WhProductsList = () => {
 
     const invoiceWithAP = singleUser?.designation === "Managing Director" ? 1 : 0;
 
-    const filteredProducts = whProducts.filter(product =>
+    /* const filteredProducts = whProducts.filter(product =>
         product?.productName?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    ); */
+
+    const filteredProducts = whProducts
+        .filter(product =>
+            product.productName?.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        .sort((a, b) => {
+            const nameComparison = a.productName.localeCompare(b.productName);
+            if (nameComparison !== 0) return nameComparison;
+
+            const [monthA, yearA] = a.expire.split('/').map(Number);
+            const [monthB, yearB] = b.expire.split('/').map(Number);
+
+            const dateA = new Date(2000 + yearA, monthA - 1);
+            const dateB = new Date(2000 + yearB, monthB - 1);
+
+            return dateA - dateB;
+        });
 
     const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
