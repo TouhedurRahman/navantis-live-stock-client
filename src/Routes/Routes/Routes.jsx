@@ -42,6 +42,7 @@ import MyOrder from "../../Pages/Order/MyOrder/MyOrder";
 import MyOrderReport from "../../Pages/Order/MyOrderReport/MyOrderReport";
 import PlaceOrder from "../../Pages/Order/PlaceOrder/PlaceOrder";
 import Profile from "../../Pages/Profile/Profile/Profile";
+import CustomerProductSummary from "../../Pages/ReportsComponents/CustomerProductSummary/CustomerProductSummary/CustomerProductSummary";
 import ExpireReturns from "../../Pages/ReportsComponents/ExpireReturns/ExpireReturns";
 import NetSales from "../../Pages/ReportsComponents/NetSales/NetSales";
 import ProductsSalesReturn from "../../Pages/ReportsComponents/ProductsSalesReturn/ProductsSalesReturn";
@@ -284,6 +285,10 @@ const router = createBrowserRouter([
             {
                 path: '/product-summary',
                 element: <ProductSummary />
+            },
+            {
+                path: '/customer-product-summary',
+                element: <CustomerProductSummary />
             },
             {
                 path: '/sales-returns',
