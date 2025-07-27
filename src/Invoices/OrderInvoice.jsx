@@ -30,8 +30,6 @@ const OrderInvoice = ({ order }) => {
         &&
         outOrder.pharmacyId === order.pharmacyId
         &&
-        ["Credit", "SpIC"].includes(outOrder.payMode)
-        &&
         ["due", "outstanding"].includes(outOrder.status)
     );
 
