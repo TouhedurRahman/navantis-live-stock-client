@@ -46,7 +46,7 @@ const CustomerProductSummaryReport = ({ reportType, filteredOrders = [], firstDa
                 <div class="mb-1 text-sm text-gray-400 text-right italic">
                     <h3 class="">Printed on ${now}</h3>
                 </div>
-                ${reportType === "Customer wise Products Summary"
+                ${reportType === "Customer wise Customer's Products Summary"
                 ?
                 `
                     <div style="display: flex; flex-direction: column; gap: 2px; font-size: 11px; font-weight: 600; margin-bottom: 10px;">
@@ -163,16 +163,20 @@ const CustomerProductSummaryReport = ({ reportType, filteredOrders = [], firstDa
                         </span>
                     </p> -->
 
-                    <p style="
-                        text-align: center;
-                        margin: 5px 0 10px;
-                        font-size: 13px;
-                        line-height: 1.6;
-                    ">
-                        <span style="font-weight: bold;">${name} | ${pharmacyId}</span><br>
+                    ${(reportType !== "Customer wise Customer's Products Summary")
+                    ?
+                    `
+                    <p style="text-align: center; margin: 5px 0 10px; font-size: 13px; line-height: 1.6;">
+                        <span style="font-weight: bold;">
+                            ${name} | ${pharmacyId}
+                        </span><br>
                         ${address}<br>
                         ${mobile}
                     </p>
+                    `
+                    :
+                    ``
+                }
 
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
                         <thead>
@@ -235,7 +239,7 @@ const CustomerProductSummaryReport = ({ reportType, filteredOrders = [], firstDa
         newWindow.document.write(`
             <html>
                 <head>
-                    <title>Product Summary</title>
+                    <title>Customer's Product Summary</title>
                     ${styles}
                     <style>
                         @media print {
