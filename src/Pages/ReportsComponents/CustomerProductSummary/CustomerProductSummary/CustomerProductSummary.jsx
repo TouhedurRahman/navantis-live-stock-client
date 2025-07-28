@@ -19,7 +19,7 @@ const CustomerProductSummary = () => {
     const [orderedBy, setOrderedBy] = useState('');
     const [areaManager, setAreaManager] = useState('');
     const [customer, setCustomer] = useState('');
-    const [reportType, setReportType] = useState('Products Summary');
+    const [reportType, setReportType] = useState("Customer's Products Summary");
 
     const deliveredOrders = orders.filter(order => order.status !== 'pending');
 
@@ -183,7 +183,7 @@ const CustomerProductSummary = () => {
         setOrderedBy('');
         setAreaManager('');
         setCustomer('');
-        setReportType('Products Summary');
+        setReportType("Customer's Products Summary");
     };
 
     const handlePrint = CustomerProductSummaryReport({
@@ -211,11 +211,11 @@ const CustomerProductSummary = () => {
     return (
         <>
             <div>
-                <PageTitle from={"Reports"} to={"Products summary"} />
+                <PageTitle from={"Reports"} to={"Customer's products summary"} />
             </div>
             <div className="bg-white pb-1">
                 <div>
-                    <h1 className="px-6 py-3 font-bold">Products summary reports</h1>
+                    <h1 className="px-6 py-3 font-bold">Customer's Products summary report</h1>
                     <hr className='text-center border border-gray-500 mb-5' />
                 </div>
                 <div className='grid grid-cols-1 md:grid-cols-2 items-center gap-4'>
@@ -374,21 +374,21 @@ const CustomerProductSummary = () => {
                                 onChange={(e) => setReportType(e.target.value)}
                                 className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
                             >
-                                <option value="Products Summary">Products Summary</option>
+                                <option value="Customer's Products Summary">Customer's Products Summary</option>
                                 {
                                     orderedBy !== ''
                                     &&
-                                    < option value="MPO wise Products Summary">MPO wise Products Summary</option>
+                                    < option value="MPO wise Customer's Products Summary">MPO wise Customer's Products Summary</option>
                                 }
                                 {
                                     areaManager !== ''
                                     &&
-                                    < option value="Area Manager wise Products Summary">Area Manager wise Products Summary</option>
+                                    < option value="Area Manager wise Customer's Products Summary">Area Manager wise Customer's Products Summary</option>
                                 }
                                 {
                                     customer !== ''
                                     &&
-                                    <option value="Customer wise Products Summary">Customer wise Products Summary</option>
+                                    <option value="Customer wise Customer's Products Summary">Customer wise Customer's Products Summary</option>
                                 }
                             </select>
                         </div>

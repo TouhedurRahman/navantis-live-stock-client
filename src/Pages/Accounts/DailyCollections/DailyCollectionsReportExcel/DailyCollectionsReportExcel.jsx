@@ -4,7 +4,17 @@ const DailyCollectionsReportExcel = ({ reportType, filteredOrders = [], firstDat
     const [orders, setOrders] = useState(filteredOrders);
 
     useEffect(() => {
-        setOrders(filteredOrders);
+        const sortedOrders = [...filteredOrders].sort((a, b) => {
+            const getPriority = (territory) => {
+                if (territory === "Doctor") return 0;
+                if (territory === "Institute") return 1;
+                return 2;
+            };
+
+            return getPriority(a.territory) - getPriority(b.territory);
+        });
+
+        setOrders(sortedOrders);
     }, [filteredOrders]);
 
     const now = new Date().toLocaleString("en-US", {
@@ -154,14 +164,14 @@ const DailyCollectionsReportExcel = ({ reportType, filteredOrders = [], firstDat
                                 <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
                                     <thead>
                                         <tr>
-                                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: center;">Customer ID</th>
+                                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: center; width: 7%">Customer ID</th>
                                             <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left;">Customer Name</th>
-                                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Cash</th>
-                                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Cheque</th>
-                                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Bank</th>
-                                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">BEFTN</th>
-                                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">TDS</th>
-                                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right;">Total</th>
+                                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 11%">Cash</th>
+                                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 11%">Cheque</th>
+                                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 11%">Bank</th>
+                                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 11%">BEFTN</th>
+                                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 11%">TDS</th>
+                                            <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 12%">Total</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -204,12 +214,12 @@ const DailyCollectionsReportExcel = ({ reportType, filteredOrders = [], firstDat
                                 <tr />
                                 <tr style="font-weight: bold; background-color: #eee;">
                                     <td colspan="2" style="padding: 8px; border: 1px solid #ccc; text-align: left;">Area Manager Total</td>
-                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${areaManagerTotals.cash.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
-                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${areaManagerTotals.cheque.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
-                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${areaManagerTotals.bank.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
-                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${areaManagerTotals.beftn.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
-                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${areaManagerTotals.tds.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
-                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${areaTotalAll.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
+                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right; width: 11%">${areaManagerTotals.cash.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
+                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right; width: 11%">${areaManagerTotals.cheque.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
+                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right; width: 11%">${areaManagerTotals.bank.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
+                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right; width: 11%">${areaManagerTotals.beftn.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
+                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right; width: 11%">${areaManagerTotals.tds.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
+                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right; width: 12%">${areaTotalAll.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -226,12 +236,12 @@ const DailyCollectionsReportExcel = ({ reportType, filteredOrders = [], firstDat
                     <tr />
                     <tr style="font-weight: bold; background-color: #ccc;">
                         <td colspan="2" style="padding: 10px; border: 1px solid #000; text-align: left;">Grand Total</td>
-                        <td style="padding: 10px; border: 1px solid #000; text-align: right;">${grandTotals.cash.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
-                        <td style="padding: 10px; border: 1px solid #000; text-align: right;">${grandTotals.cheque.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
-                        <td style="padding: 10px; border: 1px solid #000; text-align: right;">${grandTotals.bank.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
-                        <td style="padding: 10px; border: 1px solid #000; text-align: right;">${grandTotals.beftn.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
-                        <td style="padding: 10px; border: 1px solid #000; text-align: right;">${grandTotals.tds.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
-                        <td style="padding: 10px; border: 1px solid #000; text-align: right;">${grandTotalAll.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
+                        <td style="padding: 10px; border: 1px solid #000; text-align: right; width: 11%">${grandTotals.cash.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
+                        <td style="padding: 10px; border: 1px solid #000; text-align: right; width: 11%">${grandTotals.cheque.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
+                        <td style="padding: 10px; border: 1px solid #000; text-align: right; width: 11%">${grandTotals.bank.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
+                        <td style="padding: 10px; border: 1px solid #000; text-align: right; width: 11%">${grandTotals.beftn.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
+                        <td style="padding: 10px; border: 1px solid #000; text-align: right; width: 11%">${grandTotals.tds.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
+                        <td style="padding: 10px; border: 1px solid #000; text-align: right; width: 12%">${grandTotalAll.toLocaleString("en-IN", { minimumFractionDigits: 2 })}/-</td>
                     </tr>
                 </tbody>
             </table>
