@@ -110,7 +110,7 @@ const Navbar = () => {
                                 {links.map(({ to, icon, label }) => (
                                     <Link to={to} key={to} className="block">
                                         <div
-                                            className="flex items-center gap-3 px-4 py-2 mb-2 rounded-md cursor-pointer 
+                                            className="flex items-center gap-3 px-4 py-1.5 rounded-md cursor-pointer 
                             text-white hover:bg-yellow-400 hover:text-black 
                             transition-all duration-300 transform hover:translate-x-1"
                                         >
@@ -201,7 +201,7 @@ const Navbar = () => {
                             {/* Menu Header */}
                             <div
                                 onClick={() => toggleDropdown(menu)}
-                                className={`flex items-center cursor-pointer px-3 py-2 transition-colors duration-300 rounded-md 
+                                className={`flex items-center cursor-pointer px-3 py-1.5 transition-colors duration-300 rounded-md 
                     hover:bg-gray-700 hover:text-yellow-400
                     ${isSidebarOpen ? 'justify-between' : 'justify-center'}`}
                             >
