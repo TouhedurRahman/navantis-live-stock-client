@@ -3,6 +3,7 @@ import { AiFillMedicineBox } from "react-icons/ai";
 import {
     FaArrowDown, FaArrowUp, FaCartPlus, FaExclamationCircle, FaHospital, FaListUl, FaShoppingCart, FaTrashAlt, FaTruck, FaUserCog, FaWarehouse
 } from 'react-icons/fa';
+import { FaUserDoctor } from "react-icons/fa6";
 import { FcExpired } from 'react-icons/fc';
 import { GiDustCloud, GiReturnArrow, GiStorkDelivery } from 'react-icons/gi';
 import { IoIosAddCircle } from 'react-icons/io';
@@ -66,6 +67,12 @@ const useMenuConfig = () => {
                 { to: '/delivery-report', icon: <TbReportSearch className='me-2' />, label: 'Delivery Report' },
             ],
         },
+        doctor: {
+            icon: <FaUserDoctor className="mr-2" />,
+            links: [
+                { to: '/add-new-doctor', icon: <IoIosAddCircle className='me-2' />, label: 'Add new' },
+            ],
+        },
         institute: {
             icon: <FaHospital className="mr-2" />,
             links: [
@@ -100,7 +107,6 @@ const useMenuConfig = () => {
                 { to: '/my-order-report', icon: <FaCartPlus className='me-2' />, label: 'My Report' },
             ],
         },
-
         accounts: {
             icon: <MdAccountBalance className="mr-2" />,
             links: [
@@ -110,7 +116,6 @@ const useMenuConfig = () => {
                 { to: '/inv-sales-summary', icon: <TbReportAnalytics className='me-2' />, label: 'Inv. Sales Summary' },
             ],
         },
-
         reports: {
             icon: <TbReportSearch className="mr-2" />,
             links: [

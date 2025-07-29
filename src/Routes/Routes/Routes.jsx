@@ -31,6 +31,7 @@ import ExpiredReturns from "../../Pages/Depot/ExpiredReturns/ExpiredReturns/Expi
 import ExpiredReturnsStatus from "../../Pages/Depot/ExpiredReturns/ExpiredReturnsStatus/ExpiredReturnsStatus";
 import InvoicePayment from "../../Pages/Depot/InvoicePayment/InvoicePayment/InvoicePayment";
 import OrderDelivery from "../../Pages/Depot/OrderDelivery/OrderDelivery";
+import AddNewDoctor from "../../Pages/Doctor/AddNewDoctor/AddNewDoctor";
 import AddDoctorRequisition from "../../Pages/DoctorRequisition/AddDoctorRequisition/AddDoctorRequisition";
 import PlaceDrReqOrder from "../../Pages/DoctorRequisition/PlaceDrReqOrder/PlaceDrReqOrder";
 import Home from "../../Pages/Home/Home/Home";
@@ -113,6 +114,12 @@ const router = createBrowserRouter([
                 path: "/customer-list",
                 element: <CustomerList />
             },
+            /********** Doctor **********/
+            {
+                path: '/add-new-doctor',
+                element: <AddNewDoctor />
+            },
+            /********** Admin **********/
             {
                 path: "/admin-po",
                 element: <PurchaseOrder />
