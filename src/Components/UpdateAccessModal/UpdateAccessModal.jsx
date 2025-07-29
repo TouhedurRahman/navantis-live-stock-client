@@ -17,7 +17,7 @@ const permissionsList = [
     "accounts",
     "reports",
     "institute",
-    "doctor",
+    "doctorRequisition",
     "customer",
     "order"
 ];
@@ -102,7 +102,15 @@ const UpdateAccessModal = ({ user, refetch, onClose }) => {
                                         onChange={() => handleCheckboxChange(perm)}
                                         className="w-4 h-4 cursor-pointer"
                                     />
-                                    <span className="capitalize">{perm.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())}</span>
+                                    {/* <span className="capitalize">{perm.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())}</span> */}
+                                    <span className="capitalize">
+                                        {
+                                            perm
+                                                .replace(/([a-z])([A-Z])/g, '$1 $2')
+                                                .replace(/-/g, ' ')
+                                                .replace(/\b\w/g, char => char.toUpperCase())
+                                        }
+                                    </span>
                                 </div>
                             ))}
                         </div>

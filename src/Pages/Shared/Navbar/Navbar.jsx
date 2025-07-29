@@ -90,7 +90,12 @@ const Navbar = () => {
                                     <span className="text-lg">{icon}</span>
                                     {isSidebarOpen && (
                                         <span className="font-medium text-sm tracking-wide">
-                                            {menu.charAt(0).toUpperCase() + menu.slice(1)}
+                                            {/* {menu.charAt(0).toUpperCase() + menu.slice(1)} */}
+                                            {
+                                                menu
+                                                    .replace(/([a-z])([A-Z])/g, '$1 $2')
+                                                    .replace(/^\w/, c => c.toUpperCase())
+                                            }
                                         </span>
                                     )}
                                 </div>

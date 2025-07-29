@@ -74,7 +74,7 @@ const useMenuConfig = () => {
                 { to: '/institute-order', icon: <FaCartPlus className='me-2' />, label: 'Place Order' },
             ],
         },
-        doctor: {
+        doctorRequisition: {
             icon: <FaHospital className="mr-2" />,
             links: [
                 { to: '/add-requision', icon: <IoIosAddCircle className='me-2' />, label: 'Add new' },
