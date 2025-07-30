@@ -303,9 +303,9 @@ const AddNewDoctor = () => {
                                 </div>
 
                                 <div className="flex flex-col">
-                                    <label className="text-[#6E719A] mb-1 text-sm">Select Union <span className="text-red-500">*</span></label>
-                                    <input {...register("union", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
-                                    {errors.union && <p className="text-red-500 text-sm">{errors.union.message}</p>}
+                                    <label className="text-[#6E719A] mb-1 text-sm">Select Upazila <span className="text-red-500">*</span></label>
+                                    <input {...register("upazila", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
+                                    {errors.upazila && <p className="text-red-500 text-sm">{errors.upazila.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">
