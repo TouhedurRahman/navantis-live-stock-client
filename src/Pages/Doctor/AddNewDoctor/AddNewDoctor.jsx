@@ -1,18 +1,65 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 
 const AddNewDoctor = () => {
-    const [step, setStep] = useState(1);
-    const [completedSteps, setCompletedSteps] = useState([]);
-
     const {
         register,
         handleSubmit,
         watch,
         trigger,
+        setValue,
         formState: { errors },
     } = useForm();
+
+    const [step, setStep] = useState(1);
+    const [completedSteps, setCompletedSteps] = useState([]);
+
+    const [divisions, setDivisions] = useState([]);
+    const [districts, setDistricts] = useState([]);
+    const [upazilas, setUpazilas] = useState([]);
+    const [unions, setUnions] = useState([]);
+
+    const selectedDivisionId = watch("division");
+    const selectedDistrictId = watch("district");
+    const selectedUpazilaId = watch("upazila");
+
+    useEffect(() => {
+        axios.get("https://bdapi.vercel.app/api/v.1/division")
+            .then(res => setDivisions(res.data.data))
+            .catch(err => console.error("Error loading divisions:", err));
+    }, []);
+
+    useEffect(() => {
+        if (selectedDivisionId) {
+            axios.get(`https://bdapi.vercel.app/api/v.1/district/${selectedDivisionId}`)
+                .then(res => setDistricts(res.data.data))
+                .catch(err => console.error("Error loading districts:", err));
+            setValue("district", "");
+            setUpazilas([]);
+            setUnions([]);
+        }
+    }, [selectedDivisionId]);
+
+    useEffect(() => {
+        if (selectedDistrictId) {
+            axios.get(`https://bdapi.vercel.app/api/v.1/upazilla/${selectedDistrictId}`)
+                .then(res => setUpazilas(res.data.data))
+                .catch(err => console.error("Error loading upazilas:", err));
+            setValue("upazila", "");
+            setUnions([]);
+        }
+    }, [selectedDistrictId]);
+
+    useEffect(() => {
+        if (selectedUpazilaId) {
+            axios.get(`https://bdapi.vercel.app/api/v.1/union/${selectedUpazilaId}`)
+                .then(res => setUnions(res.data.data))
+                .catch(err => console.error("Error loading unions:", err));
+            setValue("union", "");
+        }
+    }, [selectedUpazilaId]);
 
     const onSubmit = (data) => {
         console.log("Doctor Info Submitted:", data);
@@ -292,20 +339,46 @@ const AddNewDoctor = () => {
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Select Division <span className="text-red-500">*</span></label>
-                                    <input {...register("division", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
+                                    <select {...register("division", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
+                                        <option value="">-- Select Division --</option>
+                                        {divisions.map(d => (
+                                            <option key={d.id} value={d.id}>{d.name}</option>
+                                        ))}
+                                    </select>
                                     {errors.division && <p className="text-red-500 text-sm">{errors.division.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Select District <span className="text-red-500">*</span></label>
-                                    <input {...register("district", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
+                                    <select {...register("district", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
+                                        <option value="">-- Select District --</option>
+                                        {districts.map(d => (
+                                            <option key={d.id} value={d.id}>{d.name}</option>
+                                        ))}
+                                    </select>
                                     {errors.district && <p className="text-red-500 text-sm">{errors.district.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Select Upazila <span className="text-red-500">*</span></label>
-                                    <input {...register("upazila", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
+                                    <select {...register("upazila", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
+                                        <option value="">-- Select Upazila --</option>
+                                        {upazilas.map(u => (
+                                            <option key={u.id} value={u.id}>{u.name}</option>
+                                        ))}
+                                    </select>
                                     {errors.upazila && <p className="text-red-500 text-sm">{errors.upazila.message}</p>}
+                                </div>
+
+                                <div className="flex flex-col">
+                                    <label className="text-[#6E719A] mb-1 text-sm">Select Union <span className="text-red-500">*</span></label>
+                                    <select {...register("union", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
+                                        <option value="">-- Select Union --</option>
+                                        {unions.map(u => (
+                                            <option key={u.id} value={u.id}>{u.name}</option>
+                                        ))}
+                                    </select>
+                                    {errors.union && <p className="text-red-500 text-sm">{errors.union.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">
@@ -333,7 +406,7 @@ const AddNewDoctor = () => {
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Brand</label>
                                     <select {...register("brand")} className="border-gray-500 bg-white border p-2 text-sm">
-                                        <option value="">Select</option>
+                                        <option value="">Select Brand</option>
                                         <option>A</option>
                                         <option>B</option>
                                         <option>C</option>
@@ -344,7 +417,7 @@ const AddNewDoctor = () => {
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Chemist</label>
                                     <select {...register("chemist")} className="border-gray-500 bg-white border p-2 text-sm">
-                                        <option value="">Select</option>
+                                        <option value="">Select Chemist</option>
                                         <option>A</option>
                                         <option>B</option>
                                         <option>C</option>
