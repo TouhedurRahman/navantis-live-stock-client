@@ -293,42 +293,55 @@ const AddNewDoctor = () => {
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Practicing Day <span className="text-red-500">*</span></label>
-                                    <input {...register("practicingDay", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
+                                    <input {...register("practicingDay", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" onWheel={(e) => e.target.blur()} />
                                     {errors.practicingDay && <p className="text-red-500 text-sm">{errors.practicingDay.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Avg. Patient <span className="text-red-500">*</span></label>
-                                    <input type="number" {...register("avgPatient", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
+                                    <input type="number" {...register("avgPatient", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" onWheel={(e) => e.target.blur()} />
                                     {errors.avgPatient && <p className="text-red-500 text-sm">{errors.avgPatient.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Avg. Patient/Day <span className="text-red-500">*</span></label>
-                                    <input type="number" {...register("avgPatientDay", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
+                                    <input type="number" {...register("avgPatientDay", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" onWheel={(e) => e.target.blur()} />
                                     {errors.avgPatientDay && <p className="text-red-500 text-sm">{errors.avgPatientDay.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">
-                                    <label className="text-[#6E719A] mb-1 text-sm">Patient Type</label>
-                                    <select {...register("patientType")} className="border-gray-500 bg-white border p-2 text-sm">
+                                    <label className="text-[#6E719A] mb-1 text-sm">Patient Type <span className="text-red-500">*</span></label>
+                                    <select {...register("patientType", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
                                         <option value="">Select</option>
                                         <option>Child</option>
                                         <option>Gyne</option>
                                     </select>
+                                    {errors.patientType && <p className="text-red-500 text-sm">{errors.patientType.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">
-                                    <label className="text-[#6E719A] mb-1 text-sm">Market Point</label>
-                                    <select {...register("marketPoint")} className="border-gray-500 bg-white border p-2 text-sm">
+                                    <label className="text-[#6E719A] mb-1 text-sm">Market Point <span className="text-red-500">*</span></label>
+                                    <select {...register("marketPoint", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm"
+                                    >
+                                        <option value="">Select</option>
+                                        <option>Market Point</option>
+                                    </select>
+                                    {errors.marketPoint && <p className="text-red-500 text-sm">{errors.marketPoint.message}</p>}
+                                </div>
+
+                                <div className="flex flex-col">
+                                    <label className="text-[#6E719A] mb-1 text-sm">Working Area <span className="text-red-500">*</span></label>
+                                    <select {...register("workingArea", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
                                         <option value="">Select</option>
                                         <option>Colleague Territory</option>
                                     </select>
+                                    {errors.workingArea && <p className="text-red-500 text-sm">{errors.workingArea.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">
-                                    <label className="text-[#6E719A] mb-1 text-sm">Doctor Type</label>
-                                    <input {...register("doctorType")} className="border-gray-500 bg-white border p-2 text-sm" />
+                                    <label className="text-[#6E719A] mb-1 text-sm">Doctor Type <span className="text-red-500">*</span></label>
+                                    <input {...register("doctorType", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
+                                    {errors.doctorType && <p className="text-red-500 text-sm">{errors.doctorType.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">
@@ -399,30 +412,33 @@ const AddNewDoctor = () => {
                                 </div>
 
                                 <div className="flex flex-col">
-                                    <label className="text-[#6E719A] mb-1 text-sm">Location</label>
-                                    <input {...register("location")} className="border-gray-500 bg-white border p-2 text-sm" />
+                                    <label className="text-[#6E719A] mb-1 text-sm">Location <span className="text-red-500">*</span></label>
+                                    <input {...register("location", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
+                                    {errors.location && <p className="text-red-500 text-sm">{errors.location.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">
-                                    <label className="text-[#6E719A] mb-1 text-sm">Brand</label>
-                                    <select {...register("brand")} className="border-gray-500 bg-white border p-2 text-sm">
+                                    <label className="text-[#6E719A] mb-1 text-sm">Brand <span className="text-red-500">*</span></label>
+                                    <select {...register("brand", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
                                         <option value="">Select Brand</option>
                                         <option>A</option>
                                         <option>B</option>
                                         <option>C</option>
                                         <option>D</option>
                                     </select>
+                                    {errors.brand && <p className="text-red-500 text-sm">{errors.brand.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">
-                                    <label className="text-[#6E719A] mb-1 text-sm">Chemist</label>
-                                    <select {...register("chemist")} className="border-gray-500 bg-white border p-2 text-sm">
+                                    <label className="text-[#6E719A] mb-1 text-sm">Chemist <span className="text-red-500">*</span></label>
+                                    <select {...register("chemist", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
                                         <option value="">Select Chemist</option>
                                         <option>A</option>
                                         <option>B</option>
                                         <option>C</option>
                                         <option>D</option>
                                     </select>
+                                    {errors.chemist && <p className="text-red-500 text-sm">{errors.chemist.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">
