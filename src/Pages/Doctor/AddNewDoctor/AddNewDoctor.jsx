@@ -1,7 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import Select from "react-select";
+import Swal from "sweetalert2";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
+import useUniqueProducts from "../../../Hooks/useUniqueProducts";
 
 const AddNewDoctor = () => {
     const {
@@ -13,6 +16,8 @@ const AddNewDoctor = () => {
         formState: { errors },
     } = useForm();
 
+    const [uniqueProducts] = useUniqueProducts();
+
     const [step, setStep] = useState(1);
     const [completedSteps, setCompletedSteps] = useState([]);
 
@@ -20,6 +25,9 @@ const AddNewDoctor = () => {
     const [districts, setDistricts] = useState([]);
     const [upazilas, setUpazilas] = useState([]);
     const [unions, setUnions] = useState([]);
+
+    const [selectedBrands, setSelectedBrands] = useState([]);
+    const [selectValue, setSelectValue] = useState(null);
 
     const selectedDivisionId = watch("division");
     const selectedDistrictId = watch("district");
@@ -60,6 +68,43 @@ const AddNewDoctor = () => {
             setValue("union", "");
         }
     }, [selectedUpazilaId]);
+
+    const handleChange = (selectedOption) => {
+        if (!selectedOption) return;
+
+        const brand = selectedOption.value;
+
+        if (selectedBrands.includes(brand)) return;
+
+        if (selectedBrands.length >= 4) {
+            return Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Selection Restricted",
+                text: "You can select a maximum of 4 brands.",
+                showConfirmButton: true
+            });
+        }
+
+        const updated = [...selectedBrands, brand];
+        setSelectedBrands(updated);
+        setValue("brands", updated);
+
+        setSelectValue(null);
+    };
+
+    const removeBrand = (brand) => {
+        const updated = selectedBrands.filter((item) => item !== brand);
+        setSelectedBrands(updated);
+        setValue("brands", updated);
+    };
+
+    const brandOptions = uniqueProducts.map((product) => {
+        const productName = product.productName?.trim();
+        const netWeight = product.netWeight?.trim();
+        const label = `${productName} - ${netWeight}`;
+        return { label, value: label };
+    });
 
     const onSubmit = (data) => {
         console.log("Doctor Info Submitted:", data);
@@ -418,15 +463,51 @@ const AddNewDoctor = () => {
                                 </div>
 
                                 <div className="flex flex-col">
-                                    <label className="text-[#6E719A] mb-1 text-sm">Brand <span className="text-red-500">*</span></label>
-                                    <select {...register("brand", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
-                                        <option value="">Select Brand</option>
-                                        <option>A</option>
-                                        <option>B</option>
-                                        <option>C</option>
-                                        <option>D</option>
-                                    </select>
-                                    {errors.brand && <p className="text-red-500 text-sm">{errors.brand.message}</p>}
+                                    <label className="text-[#6E719A] mb-1 text-sm">
+                                        Brand <span className="text-red-500">*</span>
+                                    </label>
+
+                                    <Select
+                                        options={brandOptions}
+                                        onChange={handleChange}
+                                        value={selectValue}
+                                        onInputChange={() => { }}
+                                        placeholder="Search or select min 1 to max 4 of brands."
+                                        isSearchable
+                                    // isDisabled={selectedBrands.length >= 4}
+                                    />
+
+                                    <div className="flex flex-wrap gap-2 mt-2">
+                                        {selectedBrands.map((brand, i) => (
+                                            <span
+                                                key={i}
+                                                className="bg-white text-black text-xs px-2 py-1 border-[2px] rounded-full flex items-center gap-1"
+                                            >
+                                                {brand}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeBrand(brand)}
+                                                    className="ml-1 text-red-700"
+                                                >
+                                                    &times;
+                                                </button>
+                                            </span>
+                                        ))}
+                                    </div>
+
+                                    <input
+                                        type="hidden"
+                                        {...register("brands", {
+                                            required: "At least one brand is required",
+                                            validate: (value) =>
+                                                value.length <= 4 || "You can select up to 4 brands",
+                                        })}
+                                        value={JSON.stringify(selectedBrands)}
+                                    />
+
+                                    {errors.brands && (
+                                        <p className="text-red-500 text-sm mt-1">{errors.brands.message}</p>
+                                    )}
                                 </div>
 
                                 <div className="flex flex-col">
