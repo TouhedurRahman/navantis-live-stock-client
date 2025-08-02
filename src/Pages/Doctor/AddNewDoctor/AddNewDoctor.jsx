@@ -1,9 +1,11 @@
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Select from "react-select";
 import Swal from "sweetalert2";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
+import useApiConfig from "../../../Hooks/useApiConfig";
 import useCustomer from "../../../Hooks/useCustomer";
 import useUniqueProducts from "../../../Hooks/useUniqueProducts";
 
@@ -19,6 +21,7 @@ const AddNewDoctor = () => {
 
     const [uniqueProducts] = useUniqueProducts();
     const [customers] = useCustomer();
+    const baseUrl = useApiConfig();
 
     const [step, setStep] = useState(1);
     const [completedSteps, setCompletedSteps] = useState([]);
@@ -152,10 +155,6 @@ const AddNewDoctor = () => {
         setSelectKey((prev) => prev + 1);
     };
 
-    const onSubmit = (data) => {
-        console.log("Doctor Info Submitted:", data);
-    };
-
     const handleNext = async () => {
         const valid = await trigger(
             step === 1
@@ -187,6 +186,53 @@ const AddNewDoctor = () => {
     );
 
     const showChamber = watch("hasChamber") === "yes";
+
+    const addDoctorMutation = useMutation({
+        mutationFn: async (data) => {
+            const newDoctor = data;
+            const response = await axios.post(`${baseUrl}/doctors`, newDoctor);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error adding doctor", error);
+        },
+    });
+
+    const onSubmit = async (data) => {
+        try {
+            await Promise.all([
+                addDoctorMutation.mutateAsync(data),
+            ]);
+
+            reset();
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "New doctor added.",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        } catch (error) {
+            if (error.response?.status === 409) {
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "Doctor already exist",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            } else {
+                console.error("Error adding doctor:", error);
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "Faild to add doctor",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        }
+    };
 
     return (
         <>
