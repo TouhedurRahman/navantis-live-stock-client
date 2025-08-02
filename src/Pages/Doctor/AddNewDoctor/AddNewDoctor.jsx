@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import Select from "react-select";
 import Swal from "sweetalert2";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
+import useCustomer from "../../../Hooks/useCustomer";
 import useUniqueProducts from "../../../Hooks/useUniqueProducts";
 
 const AddNewDoctor = () => {
@@ -17,6 +18,7 @@ const AddNewDoctor = () => {
     } = useForm();
 
     const [uniqueProducts] = useUniqueProducts();
+    const [customers] = useCustomer();
 
     const [step, setStep] = useState(1);
     const [completedSteps, setCompletedSteps] = useState([]);
@@ -28,6 +30,9 @@ const AddNewDoctor = () => {
 
     const [selectedBrands, setSelectedBrands] = useState([]);
     const [selectValue, setSelectValue] = useState(null);
+
+    const [selectedChemists, setSelectedChemists] = useState([]);
+    const [selectKey, setSelectKey] = useState(0);
 
     const selectedDivisionId = watch("division");
     const selectedDistrictId = watch("district");
@@ -81,7 +86,7 @@ const AddNewDoctor = () => {
                 position: "center",
                 icon: "error",
                 title: "Selection Restricted",
-                text: "You can select a maximum of 4 brands.",
+                text: "You can select up to 4 brands only.",
                 showConfirmButton: true
             });
         }
@@ -105,6 +110,40 @@ const AddNewDoctor = () => {
         const label = `${productName} - ${netWeight}`;
         return { label, value: label };
     });
+
+    const chemistOptions = customers.map((c) => ({
+        label: `${c.name} - ${c.customerId}`,
+        value: { name: c.name, customerId: c.customerId, address: c.address },
+    }));
+
+    const handleChangeChemist = (selectedOptions) => {
+        if (!selectedOptions) {
+            setSelectedChemists([]);
+            setValue("chemists", []);
+            return;
+        }
+
+        const newSelection = Array.isArray(selectedOptions)
+            ? selectedOptions
+            : [selectedOptions];
+
+        const merged = [...selectedChemists, ...newSelection];
+
+        if (merged.length > 5) {
+            return Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Selection Restricted",
+                text: "You can select up to 5 chemists only.",
+                showConfirmButton: true
+            });
+        }
+
+        setSelectedChemists(merged);
+        setValue("chemists", merged.map((s) => s.value));
+
+        setSelectKey((prev) => prev + 1);
+    };
 
     const onSubmit = (data) => {
         console.log("Doctor Info Submitted:", data);
@@ -511,15 +550,66 @@ const AddNewDoctor = () => {
                                 </div>
 
                                 <div className="flex flex-col">
-                                    <label className="text-[#6E719A] mb-1 text-sm">Chemist <span className="text-red-500">*</span></label>
-                                    <select {...register("chemist", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
-                                        <option value="">Select Chemist</option>
-                                        <option>A</option>
-                                        <option>B</option>
-                                        <option>C</option>
-                                        <option>D</option>
-                                    </select>
-                                    {errors.chemist && <p className="text-red-500 text-sm">{errors.chemist.message}</p>}
+                                    <label className="text-[#6E719A] mb-1 text-sm">
+                                        Chemist <span className="text-red-500">*</span>
+                                    </label>
+
+                                    <Select
+                                        key={selectKey}
+                                        options={chemistOptions}
+                                        onChange={handleChangeChemist}
+                                        value={null}
+                                        isSearchable
+                                        isMulti={false}
+                                        placeholder="Search or select min 1 to max 5 of chemists."
+                                        closeMenuOnSelect={true}
+                                        getOptionLabel={(e) => (
+                                            <div>
+                                                <div className="font-medium text-sm">{e.value.name} - {e.value.customerId}</div>
+                                                <div className="text-xs text-gray-500">{e.value.address}</div>
+                                            </div>
+                                        )}
+                                        getOptionValue={(e) => `${e.value.name}-${e.value.customerId}`}
+                                        styles={{
+                                            menu: (provided) => ({ ...provided, zIndex: 9999 }),
+                                        }}
+                                    />
+
+                                    <div className="flex flex-wrap gap-2 mt-2">
+                                        {selectedChemists.map((chemist, i) => (
+                                            <span
+                                                key={i}
+                                                className="bg-white text-black text-xs px-2 py-1 border-[2px] rounded-full flex items-center gap-1"
+                                            >
+                                                {chemist.value.name} - {chemist.value.customerId}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const updated = selectedChemists.filter((_, index) => index !== i);
+                                                        setSelectedChemists(updated);
+                                                        setValue("chemists", updated.map((s) => s.value));
+                                                    }}
+                                                    className="ml-1 text-red-700"
+                                                >
+                                                    &times;
+                                                </button>
+                                            </span>
+                                        ))}
+                                    </div>
+
+                                    <input
+                                        type="hidden"
+                                        {...register("chemists", {
+                                            required: "Please select at least 1 chemist",
+                                            validate: (value) =>
+                                                value.length <= 5 || "You can select up to 5 chemists only",
+                                        })}
+                                        value={JSON.stringify(selectedChemists.map((s) => s.value))}
+                                    />
+
+                                    {errors.chemists && (
+                                        <p className="text-red-500 text-sm mt-1">{errors.chemists.message}</p>
+                                    )}
                                 </div>
 
                                 <div className="flex flex-col">
