@@ -77,9 +77,12 @@ const AddNewDoctor = () => {
     const handleChange = (selectedOption) => {
         if (!selectedOption) return;
 
-        const brand = selectedOption.value;
+        const selected = selectedOption.value;
 
-        if (selectedBrands.includes(brand)) return;
+        const exists = selectedBrands.some(
+            (b) => b.name === selected.name && b.netWeight === selected.netWeight
+        );
+        if (exists) return;
 
         if (selectedBrands.length >= 4) {
             return Swal.fire({
@@ -87,11 +90,11 @@ const AddNewDoctor = () => {
                 icon: "error",
                 title: "Selection Restricted",
                 text: "You can select up to 4 brands only.",
-                showConfirmButton: true
+                showConfirmButton: true,
             });
         }
 
-        const updated = [...selectedBrands, brand];
+        const updated = [...selectedBrands, selected];
         setSelectedBrands(updated);
         setValue("brands", updated);
 
@@ -99,16 +102,20 @@ const AddNewDoctor = () => {
     };
 
     const removeBrand = (brand) => {
-        const updated = selectedBrands.filter((item) => item !== brand);
+        const updated = selectedBrands.filter(
+            (item) => item.name !== brand.name || item.netWeight !== brand.netWeight
+        );
         setSelectedBrands(updated);
         setValue("brands", updated);
     };
 
     const brandOptions = uniqueProducts.map((product) => {
-        const productName = product.productName?.trim();
+        const name = product.productName?.trim();
         const netWeight = product.netWeight?.trim();
-        const label = `${productName} - ${netWeight}`;
-        return { label, value: label };
+        return {
+            label: `${name} - ${netWeight}`,
+            value: { name, netWeight },
+        };
     });
 
     const chemistOptions = customers.map((c) => ({
@@ -510,10 +517,8 @@ const AddNewDoctor = () => {
                                         options={brandOptions}
                                         onChange={handleChange}
                                         value={selectValue}
-                                        onInputChange={() => { }}
                                         placeholder="Search or select min 1 to max 4 of brands."
                                         isSearchable
-                                    // isDisabled={selectedBrands.length >= 4}
                                     />
 
                                     <div className="flex flex-wrap gap-2 mt-2">
@@ -522,7 +527,7 @@ const AddNewDoctor = () => {
                                                 key={i}
                                                 className="bg-white text-black text-xs px-2 py-1 border-[2px] rounded-full flex items-center gap-1"
                                             >
-                                                {brand}
+                                                {brand.name} - {brand.netWeight}
                                                 <button
                                                     type="button"
                                                     onClick={() => removeBrand(brand)}
