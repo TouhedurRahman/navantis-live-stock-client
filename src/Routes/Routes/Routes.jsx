@@ -32,6 +32,7 @@ import ExpiredReturnsStatus from "../../Pages/Depot/ExpiredReturns/ExpiredReturn
 import InvoicePayment from "../../Pages/Depot/InvoicePayment/InvoicePayment/InvoicePayment";
 import OrderDelivery from "../../Pages/Depot/OrderDelivery/OrderDelivery";
 import AddNewDoctor from "../../Pages/Doctor/AddNewDoctor/AddNewDoctor";
+import DoctorDetails from "../../Pages/Doctor/DoctorDetails/DoctorDetails";
 import DoctorList from "../../Pages/Doctor/DoctorList/DoctorList/DoctorList";
 import AddDoctorRequisition from "../../Pages/DoctorRequisition/AddDoctorRequisition/AddDoctorRequisition";
 import PlaceDrReqOrder from "../../Pages/DoctorRequisition/PlaceDrReqOrder/PlaceDrReqOrder";
@@ -123,6 +124,10 @@ const router = createBrowserRouter([
             {
                 path: '/doctor-list',
                 element: <DoctorList />
+            },
+            {
+                path: '/doctor-details/:id',
+                element: <DoctorDetails />
             },
             /********** Admin **********/
             {

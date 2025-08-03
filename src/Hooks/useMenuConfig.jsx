@@ -71,7 +71,7 @@ const useMenuConfig = () => {
             icon: <FaUserDoctor className="mr-2" />,
             links: [
                 { to: '/add-new-doctor', icon: <IoIosAddCircle className='me-2' />, label: 'Add new' },
-                { to: '/doctor-list', icon: <FaListUl className='me-2' />, label: 'List' },
+                { to: '/doctor-list', icon: <FaListUl className='me-2' />, label: 'Doctor List' },
             ],
         },
         institute: {

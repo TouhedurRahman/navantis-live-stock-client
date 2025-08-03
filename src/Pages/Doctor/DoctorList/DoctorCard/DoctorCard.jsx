@@ -23,13 +23,13 @@ const DoctorCard = ({ idx, doctor }) => {
                 </td>
                 <th>
                     <div className="flex justify-center items-center space-x-4 text-md">
-                        <button
-                            // onClick={() => setModalOpen(true)}
+                        <Link
+                            to={`/doctor-details/${doctor._id}`}
                             title="doctor Details"
                             className="p-2 rounded-[5px] hover:bg-orange-100 focus:outline-none"
                         >
                             <FaEye className="text-orange-500" />
-                        </button>
+                        </Link>
                         <>
                             {
                                 (
