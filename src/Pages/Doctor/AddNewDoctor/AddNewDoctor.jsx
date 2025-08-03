@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import useApiConfig from "../../../Hooks/useApiConfig";
 import useCustomer from "../../../Hooks/useCustomer";
+import useSingleUser from "../../../Hooks/useSingleUser";
 import useUniqueProducts from "../../../Hooks/useUniqueProducts";
 
 const AddNewDoctor = () => {
@@ -16,10 +17,12 @@ const AddNewDoctor = () => {
         watch,
         trigger,
         setValue,
+        reset,
         formState: { errors },
     } = useForm();
 
     const [uniqueProducts] = useUniqueProducts();
+    const [singleUser] = useSingleUser();
     const [customers] = useCustomer();
     const baseUrl = useApiConfig();
 
@@ -187,9 +190,40 @@ const AddNewDoctor = () => {
 
     const showChamber = watch("hasChamber") === "yes";
 
+    const getTodayDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    };
+
     const addDoctorMutation = useMutation({
         mutationFn: async (data) => {
-            const newDoctor = data;
+            const selectedDivision = divisions.find(d => d.id === data.division);
+            const selectedDistrict = districts.find(d => d.id === data.district);
+            const selectedUpazila = upazilas.find(u => u.id === data.upazila);
+            const selectedUnion = unions.find(u => u.id === data.union);
+
+            const newDoctor = {
+                ...data,
+                division: selectedDivision?.name || "",
+                district: selectedDistrict?.name || "",
+                upazila: selectedUpazila?.name || "",
+                union: selectedUnion?.name || "",
+
+                parentTerritory: singleUser?.parentTerritory,
+                parentId: singleUser?.parentId || null,
+                grandParentId: singleUser?.grandParentId || null,
+
+                addedBy: singleUser?.name,
+                addedEmail: singleUser?.email,
+
+                status: "pending",
+                date: getTodayDate()
+            };
+
             const response = await axios.post(`${baseUrl}/doctors`, newDoctor);
             return response.data;
         },
@@ -490,7 +524,7 @@ const AddNewDoctor = () => {
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Select Division <span className="text-red-500">*</span></label>
                                     <select {...register("division", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
-                                        <option value="">-- Select Division --</option>
+                                        <option value="">Select Division</option>
                                         {divisions.map(d => (
                                             <option key={d.id} value={d.id}>{d.name}</option>
                                         ))}
@@ -501,7 +535,7 @@ const AddNewDoctor = () => {
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Select District <span className="text-red-500">*</span></label>
                                     <select {...register("district", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
-                                        <option value="">-- Select District --</option>
+                                        <option value="">Select District</option>
                                         {districts.map(d => (
                                             <option key={d.id} value={d.id}>{d.name}</option>
                                         ))}
@@ -512,7 +546,7 @@ const AddNewDoctor = () => {
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Select Upazila <span className="text-red-500">*</span></label>
                                     <select {...register("upazila", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
-                                        <option value="">-- Select Upazila --</option>
+                                        <option value="">Select Upazila</option>
                                         {upazilas.map(u => (
                                             <option key={u.id} value={u.id}>{u.name}</option>
                                         ))}
@@ -523,7 +557,7 @@ const AddNewDoctor = () => {
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Select Union <span className="text-red-500">*</span></label>
                                     <select {...register("union", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
-                                        <option value="">-- Select Union --</option>
+                                        <option value="">Select Union</option>
                                         {unions.map(u => (
                                             <option key={u.id} value={u.id}>{u.name}</option>
                                         ))}
@@ -533,7 +567,12 @@ const AddNewDoctor = () => {
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Territory <span className="text-red-500">*</span></label>
-                                    <input {...register("territory", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
+                                    <input
+                                        defaultValue={singleUser?.territory}
+                                        {...register("territory", { required: "Required" })}
+                                        className="border-gray-500 bg-white border p-2 text-sm cursor-not-allowed"
+                                        readOnly
+                                    />
                                     {errors.territory && <p className="text-red-500 text-sm">{errors.territory.message}</p>}
                                 </div>
 
