@@ -2,15 +2,17 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate, useParams } from "react-router-dom";
 import Select from "react-select";
 import Swal from "sweetalert2";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import useApiConfig from "../../../Hooks/useApiConfig";
 import useCustomer from "../../../Hooks/useCustomer";
+import useDoctors from "../../../Hooks/useDoctors";
 import useSingleUser from "../../../Hooks/useSingleUser";
 import useUniqueProducts from "../../../Hooks/useUniqueProducts";
 
-const AddNewDoctor = () => {
+const UpdateDoctor = () => {
     const {
         register,
         handleSubmit,
@@ -24,6 +26,7 @@ const AddNewDoctor = () => {
     const [uniqueProducts] = useUniqueProducts();
     const [singleUser] = useSingleUser();
     const [customers] = useCustomer();
+    const [doctors, loading, refetch] = useDoctors();
     const baseUrl = useApiConfig();
 
     const [step, setStep] = useState(1);
@@ -43,6 +46,11 @@ const AddNewDoctor = () => {
     const selectedDivisionId = watch("division");
     const selectedDistrictId = watch("district");
     const selectedUpazilaId = watch("upazila");
+
+    const { id } = useParams();
+    const doctor = doctors.find(doctor => doctor._id == id);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         axios.get("https://bdapi.vercel.app/api/v.1/division")
@@ -206,14 +214,14 @@ const AddNewDoctor = () => {
                 ? "initialized"
                 : "requested";
 
-    const addDoctorMutation = useMutation({
+    const updateDoctorMutation = useMutation({
         mutationFn: async (data) => {
             const selectedDivision = divisions.find(d => d.id === data.division);
             const selectedDistrict = districts.find(d => d.id === data.district);
             const selectedUpazila = upazilas.find(u => u.id === data.upazila);
             const selectedUnion = unions.find(u => u.id === data.union);
 
-            const newDoctor = {
+            const updatedDoctor = {
                 ...data,
                 division: selectedDivision?.name || "",
                 district: selectedDistrict?.name || "",
@@ -231,47 +239,38 @@ const AddNewDoctor = () => {
                 date: getTodayDate()
             };
 
-            const response = await axios.post(`${baseUrl}/doctors`, newDoctor);
+            const response = await axios.patch(`${baseUrl}/doctor/${id}`, updatedDoctor);
             return response.data;
         },
         onError: (error) => {
-            console.error("Error adding doctor", error);
+            console.error("Error updating doctor", error);
         },
     });
 
     const onSubmit = async (data) => {
         try {
             await Promise.all([
-                addDoctorMutation.mutateAsync(data),
+                updateDoctorMutation.mutateAsync(data),
             ]);
 
             reset();
+            refetch();
+            navigate('/doctor-list');
             Swal.fire({
                 position: "center",
                 icon: "success",
-                title: "New doctor added.",
+                title: "Doctor successfully updated.",
                 showConfirmButton: false,
                 timer: 1500
             });
         } catch (error) {
-            if (error.response?.status === 409) {
-                Swal.fire({
-                    position: "center",
-                    icon: "error",
-                    title: "Doctor already exist",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            } else {
-                console.error("Error adding doctor:", error);
-                Swal.fire({
-                    position: "center",
-                    icon: "error",
-                    title: "Faild to add doctor",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }
+            Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Faild to update doctor",
+                showConfirmButton: false,
+                timer: 1500
+            });
         }
     };
 
@@ -279,10 +278,10 @@ const AddNewDoctor = () => {
         <>
             <PageTitle
                 from={"Doctor"}
-                to={"Add new doctor"}
+                to={"Update doctor"}
             />
             <div className="bg-white">
-                <h1 className="px-6 py-3 font-bold">Add a new doctor</h1>
+                <h1 className="px-6 py-3 font-bold">Update doctor</h1>
                 <hr className='text-center border border-gray-500 mb-5' />
 
                 <div className="flex justify-center mb-6">{[1, 2, 3].map(renderStepIndicator)}</div>
@@ -304,6 +303,7 @@ const AddNewDoctor = () => {
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Dr. Name <span className="text-red-500">*</span></label>
                                     <input
+                                        defaultValue={doctor?.name}
                                         {...register("name", { required: "Required" })}
                                         placeholder="Enter doctor name"
                                         className="border-gray-500 bg-white border p-2 text-sm"
@@ -314,6 +314,7 @@ const AddNewDoctor = () => {
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Designation <span className="text-red-500">*</span></label>
                                     <input
+                                        defaultValue={doctor?.designation}
                                         {...register("designation", { required: "Required" })}
                                         placeholder="Enter designation"
                                         className="border-gray-500 bg-white border p-2 text-sm"
@@ -324,6 +325,7 @@ const AddNewDoctor = () => {
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Contact No. <span className="text-red-500">*</span></label>
                                     <input
+                                        defaultValue={doctor?.contact}
                                         {...register("contact", { required: "Required" })}
                                         placeholder="01XXXXXXXXX"
                                         className="border-gray-500 bg-white border p-2 text-sm"
@@ -334,6 +336,7 @@ const AddNewDoctor = () => {
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Email</label>
                                     <input
+                                        defaultValue={doctor?.email}
                                         type="email"
                                         {...register("email")}
                                         placeholder="user@email.com"
@@ -345,6 +348,7 @@ const AddNewDoctor = () => {
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Date of Birth</label>
                                     <input
+                                        defaultValue={doctor?.dob}
                                         type="date"
                                         {...register("dob")}
                                         className="border-gray-500 bg-white border p-2 text-sm"
@@ -354,6 +358,7 @@ const AddNewDoctor = () => {
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Marriage Date</label>
                                     <input
+                                        defaultValue={doctor?.marriageDate}
                                         type="date"
                                         {...register("marriageDate")}
                                         className="border-gray-500 bg-white border p-2 text-sm"
@@ -363,6 +368,7 @@ const AddNewDoctor = () => {
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Religion <span className="text-red-500">*</span></label>
                                     <select
+                                        defaultValue={doctor?.religion}
                                         {...register("religion", { required: "Required" })}
                                         className="border-gray-500 bg-white border p-2 text-sm"
                                     >
@@ -395,6 +401,7 @@ const AddNewDoctor = () => {
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Speciality <span className="text-red-500">*</span></label>
                                     <select
+                                        defaultValue={doctor?.speciality}
                                         {...register("speciality", { required: "Required" })}
                                         className="border-gray-500 bg-white border p-2 text-sm"
                                     >
@@ -411,6 +418,7 @@ const AddNewDoctor = () => {
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Qualification <span className="text-red-500">*</span></label>
                                     <select
+                                        defaultValue={doctor?.qualification}
                                         {...register("qualification", { required: "Required" })}
                                         className="border-gray-500 bg-white border p-2 text-sm"
                                     >
@@ -425,6 +433,7 @@ const AddNewDoctor = () => {
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Passing Institute Name</label>
                                     <input
+                                        defaultValue={doctor?.intitute}
                                         {...register("institute")}
                                         className="border-gray-500 bg-white border p-2 text-sm"
                                         placeholder="Enter institute name"
@@ -435,6 +444,7 @@ const AddNewDoctor = () => {
                                     <label className="text-[#6E719A] mb-1 text-sm">Passing Year</label>
                                     <input
                                         type="number"
+                                        defaultValue={doctor?.passingYear}
                                         {...register("passingYear")}
                                         className="border-gray-500 bg-white border p-2 text-sm"
                                         placeholder="Enter year"
@@ -460,7 +470,7 @@ const AddNewDoctor = () => {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Category <span className="text-red-500">*</span></label>
-                                    <select {...register("category", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
+                                    <select defaultValue={doctor?.category} {...register("category", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
                                         <option value="">Select</option>
                                         <option>A</option>
                                         <option>B</option>
@@ -471,25 +481,25 @@ const AddNewDoctor = () => {
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Practicing Day <span className="text-red-500">*</span></label>
-                                    <input {...register("practicingDay", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" onWheel={(e) => e.target.blur()} />
+                                    <input defaultValue={doctor?.practicingDay} {...register("practicingDay", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" onWheel={(e) => e.target.blur()} />
                                     {errors.practicingDay && <p className="text-red-500 text-sm">{errors.practicingDay.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Avg. Patient <span className="text-red-500">*</span></label>
-                                    <input type="number" {...register("avgPatient", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" onWheel={(e) => e.target.blur()} />
+                                    <input type="number" defaultValue={doctor?.avgPatient} {...register("avgPatient", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" onWheel={(e) => e.target.blur()} />
                                     {errors.avgPatient && <p className="text-red-500 text-sm">{errors.avgPatient.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Avg. Patient/Day <span className="text-red-500">*</span></label>
-                                    <input type="number" {...register("avgPatientDay", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" onWheel={(e) => e.target.blur()} />
+                                    <input type="number" defaultValue={doctor?.avgPatientDay} {...register("avgPatientDay", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" onWheel={(e) => e.target.blur()} />
                                     {errors.avgPatientDay && <p className="text-red-500 text-sm">{errors.avgPatientDay.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Patient Type <span className="text-red-500">*</span></label>
-                                    <select {...register("patientType", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
+                                    <select defaultValue={doctor?.patientType} {...register("patientType", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
                                         <option value="">Select</option>
                                         <option>Child</option>
                                         <option>Gyne</option>
@@ -499,7 +509,7 @@ const AddNewDoctor = () => {
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Market Point <span className="text-red-500">*</span></label>
-                                    <select {...register("marketPoint", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm"
+                                    <select defaultValue={doctor?.marketPoint} {...register("marketPoint", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm"
                                     >
                                         <option value="">Select</option>
                                         <option>Market Point</option>
@@ -509,7 +519,7 @@ const AddNewDoctor = () => {
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Working Area <span className="text-red-500">*</span></label>
-                                    <select {...register("workingArea", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
+                                    <select defaultValue={doctor?.workingArea} {...register("workingArea", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
                                         <option value="">Select</option>
                                         <option>Colleague Territory</option>
                                     </select>
@@ -518,19 +528,19 @@ const AddNewDoctor = () => {
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Doctor Type <span className="text-red-500">*</span></label>
-                                    <input {...register("doctorType", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
+                                    <input defaultValue={doctor?.doctorType} {...register("doctorType", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
                                     {errors.doctorType && <p className="text-red-500 text-sm">{errors.doctorType.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Location/Address <span className="text-red-500">*</span></label>
-                                    <input {...register("locationAddress", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
+                                    <input defaultValue={doctor?.locationAddress} {...register("locationAddress", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
                                     {errors.locationAddress && <p className="text-red-500 text-sm">{errors.locationAddress.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Select Division <span className="text-red-500">*</span></label>
-                                    <select {...register("division", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
+                                    <select defaultValue={doctor?.division} {...register("division", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
                                         <option value="">Select Division</option>
                                         {divisions.map(d => (
                                             <option key={d.id} value={d.id}>{d.name}</option>
@@ -541,7 +551,7 @@ const AddNewDoctor = () => {
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Select District <span className="text-red-500">*</span></label>
-                                    <select {...register("district", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
+                                    <select defaultValue={doctor?.district} {...register("district", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
                                         <option value="">Select District</option>
                                         {districts.map(d => (
                                             <option key={d.id} value={d.id}>{d.name}</option>
@@ -552,7 +562,7 @@ const AddNewDoctor = () => {
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Select Upazila <span className="text-red-500">*</span></label>
-                                    <select {...register("upazila", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
+                                    <select defaultValue={doctor?.upazila} {...register("upazila", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
                                         <option value="">Select Upazila</option>
                                         {upazilas.map(u => (
                                             <option key={u.id} value={u.id}>{u.name}</option>
@@ -563,7 +573,7 @@ const AddNewDoctor = () => {
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Select Union <span className="text-red-500">*</span></label>
-                                    <select {...register("union", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
+                                    <select defaultValue={doctor?.union} {...register("union", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
                                         <option value="">Select Union</option>
                                         {unions.map(u => (
                                             <option key={u.id} value={u.id}>{u.name}</option>
@@ -585,18 +595,18 @@ const AddNewDoctor = () => {
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Job Institute Name</label>
-                                    <input {...register("jobInstitute")} className="border-gray-500 bg-white border p-2 text-sm" />
+                                    <input defaultValue={doctor?.jobInstitute} {...register("jobInstitute")} className="border-gray-500 bg-white border p-2 text-sm" />
                                 </div>
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Visiting Address <span className="text-red-500">*</span></label>
-                                    <input {...register("visitingAddress", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
+                                    <input defaultValue={doctor?.visitingAddress} {...register("visitingAddress", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
                                     {errors.visitingAddress && <p className="text-red-500 text-sm">{errors.visitingAddress.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Location <span className="text-red-500">*</span></label>
-                                    <input {...register("location", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
+                                    <input defaultValue={doctor?.location} {...register("location", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
                                     {errors.location && <p className="text-red-500 text-sm">{errors.location.message}</p>}
                                 </div>
 
@@ -711,7 +721,7 @@ const AddNewDoctor = () => {
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Has Chamber?</label>
-                                    <select {...register("hasChamber")} className="border-gray-500 bg-white border p-2 text-sm">
+                                    <select {...register("hasChamber", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
                                         <option value="">Select</option>
                                         <option value="yes">Yes</option>
                                         <option value="no">No</option>
@@ -722,19 +732,19 @@ const AddNewDoctor = () => {
                                     <>
                                         <div className="flex flex-col">
                                             <label className="text-[#6E719A] mb-1 text-sm">Chamber Name <span className="text-red-500">*</span></label>
-                                            <input {...register("chamberName", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
+                                            <input defaultValue={doctor?.chamberName} {...register("chamberName", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
                                             {errors.chamberName && <p className="text-red-500 text-sm">{errors.chamberName.message}</p>}
                                         </div>
 
                                         <div className="flex flex-col">
                                             <label className="text-[#6E719A] mb-1 text-sm">Chamber Address <span className="text-red-500">*</span></label>
-                                            <input {...register("chamberAddress", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
+                                            <input defaultValue={doctor?.chamberAddress} {...register("chamberAddress", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
                                             {errors.chamberAddress && <p className="text-red-500 text-sm">{errors.chamberAddress.message}</p>}
                                         </div>
 
                                         <div className="flex flex-col">
                                             <label className="text-[#6E719A] mb-1 text-sm">Chamber Phone <span className="text-red-500">*</span></label>
-                                            <input {...register("chamberPhone", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
+                                            <input defaultValue={doctor?.chamberPhone} {...register("chamberPhone", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
                                             {errors.chamberPhone && <p className="text-red-500 text-sm">{errors.chamberPhone.message}</p>}
                                         </div>
                                     </>
@@ -780,4 +790,4 @@ const AddNewDoctor = () => {
     );
 };
 
-export default AddNewDoctor;
+export default UpdateDoctor;

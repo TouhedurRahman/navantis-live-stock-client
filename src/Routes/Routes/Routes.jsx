@@ -34,6 +34,7 @@ import OrderDelivery from "../../Pages/Depot/OrderDelivery/OrderDelivery";
 import AddNewDoctor from "../../Pages/Doctor/AddNewDoctor/AddNewDoctor";
 import DoctorDetails from "../../Pages/Doctor/DoctorDetails/DoctorDetails";
 import DoctorList from "../../Pages/Doctor/DoctorList/DoctorList/DoctorList";
+import UpdateDoctor from "../../Pages/Doctor/UpdateDoctor/UpdateDoctor";
 import AddDoctorRequisition from "../../Pages/DoctorRequisition/AddDoctorRequisition/AddDoctorRequisition";
 import PlaceDrReqOrder from "../../Pages/DoctorRequisition/PlaceDrReqOrder/PlaceDrReqOrder";
 import Home from "../../Pages/Home/Home/Home";
@@ -128,6 +129,10 @@ const router = createBrowserRouter([
             {
                 path: '/doctor-details/:id',
                 element: <DoctorDetails />
+            },
+            {
+                path: '/update-doctor/:id',
+                element: <UpdateDoctor />
             },
             /********** Admin **********/
             {
