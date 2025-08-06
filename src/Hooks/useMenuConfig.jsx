@@ -70,6 +70,9 @@ const useMenuConfig = () => {
         doctor: {
             icon: <FaUserDoctor className="mr-2" />,
             links: [
+                ['Zonal Manager', 'Sr. Area Manager', 'Area Manager'].includes(singleUser?.designation) &&
+                { to: '/doctor-request', icon: <VscGitPullRequestGoToChanges className='me-2' />, label: 'Doctor Request' },
+                !['Zonal Manager', 'Sr. Area Manager', 'Area Manager'].includes(singleUser?.designation) &&
                 { to: '/add-new-doctor', icon: <IoIosAddCircle className='me-2' />, label: 'Add new' },
                 { to: '/doctor-list', icon: <FaListUl className='me-2' />, label: 'Doctor List' },
             ],

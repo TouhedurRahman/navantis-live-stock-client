@@ -34,6 +34,7 @@ import OrderDelivery from "../../Pages/Depot/OrderDelivery/OrderDelivery";
 import AddNewDoctor from "../../Pages/Doctor/AddNewDoctor/AddNewDoctor";
 import DoctorDetails from "../../Pages/Doctor/DoctorDetails/DoctorDetails";
 import DoctorList from "../../Pages/Doctor/DoctorList/DoctorList/DoctorList";
+import DoctorRequest from "../../Pages/Doctor/DoctorRequest/DoctorRequest/DoctorRequest";
 import UpdateDoctor from "../../Pages/Doctor/UpdateDoctor/UpdateDoctor";
 import AddDoctorRequisition from "../../Pages/DoctorRequisition/AddDoctorRequisition/AddDoctorRequisition";
 import PlaceDrReqOrder from "../../Pages/DoctorRequisition/PlaceDrReqOrder/PlaceDrReqOrder";
@@ -118,6 +119,10 @@ const router = createBrowserRouter([
                 element: <CustomerList />
             },
             /********** Doctor **********/
+            {
+                path: '/doctor-request',
+                element: <DoctorRequest />
+            },
             {
                 path: '/add-new-doctor',
                 element: <AddNewDoctor />
