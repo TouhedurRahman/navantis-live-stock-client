@@ -26,11 +26,11 @@ const DoctorDetails = () => {
             />
             <div className="bg-white">
                 <h1 className="px-6 py-3 font-bold">Doctor details</h1>
-                <hr className='text-center border border-gray-500 mb-5' />
+                <hr className='text-center border border-gray-500' />
                 <div className="bg-white text-gray-800 p-6 mx-auto space-y-10">
                     {/* Header */}
                     <div className="space-y-1 border-b pb-4">
-                        <p className="text-2xl font-semibold text-[#ffad46]">{doctor.name}</p>
+                        <p className="text-2xl font-semibold">{doctor.name}</p>
                         <p className="text-lg">{doctor.designation}</p>
                         <p className="text-sm text-gray-500">{doctor.speciality}</p>
                     </div>
