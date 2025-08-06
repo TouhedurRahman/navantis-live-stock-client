@@ -1,7 +1,16 @@
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import { useState } from "react";
 import { FaEye, FaTimes } from "react-icons/fa";
+import Swal from "sweetalert2";
+import useApiConfig from "../../../../Hooks/useApiConfig";
+import useAuth from "../../../../Hooks/useAuth";
+import useSingleUser from "../../../../Hooks/useSingleUser";
 
 const DoctorRequestCard = ({ idx, doctor, refetch }) => {
+    const { user } = useAuth();
+    const baseUrl = useApiConfig();
+    const [singleUser] = useSingleUser();
     const [isModalOpen, setModalOpen] = useState(false);
 
     const InfoRow = ({ label, value }) => (
@@ -10,6 +19,42 @@ const DoctorRequestCard = ({ idx, doctor, refetch }) => {
             <span className="text-base text-gray-800 font-medium">{value || "N/A"}</span>
         </div>
     );
+
+    const approvedDoctorMutation = useMutation({
+        mutationFn: async () => {
+            const updatedDoctor = {
+                ...doctor,
+                status: "approved",
+                approvedBy: singleUser?.name,
+                approvedEmail: user?.email
+            }
+            const response = await axios.patch(`${baseUrl}/doctor-status/${doctor._id}`, updatedDoctor);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error approved doctor request:", error);
+        }
+    });
+
+    const handleApprove = async () => {
+        try {
+            await Promise.all([
+                approvedDoctorMutation.mutateAsync()
+            ]);
+
+            refetch();
+            Swal.fire({
+                title: "Success!",
+                text: "Request approved.",
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        } catch (error) {
+            console.error("Error approved request:", error);
+            alert("Failed to approve.");
+        }
+    };
 
     return (
         <>
