@@ -36,6 +36,20 @@ const DoctorRequestCard = ({ idx, doctor, refetch }) => {
         }
     });
 
+    const deniedDoctorMutation = useMutation({
+        mutationFn: async () => {
+            const updatedDoctor = {
+                ...doctor,
+                status: 'denied'
+            }
+            const response = await axios.patch(`${baseUrl}/doctor-status/${doctor._id}`, updatedDoctor);
+            return response.data;
+        },
+        onError: (error) => {
+            console.error("Error denied doctor request:", error);
+        }
+    });
+
     const handleApprove = async () => {
         try {
             await Promise.all([
@@ -54,6 +68,38 @@ const DoctorRequestCard = ({ idx, doctor, refetch }) => {
             console.error("Error approved request:", error);
             alert("Failed to approve.");
         }
+    };
+
+    const handleDeny = () => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, deny!"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await Promise.all([
+                        deniedDoctorMutation.mutateAsync()
+                    ]);
+
+                    refetch();
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Request Denied.",
+                        icon: "success",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                } catch (error) {
+                    console.error("Error denied request:", error);
+                    alert("Failed to deny");
+                }
+            }
+        });
     };
 
     return (
@@ -78,7 +124,7 @@ const DoctorRequestCard = ({ idx, doctor, refetch }) => {
                 </td>
                 <td className="text-center">
                     <button
-                        // onClick={handleDeny}
+                        onClick={handleDeny}
                         title="Deny Request"
                         className="p-2 rounded-[5px] hover:bg-red-100 focus:outline-none"
                     >
