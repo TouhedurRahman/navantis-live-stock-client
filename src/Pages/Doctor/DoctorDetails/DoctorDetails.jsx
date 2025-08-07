@@ -76,8 +76,8 @@ const DoctorDetails = () => {
                             <InfoRow label="Category" value={doctor.category} />
                             <InfoRow label="Practicing Day" value={doctor.practicingDay} />
                             <InfoRow label="Avg. Patient" value={doctor.avgPatient} />
-                            <InfoRow label="Avg. Patient/Day" value={doctor.practicingDay} />
-                            <InfoRow label="Patient Type" value={doctor.patientType} />
+                            <InfoRow label="Avg. Patient/Day" value={doctor.avgPatientPerDay} />
+                            <InfoRow label="Patient Type" value={doctor.practicingType} />
                             <InfoRow label="Market Point" value={doctor.marketPoint} />
                             <InfoRow label="Working Area" value={doctor.workingArea} />
                             <InfoRow label="Doctor Type" value={doctor.doctorType} />

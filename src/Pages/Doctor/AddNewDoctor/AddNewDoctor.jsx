@@ -60,7 +60,7 @@ const AddNewDoctor = () => {
 
         if (!isNaN(day) && !isNaN(week) && day > 0) {
             const avgDay = Math.round(week / day);
-            setValue("avgPatientDay", avgDay);
+            setValue("avgPatientPerDay", avgDay);
 
             if (avgDay >= 20) {
                 setValue("category", "A");
@@ -70,7 +70,7 @@ const AddNewDoctor = () => {
                 setValue("category", "C");
             }
         } else {
-            setValue("avgPatientDay", "");
+            setValue("avgPatientPerDay", "");
             setValue("category", "");
         }
     }, [practicingDay, avgPatient, setValue]);
@@ -511,8 +511,8 @@ const AddNewDoctor = () => {
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Avg. Patient/Day <span className="text-red-500">*</span></label>
-                                    <input type="number" {...register("avgPatientDay", { required: "Required" })} readOnly className="border-gray-500 bg-gray-50 border p-2 text-sm" />
-                                    {errors.avgPatientDay && <p className="text-red-500 text-sm">{errors.avgPatientDay.message}</p>}
+                                    <input type="number" {...register("avgPatientPerDay", { required: "Required" })} readOnly className="border-gray-500 bg-gray-50 border p-2 text-sm" />
+                                    {errors.avgPatientPerDay && <p className="text-red-500 text-sm">{errors.avgPatientPerDay.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">

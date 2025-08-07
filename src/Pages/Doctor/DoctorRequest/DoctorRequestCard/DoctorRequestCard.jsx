@@ -184,7 +184,7 @@ const DoctorRequestCard = ({ idx, doctor, refetch }) => {
                                         ['Practicing Day', doctor.practicingDay],
                                         ['Avg. Patient', doctor.avgPatient],
                                         ['Avg. Patient/Day', doctor.avgPatientPerDay],
-                                        ['Patient Type', doctor.patientType],
+                                        ['Patient Type', doctor.practicingType],
                                         ['Market Point', doctor.marketPoint],
                                         ['Working Area', doctor.workingArea],
                                         ['Doctor Type', doctor.doctorType],
