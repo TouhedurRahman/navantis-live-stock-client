@@ -26,11 +26,11 @@ const MyDoctor = () => {
         (
             location.pathname.includes('/doctor-admin')
             &&
-            ["approved", "pending"].includes(doctor.status)
+            ["approved"].includes(doctor.status)
         )
         ||
         (
-            ["approved", "pending"].includes(doctor.status)
+            ["approved"].includes(doctor.status)
             && (
                 doctor.territory === singleUser.territory
                 ||
