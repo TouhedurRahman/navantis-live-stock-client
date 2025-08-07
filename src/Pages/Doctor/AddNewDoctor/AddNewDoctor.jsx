@@ -7,6 +7,9 @@ import Swal from "sweetalert2";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import useApiConfig from "../../../Hooks/useApiConfig";
 import useCustomer from "../../../Hooks/useCustomer";
+import useDrDesignations from "../../../Hooks/useDrDesignations";
+import useDrQualifications from "../../../Hooks/useDrQualifications";
+import useDrSpecialities from "../../../Hooks/useDrSpecialities";
 import useSingleUser from "../../../Hooks/useSingleUser";
 import useUniqueProducts from "../../../Hooks/useUniqueProducts";
 
@@ -25,6 +28,10 @@ const AddNewDoctor = () => {
     const [singleUser] = useSingleUser();
     const [customers] = useCustomer();
     const baseUrl = useApiConfig();
+
+    const [designations] = useDrDesignations();
+    const [specialties] = useDrSpecialities();
+    const [qualifications] = useDrQualifications();
 
     const [step, setStep] = useState(1);
     const [completedSteps, setCompletedSteps] = useState([]);
@@ -313,11 +320,17 @@ const AddNewDoctor = () => {
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Designation <span className="text-red-500">*</span></label>
-                                    <input
+                                    <select
                                         {...register("designation", { required: "Required" })}
-                                        placeholder="Enter designation"
-                                        className="border-gray-500 bg-white border p-2 text-sm"
-                                    />
+                                        className="border-gray-500 bg-white border p-2 text-sm cursor-pointer"
+                                    >
+                                        <option value="" disabled>Select Dr. Designation</option>
+                                        {designations.map((designation, index) => (
+                                            <option key={index} value={designation}>
+                                                {designation}
+                                            </option>
+                                        ))}
+                                    </select>
                                     {errors.designation && <p className="text-red-500 text-sm">{errors.designation.message}</p>}
                                 </div>
 
@@ -396,14 +409,14 @@ const AddNewDoctor = () => {
                                     <label className="text-[#6E719A] mb-1 text-sm">Speciality <span className="text-red-500">*</span></label>
                                     <select
                                         {...register("speciality", { required: "Required" })}
-                                        className="border-gray-500 bg-white border p-2 text-sm"
+                                        className="border-gray-500 bg-white border p-2 text-sm cursor-pointer"
                                     >
-                                        <option value="">Select</option>
-                                        <option>General</option>
-                                        <option>Dermatologist</option>
-                                        <option>Aesthetic Dermatologist</option>
-                                        <option>Gynecologist</option>
-                                        <option>Pediatric</option>
+                                        <option value="" disabled>Select Dr. Speciality</option>
+                                        {specialties.map((speciality, index) => (
+                                            <option key={index} value={speciality}>
+                                                {speciality}
+                                            </option>
+                                        ))}
                                     </select>
                                     {errors.speciality && <p className="text-red-500 text-sm">{errors.speciality.message}</p>}
                                 </div>
@@ -412,12 +425,14 @@ const AddNewDoctor = () => {
                                     <label className="text-[#6E719A] mb-1 text-sm">Qualification <span className="text-red-500">*</span></label>
                                     <select
                                         {...register("qualification", { required: "Required" })}
-                                        className="border-gray-500 bg-white border p-2 text-sm"
+                                        className="border-gray-500 bg-white border p-2 text-sm cursor pointer"
                                     >
-                                        <option value="">Select</option>
-                                        <option>MBBS</option>
-                                        <option>FCPS</option>
-                                        <option>DDV</option>
+                                        <option value="" disabled>Select Dr. Qualification</option>
+                                        {qualifications.map((qualification, index) => (
+                                            <option key={index} value={qualification}>
+                                                {qualification}
+                                            </option>
+                                        ))}
                                     </select>
                                     {errors.qualification && <p className="text-red-500 text-sm">{errors.qualification.message}</p>}
                                 </div>
