@@ -51,6 +51,30 @@ const AddNewDoctor = () => {
     const selectedDistrictId = watch("district");
     const selectedUpazilaId = watch("upazila");
 
+    const practicingDay = watch("practicingDay");
+    const avgPatient = watch("avgPatient");
+
+    useEffect(() => {
+        const day = parseFloat(practicingDay);
+        const week = parseFloat(avgPatient);
+
+        if (!isNaN(day) && !isNaN(week) && day > 0) {
+            const avgDay = Math.round(week / day);
+            setValue("avgPatientDay", avgDay);
+
+            if (avgDay >= 20) {
+                setValue("category", "A");
+            } else if (avgDay >= 10) {
+                setValue("category", "B");
+            } else {
+                setValue("category", "C");
+            }
+        } else {
+            setValue("avgPatientDay", "");
+            setValue("category", "");
+        }
+    }, [practicingDay, avgPatient, setValue]);
+
     useEffect(() => {
         axios.get("https://bdapi.vercel.app/api/v.1/division")
             .then(res => setDivisions(res.data.data))
@@ -474,32 +498,32 @@ const AddNewDoctor = () => {
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                                 <div className="flex flex-col">
-                                    <label className="text-[#6E719A] mb-1 text-sm">Category <span className="text-red-500">*</span></label>
-                                    <select {...register("category", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
-                                        <option value="">Select</option>
-                                        <option>A</option>
-                                        <option>B</option>
-                                        <option>C</option>
-                                    </select>
-                                    {errors.category && <p className="text-red-500 text-sm">{errors.category.message}</p>}
-                                </div>
-
-                                <div className="flex flex-col">
-                                    <label className="text-[#6E719A] mb-1 text-sm">Practicing Day <span className="text-red-500">*</span></label>
+                                    <label className="text-[#6E719A] mb-1 text-sm">Practicing Day/Week <span className="text-red-500">*</span></label>
                                     <input {...register("practicingDay", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" onWheel={(e) => e.target.blur()} />
                                     {errors.practicingDay && <p className="text-red-500 text-sm">{errors.practicingDay.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">
-                                    <label className="text-[#6E719A] mb-1 text-sm">Avg. Patient <span className="text-red-500">*</span></label>
+                                    <label className="text-[#6E719A] mb-1 text-sm">Avg. Patient/Week <span className="text-red-500">*</span></label>
                                     <input type="number" {...register("avgPatient", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" onWheel={(e) => e.target.blur()} />
                                     {errors.avgPatient && <p className="text-red-500 text-sm">{errors.avgPatient.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Avg. Patient/Day <span className="text-red-500">*</span></label>
-                                    <input type="number" {...register("avgPatientDay", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" onWheel={(e) => e.target.blur()} />
+                                    <input type="number" {...register("avgPatientDay", { required: "Required" })} readOnly className="border-gray-500 bg-gray-50 border p-2 text-sm" />
                                     {errors.avgPatientDay && <p className="text-red-500 text-sm">{errors.avgPatientDay.message}</p>}
+                                </div>
+
+                                <div className="flex flex-col">
+                                    <label className="text-[#6E719A] mb-1 text-sm">Category <span className="text-red-500">*</span></label>
+                                    <select {...register("category", { required: "Required" })} className="border-gray-500 bg-gray-50 border p-2 text-sm" disabled>
+                                        <option value="">Select</option>
+                                        <option value="A">A (20+ patients/day)</option>
+                                        <option value="B">B (10-19 patients/day)</option>
+                                        <option value="C">C (&lt;10 patients/day)</option>
+                                    </select>
+                                    {errors.category && <p className="text-red-500 text-sm">{errors.category.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">
