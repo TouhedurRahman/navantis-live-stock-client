@@ -37,6 +37,7 @@ const useMenuConfig = () => {
                 { to: '/price-update', icon: <TbCoinTakaFilled className='me-2' />, label: 'Price Update' },
                 { to: '/dmg-exp', icon: <FaTrashAlt className='me-2' />, label: 'Damaged & Exp.' },
                 { to: '/expired-returns', icon: <GiReturnArrow className='me-2' />, label: 'Expired Returns' },
+                { to: '/doctor-admin', icon: <FaUserDoctor className='me-2' />, label: 'Doctor' },
                 { to: '/customer-admin', icon: <AiFillMedicineBox className='me-2' />, label: 'Customer' },
             ],
         },

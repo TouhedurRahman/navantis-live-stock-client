@@ -8,6 +8,7 @@ import AdminDamagedExpiredList from "../../Pages/Admin/AdminDamagedExpiredList/A
 import Customer from "../../Pages/Admin/Customer/Customer";
 import DamageRequest from "../../Pages/Admin/DamageRequest/DamageRequest";
 import DepotRequest from "../../Pages/Admin/DepotRequest/DepotRequest";
+import Doctor from "../../Pages/Admin/Doctor/Doctor";
 import ExpireRequest from "../../Pages/Admin/ExpireRequest/ExpireRequest";
 import ExReturnReq from "../../Pages/Admin/ExReturnReq/ExReturnReq";
 import MissingProductsList from "../../Pages/Admin/MissingProductsList/MissingProductsList";
@@ -179,6 +180,10 @@ const router = createBrowserRouter([
             {
                 path: "/dmg-exp",
                 element: <AdminDamagedExpiredList />
+            },
+            {
+                path: "/doctor-admin",
+                element: <Doctor />
             },
             {
                 path: "/customer-admin",
