@@ -503,13 +503,16 @@ const AddNewDoctor = () => {
                                 </div>
 
                                 <div className="flex flex-col">
-                                    <label className="text-[#6E719A] mb-1 text-sm">Patient Type <span className="text-red-500">*</span></label>
-                                    <select {...register("patientType", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
-                                        <option value="">Select</option>
-                                        <option>Child</option>
-                                        <option>Gyne</option>
+                                    <label className="text-[#6E719A] mb-1 text-sm">Practicing Type <span className="text-red-500">*</span></label>
+                                    <select {...register("practicingType", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
+                                        <option value="">Select a Practicing Type</option>
+                                        <option>Regular</option>
+                                        <option>Guest</option>
+                                        <option>Year</option>
+                                        <option>CNH</option>
+                                        <option>KOL</option>
                                     </select>
-                                    {errors.patientType && <p className="text-red-500 text-sm">{errors.patientType.message}</p>}
+                                    {errors.practicingType && <p className="text-red-500 text-sm">{errors.practicingType.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">
@@ -524,16 +527,22 @@ const AddNewDoctor = () => {
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Working Area <span className="text-red-500">*</span></label>
-                                    <select {...register("workingArea", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm">
+                                    <select {...register("workingArea", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm cursor-pointer">
                                         <option value="">Select</option>
-                                        <option>Colleague Territory</option>
+                                        <option>HQ</option>
+                                        <option>Ex. HQ</option>
+                                        <option>Outstation</option>
                                     </select>
                                     {errors.workingArea && <p className="text-red-500 text-sm">{errors.workingArea.message}</p>}
                                 </div>
 
                                 <div className="flex flex-col">
                                     <label className="text-[#6E719A] mb-1 text-sm">Doctor Type <span className="text-red-500">*</span></label>
-                                    <input {...register("doctorType", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm" />
+                                    <select {...register("doctorType", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm cursor-pointer">
+                                        <option value="">Select</option>
+                                        <option>Qualified</option>
+                                        <option>Non Qualified</option>
+                                    </select>
                                     {errors.doctorType && <p className="text-red-500 text-sm">{errors.doctorType.message}</p>}
                                 </div>
 
