@@ -181,10 +181,10 @@ const DoctorRequestCard = ({ idx, doctor, refetch }) => {
                                     title: 'MISC Information',
                                     rows: [
                                         ['Category', doctor.category],
-                                        ['Practicing Day', doctor.practicingDay],
-                                        ['Avg. Patient', doctor.avgPatient],
+                                        ['Practicing Day/Week', doctor.practicingDay],
+                                        ['Avg. Patient/Week', doctor.avgPatient],
                                         ['Avg. Patient/Day', doctor.avgPatientPerDay],
-                                        ['Patient Type', doctor.practicingType],
+                                        ['Practicing Type', doctor.practicingType],
                                         ['Market Point', doctor.marketPoint],
                                         ['Working Area', doctor.workingArea],
                                         ['Doctor Type', doctor.doctorType],

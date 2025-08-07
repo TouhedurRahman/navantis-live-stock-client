@@ -74,10 +74,10 @@ const DoctorDetails = () => {
                         </div>
                         <div className="grid md:grid-cols-3 gap-6">
                             <InfoRow label="Category" value={doctor.category} />
-                            <InfoRow label="Practicing Day" value={doctor.practicingDay} />
-                            <InfoRow label="Avg. Patient" value={doctor.avgPatient} />
+                            <InfoRow label="Practicing Day/Week" value={doctor.practicingDay} />
+                            <InfoRow label="Avg. Patient/Week" value={doctor.avgPatient} />
                             <InfoRow label="Avg. Patient/Day" value={doctor.avgPatientPerDay} />
-                            <InfoRow label="Patient Type" value={doctor.practicingType} />
+                            <InfoRow label="Practicing Type" value={doctor.practicingType} />
                             <InfoRow label="Market Point" value={doctor.marketPoint} />
                             <InfoRow label="Working Area" value={doctor.workingArea} />
                             <InfoRow label="Doctor Type" value={doctor.doctorType} />
