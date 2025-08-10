@@ -1,7 +1,7 @@
 import { MdOutlineVpnLock } from "react-icons/md";
 import useLogOut from "../../Hooks/useLogOut";
 
-const NotAssignedDesignation = () => {
+const AccessDenied = () => {
     const handleLogout = useLogOut();
 
     return (
@@ -36,4 +36,4 @@ const NotAssignedDesignation = () => {
     );
 };
 
-export default NotAssignedDesignation;
+export default AccessDenied;

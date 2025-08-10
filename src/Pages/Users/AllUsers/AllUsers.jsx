@@ -104,6 +104,7 @@ const AllUsers = () => {
                                                 <th className="text-center">Image</th>
                                                 <th>Name</th>
                                                 <th>Email</th>
+                                                <th className="text-center">Employment Status</th>
                                                 <th className="text-center">Action</th>
                                             </tr>
                                         </thead>

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { FaEdit, FaTimes, FaTrashAlt, FaUserClock } from "react-icons/fa";
+import { FaEdit, FaTimes, FaToggleOff, FaToggleOn, FaTrashAlt, FaUserClock } from "react-icons/fa";
 import { FaEye, FaUserShield } from "react-icons/fa6";
 import Swal from "sweetalert2";
 import UpdateAccessModal from "../../../Components/UpdateAccessModal/UpdateAccessModal";
@@ -18,6 +18,7 @@ const UsersCard = ({ user, idx, refetch }) => {
     const [showRolePopup, setShowRolePopup] = useState(false);
     const [newRole, setNewRole] = useState("");
 
+    const [employmentStatus, setEmploymentStatus] = useState(user?.employmentStatus || "active");
     const [userUpdateModal, setUserUpdateModal] = useState(false);
     const [accessModal, setAccessModal] = useState(false);
 
@@ -27,6 +28,43 @@ const UsersCard = ({ user, idx, refetch }) => {
             setNewRole(user.designation);
         }
     }, [user]);
+
+    const handleStatusChange = () => {
+        const newStatus = employmentStatus === "active" ? "inactive" : "active";
+
+        Swal.fire({
+            title: `Change status to "${newStatus}"?`,
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: newStatus === "active" ? "#16A34A" : "#DC2626",
+            cancelButtonColor: "#6B7280",
+            confirmButtonText: "Yes, change it",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios
+                    .patch(`${baseUrl}/user/${user.email}`, { employmentStatus: newStatus })
+                    .then((res) => {
+                        if (res.data.modifiedCount > 0) {
+                            setEmploymentStatus(newStatus);
+                            refetch();
+                            Swal.fire({
+                                icon: "success",
+                                title: "Updated!",
+                                text: `Status changed to ${newStatus}.`,
+                                confirmButtonColor: "#3B82F6",
+                            });
+                        }
+                    })
+                    .catch(() => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: "Failed to update status.",
+                        });
+                    });
+            }
+        });
+    };
 
     const handleUpdateDesignation = () => {
         if (!newRole.trim()) {
@@ -141,6 +179,26 @@ const UsersCard = ({ user, idx, refetch }) => {
                 </td>
                 <td>
                     <p>{user.email}</p>
+                </td>
+                <td className="text-center">
+                    <span
+                        onClick={handleStatusChange}
+                        className={`inline-flex items-center gap-2 px-3 py-1 text-sm font-medium rounded-full cursor-pointer transition-all duration-300 ${employmentStatus === "active"
+                            ? "bg-green-100 text-green-600 hover:bg-theme-orange"
+                            : "bg-red-100 text-red-600 hover:bg-theme-orange"
+                            }`}
+                        title="Click to change status"
+                    >
+                        {employmentStatus === "active" ? (
+                            <>
+                                <FaToggleOn className="text-green-500" /> Active
+                            </>
+                        ) : (
+                            <>
+                                <FaToggleOff className="text-red-500" /> Inactive
+                            </>
+                        )}
+                    </span>
                 </td>
                 <th>
                     <div className="flex justify-center items-center space-x-4 text-md">

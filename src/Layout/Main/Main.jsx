@@ -1,7 +1,7 @@
 import { ToastContainer } from 'react-toastify';
+import AccessDenied from '../../Components/AccessDenied/AccessDenied';
 import Loader from '../../Components/Loader/Loader';
 import NonVerified from '../../Components/NonVerified/NonVerified';
-import NotAssignedDesignation from '../../Components/NotAssignedDesignation/NotAssignedDesignation';
 import useAuth from '../../Hooks/useAuth';
 import useSingleUser from '../../Hooks/useSingleUser';
 import Navbar from '../../Pages/Shared/Navbar/Navbar';
@@ -12,6 +12,7 @@ const Main = () => {
     const [singleUser, loadingSingleUser] = useSingleUser();
 
     const userDesignation = singleUser?.designation ?? null;
+    const userEmploymentStatus = singleUser?.employmentStatus ?? null;
 
     if (!user) {
         return <Login />;
@@ -32,11 +33,15 @@ const Main = () => {
                     :
                     <>
                         {
-                            userDesignation !== null
+                            (
+                                (userDesignation === null)
+                                ||
+                                (userEmploymentStatus === "inactive")
+                            )
                                 ?
-                                <Navbar />
+                                <AccessDenied />
                                 :
-                                <NotAssignedDesignation />
+                                <Navbar />
                         }
                     </>
             }
