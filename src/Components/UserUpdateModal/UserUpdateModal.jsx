@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { FaTimes } from 'react-icons/fa';
+import { FaEdit, FaTimes } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import useAllUsers from '../../Hooks/useAllUsers';
 import useApiConfig from '../../Hooks/useApiConfig';
@@ -196,38 +196,70 @@ const UserUpdateModal = ({ user, onClose }) => {
                 </div>
                 <div className="p-5 rounded-lg shadow-sm flex-1 overflow-y-auto">
                     {!isEditing ? (
-                        <div>
-                            <div className="w-full flex justify-between items-center">
-                                <div className="w-1/2 flex justify-center items-center gap-3">
-                                    <div className="avatar">
-                                        <div className="h-24 w-24 rounded-full">
-                                            <img
-                                                src={user.profilePicture || "https://i.ibb.co/6r3zmMg/user.jpg"}
-                                                alt={user.name}
-                                            />
-                                        </div>
+                        <div className="max-w-3xl mx-auto p-6 bg-white border border-gray-200">
+                            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-sm">
+                                {/* Profile Picture */}
+                                <div className="flex-shrink-0">
+                                    <div className="w-28 h-28 rounded-full overflow-hidden shadow-sm border-2 border-blue-300">
+                                        <img
+                                            src={user.profilePicture || "https://i.ibb.co/6r3zmMg/user.jpg"}
+                                            alt={user.name}
+                                            className="object-cover w-full h-full"
+                                        />
                                     </div>
                                 </div>
-                                <div className="w-1/2 text-center font-medium">
-                                    <p className="text-2xl">{user.name}</p>
-                                    <p className="text-sm">{user.designation}</p>
-                                    <p className="text-sm">{user.base}</p>
+
+                                {/* User Info */}
+                                <div className="flex-1">
+                                    <div className="text-center sm:text-left">
+                                        <p className="text-2xl font-semibold text-gray-900 relative inline-block pb-1">
+                                            {user.name}
+                                            <span className="absolute left-0 bottom-0 h-0.5 w-12 bg-[#FFAD46] rounded"></span>
+                                        </p>
+                                        <p className="text-gray-600 mt-2 font-medium">{user.designation}</p>
+                                        <p className="text-blue-600 mt-1 font-medium">{user?.base}</p>
+                                    </div>
+
                                     {user.base === "Field" && (
-                                        <>
-                                            <p className="text-sm">Territory: {user.territory}</p>
-                                            <p className="text-sm">Area: {user.parentTerritory}</p>
-                                            <p className="text-sm">Area Manager: {user.parentName}</p>
-                                            <p className="text-sm">Zonal Manager: {user.grandParentName}</p>
-                                        </>
+                                        <div className="mt-5 space-y-2 text-gray-700 max-w-md mx-auto sm:mx-0 font-medium">
+                                            {user.territory === user.parentTerritory ? (
+                                                <>
+                                                    <p>
+                                                        <span className="text-gray-500 font-normal">Territory:</span> {user.territory}
+                                                    </p>
+                                                    <p>
+                                                        <span className="text-gray-500 font-normal">Zonal Manager:</span> {user?.parentName || "Vacant"}
+                                                    </p>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <p>
+                                                        <span className="text-gray-500 font-normal">Territory:</span> {user.territory}
+                                                    </p>
+                                                    <p>
+                                                        <span className="text-gray-500 font-normal">Area:</span> {user.parentTerritory}
+                                                    </p>
+                                                    <p>
+                                                        <span className="text-gray-500 font-normal">Area Manager:</span> {user?.parentName || "Vacant"}
+                                                    </p>
+                                                    <p>
+                                                        <span className="text-gray-500 font-normal">Zonal Manager:</span> {user?.grandParentName || "Vacant"}
+                                                    </p>
+                                                </>
+                                            )}
+                                        </div>
                                     )}
                                 </div>
                             </div>
 
-                            <div className="flex justify-center mt-5">
+                            {/* Edit Button */}
+                            <div className="flex justify-center mt-8">
                                 <button
                                     onClick={() => setIsEditing(true)}
-                                    className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
+                                    type="button"
+                                    className="inline-flex items-center gap-2 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md shadow-sm transition duration-300"
                                 >
+                                    <FaEdit />
                                     Edit
                                 </button>
                             </div>
