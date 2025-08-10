@@ -32,6 +32,7 @@ const UserUpdateModal = ({ user, onClose }) => {
 
     const [allUsers, , refetch] = useAllUsers();
     const [territories, loading] = useTerritories();
+    const [isEditing, setIsEditing] = useState(false);
 
     if (loading) <Loader />
 
@@ -193,130 +194,176 @@ const UserUpdateModal = ({ user, onClose }) => {
                         <FaTimes size={20} />
                     </button>
                 </div>
-
-                {/* Main content */}
-                <form onSubmit={handleSubmit(onSubmit)} className="p-5 rounded-lg shadow-sm flex-1 overflow-y-auto">
-                    <div className='w-full flex justify-between items-center'>
-                        <div className="w-1/2 flex justify-center items-center gap-3">
-                            <div className="avatar">
-                                <div className="h-24 w-24 rounded-full">
-                                    <img
-                                        src={
-                                            user.profilePicture
-                                                ? `${user.profilePicture}`
-                                                : "https://i.ibb.co/6r3zmMg/user.jpg"
-                                        }
-                                        alt="Loading..."
-                                    />
+                <div className="p-5 rounded-lg shadow-sm flex-1 overflow-y-auto">
+                    {!isEditing ? (
+                        <div>
+                            <div className="w-full flex justify-between items-center">
+                                <div className="w-1/2 flex justify-center items-center gap-3">
+                                    <div className="avatar">
+                                        <div className="h-24 w-24 rounded-full">
+                                            <img
+                                                src={user.profilePicture || "https://i.ibb.co/6r3zmMg/user.jpg"}
+                                                alt={user.name}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="w-1/2 text-center font-medium">
+                                    <p className="text-2xl">{user.name}</p>
+                                    <p className="text-sm">{user.designation}</p>
+                                    <p className="text-sm">{user.base}</p>
+                                    {user.base === "Field" && (
+                                        <>
+                                            <p className="text-sm">Territory: {user.territory}</p>
+                                            <p className="text-sm">Area: {user.parentTerritory}</p>
+                                            <p className="text-sm">Area Manager: {user.parentName}</p>
+                                            <p className="text-sm">Zonal Manager: {user.grandParentName}</p>
+                                        </>
+                                    )}
                                 </div>
                             </div>
-                        </div>
-                        <div className='w-1/2 text-center font-medium'>
-                            <p className='text-2xl'>{user.name}</p>
-                            <p className='text-sm'>{user.designation}</p>
-                        </div>
-                    </div>
 
-                    {/* Base Selection */}
-                    <div className="flex flex-col mt-4">
-                        <label className="text-[#6E719A] mb-1 text-sm">
-                            Base <span className="text-red-500">*</span>
-                        </label>
-                        <select
-                            defaultValue={user?.base}
-                            {...register("base", { required: "Base selection is required" })}
-                            className="border-gray-500 bg-white border p-2 text-sm"
-                        >
-                            <option value="">Select Base</option>
-                            <option value="Head Quarter">Head Quarter</option>
-                            <option value="Field">Field</option>
-                        </select>
-                        {errors.base && <p className="text-red-500 text-sm">{errors.base.message}</p>}
-                    </div>
+                            <div className="flex justify-center mt-5">
+                                <button
+                                    onClick={() => setIsEditing(true)}
+                                    className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
+                                >
+                                    Edit
+                                </button>
+                            </div>
+                        </div>
+                    ) : (
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                            <div className='w-full flex justify-between items-center'>
+                                <div className="w-1/2 flex justify-center items-center gap-3">
+                                    <div className="avatar">
+                                        <div className="h-24 w-24 rounded-full">
+                                            <img
+                                                src={
+                                                    user.profilePicture
+                                                        ? `${user.profilePicture}`
+                                                        : "https://i.ibb.co/6r3zmMg/user.jpg"
+                                                }
+                                                alt="Loading..."
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='w-1/2 text-center font-medium'>
+                                    <p className='text-2xl'>{user.name}</p>
+                                    <p className='text-sm'>{user.designation}</p>
+                                </div>
+                            </div>
 
-                    {base === "Field" && (
-                        <>
-                            {/* Territory Dropdown */}
+                            {/* Base Selection */}
                             <div className="flex flex-col mt-4">
                                 <label className="text-[#6E719A] mb-1 text-sm">
-                                    Territory <span className="text-red-500">*</span>
+                                    Base <span className="text-red-500">*</span>
                                 </label>
                                 <select
-                                    {...register("territory", { required: "Territory is required" })}
+                                    // defaultValue={user?.base}
+                                    {...register("base", { required: "Base selection is required" })}
                                     className="border-gray-500 bg-white border p-2 text-sm"
-                                    defaultValue={user?.territory}
                                 >
-                                    <option value="">Select Territory</option>
-                                    {(territories || []).map(t => (
-                                        <option key={t._id} value={t.territory}>
-                                            {t.territory}
-                                        </option>
-                                    ))}
+                                    <option value="">Select Base</option>
+                                    <option value="Head Quarter">Head Quarter</option>
+                                    <option value="Field">Field</option>
                                 </select>
-                                {errors.territory && <p className="text-red-500 text-sm">{errors.territory.message}</p>}
+                                {errors.base && <p className="text-red-500 text-sm">{errors.base.message}</p>}
                             </div>
 
-                            {/* Parent Selection */}
-                            {parent && (
-                                <div className="mt-4">
-                                    <label htmlFor="parent" className="text-[#6E719A] mb-1 text-sm">
-                                        {parent} <span className="text-red-500">*</span>
-                                    </label>
-                                    <select
-                                        id="parent"
-                                        {...register('parent')}
-                                        className="w-full mt-1 border-gray-500 bg-white border p-2 text-sm"
-                                        defaultValue={user?.parentId}
-                                    >
-                                        <option value="">Select {parent}</option>
-                                        {managers.filter(u =>
-                                            u.designation === parent ||
-                                            (parent === "Area Manager" && u.designation === "Sr. Area Manager")
-                                        ).map(manager => (
-                                            <option key={manager._id} value={manager._id}>{manager.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
+                            {base === "Field" && (
+                                <>
+                                    {/* Territory Dropdown */}
+                                    <div className="flex flex-col mt-4">
+                                        <label className="text-[#6E719A] mb-1 text-sm">
+                                            Territory <span className="text-red-500">*</span>
+                                        </label>
+                                        <select
+                                            {...register("territory", { required: "Territory is required" })}
+                                            className="border-gray-500 bg-white border p-2 text-sm"
+                                            defaultValue={user?.territory}
+                                        >
+                                            <option value="">Select Territory</option>
+                                            {(territories || []).map(t => (
+                                                <option key={t._id} value={t.territory}>
+                                                    {t.territory}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {errors.territory && <p className="text-red-500 text-sm">{errors.territory.message}</p>}
+                                    </div>
+
+                                    {/* Parent Selection */}
+                                    {parent && (
+                                        <div className="mt-4">
+                                            <label htmlFor="parent" className="text-[#6E719A] mb-1 text-sm">
+                                                {parent} <span className="text-red-500">*</span>
+                                            </label>
+                                            <select
+                                                id="parent"
+                                                {...register('parent')}
+                                                className="w-full mt-1 border-gray-500 bg-white border p-2 text-sm"
+                                                defaultValue={user?.parentId}
+                                            >
+                                                <option value="">Select {parent}</option>
+                                                {managers.filter(u =>
+                                                    u.designation === parent ||
+                                                    (parent === "Area Manager" && u.designation === "Sr. Area Manager")
+                                                ).map(manager => (
+                                                    <option key={manager._id} value={manager._id}>{manager.name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    )}
+
+                                    {/* Grandparent Selection */}
+                                    {grandparent && (
+                                        <div className="mt-4">
+                                            <label htmlFor="grandparent" className="text-[#6E719A] mb-1 text-sm">
+                                                {grandparent}
+                                            </label>
+                                            <select
+                                                id="grandparent"
+                                                {...register('grandparent')}
+                                                className="w-full mt-1 border-gray-500 bg-white border p-2 text-sm"
+                                                defaultValue={user?.grandParentId}
+                                            >
+                                                <option value="">Select {grandparent}</option>
+                                                {managers.filter(u => u.designation === grandparent).map(manager => (
+                                                    <option key={manager._id} value={manager._id}>{manager.name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    )}
+
+                                    {/* Hidden parentTerritory input */}
+                                    <input
+                                        type="hidden"
+                                        {...register("parentTerritory")}
+                                        value={watch("parentTerritory")}
+                                    />
+                                </>
                             )}
 
-                            {/* Grandparent Selection */}
-                            {grandparent && (
-                                <div className="mt-4">
-                                    <label htmlFor="grandparent" className="text-[#6E719A] mb-1 text-sm">
-                                        {grandparent}
-                                    </label>
-                                    <select
-                                        id="grandparent"
-                                        {...register('grandparent')}
-                                        className="w-full mt-1 border-gray-500 bg-white border p-2 text-sm"
-                                        defaultValue={user?.grandParentId}
-                                    >
-                                        <option value="">Select {grandparent}</option>
-                                        {managers.filter(u => u.designation === grandparent).map(manager => (
-                                            <option key={manager._id} value={manager._id}>{manager.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                            )}
-
-                            {/* Hidden parentTerritory input */}
-                            <input
-                                type="hidden"
-                                {...register("parentTerritory")}
-                                value={watch("parentTerritory")}
-                            />
-                        </>
+                            <div className="flex justify-between mt-5">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsEditing(false)}
+                                    className="px-4 py-2 bg-gray-400 text-white rounded-md hover:bg-gray-500"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                                >
+                                    Update
+                                </button>
+                            </div>
+                        </form>
                     )}
-
-                    <div>
-                        <button
-                            type="submit"
-                            className="w-full mx-auto my-5 py-2 text-white bg-blue-500 rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                            Update
-                        </button>
-                    </div>
-                </form>
+                </div>
 
                 {/* Footer */}
                 <div className="flex justify-end px-5 py-4 border-t border-gray-200">
