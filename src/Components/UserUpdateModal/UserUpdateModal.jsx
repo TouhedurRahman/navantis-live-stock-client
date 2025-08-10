@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import useAllUsers from '../../Hooks/useAllUsers';
 import useApiConfig from '../../Hooks/useApiConfig';
 import useTerritories from '../../Hooks/useTerritories';
+import Loader from '../Loader/Loader';
 
 const hierarchy = {
     "Managing Director": [],
@@ -30,7 +31,9 @@ const UserUpdateModal = ({ user, onClose }) => {
     const baseUrl = useApiConfig();
 
     const [allUsers, , refetch] = useAllUsers();
-    const [territories] = useTerritories();
+    const [territories, loading] = useTerritories();
+
+    if (loading) <Loader />
 
     const {
         register,
@@ -90,10 +93,22 @@ const UserUpdateModal = ({ user, onClose }) => {
                 } else if (parent?.includes("Zonal")) {
                     setValue('parent', zonalManager?._id || '');
                     setValue('grandparent', '');
+                } else {
+                    setValue('parent', '');
+                    setValue('grandparent', '');
                 }
 
                 setValue('parentTerritory', selected.parentTerritory || '');
+            } else {
+                setValue('parent', '');
+                setValue('grandparent', '');
+                setValue('parentTerritory', '');
             }
+        } else {
+            setValue('territory', '');
+            setValue('parent', '');
+            setValue('grandparent', '');
+            setValue('parentTerritory', '');
         }
     }, [selectedTerritory, base, parent, grandparent, managers, territories, setValue]);
 
@@ -232,7 +247,7 @@ const UserUpdateModal = ({ user, onClose }) => {
                                     defaultValue={user?.territory}
                                 >
                                     <option value="">Select Territory</option>
-                                    {territories.map(t => (
+                                    {(territories || []).map(t => (
                                         <option key={t._id} value={t.territory}>
                                             {t.territory}
                                         </option>
