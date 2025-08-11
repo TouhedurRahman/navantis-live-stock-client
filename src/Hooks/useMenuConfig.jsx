@@ -131,7 +131,7 @@ const useMenuConfig = () => {
                 { to: '/sales-returns', icon: <TbReportAnalytics className='me-2' />, label: 'Sales Returns' },
                 { to: '/products-sales-returns', icon: <TbReportAnalytics className='me-2' />, label: 'Products Sales Returns' },
                 { to: '/expire-returns', icon: <TbReportAnalytics className='me-2' />, label: 'Expire Returns' },
-                { to: '/cus-inv-sales', icon: <TbReportAnalytics className='me-2' />, label: 'Customer Inv & Sales' },
+                // { to: '/cus-inv-sales', icon: <TbReportAnalytics className='me-2' />, label: 'Customer Inv & Sales' },
             ],
         },
     };

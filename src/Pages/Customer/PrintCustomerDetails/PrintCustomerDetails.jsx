@@ -54,6 +54,9 @@ const PrintCustomerDetails = ({ filteredCustomers = [] }) => {
                     <td>
                         <p>${c.address}</p>
                     </td>
+                    <td style="text-align: center">
+                        <p>${c.mobile}</p>
+                    </td>
                     <td>
                         <p>${[...(c.payMode || [])].reverse().join(", ")}</p>
                     </td>
@@ -75,8 +78,9 @@ const PrintCustomerDetails = ({ filteredCustomers = [] }) => {
                         <thead>
                             <tr>
                                 <th style='text-align: center; width: 10%'>Customer<br />ID</th>
-                                <th style='width: 30%'>Customer Name</th>
-                                <th style='width: 30%'>Customer Address</th>
+                                <th style='width: 23%'>Customer Name</th>
+                                <th style='width: 23%'>Customer Address</th>
+                                <th style='width: 14%; text-align: center'>Phone</th>
                                 <th style='width: 10%'>Pay Mode</th>
                                 <th style='text-align: right; width: 10%'>Cr. Limit</th>
                                 <th style='text-align: right; width: 10%'>Day Limit</th>
