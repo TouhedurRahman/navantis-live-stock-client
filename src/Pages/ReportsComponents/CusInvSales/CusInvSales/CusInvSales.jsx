@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { FaFileExcel, FaFilePdf } from "react-icons/fa6";
 import PageTitle from "../../../../Components/PageTitle/PageTitle";
 import useCustomer from "../../../../Hooks/useCustomer";
+import CusInvSalesReport from "../CusInvSalesReport/CusInvSalesReport";
 
 const CusInvSales = () => {
     const [customers] = useCustomer();
@@ -33,6 +34,8 @@ const CusInvSales = () => {
         setSelectedParent('');
         setSelectedTerritory('');
     };
+
+    const handlePrint = CusInvSalesReport({ filteredCustomers });
 
     return (
         <>
@@ -96,7 +99,7 @@ const CusInvSales = () => {
                     <div className="w-full flex flex-col gap-4 px-6 mt-4">
                         {/* print pdf button */}
                         <button
-                            // onClick={handlePrint}
+                            onClick={handlePrint}
                             className="bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:scale-105 transition-all"
                         >
                             <span className='flex justify-center items-center'>
