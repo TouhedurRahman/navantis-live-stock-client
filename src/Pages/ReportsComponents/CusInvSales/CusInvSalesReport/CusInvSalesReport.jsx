@@ -24,24 +24,36 @@ const CusInvSalesReport = ({ filteredCustomers = [] }) => {
             );
 
             const totalInvoices = custOrders.length;
-            let last7 = 0,
-                last30 = 0,
-                last90 = 0;
+            const totalUnits = custOrders.reduce((sum, o) => sum + (o.totalUnit || 0), 0);
+
+            let last7 = { invoices: 0, units: 0 };
+            let last30 = { invoices: 0, units: 0 };
+            let last90 = { invoices: 0, units: 0 };
 
             custOrders.forEach((order) => {
                 const orderDate = new Date(order.date);
                 if (isNaN(orderDate)) return;
                 const daysDiff = diffInDays(today, orderDate);
 
-                if (daysDiff <= 7) last7++;
-                if (daysDiff <= 30) last30++;
-                if (daysDiff <= 90) last90++;
+                if (daysDiff <= 7) {
+                    last7.invoices++;
+                    last7.units += (order.totalUnit || 0);
+                }
+                if (daysDiff <= 30) {
+                    last30.invoices++;
+                    last30.units += (order.totalUnit || 0);
+                }
+                if (daysDiff <= 90) {
+                    last90.invoices++;
+                    last90.units += (order.totalUnit || 0);
+                }
             });
 
             return {
                 id: customer.customerId,
                 name: customer.name,
                 totalInvoices,
+                totalUnits,
                 last7,
                 last30,
                 last90
@@ -80,35 +92,77 @@ const CusInvSalesReport = ({ filteredCustomers = [] }) => {
 
         const reportData = prepareReportData();
 
+        const totals = reportData.reduce(
+            (acc, cur) => {
+                acc.totalInvoices += cur.totalInvoices;
+                acc.totalUnits += cur.totalUnits;
+                acc.last7Invoices += cur.last7.invoices;
+                acc.last7Units += cur.last7.units;
+                acc.last30Invoices += cur.last30.invoices;
+                acc.last30Units += cur.last30.units;
+                acc.last90Invoices += cur.last90.invoices;
+                acc.last90Units += cur.last90.units;
+                return acc;
+            },
+            {
+                totalInvoices: 0, totalUnits: 0,
+                last7Invoices: 0, last7Units: 0,
+                last30Invoices: 0, last30Units: 0,
+                last90Invoices: 0, last90Units: 0
+            }
+        );
+
         const groupedHTML = `
             <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
                 <thead>
-                <tr>
-                    <th style="border: 1px solid #ccc; padding: 6px; text-align: center;">Customer ID</th>
-                    <th style="border: 1px solid #ccc; padding: 6px;">Customer</th>
-                    <th style="border: 1px solid #ccc; padding: 6px; text-align: center;">Total Invoices</th>
-                    <th style="border: 1px solid #ccc; padding: 6px; text-align: center;">Last 7 Days</th>
-                    <th style="border: 1px solid #ccc; padding: 6px; text-align: center;">Last 30 Days</th>
-                    <th style="border: 1px solid #ccc; padding: 6px; text-align: center;">Last 90 Days</th>
-                </tr>
+                    <tr>
+                        <th rowspan="2" style="border: 1px solid #ccc; padding: 6px; text-align: center; width: 8%">Customer ID</th>
+                        <th rowspan="2" style="border: 1px solid #ccc; padding: 6px; text-align: left;">Customer Name</th>
+                        <th colspan="2" style="border: 1px solid #ccc; padding: 6px; text-align: center;">Total</th>
+                        <th colspan="2" style="border: 1px solid #ccc; padding: 6px; text-align: center;">Last 7 Days</th>
+                        <th colspan="2" style="border: 1px solid #ccc; padding: 6px; text-align: center;">Last 30 Days</th>
+                        <th colspan="2" style="border: 1px solid #ccc; padding: 6px; text-align: center;">Last 90 Days</th>
+                    </tr>
+                    <tr>
+                        <th style="border: 1px solid #ccc; padding: 4px; text-align: center;">Invoices</th>
+                        <th style="border: 1px solid #ccc; padding: 4px; text-align: center;">Units</th>
+                        <th style="border: 1px solid #ccc; padding: 4px; text-align: center;">Invoices</th>
+                        <th style="border: 1px solid #ccc; padding: 4px; text-align: center;">Units</th>
+                        <th style="border: 1px solid #ccc; padding: 4px; text-align: center;">Invoices</th>
+                        <th style="border: 1px solid #ccc; padding: 4px; text-align: center;">Units</th>
+                        <th style="border: 1px solid #ccc; padding: 4px; text-align: center;">Invoices</th>
+                        <th style="border: 1px solid #ccc; padding: 4px; text-align: center;">Units</th>
+                    </tr>
                 </thead>
                 <tbody>
-                ${reportData.length === 0
-                ? `<tr><td colspan="5" style="text-align:center; padding: 8px;">No data available</td></tr>`
-                : reportData
-                    .map(
-                        ({ id, name, totalInvoices, last7, last30, last90 }) => `
-                    <tr>
-                        <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${id}</td>
-                        <td style="border: 1px solid #ccc; padding: 6px;">${name}</td>
-                        <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${totalInvoices}</td>
-                        <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${last7}</td>
-                        <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${last30}</td>
-                        <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${last90}</td>
-                    </tr>`
-                    )
-                    .join("")
+                    ${reportData.length === 0
+                ? `<tr><td colspan="10" style="text-align:center; padding: 8px;">No data available</td></tr>`
+                : reportData.map(({ id, name, totalInvoices, totalUnits, last7, last30, last90 }) => `
+                            <tr>
+                                <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${id}</td>
+                                <td style="border: 1px solid #ccc; padding: 6px;">${name}</td>
+                                <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${totalInvoices}</td>
+                                <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${totalUnits}</td>
+                                <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${last7.invoices}</td>
+                                <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${last7.units}</td>
+                                <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${last30.invoices}</td>
+                                <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${last30.units}</td>
+                                <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${last90.invoices}</td>
+                                <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${last90.units}</td>
+                            </tr>
+                        `).join("")
             }
+                    <!-- <tr style="font-weight: bold; background: #f5f5f5;">
+                        <td colspan="2" style="border: 1px solid #ccc; padding: 6px; text-align: right;">TOTAL:</td>
+                        <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${totals.totalInvoices}</td>
+                        <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${totals.totalUnits}</td>
+                        <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${totals.last7Invoices}</td>
+                        <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${totals.last7Units}</td>
+                        <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${totals.last30Invoices}</td>
+                        <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${totals.last30Units}</td>
+                        <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${totals.last90Invoices}</td>
+                        <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${totals.last90Units}</td>
+                    </tr> -->
                 </tbody>
             </table>
         `;
@@ -119,40 +173,41 @@ const CusInvSalesReport = ({ filteredCustomers = [] }) => {
 
         const newWindow = window.open();
         newWindow.document.write(`
-      <html>
-        <head>
-          <title>Customer Invoice Sales Report</title>
-          ${styles}
-          <style>
-            @media print {
-              @page {
-                size: A4;
-                margin: 5mm;
-              }
-              body {
-                margin: 0;
-                padding: 0;
-                font-family: Arial, sans-serif;
-              }
-              th, td {
-                font-size: 10px;
-              }
-              thead {
-                display: table-header-group;
-              }
-            }
-            table {
-              font-size: 12px;
-              border-collapse: collapse;
-            }
-          </style>
-        </head>
-        <body>
-          <div>${companyHeader}</div>
-          <div>${groupedHTML}</div>
-        </body>
-      </html>
-    `);
+            <html>
+                <head>
+                    <title>Customer Invoice Sales Report</title>
+                    ${styles}
+                    <style>
+                        @media print {
+                        @page {
+                            size: A4;
+                            margin: 5mm;
+                        }
+                        body {
+                            margin: 0;
+                            padding: 0;
+                            font-family: Arial, sans-serif;
+                        }
+                        th, td {
+                            font-size: 10px;
+                        }
+                        thead {
+                            display: table-header-group;
+                        }
+                        }
+                        table {
+                        font-size: 12px;
+                        border-collapse: collapse;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div>${companyHeader}</div>
+                    <div>${groupedHTML}</div>
+                </body>
+            </html>
+        `);
+
         newWindow.document.close();
         newWindow.onload = () => {
             setTimeout(() => {
