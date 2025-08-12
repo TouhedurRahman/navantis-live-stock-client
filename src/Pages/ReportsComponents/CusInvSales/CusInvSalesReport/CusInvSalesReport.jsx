@@ -86,20 +86,20 @@ const CusInvSalesReport = ({ filteredCustomers = [], reportType }) => {
 
     const handlePrint = () => {
         const companyHeader = `
-            <div style="text-align: center; margin-bottom: 20px;">
-                <img src='/images/NPL-Updated-Logo.png' alt="Company Logo"
-                style="width: 150px; height: auto; margin-bottom: 5px;" />
-                <h1 style="margin: 0; font-size: 22px; font-weight: bold;">Navantis Pharma Limited</h1>
-                <p style="margin: 0; font-size: 10px;">
-                Haque Villa, House No - 4, Block - C, Road No - 3, Section - 1, Kolwalapara, Mirpur - 1, Dhaka - 1216.
-                </p>
-                <p style="margin: 0; font-size: 10px;">Hotline: +880 1322-852183</p>
-            </div>
-            <div style="text-align: center; margin-bottom: 20px;">
-                <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-decoration: underline;">${reportType}</h3>
-            </div>
-            <div style="text-align: right; font-size: 10px; font-style: italic; margin-bottom: 5px;">
-                Printed on ${now}
+            <div>
+                <div style="position: relative; text-align: center; margin-bottom: 20px;">
+                    <img src='/images/NPL-Updated-Logo.png' alt="Company Logo"
+                        style="left: 0; width: 150px; height: auto;" />
+                    <h1 style="margin: 0; font-size: 22px; font-weight: bold;">Navantis Pharma Limited</h1>
+                    <p style="margin: 0; font-size: 10px;">Haque Villa, House No - 4, Block - C, Road No - 3, Section - 1, Kolwalapara, Mirpur - 1, Dhaka - 1216.</p>
+                    <p style="margin: 0; font-size: 10px;">Hotline: +880 1322-852183</p>
+                </div>
+                <div style="text-align: left; margin-bottom: 20px;">
+                    <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>${reportType}</u></h3>
+                </div>
+                <div class="mb-1 text-sm text-gray-400 text-right italic">
+                    <h3 class="">Printed on ${now}</h3>
+                </div>
             </div>
         `;
 
