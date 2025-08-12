@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { FaFileExcel, FaFilePdf } from "react-icons/fa6";
 import PageTitle from "../../../../Components/PageTitle/PageTitle";
 import useCustomer from "../../../../Hooks/useCustomer";
+import CusInvSalesExcel from "../CusInvSalesExcel/CusInvSalesExcel";
 import CusInvSalesReport from "../CusInvSalesReport/CusInvSalesReport";
 
 const CusInvSales = () => {
@@ -40,6 +41,7 @@ const CusInvSales = () => {
     };
 
     const handlePrint = CusInvSalesReport({ filteredCustomers, reportType });
+    const handleDownloadExcel = CusInvSalesExcel({ filteredCustomers, reportType });
 
     return (
         <>
@@ -136,7 +138,7 @@ const CusInvSales = () => {
 
                         {/* download excel file button */}
                         <button
-                            // onClick={handleDownloadExcel}
+                            onClick={handleDownloadExcel}
                             className="bg-gradient-to-r from-red-500 to-red-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:scale-105 transition-all"
                         >
                             <span className='flex justify-center items-center'>
