@@ -49,6 +49,7 @@ import MyOrderReport from "../../Pages/Order/MyOrderReport/MyOrderReport";
 import PlaceOrder from "../../Pages/Order/PlaceOrder/PlaceOrder";
 import Profile from "../../Pages/Profile/Profile/Profile";
 import AllProductsSummary from "../../Pages/ReportsComponents/AllProductsSummary/AllProductsSummary/AllProductsSummary";
+import CusInvSales from "../../Pages/ReportsComponents/CusInvSales/CusInvSales/CusInvSales";
 import CustomerProductSummary from "../../Pages/ReportsComponents/CustomerProductSummary/CustomerProductSummary/CustomerProductSummary";
 import ExpireReturns from "../../Pages/ReportsComponents/ExpireReturns/ExpireReturns";
 import NetSales from "../../Pages/ReportsComponents/NetSales/NetSales";
@@ -339,10 +340,10 @@ const router = createBrowserRouter([
                 path: '/expire-returns',
                 element: <ExpireReturns />
             },
-            /* {
+            {
                 path: '/cus-inv-sales',
                 element: <CusInvSales />
-            }, */
+            },
         ],
     },
     {

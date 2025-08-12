@@ -1,7 +1,13 @@
+import { useEffect, useState } from "react";
 import useOrders from "../../../../Hooks/useOrders";
 
 const CusInvSalesReport = ({ filteredCustomers = [] }) => {
+    const [customers, setCustomers] = useState(filteredCustomers);
     const [orders] = useOrders();
+
+    useEffect(() => {
+        setCustomers(filteredCustomers);
+    }, [filteredCustomers]);
 
     const diffInDays = (date1, date2) => {
         const diffTime = Math.abs(date1 - date2);
@@ -11,34 +17,12 @@ const CusInvSalesReport = ({ filteredCustomers = [] }) => {
     const prepareReportData = () => {
         const today = new Date();
 
-        const uniqueCombos = [];
-        orders.forEach((order) => {
-            if (
-                !uniqueCombos.find(
-                    (u) =>
-                        String(u.customerId) === String(order.customerId) &&
-                        String(u.pharmacyId) === String(order.pharmacyId)
-                )
-            ) {
-                const cust = filteredCustomers.find(
-                    (c) => String(c.customerId).trim() === String(order.customerId).trim()
-                );
-                uniqueCombos.push({
-                    customerId: order.customerId,
-                    pharmacyId: order.pharmacyId,
-                    name: order.pharmacy,
-                });
-            }
-        });
-
-        return uniqueCombos.map(({ customerId, pharmacyId, name }) => {
+        return customers.map((customer) => {
             const custOrders = orders.filter(
-                (o) =>
-                    String(o.customerId) === String(customerId) &&
-                    String(o.pharmacyId) === String(pharmacyId)
+                (order) =>
+                    String(order.pharmacyId).trim() === String(customer.customerId).trim()
             );
 
-            const id = customerId || pharmacyId;
             const totalInvoices = custOrders.length;
             let last7 = 0,
                 last30 = 0,
@@ -54,7 +38,14 @@ const CusInvSalesReport = ({ filteredCustomers = [] }) => {
                 if (daysDiff <= 90) last90++;
             });
 
-            return { id, name, totalInvoices, last7, last30, last90 };
+            return {
+                id: customer.customerId,
+                name: customer.name,
+                totalInvoices,
+                last7,
+                last30,
+                last90
+            };
         });
     };
 
