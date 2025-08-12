@@ -64,6 +64,7 @@ const CusInvSalesReport = ({ filteredCustomers = [], reportType }) => {
             return {
                 id: customer.customerId,
                 name: customer.name,
+                payMode: customer.payMode,
                 totalInvoices,
                 totalUnits,
                 last7,
@@ -133,7 +134,8 @@ const CusInvSalesReport = ({ filteredCustomers = [], reportType }) => {
                     <thead>
                         <tr>
                             <th rowspan="2" style="border: 1px solid #ccc; padding: 6px; text-align: center; width: 8%";>Customer ID</th>
-                            <th rowspan="2" style="border: 1px solid #ccc; padding: 6px; text-align: left; width: 32%;">Customer Name</th>
+                            <th rowspan="2" style="border: 1px solid #ccc; padding: 6px; text-align: left; width: 26%;">Customer Name</th>
+                            <th rowspan="2" style="border: 1px solid #ccc; padding: 6px; text-align: center; width: 6%;">Pay Mode</th>
                             <th colspan="2" style="border: 1px solid #ccc; padding: 6px; text-align: center;">Total</th>
                             <th colspan="2" style="border: 1px solid #ccc; padding: 6px; text-align: center;">Last 7 Days</th>
                             <th colspan="2" style="border: 1px solid #ccc; padding: 6px; text-align: center;">Last 30 Days</th>
@@ -153,10 +155,13 @@ const CusInvSalesReport = ({ filteredCustomers = [], reportType }) => {
                     <tbody>
                         ${reportData.length === 0
                     ? `<tr><td colspan="10" style="text-align:center; padding: 8px;">No data available</td></tr>`
-                    : reportData.map(({ id, name, totalInvoices, totalUnits, last7, last30, last90 }) => `
+                    : reportData.map(({ id, name, payMode, totalInvoices, totalUnits, last7, last30, last90 }) => `
                                 <tr>
                                     <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${id}</td>
                                     <td style="border: 1px solid #ccc; padding: 6px;">${name}</td>
+                                    <td style="border: 1px solid #ccc; padding: 6px; text-align: center">${`${(modes => (modes.filter(mode => ["Credit", "SpIC", "STC"].includes(mode)).length === 1
+                            ? modes.find(mode => ["Credit", "SpIC", "STC"].includes(mode))
+                            : "Cash"))(payMode)}`}</td>
                                     <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${totalInvoices}</td>
                                     <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${totalUnits}</td>
                                     <td style="border: 1px solid #ccc; padding: 6px; text-align: center;">${last7.invoices}</td>

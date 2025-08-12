@@ -10,15 +10,15 @@ const CusInvSales = () => {
     const [selectedTerritory, setSelectedTerritory] = useState('');
     const [reportType, setReportType] = useState('Customer Invoice Sales');
 
-    const approvedCustomers = customers.filter(customer => customer.status === "approved");
+    // const approvedCustomers = customers.filter(customer => customer.status === "approved");
 
     const filteredCustomers = useMemo(() => {
-        return approvedCustomers.filter(c => {
+        return customers.filter(c => {
             const matchParent = selectedParent ? c.parentTerritory === selectedParent : true;
             const matchTerritory = selectedTerritory ? c.territory === selectedTerritory : true;
             return matchParent && matchTerritory;
         });
-    }, [approvedCustomers, selectedParent, selectedTerritory]);
+    }, [customers, selectedParent, selectedTerritory]);
 
     const parentTerritories = useMemo(() => {
         const parents = filteredCustomers.map(c => c.parentTerritory).filter(Boolean);
