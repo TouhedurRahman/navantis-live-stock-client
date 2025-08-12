@@ -8,34 +8,38 @@ const CusInvSales = () => {
     const [customers] = useCustomer();
     const [selectedParent, setSelectedParent] = useState('');
     const [selectedTerritory, setSelectedTerritory] = useState('');
+    const [reportType, setReportType] = useState('Customer Invoice Sales');
 
-    const parentTerritories = useMemo(() => {
-        const parents = customers.map(c => c.parentTerritory).filter(Boolean);
-        return [...new Set(parents)];
-    }, [customers]);
-
-    const territories = useMemo(() => {
-        const terr = customers
-            .filter(c => (selectedParent ? c.parentTerritory === selectedParent : true))
-            .map(c => c.territory)
-            .filter(Boolean);
-        return [...new Set(terr)];
-    }, [customers, selectedParent]);
+    const approvedCustomers = customers.filter(customer => customer.status === "approved");
 
     const filteredCustomers = useMemo(() => {
-        return customers.filter(c => {
+        return approvedCustomers.filter(c => {
             const matchParent = selectedParent ? c.parentTerritory === selectedParent : true;
             const matchTerritory = selectedTerritory ? c.territory === selectedTerritory : true;
             return matchParent && matchTerritory;
         });
-    }, [customers, selectedParent, selectedTerritory]);
+    }, [approvedCustomers, selectedParent, selectedTerritory]);
+
+    const parentTerritories = useMemo(() => {
+        const parents = filteredCustomers.map(c => c.parentTerritory).filter(Boolean);
+        return [...new Set(parents)];
+    }, [filteredCustomers]);
+
+    const territories = useMemo(() => {
+        const terr = filteredCustomers
+            .filter(c => (selectedParent ? c.parentTerritory === selectedParent : true))
+            .map(c => c.territory)
+            .filter(Boolean);
+        return [...new Set(terr)];
+    }, [filteredCustomers, selectedParent]);
 
     const clearFilters = () => {
         setSelectedParent('');
         setSelectedTerritory('');
+        setReportType('Customer Invoice Sales');
     };
 
-    const handlePrint = CusInvSalesReport({ filteredCustomers });
+    const handlePrint = CusInvSalesReport({ filteredCustomers, reportType });
 
     return (
         <>
@@ -86,6 +90,29 @@ const CusInvSales = () => {
                                 ))}
                             </select>
                         </div>
+
+                        {/* Report Filter */}
+                        <div className='col-span-1 md:col-span-2'>
+                            <label className="block font-semibold text-gray-700 mb-1">Report Type</label>
+                            <select
+                                value={reportType}
+                                onChange={(e) => setReportType(e.target.value)}
+                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
+                            >
+                                <option value="Customer Invoice Sales">Customer Invoice Sales</option>
+                                {
+                                    selectedParent !== ''
+                                    &&
+                                    < option value="Area wise Customer Invoice Sales">Area wise Customer Invoice Sales</option>
+                                }
+                                {
+                                    selectedTerritory !== ''
+                                    &&
+                                    < option value="Territory wise Customer Invoice Sales">Territory wise Customer Invoice Sales</option>
+                                }
+                            </select>
+                        </div>
+
                         {/* Clear Filters Button */}
                         <button
                             onClick={clearFilters}

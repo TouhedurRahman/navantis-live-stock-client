@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import useOrders from "../../../../Hooks/useOrders";
 
-const CusInvSalesReport = ({ filteredCustomers = [] }) => {
+const CusInvSalesReport = ({ filteredCustomers = [], reportType }) => {
     const [customers, setCustomers] = useState(filteredCustomers);
     const [orders] = useOrders();
     const territories = [...new Set(customers.map(customer => customer.territory))];
@@ -95,9 +95,9 @@ const CusInvSalesReport = ({ filteredCustomers = [] }) => {
                 <p style="margin: 0; font-size: 10px;">Hotline: +880 1322-852183</p>
             </div>
             <div style="text-align: center; margin-bottom: 20px;">
-                <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-decoration: underline;">Customer Invoice Sales</h3>
+                <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-decoration: underline;">${reportType}</h3>
             </div>
-            <div style="text-align: right; font-size: 10px; font-style: italic; margin-bottom: 20px;">
+            <div style="text-align: right; font-size: 10px; font-style: italic; margin-bottom: 5px;">
                 Printed on ${now}
             </div>
         `;
