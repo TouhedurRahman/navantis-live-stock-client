@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { FaEdit } from "react-icons/fa";
+import { PiMapPinSimpleAreaBold } from "react-icons/pi";
 import Swal from "sweetalert2";
 import useAllUsers from "../../../Hooks/useAllUsers";
 import useApiConfig from "../../../Hooks/useApiConfig";
@@ -63,11 +64,12 @@ const Territories = ({ territories, refetch }) => {
             <table className="min-w-full border text-sm text-left">
                 <thead className="bg-gray-100 border-b">
                     <tr>
-                        <th className="px-4 py-2 w-[15%]">Territory</th>
-                        <th className="px-4 py-2 w-[15%]">Parent Territory</th>
+                        <th className="px-4 py-2">Territory</th>
+                        <th className="px-4 py-2">Area</th>
                         <th className="px-4 py-2 w-[27%]">Area Manager</th>
                         <th className="px-4 py-2 w-[27%]">Zonal Manager</th>
-                        <th className="px-4 py-2 text-center w-[16%]">Actions</th>
+                        <th className="px-4 py-2 text-center">Actions</th>
+                        <th className="px-4 py-2 text-center">Market Point</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -186,6 +188,15 @@ const Territories = ({ territories, refetch }) => {
                                         <FaEdit /> Edit
                                     </button>
                                 )}
+                            </td>
+                            <td className="px-4 py-2">
+                                <div className="flex justify-center items-center space-x-2">
+                                    <button
+                                        className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 flex items-center gap-1"
+                                    >
+                                        <PiMapPinSimpleAreaBold /> Assign
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     ))}
