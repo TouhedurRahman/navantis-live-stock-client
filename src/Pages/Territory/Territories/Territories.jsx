@@ -113,12 +113,12 @@ const Territories = ({ territories, refetch }) => {
                 <table className="min-w-full border text-sm text-left">
                     <thead className="bg-gray-100 border-b">
                         <tr>
-                            <th className="px-4 py-2">Territory</th>
-                            <th className="px-4 py-2">Area</th>
-                            <th className="px-4 py-2 w-[30%]">Area Manager</th>
-                            <th className="px-4 py-2 w-[30%]">Zonal Manager</th>
-                            <th className="px-4 py-2 text-center">Actions</th>
-                            <th className="px-4 py-2 text-center">Market Point</th>
+                            <th className="px-4 py-2 w-[15%]">Territory</th>
+                            <th className="px-4 py-2 w-[15%]">Area</th>
+                            <th className="px-4 py-2 w-[20%]">Area Manager</th>
+                            <th className="px-4 py-2 w-[20%]">Zonal Manager</th>
+                            <th className="px-4 py-2 text-center w-[18%]">Actions</th>
+                            <th className="px-4 py-2 text-center  w-[12%]">Market Point</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -240,12 +240,26 @@ const Territories = ({ territories, refetch }) => {
                                 </td>
                                 <td className="px-4 py-2">
                                     <div className="flex justify-center items-center space-x-2">
-                                        <button
-                                            onClick={() => openAssignModal(t)}
-                                            className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 flex items-center gap-1"
-                                        >
-                                            <PiMapPinSimpleAreaBold /> Assign
-                                        </button>
+                                        {
+                                            (
+                                                t?.territory === t?.parentTerritory
+                                                ||
+                                                t?.parentTerritory === null
+                                                ||
+                                                t?.parentTerritory === undefined
+                                            )
+                                                ?
+                                                null
+                                                :
+                                                <>
+                                                    <button
+                                                        onClick={() => openAssignModal(t)}
+                                                        className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 flex items-center gap-1"
+                                                    >
+                                                        <PiMapPinSimpleAreaBold /> Assign
+                                                    </button>
+                                                </>
+                                        }
                                     </div>
                                 </td>
                             </tr>
@@ -312,7 +326,7 @@ const Territories = ({ territories, refetch }) => {
                                     point.toLowerCase().includes(marketPointInput.toLowerCase())
                                 ).length === 0 && (
                                     <li className="text-center text-gray-500 text-sm py-2">
-                                        No Market Point(s) available
+                                        No market point(s) available
                                     </li>
                                 )
                             }
