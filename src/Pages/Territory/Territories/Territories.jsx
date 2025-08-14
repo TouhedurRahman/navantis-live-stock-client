@@ -282,33 +282,43 @@ const Territories = ({ territories, refetch }) => {
 
                         {/* Filtered & Scrollable List */}
                         <ul className="mb-4 space-y-2 max-h-28 overflow-y-auto rounded p-2">
-                            {marketPoints
-                                .filter(point =>
-                                    point.toLowerCase().includes(marketPointInput.toLowerCase())
-                                )
-                                .sort((a, b) => {
-                                    // Push exact match to top
-                                    if (a.toLowerCase() === marketPointInput.toLowerCase()) return -1;
-                                    if (b.toLowerCase() === marketPointInput.toLowerCase()) return 1;
-                                    return 0;
-                                })
-                                .map((point, index) => (
-                                    <li
-                                        key={index}
-                                        className="flex justify-between items-center border-b pb-1"
-                                    >
-                                        {point}
-                                        <button
-                                            onClick={() => handleRemoveMarketPoint(point)}
-                                            className="text-red-500 hover:text-red-700"
+                            {
+                                marketPoints
+                                    .filter(point =>
+                                        point.toLowerCase().includes(marketPointInput.toLowerCase())
+                                    )
+                                    .sort((a, b) => {
+                                        if (a.toLowerCase() === marketPointInput.toLowerCase()) return -1;
+                                        if (b.toLowerCase() === marketPointInput.toLowerCase()) return 1;
+                                        return 0;
+                                    })
+                                    .map((point, index) => (
+                                        <li
+                                            key={index}
+                                            className="flex justify-between items-center border-b pb-1"
                                         >
-                                            <FaTrash />
-                                        </button>
+                                            {point}
+                                            <button
+                                                onClick={() => handleRemoveMarketPoint(point)}
+                                                className="text-red-500 hover:text-red-700"
+                                            >
+                                                <FaTrash />
+                                            </button>
+                                        </li>
+                                    ))
+                            }
+                            {
+                                marketPoints.filter(point =>
+                                    point.toLowerCase().includes(marketPointInput.toLowerCase())
+                                ).length === 0 && (
+                                    <li className="text-center text-gray-500 text-sm py-2">
+                                        No Market Point(s) available
                                     </li>
-                                ))}
+                                )
+                            }
                         </ul>
 
-                        <div className="flex justify-end gap-2">
+                        <div className="flex justify-center gap-2">
                             <button
                                 onClick={() => setAssignModalOpen(false)}
                                 className="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600"
