@@ -4,19 +4,25 @@ import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
-import useAllUsers from '../../../Hooks/useAllUsers';
 import useApiConfig from '../../../Hooks/useApiConfig';
 import useAuth from '../../../Hooks/useAuth';
 import useCustomer from '../../../Hooks/useCustomer';
 import useSingleUser from '../../../Hooks/useSingleUser';
+import useTerritories from '../../../Hooks/useTerritories';
 
 const UpdateCustomer = () => {
     const { user } = useAuth();
     const [singleUser] = useSingleUser();
-    const [allUsers] = useAllUsers();
+    const [territories] = useTerritories();
     const baseUrl = useApiConfig();
 
     const { register, handleSubmit, watch, reset, formState: { errors } } = useForm();
+
+    const territoryMarketPoints = singleUser && territories?.length > 0
+        ? territories.find(
+            t => t?.territory?.trim().toLowerCase() === singleUser?.territory?.trim().toLowerCase()
+        ).marketPoints
+        : [];
 
     const paymentType = watch("paymentType");
 
@@ -61,6 +67,7 @@ const UpdateCustomer = () => {
                 tradeLicense: data.trl,
                 drugLicense: data.drl,
                 address: data.address,
+                marketPoint: data.marketPoint,
                 mobile: data.mobile,
                 email: data.email,
                 contactPerson: data.cperson || data.mobile,
@@ -187,7 +194,26 @@ const UpdateCustomer = () => {
                         {errors.address && <p className="text-red-500 text-sm">{errors.address.message}</p>}
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+                        <div className="flex flex-col mb-2">
+                            <label className="text-[#6E719A] mb-1 text-sm">
+                                Market Point <span className="text-red-500">*</span>
+                            </label>
+                            <select
+                                defaultValue={customer?.marketPoint}
+                                {...register("marketPoint", { required: "Market point is required" })}
+                                className="border-gray-500 bg-white border p-2 text-sm cursor-pointer"
+                            >
+                                <option value="">Select Market Point</option>
+                                {territoryMarketPoints.map((option) => (
+                                    <option key={option} value={option}>
+                                        {option}
+                                    </option>
+                                ))}
+                            </select>
+                            {errors.marketPoint && <p className="text-red-500 text-sm">{errors.marketPoint.message}</p>}
+                        </div>
+
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
                                 Mobile No. <span className="text-red-500">*</span>
@@ -200,7 +226,9 @@ const UpdateCustomer = () => {
                             />
                             {errors.mobile && <p className="text-red-500 text-sm">{errors.mobile.message}</p>}
                         </div>
+                    </div>
 
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                         <div className="flex flex-col">
                             <label className="text-[#6E719A] mb-1 text-sm">
                                 Email
