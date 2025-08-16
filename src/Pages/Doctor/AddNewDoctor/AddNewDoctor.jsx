@@ -11,6 +11,7 @@ import useDrDesignations from "../../../Hooks/useDrDesignations";
 import useDrQualifications from "../../../Hooks/useDrQualifications";
 import useDrSpecialities from "../../../Hooks/useDrSpecialities";
 import useSingleUser from "../../../Hooks/useSingleUser";
+import useTerritories from "../../../Hooks/useTerritories";
 import useUniqueProducts from "../../../Hooks/useUniqueProducts";
 
 const AddNewDoctor = () => {
@@ -27,6 +28,7 @@ const AddNewDoctor = () => {
     const [uniqueProducts] = useUniqueProducts();
     const [singleUser] = useSingleUser();
     const [customers] = useCustomer();
+    const [territories] = useTerritories();
     const baseUrl = useApiConfig();
 
     const [designations] = useDrDesignations();
@@ -53,6 +55,16 @@ const AddNewDoctor = () => {
 
     const practicingDay = watch("practicingDay");
     const avgPatient = watch("avgPatient");
+
+    const territoryMarketPoints = singleUser && territories?.length > 0
+        ? territories.find(
+            t => t?.territory?.trim().toLowerCase() === singleUser?.territory?.trim().toLowerCase()
+        ).marketPoints
+        : [];
+
+    const selectedMarketPoint = watch("marketPoint");
+
+    const selectedPointCustomers = customers.filter(cus => cus.marketPoint === selectedMarketPoint);
 
     useEffect(() => {
         const day = parseFloat(practicingDay);
@@ -155,7 +167,7 @@ const AddNewDoctor = () => {
         };
     });
 
-    const chemistOptions = customers.map((c) => ({
+    const chemistOptions = selectedPointCustomers.map((c) => ({
         label: `${c.name} - ${c.customerId}`,
         value: { name: c.name, customerId: c.customerId, address: c.address },
     }));
@@ -171,7 +183,10 @@ const AddNewDoctor = () => {
             ? selectedOptions
             : [selectedOptions];
 
-        const merged = [...selectedChemists, ...newSelection];
+        const merged = [...selectedChemists, ...newSelection].filter(
+            (item, index, self) =>
+                index === self.findIndex((c) => c.value.customerId === item.value.customerId)
+        );
 
         if (merged.length > 5) {
             return Swal.fire({
@@ -540,11 +555,19 @@ const AddNewDoctor = () => {
                                 </div>
 
                                 <div className="flex flex-col">
-                                    <label className="text-[#6E719A] mb-1 text-sm">Market Point <span className="text-red-500">*</span></label>
-                                    <select {...register("marketPoint", { required: "Required" })} className="border-gray-500 bg-white border p-2 text-sm"
+                                    <label className="text-[#6E719A] mb-1 text-sm">
+                                        Market Point <span className="text-red-500">*</span>
+                                    </label>
+                                    <select
+                                        {...register("marketPoint", { required: "Market point is required" })}
+                                        className="border-gray-500 bg-white border p-2 text-sm cursor-pointer"
                                     >
-                                        <option value="">Select</option>
-                                        <option>Market Point</option>
+                                        <option value="">Select Market Point</option>
+                                        {territoryMarketPoints.map((option) => (
+                                            <option key={option} value={option}>
+                                                {option}
+                                            </option>
+                                        ))}
                                     </select>
                                     {errors.marketPoint && <p className="text-red-500 text-sm">{errors.marketPoint.message}</p>}
                                 </div>
