@@ -56,6 +56,8 @@ const AddNewDoctor = () => {
     const practicingDay = watch("practicingDay");
     const avgPatient = watch("avgPatient");
 
+    const userCustomers = customers.filter(cus => cus.territory === singleUser.territory);
+
     const territoryMarketPoints = singleUser && territories?.length > 0
         ? territories.find(
             t => t?.territory?.trim().toLowerCase() === singleUser?.territory?.trim().toLowerCase()
@@ -64,7 +66,7 @@ const AddNewDoctor = () => {
 
     const selectedMarketPoint = watch("marketPoint");
 
-    const selectedPointCustomers = customers.filter(cus => cus.marketPoint === selectedMarketPoint);
+    const selectedPointCustomers = userCustomers.filter(cus => cus.marketPoint === selectedMarketPoint);
 
     useEffect(() => {
         const day = parseFloat(practicingDay);
