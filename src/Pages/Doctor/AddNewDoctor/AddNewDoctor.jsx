@@ -69,6 +69,10 @@ const AddNewDoctor = () => {
     const selectedPointCustomers = userCustomers.filter(cus => cus.marketPoint === selectedMarketPoint);
 
     useEffect(() => {
+        setSelectedChemists([]);
+    }, [selectedMarketPoint]);
+
+    useEffect(() => {
         const day = parseFloat(practicingDay);
         const week = parseFloat(avgPatient);
 
