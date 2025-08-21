@@ -7,13 +7,16 @@ const CustomerProductSummaryExcel = ({ reportType, filteredOrders = [], firstDat
 
     useEffect(() => {
         const sortedOrders = [...filteredOrders].sort((a, b) => {
-            const getPriority = (territory) => {
-                if (territory === "Doctor") return 0;
-                if (territory === "Institute") return 1;
+            const getPriority = (parentTerritory) => {
+                if (parentTerritory === "Doctor") return 0;
+                if (parentTerritory === "Institute") return 1;
                 return 2;
             };
 
-            return getPriority(a.territory) - getPriority(b.territory);
+            const priorityDiff = getPriority(a.parentTerritory) - getPriority(b.parentTerritory);
+            if (priorityDiff !== 0) return priorityDiff;
+
+            return (a.parentTerritory || "").localeCompare(b.parentTerritory || "");
         });
 
         setOrders(sortedOrders);
@@ -68,16 +71,21 @@ const CustomerProductSummaryExcel = ({ reportType, filteredOrders = [], firstDat
             </div>
         `;
 
-        const groupedCustomers = {};
+        const groupedByTerritory = {};
         let grandTotalQty = 0;
         let grandTotalPrice = 0;
 
         orders.forEach(order => {
             const pharmacyId = order?.pharmacyId || "Unknown ID";
+            const parentTerritory = order?.parentTerritory || "Unknown Territory";
             const productDetails = order?.products || [];
 
-            if (!groupedCustomers[pharmacyId]) {
-                groupedCustomers[pharmacyId] = {
+            if (!groupedByTerritory[parentTerritory]) {
+                groupedByTerritory[parentTerritory] = {};
+            }
+
+            if (!groupedByTerritory[parentTerritory][pharmacyId]) {
+                groupedByTerritory[parentTerritory][pharmacyId] = {
                     products: {},
                     customerInfo: null
                 };
@@ -92,8 +100,8 @@ const CustomerProductSummaryExcel = ({ reportType, filteredOrders = [], firstDat
                     grandTotalQty += quantity;
                     grandTotalPrice += totalPrice;
 
-                    if (!groupedCustomers[pharmacyId].products[productKey]) {
-                        groupedCustomers[pharmacyId].products[productKey] = {
+                    if (!groupedByTerritory[parentTerritory][pharmacyId].products[productKey]) {
+                        groupedByTerritory[parentTerritory][pharmacyId].products[productKey] = {
                             productName: product.name,
                             netWeight: product.netWeight,
                             quantity: 0,
@@ -101,64 +109,46 @@ const CustomerProductSummaryExcel = ({ reportType, filteredOrders = [], firstDat
                         };
                     }
 
-                    groupedCustomers[pharmacyId].products[productKey].quantity += quantity;
-                    groupedCustomers[pharmacyId].products[productKey].totalPrice += totalPrice;
+                    groupedByTerritory[parentTerritory][pharmacyId].products[productKey].quantity += quantity;
+                    groupedByTerritory[parentTerritory][pharmacyId].products[productKey].totalPrice += totalPrice;
                 }
             });
         });
 
-        Object.keys(groupedCustomers).forEach(pharmacyId => {
-            const customer = customers.find(c => c.customerId === pharmacyId);
-            if (customer) {
-                groupedCustomers[pharmacyId].customerInfo = {
-                    name: customer.name,
-                    address: customer.address,
-                    mobile: customer.mobile
-                };
-            } else {
-                groupedCustomers[pharmacyId].customerInfo = {
-                    name: "Unknown Pharmacy",
-                    address: "N/A",
-                    mobile: "N/A"
-                };
-            }
+        Object.keys(groupedByTerritory).forEach(parentTerritory => {
+            Object.keys(groupedByTerritory[parentTerritory]).forEach(pharmacyId => {
+                const customer = customers.find(c => c.customerId === pharmacyId);
+                if (customer) {
+                    groupedByTerritory[parentTerritory][pharmacyId].customerInfo = {
+                        name: customer.name,
+                        address: customer.address,
+                        mobile: customer.mobile
+                    };
+                } else {
+                    groupedByTerritory[parentTerritory][pharmacyId].customerInfo = {
+                        name: "Unknown Pharmacy",
+                        address: "N/A",
+                        mobile: "N/A"
+                    };
+                }
+            });
         });
 
-        const groupedHTML = Object.entries(groupedCustomers).map(([pharmacyId, data]) => {
-            const { name, address, mobile } = data.customerInfo;
-            const productsArray = Object.values(data.products);
+        const groupedHTML = Object.entries(groupedByTerritory).map(([territory, customerMap]) => {
+            const customersHTML = Object.entries(customerMap).map(([pharmacyId, data]) => {
+                const { name, address, mobile } = data.customerInfo;
+                const productsArray = Object.values(data.products);
 
-            let customerTotalQty = 0;
-            let customerTotalPrice = 0;
+                let customerTotalQty = 0;
+                let customerTotalPrice = 0;
 
-            productsArray.forEach(product => {
-                customerTotalQty += product.quantity;
-                customerTotalPrice += product.totalPrice;
-            });
+                productsArray.forEach(product => {
+                    customerTotalQty += product.quantity;
+                    customerTotalPrice += product.totalPrice;
+                });
 
-            return `
+                return `
                 <div style="margin-bottom: 30px;">
-                    <!-- <p style="
-                        display: flex; 
-                        justify-content: space-between; 
-                        align-items: flex-start; 
-                        margin: 5px 0 10px; 
-                        font-size: 13px;
-                        line-height: 1.6;
-                    ">
-                        <span style="flex: 1; text-align: left;">
-                            ${name}<br>
-                            ${pharmacyId}
-                        </span>
-                        <span style="flex: 1; text-align: right;">
-                            ${address}<br>
-                            ${mobile}
-                        </span>
-                    </p> -->
-
-                    ${(reportType !== "Customer wise Customer's Products Summary")
-                    ?
-                    `
                     <p style="text-align: center; margin: 5px 0 10px; font-size: 13px; line-height: 1.6;">
                         <span style="font-weight: bold;">
                             ${name} | ${pharmacyId}
@@ -166,11 +156,6 @@ const CustomerProductSummaryExcel = ({ reportType, filteredOrders = [], firstDat
                         ${address}<br>
                         ${mobile}
                     </p>
-                    `
-                    :
-                    ``
-                }
-
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
                         <thead>
                             <tr>
@@ -206,10 +191,20 @@ const CustomerProductSummaryExcel = ({ reportType, filteredOrders = [], firstDat
                     </table>
                 </div>
             `;
+            }).join('');
+
+            return `
+            <div>
+                <h2 style="text-align: center; font-size: 18px; font-weight: bold;">
+                    ${territory}
+                </h2>
+                ${customersHTML}
+            </div>
+        `;
         }).join('');
 
         const finalTotalHTML = `
-            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+            <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
                 <tbody>
                     <tr />
                     <tr>
