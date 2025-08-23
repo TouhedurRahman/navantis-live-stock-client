@@ -5,13 +5,18 @@ import Swal from "sweetalert2";
 import useApiConfig from "../../../Hooks/useApiConfig";
 import useDepotProducts from "../../../Hooks/useDepotProducts";
 import useOrders from "../../../Hooks/useOrders";
+import useTerritories from "../../../Hooks/useTerritories";
 import useWhProducts from "../../../Hooks/useWhProducts";
 
-const FieldEmployeeCard = ({ idx, user, refetch, managerDesignations }) => {
+const FieldEmployeeCard = ({ idx, user, managerDesignations }) => {
     const [wearhouseProducts] = useWhProducts();
     const [depotProducts] = useDepotProducts();
     const [orderdProducts] = useOrders();
     const baseUrl = useApiConfig();
+
+    const [territories, , refetch] = useTerritories();
+
+    const userTerritory = territories?.find(t => t.territory === user?.territory);
 
     const nonManager = !managerDesignations.includes(user.designation);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -48,7 +53,7 @@ const FieldEmployeeCard = ({ idx, user, refetch, managerDesignations }) => {
 
     const openModal = () => {
         const initialTargets = uniqueProducts.map(p => {
-            const existing = user.target?.find(
+            const existing = userTerritory?.target?.find(
                 t => t.productName === p.productName && t.netWeight === p.netWeight
             );
             return {
@@ -71,13 +76,22 @@ const FieldEmployeeCard = ({ idx, user, refetch, managerDesignations }) => {
         try {
             const totalTarget = targets.reduce((sum, product) => sum + Number(product.targetQuantity || 0), 0);
 
-            const { _id, ...userData } = user;
+            /* const { _id, ...userData } = user;
 
             await axios.patch(`${baseUrl}/user/${user.email}`, {
                 ...userData,
                 target: targets,
                 totalTarget
+            }); */
+
+            const { _id, ...territoryData } = userTerritory;
+
+            await axios.patch(`${baseUrl}/tmpoints/${_id}`, {
+                ...territoryData,
+                target: targets,
+                totalTarget
             });
+
             Swal.fire({
                 icon: "success",
                 title: "Target successfully updated.",
@@ -115,7 +129,7 @@ const FieldEmployeeCard = ({ idx, user, refetch, managerDesignations }) => {
                         </button>
                     </td>
                 )}
-                <td className='text-right'>{user?.totalTarget || 0}</td>
+                <td className='text-right'>{userTerritory?.totalTarget || 0}</td>
             </tr>
 
             {/* Modal */}
@@ -166,7 +180,7 @@ const FieldEmployeeCard = ({ idx, user, refetch, managerDesignations }) => {
                                             <input
                                                 type="number"
                                                 className="border px-2 py-1 rounded w-20 text-right focus:text-center"
-                                                value={product.targetQuantity}
+                                                value={product.targetQuantity !== 0 && product.targetQuantity}
                                                 min={0}
                                                 onChange={(e) => handleChange(index, e.target.value)}
                                                 onWheel={(e) => e.target.blur()}
