@@ -25,7 +25,7 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
                     : "approved"
             : "approved" */
 
-    const statusType = JSON.stringify(customer.payMode) === JSON.stringify(["Cash", "STC"])
+    /* const statusType = JSON.stringify(customer.payMode) === JSON.stringify(["Cash", "STC"])
         ? customer.status === "pending"
             ? "initialized"
             : customer.status === "initialized"
@@ -43,7 +43,22 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
                     : customer.status === "initialized"
                         ? "requested"
                         : "approved"
-                : "approved";
+                : "approved"; */
+
+    const hasGrandParent = customer.grandParentId !== undefined && customer.grandParentId !== null;
+
+    const statusType =
+        JSON.stringify(customer.payMode) === JSON.stringify(["Cash", "STC"]) ||
+            JSON.stringify(customer.payMode) === JSON.stringify(["Credit"]) ||
+            JSON.stringify(customer.payMode) === JSON.stringify(["SpIC"])
+            ? customer.status === "pending"
+                ? hasGrandParent
+                    ? "initialized"
+                    : "requested"
+                : customer.status === "initialized"
+                    ? "requested"
+                    : "approved"
+            : "approved";
 
     const approvedCustomerMutation = useMutation({
         mutationFn: async () => {

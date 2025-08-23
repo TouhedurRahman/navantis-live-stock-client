@@ -56,7 +56,11 @@ const AddNewDoctor = () => {
     const practicingDay = watch("practicingDay");
     const avgPatient = watch("avgPatient");
 
-    const userCustomers = customers.filter(cus => cus.territory === singleUser.territory);
+    const userCustomers = customers.filter(cus =>
+        cus.territory === singleUser.territory
+        &&
+        cus.status === "approved"
+    );
 
     const territoryMarketPoints = singleUser && territories?.length > 0
         ? territories.find(
