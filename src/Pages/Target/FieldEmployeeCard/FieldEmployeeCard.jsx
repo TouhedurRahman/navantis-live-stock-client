@@ -23,6 +23,9 @@ const FieldEmployeeCard = ({ idx, user, managerDesignations }) => {
     const [targets, setTargets] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const today = new Date();
+    const monthYear = today.toLocaleString("en-US", { month: "long", year: "numeric" }).replace(" ", "-");
+
     const uniqueProducts = useMemo(() => {
         const productMap = new Map();
 
@@ -88,6 +91,7 @@ const FieldEmployeeCard = ({ idx, user, managerDesignations }) => {
 
             await axios.patch(`${baseUrl}/tmpoints/${_id}`, {
                 ...territoryData,
+                targetFor: monthYear,
                 target: targets,
                 totalTarget
             });
