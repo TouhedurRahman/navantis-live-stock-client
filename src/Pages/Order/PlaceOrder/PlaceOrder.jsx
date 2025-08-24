@@ -73,7 +73,7 @@ const PlaceOrder = () => {
         return `${year}-${month}-${day}`;
     };
 
-    const groupedProducts = products.reduce((acc, product) => {
+    /* const groupedProducts = products.reduce((acc, product) => {
         const existingProduct = acc.find(
             item =>
                 item.productName === product.productName
@@ -87,7 +87,40 @@ const PlaceOrder = () => {
             acc.push({ ...product });
         }
         return acc;
+    }, []); */
+
+    const groupedProducts = products.reduce((acc, product) => {
+        const existingProduct = acc.find(
+            item =>
+                item.productName === product.productName &&
+                item.netWeight === product.netWeight
+        );
+
+        if (existingProduct) {
+            existingProduct.totalQuantity += product.totalQuantity;
+        } else {
+            acc.push({ ...product });
+        }
+        return acc;
     }, []);
+
+    const parseWeight = (str) => {
+        const [value, unit] = str.split(" ");
+        return { value: parseFloat(value), unit: unit.toUpperCase() };
+    };
+
+    groupedProducts.sort((a, b) => {
+        const nameCompare = a.productName.localeCompare(b.productName);
+        if (nameCompare !== 0) return nameCompare;
+
+        const { value: valA, unit: unitA } = parseWeight(a.netWeight);
+        const { value: valB, unit: unitB } = parseWeight(b.netWeight);
+
+        const unitCompare = unitA.localeCompare(unitB);
+        if (unitCompare !== 0) return unitCompare;
+
+        return valA - valB;
+    });
 
     /* const handleUserChange = (e) => {
         const userName = e.target.value;
