@@ -30,6 +30,7 @@ const PlaceOrder = () => {
     const [productQuantities, setProductQuantities] = useState({});
     const [receiptProducts, setReceiptProducts] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
 
     const products = (category === "Noiderma")
         ?
@@ -600,7 +601,7 @@ const PlaceOrder = () => {
                                 Add Products
                             </button>
 
-                            {isModalOpen && (
+                            {/* {isModalOpen && (
                                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                                     <div className="bg-white p-8 rounded-lg shadow-2xl w-3/4 max-w-4xl max-h-[80vh] overflow-y-auto">
                                         <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Select Products</h2>
@@ -659,6 +660,135 @@ const PlaceOrder = () => {
                                             <button
                                                 onClick={confirmProducts}
                                                 className="bg-blue-500 text-white px-4 py-2 rounded ml-4"
+                                            >
+                                                Confirm
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )} */}
+
+                            {isModalOpen && (
+                                <div className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-50 z-50 p-2">
+                                    <div className="bg-white py-2 rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:w-[95%] md:w-3/4 max-w-4xl max-h-[90vh] sm:max-h-[85vh] flex flex-col overflow-hidden">
+
+                                        {/* Title */}
+                                        <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 mb-3 sm:mb-4 md:mb-6 text-center p-4">
+                                            Select Products
+                                        </h2>
+
+                                        {/* Search Bar */}
+                                        <div className="mb-3 sm:mb-4 flex justify-center px-4">
+                                            <div className="relative w-full max-w-md">
+                                                <span className="absolute inset-y-0 left-3 flex items-center text-gray-400">🔍</span>
+                                                <input
+                                                    type="text"
+                                                    placeholder="Search by product name..."
+                                                    className="pl-10 pr-3 py-2 border border-gray-300 rounded-lg w-full text-sm sm:text-base focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                    value={searchTerm}
+                                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        {/* Scrollable Product List */}
+                                        <div className="overflow-y-auto flex-1 px-4 sm:px-6">
+                                            {/* Table for desktop */}
+                                            <div className="hidden sm:block overflow-x-auto rounded-lg border border-gray-200">
+                                                <table className="w-full border-collapse text-sm sm:text-base">
+                                                    <thead className="sticky top-0 bg-gray-100 border-b z-10">
+                                                        <tr>
+                                                            <th className="text-left p-3 sm:p-4 font-medium text-gray-600">Product Name</th>
+                                                            <th className="text-center p-3 sm:p-4 font-medium text-gray-600">Net Weight</th>
+                                                            <th className="text-right p-3 sm:p-4 font-medium text-gray-600">Trade Price (৳)</th>
+                                                            <th className="text-center p-3 sm:p-4 font-medium text-gray-600">Order Quantity</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {groupedProducts
+                                                            .filter((product) =>
+                                                                product.productName.toLowerCase().includes(searchTerm.toLowerCase())
+                                                            )
+                                                            .map((product) => (
+                                                                <tr key={product._id} className="border-b hover:bg-gray-50 transition-colors">
+                                                                    <td className="p-3 sm:p-4">
+                                                                        <p className="font-medium text-gray-900">{product.productName}</p>
+                                                                        <p className="text-xs sm:text-sm text-gray-500">Code: {product.productCode}</p>
+                                                                    </td>
+                                                                    <td className="p-3 sm:p-4 text-center font-medium text-gray-900">{product.netWeight}</td>
+                                                                    <td className="p-3 sm:p-4 text-right font-medium text-gray-900">{(product.tradePrice).toFixed(2)}/-</td>
+                                                                    <td className="p-3 sm:p-4 text-center">
+                                                                        <input
+                                                                            type="number"
+                                                                            min="0"
+                                                                            max={product.totalQuantity}
+                                                                            placeholder="Qty"
+                                                                            className="border border-gray-300 rounded-md p-2 w-20 sm:w-24 text-center text-sm sm:text-base focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                                            value={productQuantities[product._id]}
+                                                                            onChange={(e) =>
+                                                                                handleProductQuantityChange(product._id, e.target.value)
+                                                                            }
+                                                                            onWheel={(e) => e.target.blur()}
+                                                                        />
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            {/* Mobile Layout */}
+                                            <div className="sm:hidden space-y-3 mt-3">
+                                                {groupedProducts
+                                                    .filter((product) =>
+                                                        product.productName.toLowerCase().includes(searchTerm.toLowerCase())
+                                                    )
+                                                    .map((product) => (
+                                                        <div
+                                                            key={product._id}
+                                                            className="border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition text-sm"
+                                                        >
+                                                            <p className="font-medium text-gray-900 mb-1 text-center">{product.productName}</p>
+                                                            <div className="flex justify-between items-center text-gray-600 mb-2">
+                                                                <div>
+                                                                    <p className="text-xs">Net Weight: {product.netWeight}</p>
+                                                                    <p className="text-xs">Code: {product.productCode}</p>
+                                                                </div>
+                                                                <p className="font-semibold text-gray-900 text-sm">৳ {(product.tradePrice).toFixed(2)}/-</p>
+                                                            </div>
+
+                                                            {/* Order Quantity */}
+                                                            <div>
+                                                                <label className="block text-xs font-medium text-gray-700 mb-1 text-center">
+                                                                    Order Quantity
+                                                                </label>
+                                                                <input
+                                                                    type="number"
+                                                                    min="0"
+                                                                    max={product.totalQuantity}
+                                                                    placeholder="Enter Quantity"
+                                                                    className="border border-gray-300 rounded-md px-2 py-1 w-full text-center text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                                    value={productQuantities[product._id]}
+                                                                    onChange={(e) => handleProductQuantityChange(product._id, e.target.value)}
+                                                                    onWheel={(e) => e.target.blur()}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Actions */}
+                                        <div className="flex flex-col sm:flex-row justify-center sm:justify-end items-center mt-3 sm:mt-6 gap-3 px-4 sm:px-6">
+                                            <button
+                                                onClick={() => setIsModalOpen(false)}
+                                                className="w-full sm:w-auto bg-gray-500 hover:bg-gray-600 text-white px-4 py-3 rounded-lg text-base transition"
+                                            >
+                                                Cancel
+                                            </button>
+                                            <button
+                                                onClick={confirmProducts}
+                                                className="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-lg text-base transition"
                                             >
                                                 Confirm
                                             </button>
