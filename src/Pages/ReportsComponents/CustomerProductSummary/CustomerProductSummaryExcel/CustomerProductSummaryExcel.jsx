@@ -76,16 +76,21 @@ const CustomerProductSummaryExcel = ({ reportType, filteredOrders = [], firstDat
         let grandTotalPrice = 0;
 
         orders.forEach(order => {
+            const parentTerritory = order?.parentTerritory || "Unknown Parent Territory";
+            const territory = order?.territory || "Unknown Territory";
             const pharmacyId = order?.pharmacyId || "Unknown ID";
-            const parentTerritory = order?.parentTerritory || "Unknown Territory";
             const productDetails = order?.products || [];
 
             if (!groupedByTerritory[parentTerritory]) {
                 groupedByTerritory[parentTerritory] = {};
             }
 
-            if (!groupedByTerritory[parentTerritory][pharmacyId]) {
-                groupedByTerritory[parentTerritory][pharmacyId] = {
+            if (!groupedByTerritory[parentTerritory][territory]) {
+                groupedByTerritory[parentTerritory][territory] = {};
+            }
+
+            if (!groupedByTerritory[parentTerritory][territory][pharmacyId]) {
+                groupedByTerritory[parentTerritory][territory][pharmacyId] = {
                     products: {},
                     customerInfo: null
                 };
@@ -100,8 +105,8 @@ const CustomerProductSummaryExcel = ({ reportType, filteredOrders = [], firstDat
                     grandTotalQty += quantity;
                     grandTotalPrice += totalPrice;
 
-                    if (!groupedByTerritory[parentTerritory][pharmacyId].products[productKey]) {
-                        groupedByTerritory[parentTerritory][pharmacyId].products[productKey] = {
+                    if (!groupedByTerritory[parentTerritory][territory][pharmacyId].products[productKey]) {
+                        groupedByTerritory[parentTerritory][territory][pharmacyId].products[productKey] = {
                             productName: product.name,
                             netWeight: product.netWeight,
                             quantity: 0,
@@ -109,98 +114,106 @@ const CustomerProductSummaryExcel = ({ reportType, filteredOrders = [], firstDat
                         };
                     }
 
-                    groupedByTerritory[parentTerritory][pharmacyId].products[productKey].quantity += quantity;
-                    groupedByTerritory[parentTerritory][pharmacyId].products[productKey].totalPrice += totalPrice;
+                    groupedByTerritory[parentTerritory][territory][pharmacyId].products[productKey].quantity += quantity;
+                    groupedByTerritory[parentTerritory][territory][pharmacyId].products[productKey].totalPrice += totalPrice;
                 }
             });
         });
 
         Object.keys(groupedByTerritory).forEach(parentTerritory => {
-            Object.keys(groupedByTerritory[parentTerritory]).forEach(pharmacyId => {
-                const customer = customers.find(c => c.customerId === pharmacyId);
-                if (customer) {
-                    groupedByTerritory[parentTerritory][pharmacyId].customerInfo = {
-                        name: customer.name,
-                        address: customer.address,
-                        mobile: customer.mobile
-                    };
-                } else {
-                    groupedByTerritory[parentTerritory][pharmacyId].customerInfo = {
-                        name: "Unknown Pharmacy",
-                        address: "N/A",
-                        mobile: "N/A"
-                    };
-                }
+            Object.keys(groupedByTerritory[parentTerritory]).forEach(territory => {
+                Object.keys(groupedByTerritory[parentTerritory][territory]).forEach(pharmacyId => {
+                    const customer = customers.find(c => c.customerId === pharmacyId);
+                    if (customer) {
+                        groupedByTerritory[parentTerritory][territory][pharmacyId].customerInfo = {
+                            name: customer.name,
+                            address: customer.address,
+                            mobile: customer.mobile
+                        };
+                    } else {
+                        groupedByTerritory[parentTerritory][territory][pharmacyId].customerInfo = {
+                            name: "Unknown Pharmacy",
+                            address: "N/A",
+                            mobile: "N/A"
+                        };
+                    }
+                });
             });
         });
 
-        const groupedHTML = Object.entries(groupedByTerritory).map(([territory, customerMap]) => {
-            const customersHTML = Object.entries(customerMap).map(([pharmacyId, data]) => {
-                const { name, address, mobile } = data.customerInfo;
-                const productsArray = Object.values(data.products);
+        const groupedHTML = Object.entries(groupedByTerritory).map(([parentTerritory, territoryMap]) => {
+            const territoriesHTML = Object.entries(territoryMap).map(([territory, customerMap]) => {
+                const customersHTML = Object.entries(customerMap).map(([pharmacyId, data]) => {
+                    const { name, address, mobile } = data.customerInfo;
+                    const productsArray = Object.values(data.products);
 
-                let customerTotalQty = 0;
-                let customerTotalPrice = 0;
+                    let customerTotalQty = 0;
+                    let customerTotalPrice = 0;
 
-                productsArray.forEach(product => {
-                    customerTotalQty += product.quantity;
-                    customerTotalPrice += product.totalPrice;
-                });
+                    productsArray.forEach(product => {
+                        customerTotalQty += product.quantity;
+                        customerTotalPrice += product.totalPrice;
+                    });
+
+                    return `
+                        <div style="margin-bottom: 30px;">
+                            <p style="text-align: center; margin: 5px 0 10px; font-size: 13px; line-height: 1.6;">
+                                <span style="font-weight: bold;">
+                                    ${name} | ${pharmacyId}
+                                </span><br>
+                                ${address}<br>
+                                <!-- ${mobile} -->
+                            </p>
+                            <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
+                                <thead>
+                                    <tr>
+                                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 50%;">Product</th>
+                                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: center; width: 15%;">Pack Size</th>
+                                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 15%;">Quantity</th>
+                                        <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 20%;">Total Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${productsArray.map(product => `
+                                        <tr>
+                                            <td style="padding: 8px; border: 1px solid #ccc;">${product.productName}</td>
+                                            <td style="padding: 8px; border: 1px solid #ccc; text-align: center;">${product.netWeight}</td>
+                                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${product.quantity}</td>
+                                            <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+                                                ${product.totalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                    <tr>
+                                        <td colspan="2" style="padding: 8px; border: 1px solid #aaa; font-weight: bold;">
+                                            ${name} Total
+                                        </td>
+                                        <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right;">
+                                            ${customerTotalQty.toLocaleString('en-IN')}
+                                        </td>
+                                        <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right;">
+                                            ${customerTotalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                        </td>
+                                    </tr>
+                                    <tr />
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                }).join('');
 
                 return `
-                <div style="margin-bottom: 30px;">
-                    <p style="text-align: center; margin: 5px 0 10px; font-size: 13px; line-height: 1.6;">
-                        <span style="font-weight: bold;">
-                            ${name} | ${pharmacyId}
-                        </span><br>
-                        ${address}<br>
-                        ${mobile}
-                    </p>
-                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
-                        <thead>
-                            <tr>
-                                <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: left; width: 50%;">Product</th>
-                                <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: center; width: 15%;">Pack Size</th>
-                                <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 15%;">Quantity</th>
-                                <th style="padding: 8px; border: 1px solid #aaa; background: #f0f0f0; text-align: right; width: 20%;">Total Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${productsArray.map(product => `
-                                <tr>
-                                    <td style="padding: 8px; border: 1px solid #ccc;">${product.productName}</td>
-                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: center;">${product.netWeight}</td>
-                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">${product.quantity}</td>
-                                    <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
-                                        ${product.totalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                                    </td>
-                                </tr>
-                            `).join('')}
-                            <tr>
-                                <td colspan="2" style="padding: 8px; border: 1px solid #aaa; font-weight: bold;">
-                                    ${name} Total
-                                </td>
-                                <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right;">
-                                    ${customerTotalQty.toLocaleString('en-IN')}
-                                </td>
-                                <td style="padding: 8px; border: 1px solid #aaa; font-weight: bold; text-align: right;">
-                                    ${customerTotalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            `;
+            <h3 style="text-align: center; font-size: 16px; font-weight: bold; margin: 10px;">Territory: ${territory}</h3>
+            ${customersHTML}
+        `;
             }).join('');
 
             return `
-            <div>
-                <h2 style="text-align: center; font-size: 18px; font-weight: bold;">
-                    ${territory}
-                </h2>
-                ${customersHTML}
-            </div>
-        `;
+        <div>
+            <h2 style="text-align: center; font-size: 18px; font-weight: bold; margin: 20px;">${parentTerritory}</h2>
+            ${territoriesHTML}
+        </div>
+    `;
         }).join('');
 
         const finalTotalHTML = `
