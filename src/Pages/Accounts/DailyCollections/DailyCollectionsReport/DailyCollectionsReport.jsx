@@ -23,6 +23,8 @@ const DailyCollectionsReport = ({ reportType, filteredOrders = [], firstDate, la
         hour12: true
     });
 
+    const today = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+
     const handlePrint = () => {
         const companyHeader = `
             <div>
@@ -260,7 +262,7 @@ const DailyCollectionsReport = ({ reportType, filteredOrders = [], firstDate, la
         newWindow.document.write(`
             <html>
                 <head>
-                    <title>Daily Collections</title>
+                    <title>Daily Collections generated on ${today}</title>
                     ${styles}
                     <style>
                         @media print {

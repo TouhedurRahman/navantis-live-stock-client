@@ -18,6 +18,8 @@ const MPOStatementReport = ({ reportType, filteredOrders = [], orderReturns = []
         hour12: true
     });
 
+    const today = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+
     const handlePrint = () => {
         const companyHeader = `
             <div>
@@ -244,7 +246,7 @@ const MPOStatementReport = ({ reportType, filteredOrders = [], orderReturns = []
         newWindow.document.write(`
             <html>
                 <head>
-                    <title>MPO Statement</title>
+                    <title>MPO Statement generated on ${today}</title>
                     ${styles}
                     <style>
                         @media print {

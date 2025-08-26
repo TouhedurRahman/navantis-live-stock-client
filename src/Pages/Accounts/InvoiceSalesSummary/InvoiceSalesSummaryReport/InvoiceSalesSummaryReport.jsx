@@ -28,6 +28,8 @@ const InvoiceSalesSummaryReport = ({ reportType, filteredOrders = [], orderRetur
         hour12: true
     });
 
+    const today = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+
     const handlePrint = () => {
         const companyHeader = `
             <div>
@@ -302,7 +304,7 @@ const InvoiceSalesSummaryReport = ({ reportType, filteredOrders = [], orderRetur
         newWindow.document.write(`
             <html>
                 <head>
-                    <title>Invoice Sales Summary</title>
+                    <title>Invoice Sales Summary generated on ${today}</title>
                     ${styles}
                     <style>
                         @media print {
