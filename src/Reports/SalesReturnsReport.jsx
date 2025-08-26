@@ -13,6 +13,8 @@ const SalesReturnsReport = ({ reportType, filteredReturns = [], firstDate, lastD
         hour12: true
     });
 
+    const today = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+
     const handlePrint = () => {
         const companyHeader = `
             <div>
@@ -215,7 +217,7 @@ const SalesReturnsReport = ({ reportType, filteredReturns = [], firstDate, lastD
         newWindow.document.write(`
             <html>
                 <head>
-                    <title>Products Sales Returns</title>
+                    <title>Products Sales Returns generated on ${today}</title>
                     ${styles}
                     <style>
                         @media print {

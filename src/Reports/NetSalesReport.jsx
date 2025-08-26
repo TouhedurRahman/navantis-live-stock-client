@@ -28,6 +28,8 @@ const NetSalesReport = ({ reportType, filteredOrders = [], orderReturns = [], fi
         hour12: true
     });
 
+    const today = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+
     const handlePrint = () => {
         const companyHeader = `
             <div>
@@ -217,7 +219,7 @@ const NetSalesReport = ({ reportType, filteredOrders = [], orderReturns = [], fi
         newWindow.document.write(`
             <html>
                 <head>
-                    <title>Net Sales</title>
+                    <title>Net Sales generated on ${today}</title>
                     ${styles}
                     <style>
                         @media print {

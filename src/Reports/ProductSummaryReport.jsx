@@ -23,6 +23,8 @@ const ProductSummaryReport = ({ reportType, filteredOrders = [], firstDate, last
         hour12: true
     });
 
+    const today = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+
     const handlePrint = () => {
         const companyHeader = `
             <div>
@@ -270,7 +272,7 @@ const ProductSummaryReport = ({ reportType, filteredOrders = [], firstDate, last
         newWindow.document.write(`
             <html>
                 <head>
-                    <title>Product Summary</title>
+                    <title>Product Summary generated on ${today}</title>
                     ${styles}
                     <style>
                         @media print {

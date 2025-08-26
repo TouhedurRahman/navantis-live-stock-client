@@ -15,6 +15,8 @@ const ExpireReturnsReport = ({ reportType, filteredExReturns = [], firstDate, la
         hour12: true
     });
 
+    const today = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+
     const handlePrint = () => {
         const companyHeader = `
             <div>
@@ -201,7 +203,7 @@ const ExpireReturnsReport = ({ reportType, filteredExReturns = [], firstDate, la
         newWindow.document.write(`
             <html>
                 <head>
-                    <title>Expire Returns</title>
+                    <title>Expire Returns Report generated on ${today}</title>
                     ${styles}
                     <style>
                         @media print {

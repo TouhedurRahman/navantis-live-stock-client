@@ -84,6 +84,8 @@ const CusInvSalesReport = ({ filteredCustomers = [], reportType }) => {
         hour12: true,
     });
 
+    const today = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+
     const handlePrint = () => {
         const companyHeader = `
             <div>
@@ -197,7 +199,7 @@ const CusInvSalesReport = ({ filteredCustomers = [], reportType }) => {
         newWindow.document.write(`
             <html>
                 <head>
-                    <title>Customer Invoice Sales Report</title>
+                    <title>Customer Invoice Sales Report generated on ${today}</title>
                     ${styles}
                     <style>
                         @media print {
