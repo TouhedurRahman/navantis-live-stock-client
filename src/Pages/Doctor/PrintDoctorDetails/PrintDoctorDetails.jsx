@@ -13,6 +13,8 @@ const PrintDoctorDetails = ({ filteredDoctors = [] }) => {
         hour12: true
     });
 
+    const today = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+
     const handlePrint = () => {
         const companyHeader = `
             <div>
@@ -102,7 +104,7 @@ const PrintDoctorDetails = ({ filteredDoctors = [] }) => {
         newWindow.document.write(`
             <html>
                 <head>
-                    <title>Customer Details</title>
+                    <title>Doctors Details generated on ${today}</title>
                     ${styles}
                     <style>
                         body {

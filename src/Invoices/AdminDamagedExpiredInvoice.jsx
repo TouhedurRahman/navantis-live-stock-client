@@ -7,6 +7,8 @@ const AdminDamagedExpiredInvoice = ({ invoiceWithAP, firstDate, lastDate, totalU
         hour12: true
     });
 
+    const today = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+
     const handlePrint = () => {
         const companyHeader = `
         <div>
@@ -141,7 +143,7 @@ const AdminDamagedExpiredInvoice = ({ invoiceWithAP, firstDate, lastDate, totalU
         newWindow.document.write(`
             <html>
                 <head>
-                    <title>Invoice</title>
+                    <title>Damaged & Expired List generated on ${today}</title>
                     ${styles}
                     <style>
                         @media print {

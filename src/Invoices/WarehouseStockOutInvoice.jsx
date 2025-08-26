@@ -7,6 +7,8 @@ const WarehouseStockOutInvoice = ({ invoiceWithAP, firstDate, lastDate, totalUni
         hour12: true
     });
 
+    const today = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+
     const handlePrint = () => {
         const companyHeader = `
         <div>
@@ -139,7 +141,7 @@ const WarehouseStockOutInvoice = ({ invoiceWithAP, firstDate, lastDate, totalUni
         newWindow.document.write(`
             <html>
                 <head>
-                    <title>Invoice</title>
+                    <title>Warehouse Stock Out List generated on ${today}</title>
                     ${styles}
                     <style>
                         @media print {

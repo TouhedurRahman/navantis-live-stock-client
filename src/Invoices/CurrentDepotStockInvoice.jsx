@@ -7,6 +7,8 @@ const CurrentDepotStockInvoice = ({ invoiceWithAP, totalUnit, totalActualPrice, 
         hour12: true
     });
 
+    const today = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+
     const handlePrint = () => {
         const companyHeader = `
         <div>
@@ -141,7 +143,7 @@ const CurrentDepotStockInvoice = ({ invoiceWithAP, totalUnit, totalActualPrice, 
         newWindow.document.write(`
             <html>
                 <head>
-                    <title>Invoice</title>
+                    <title>Current Depot Stock generated on ${today}</title>
                     ${styles}
                     <style>
                         @media print {

@@ -7,6 +7,8 @@ const WarehouseDamagedProductsInvoice = ({ invoiceWithAP, firstDate, lastDate, t
         hour12: true
     });
 
+    const today = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+
     const handlePrint = () => {
         const companyHeader = `
         <div>
@@ -139,7 +141,7 @@ const WarehouseDamagedProductsInvoice = ({ invoiceWithAP, firstDate, lastDate, t
         newWindow.document.write(`
             <html>
                 <head>
-                    <title>Invoice</title>
+                    <title>Warehouse Damaged Products List generated on ${today}</title>
                     ${styles}
                     <style>
                         @media print {

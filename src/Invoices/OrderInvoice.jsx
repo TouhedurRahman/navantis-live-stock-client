@@ -184,6 +184,8 @@ const OrderInvoice = ({ order }) => {
         hour12: true
     });
 
+    const today = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+
     const handlePrint = () => {
         const companyHeader =
             `<div class="font-sans">
@@ -475,7 +477,7 @@ const OrderInvoice = ({ order }) => {
         newWindow.document.write(`
             <html>
                 <head>
-                    <title>Invoice</title>
+                    <title>${order.invoice} generated on ${today}</title>
                     ${styles}
                     <style>
                         @media print {

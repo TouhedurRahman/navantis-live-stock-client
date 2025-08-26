@@ -9,6 +9,8 @@ const AdminMissingProductsInvoice = ({ invoiceWithAP, firstDate, lastDate, total
         hour12: true
     });
 
+    const today = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+
     const handlePrint = () => {
         const companyHeader = `
         <div>
@@ -26,7 +28,7 @@ const AdminMissingProductsInvoice = ({ invoiceWithAP, firstDate, lastDate, total
                 <p style="margin: 0; font-size: 10px;">Hotline: +880 1322-852183</p>
             </div>
             <div style="text-align: left; margin-bottom: 20px;">
-                <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>Missing products List</u></h3>
+                <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>Missing Products List</u></h3>
                 <p style="margin: 5px 0; font-size: 14px; text-align: center;">
                     ${(firstDate !== lastDate)
                 ?
@@ -145,7 +147,7 @@ const AdminMissingProductsInvoice = ({ invoiceWithAP, firstDate, lastDate, total
         newWindow.document.write(`
             <html>
                 <head>
-                    <title>Invoice</title>
+                    <title>Missing Products List generated on ${today}</title>
                     ${styles}
                     <style>
                         @media print {
