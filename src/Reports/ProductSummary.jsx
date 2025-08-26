@@ -9,6 +9,8 @@ const ProductSummary = ({ filteredOrders = [], firstDate, lastDate }) => {
         hour12: true
     });
 
+    const today = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+
     useEffect(() => {
         setOrders(filteredOrders);
     }, [filteredOrders]);
@@ -150,7 +152,7 @@ const ProductSummary = ({ filteredOrders = [], firstDate, lastDate }) => {
         newWindow.document.write(`
             <html>
                 <head>
-                    <title>Invoice</title>
+                    <title>Date Wise Product Summary generated on ${today}</title>
                     ${styles}
                     <style>
                         @media print {

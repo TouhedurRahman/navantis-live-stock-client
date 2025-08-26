@@ -11,6 +11,8 @@ const OrderDespatchSheet = ({ filteredOrders = [], firstDate, lastDate }) => {
         hour12: true
     });
 
+    const today = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+
     useEffect(() => {
         setOrders(filteredOrders);
     }, [filteredOrders]);
@@ -127,7 +129,7 @@ const OrderDespatchSheet = ({ filteredOrders = [], firstDate, lastDate }) => {
         newWindow.document.write(`
             <html>
                 <head>
-                    <title>Invoice</title>
+                    <title>Order Dispatch Sheet generated on ${today}</title>
                     ${styles}
                     <style>
                         @media print {
