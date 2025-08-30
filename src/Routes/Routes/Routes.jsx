@@ -33,6 +33,7 @@ import ExpiredReturns from "../../Pages/Depot/ExpiredReturns/ExpiredReturns/Expi
 import ExpiredReturnsStatus from "../../Pages/Depot/ExpiredReturns/ExpiredReturnsStatus/ExpiredReturnsStatus";
 import InvoicePayment from "../../Pages/Depot/InvoicePayment/InvoicePayment/InvoicePayment";
 import OrderDelivery from "../../Pages/Depot/OrderDelivery/OrderDelivery";
+import SalesReturnsList from "../../Pages/Depot/SalesReturnsList/SalesReturnsList/SalesReturnsList";
 import AddNewDoctor from "../../Pages/Doctor/AddNewDoctor/AddNewDoctor";
 import DoctorDetails from "../../Pages/Doctor/DoctorDetails/DoctorDetails";
 import DoctorList from "../../Pages/Doctor/DoctorList/DoctorList/DoctorList";
@@ -227,6 +228,10 @@ const router = createBrowserRouter([
             {
                 path: "/depot-receive",
                 element: <DepotReceiveList />
+            },
+            {
+                path: "/sales-returns",
+                element: <SalesReturnsList />
             },
             {
                 path: "/depot-in",
