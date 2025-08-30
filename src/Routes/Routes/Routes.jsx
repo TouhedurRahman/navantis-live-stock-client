@@ -23,6 +23,7 @@ import UpdateCustomer from "../../Pages/Customer/UpdateCustomer/UpdateCustomer";
 import DeliveryReport from "../../Pages/Depot/DeliveryReport/DeliveryReport";
 import DepotExpiredProduct from "../../Pages/Depot/DepotExpiredProduct/DepotExpiredProduct";
 import DepotProductsList from "../../Pages/Depot/DepotProductsList/DepotProductsList";
+import DepotReceiveList from "../../Pages/Depot/DepotReceiveList/DepotReceiveList/DepotReceiveList";
 import DepotRecieveReq from "../../Pages/Depot/DepotRecieveReq/DepotRecieveReq";
 import DepotStockInList from "../../Pages/Depot/DepotStockInList/DepotStockInList";
 import DepotStockOutList from "../../Pages/Depot/DepotStockOutList/DepotStockOutList";
@@ -222,6 +223,10 @@ const router = createBrowserRouter([
             {
                 path: "/depot-list",
                 element: <DepotProductsList />
+            },
+            {
+                path: "/depot-receive",
+                element: <DepotReceiveList />
             },
             {
                 path: "/depot-in",
