@@ -563,8 +563,38 @@ const OrderDelivery = () => {
         } else if (["Cash", "STC"].includes(selectedOrderDetails.payMode) && selectedPharmacy?.payMode?.includes("STC")) {
             const currentDate = new Date();
             const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-            const stcOrderLastDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 10);
+            const stcOrderLastDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 11);
             const lastDayAllowed = new Date(currentDate.getFullYear(), currentDate.getMonth(), 28);
+
+            const normalizeDate = d => {
+                const nd = new Date(d);
+                nd.setHours(0, 0, 0, 0);
+                return nd;
+            };
+
+            const stcOrders = orders.filter(order => {
+                const orderDate = normalizeDate(order.date);
+                return (
+                    order.pharmacyId == selectedPharmacy?.customerId &&
+                    order.payMode.toLowerCase() === "stc" &&
+                    order.status.toLowerCase() !== "pending" &&
+                    orderDate >= normalizeDate(firstDayOfMonth) &&
+                    orderDate <= normalizeDate(lastDayAllowed)
+                );
+            });
+
+            const stcDues = orders.filter(
+                order =>
+                    order.pharmacyId == selectedPharmacy.customerId
+                    &&
+                    order.payMode === "STC"
+                    &&
+                    order.status === "due"
+            ).reduce(
+                (sum, order) => sum + order.due, 0
+            )
+
+            const availableStcCrLimit = selectedPharmacy?.crLimit - stcDues;
 
             const previousUnpaidSTC = orders.some(order =>
                 order.pharmacyId === selectedPharmacy?.customerId
@@ -573,146 +603,42 @@ const OrderDelivery = () => {
                 &&
                 order.status.toLowerCase() === "due"
                 &&
-                new Date(order.date) < firstDayOfMonth
+                (
+                    new Date(order.date) < lastDayAllowed
+                    ||
+                    new Date(order.date) < firstDayOfMonth
+                )
             );
 
             if (previousUnpaidSTC) {
-                Swal.fire({
+                return Swal.fire({
                     icon: "error",
                     title: "Order Blocked",
                     text: "Overdue STC orders found!"
                 });
-            } else {
-                const stcOrders = orders.filter(order =>
-                    order.pharmacyId === selectedPharmacy?.customerId
-                    &&
-                    order.payMode === "STC"
-                    &&
-                    order.status !== "pending"
-                    &&
-                    new Date(order.date) >= firstDayOfMonth
-                    &&
-                    new Date(order.date) <= lastDayAllowed
+            } else if (selectedOrderDetails.payMode === "Cash") {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                const previousUnpaidCashOrders = orders.filter(
+                    order =>
+                        order.pharmacyId === selectedPharmacy.customerId &&
+                        order.payMode === "Cash" &&
+                        order.territory !== "Doctor" &&
+                        !["paid", "pending", "returned"].includes(order.status.toLowerCase()) &&
+                        new Date(order.date) < today
                 );
 
-                const hasUnpaidSTC = stcOrders.some(order => order.status.toLowerCase() === "due");
+                if (previousUnpaidCashOrders.length > 0) {
+                    const invoiceList = previousUnpaidCashOrders
+                        .map(order => order.invoice)
+                        .filter(Boolean)
+                        .join(", ");
 
-                if (hasUnpaidSTC) {
-                    if (currentDate <= lastDayAllowed) {
-                        if (selectedOrderDetails.payMode === "Cash") {
-                            handleDeliverySubmit();
-                        } else {
-                            Swal.fire({
-                                icon: "error",
-                                title: "Order Restricted",
-                                text: "Due STC orders found! Only Cash payments are allowed until payment is cleared."
-                            });
-                        }
-                    } else {
-                        Swal.fire({
-                            icon: "error",
-                            title: "Order Blocked",
-                            text: "Overdue STC orders found! You cannot place any new orders until payment is made."
-                        });
-                    }
-                } else {
-                    if (selectedOrderDetails.payMode === "STC") {
-                        if (currentDate <= stcOrderLastDay) {
-                            const hasAnySTCOrderThisMonth = stcOrders.length > 0;
-
-                            if (hasAnySTCOrderThisMonth) {
-                                Swal.fire({
-                                    icon: "error",
-                                    title: "Order Not Allowed",
-                                    text: "An STC order has already been placed this month. You can't place another."
-                                });
-                            } else if (selectedPharmacy?.crLimit >= selectedOrderDetails.totalPayable) {
-                                handleDeliverySubmit();
-                            } else {
-                                Swal.fire({
-                                    icon: "error",
-                                    title: "Credit Limit Exceeded",
-                                    text: "Customer do not have a sufficient credit limit!"
-                                });
-                            }
-                        } else {
-                            Swal.fire({
-                                icon: "error",
-                                title: "Order Restriction Notice",
-                                text: "STC orders cannot be placed after the 10th day of the current month. However, you may still place a cash order."
-                            });
-                        }
-                    } else {
-                        /* // Check for any cash order placed today
-                        const hasCashOrderToday = orders.some(
-                            order =>
-                                order.pharmacyId === selectedPharmacy.customerId
-                                &&
-                                order.payMode === "Cash"
-                                &&
-                                (
-                                    order.status === "delivered"
-                                    ||
-                                    order.status === "due"
-                                    ||
-                                    order.status === "outstanding"
-                                    ||
-                                    order.status === "paid"
-                                )
-                                &&
-                                new Date(order.date).toDateString() === new Date().toDateString()
-                        );
-
-                        // Check for any unpaid cash order (any date)
-                        const hasAnyUnpaidCash = orders.some(
-                            order =>
-                                order.pharmacyId === selectedPharmacy.customerId
-                                &&
-                                order.payMode === "Cash"
-                                &&
-                                !["paid", "pending", "returned"].includes(order.status.toLowerCase())
-                        );
-
-                        if (hasCashOrderToday) {
-                            Swal.fire({
-                                icon: "warning",
-                                title: "Order Restricted",
-                                text: "A cash order has already been placed today. Only one cash order per day is allowed."
-                            });
-                            return;
-                        } else if (hasAnyUnpaidCash) {
-                            Swal.fire({
-                                icon: "error",
-                                title: "Order Blocked",
-                                text: `Unpaid order found (Invoice No. ${unpaidCashOrder?.invoice}). Please clear payment first.`
-                            });
-                            return;
-                        } else {
-                            handleDeliverySubmit();
-                        } */
-
-                        const today = new Date();
-                        today.setHours(0, 0, 0, 0);
-
-                        const previousUnpaidCashOrders = orders.filter(
-                            order =>
-                                order.pharmacyId === selectedPharmacy.customerId &&
-                                order.payMode === "Cash" &&
-                                order.territory !== "Doctor" &&
-                                !["paid", "pending", "returned"].includes(order.status.toLowerCase()) &&
-                                new Date(order.date) < today
-                        );
-
-                        if (previousUnpaidCashOrders.length > 0) {
-                            const invoiceList = previousUnpaidCashOrders
-                                .map(order => order.invoice)
-                                .filter(Boolean)
-                                .join(", ");
-
-                            Swal.fire({
-                                icon: "error",
-                                title: "Order Blocked",
-                                html: `
+                    Swal.fire({
+                        icon: "error",
+                        title: "Order Blocked",
+                        html: `
                                     <div style="font-size: 15px; line-height: 1.6; color: #333; text-align: center;">
                                         <p style="margin-bottom: 10px;">
                                             Unpaid cash orders from previous days have been found.
@@ -735,11 +661,59 @@ const OrderDelivery = () => {
                                         </table>
                                     </div>
                                 `
-                            });
-                            return;
-                        } else {
-                            handleDeliverySubmit();
+                    });
+                    return;
+                } else {
+                    handleDeliverySubmit();
+                }
+            } else {
+                if (selectedOrderDetails.payMode === "STC") {
+                    if (currentDate <= stcOrderLastDay) {
+                        const hasAnySTCOrderThisMonth = stcOrders.length > 0;
+
+                        if (hasAnySTCOrderThisMonth) {
+                            const stcCategoriesSet = new Set(
+                                stcOrders.map(order => order.category?.toLowerCase())
+                            );
+
+                            const currentCategory = selectedOrderDetails.category?.toLowerCase();
+
+                            if (stcCategoriesSet.has(currentCategory)) {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Order Not Allowed",
+                                    html: `An STC order for brand <b>${selectedOrderDetails.category}</b> has already been placed this month. You cannot place another for the same brand.`
+                                });
+                                return;
+                            }
+
+                            if (stcCategoriesSet.size >= 2) {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Order Not Allowed",
+                                    text: "Two STC orders have already been placed this month (Bionike & Noiderna). You cannot place more."
+                                });
+                                return;
+                            }
                         }
+
+                        alert(availableStcCrLimit);
+
+                        if (availableStcCrLimit >= selectedOrderDetails?.totalPayable) {
+                            handleDeliverySubmit();
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Credit Limit Exceeded",
+                                text: "Customer do not have a sufficient credit limit!"
+                            });
+                        }
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Order Restriction Notice",
+                            text: "STC orders cannot be placed after the 10th day of the current month. However, you may still place a cash order."
+                        });
                     }
                 }
             }

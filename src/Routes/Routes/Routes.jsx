@@ -230,7 +230,7 @@ const router = createBrowserRouter([
                 element: <DepotReceiveList />
             },
             {
-                path: "/sales-returns",
+                path: "/depot-sales-returns",
                 element: <SalesReturnsList />
             },
             {
