@@ -15,6 +15,8 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
         existingSameBatchProduct =>
             existingSameBatchProduct.productName === product.productName
             &&
+            existingSameBatchProduct.netWeight === product.netWeight
+            &&
             existingSameBatchProduct.batch === product.batch
             &&
             existingSameBatchProduct.expire === product.expire
@@ -24,12 +26,16 @@ const WarehouseRequestProductCard = ({ idx, product, refetch, whProducts }) => {
     const matchingProducts = whProducts.filter(
         matchingProduct =>
             matchingProduct.productName === product.productName
+            &&
+            matchingProduct.netWeight === product.netWeight
     );
     const initialQuantity = matchingProducts.reduce((sum, product) => sum + (product.totalQuantity), 0);
 
     const matchingProductName = whProducts.find(
         existingProduct =>
             existingProduct.productName === product.productName
+            &&
+            existingProduct.netWeight === product.netWeight
     );
     const initialActualPrice = matchingProductName?.actualPrice ?? null;
     const initialTradePrice = matchingProductName?.tradePrice ?? null;
