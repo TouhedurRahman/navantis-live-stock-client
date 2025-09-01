@@ -603,18 +603,14 @@ const OrderDelivery = () => {
                 &&
                 order.status.toLowerCase() === "due"
                 &&
-                (
-                    new Date(order.date) < lastDayAllowed
-                    ||
-                    new Date(order.date) < firstDayOfMonth
-                )
+                new Date(order.date) < firstDayOfMonth
             );
 
             if (previousUnpaidSTC) {
                 return Swal.fire({
                     icon: "error",
                     title: "Order Blocked",
-                    text: "Overdue STC orders found!"
+                    text: "Overdue STC orders found! Please clear prvious STC due first."
                 });
             } else if (selectedOrderDetails.payMode === "Cash") {
                 const today = new Date();
