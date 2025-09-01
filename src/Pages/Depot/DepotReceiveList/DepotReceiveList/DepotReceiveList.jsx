@@ -372,9 +372,9 @@ const DepotReceiveList = () => {
                                                 <td>{product.netWeight}</td>
                                                 <td className="text-center">{product.batch}</td>
                                                 <td className="text-center">{product.expire}</td>
-                                                <td className="text-center">{product.totalQuantity}</td>
+                                                <td className="text-center">{product.netQuantity}</td>
                                                 <td className="text-right">{(product.tradePrice).toLocaleString('en-IN')}/-</td>
-                                                <td className="text-right">{(product.tradePrice * product.totalQuantity).toLocaleString('en-IN')}/-</td>
+                                                <td className="text-right">{(product.tradePrice * product.netQuantity).toLocaleString('en-IN')}/-</td>
                                                 <td className="text-center">
                                                     {new Date(product.date).toLocaleDateString('en-GB').replace(/\//g, '-')}
                                                 </td>

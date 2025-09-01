@@ -678,26 +678,22 @@ const OrderDelivery = () => {
 
                             const currentCategory = selectedOrderDetails.category?.toLowerCase();
 
+                            if (stcCategoriesSet.size >= 2) {
+                                return Swal.fire({
+                                    icon: "error",
+                                    title: "Order Not Allowed",
+                                    html: "Two STC orders <b>Bionike</b> & <b>Noiderna</b> have already been placed this month. No more STC orders allowed, but cash orders are still available."
+                                });
+                            }
+
                             if (stcCategoriesSet.has(currentCategory)) {
-                                Swal.fire({
+                                return Swal.fire({
                                     icon: "error",
                                     title: "Order Not Allowed",
                                     html: `An STC order for brand <b>${selectedOrderDetails.category}</b> has already been placed this month. You cannot place another for the same brand.`
                                 });
-                                return;
-                            }
-
-                            if (stcCategoriesSet.size >= 2) {
-                                Swal.fire({
-                                    icon: "error",
-                                    title: "Order Not Allowed",
-                                    text: "Two STC orders have already been placed this month (Bionike & Noiderna). You cannot place more."
-                                });
-                                return;
                             }
                         }
-
-                        alert(availableStcCrLimit);
 
                         if (availableStcCrLimit >= selectedOrderDetails?.totalPayable) {
                             handleDeliverySubmit();

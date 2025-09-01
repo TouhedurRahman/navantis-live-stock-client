@@ -93,12 +93,12 @@ const DepotReceiveReport = ({ invoiceWithAP, firstDate, lastDate, totalUniquePro
                                 <td style="text-align: center;">${product.netWeight}</td>
                                 <td style="text-align: center;">${product.batch}</td>
                                 <td style="text-align: center;">${product.expire}</td>
-                                <td style="text-align: right;">${product.totalQuantity}</td>
+                                <td style="text-align: right;">${product.netQuantity}</td>
                                 <td style="text-align: right;">${product.tradePrice.toLocaleString('en-IN')}/-</td>
-                                <td style="text-align: right;">${(product.tradePrice * product.totalQuantity).toLocaleString('en-IN')}/-</td>
+                                <td style="text-align: right;">${(product.tradePrice * product.netQuantity).toLocaleString('en-IN')}/-</td>
                                 ${accessAP ? `
                                     <td style="text-align: right;">${product.actualPrice.toLocaleString('en-IN')}/-</td>
-                                    <td style="text-align: right;">${(product.actualPrice * product.totalQuantity).toLocaleString('en-IN')}/-</td>
+                                    <td style="text-align: right;">${(product.actualPrice * product.netQuantity).toLocaleString('en-IN')}/-</td>
                                 ` : ''}
                                 <td style="text-align: center; white-space: nowrap;">${new Date(product.date).toLocaleDateString('en-GB').replace(/\//g, '-')}</td>
                             </tr>
