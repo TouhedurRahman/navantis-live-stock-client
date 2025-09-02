@@ -1,15 +1,25 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
+import CreatableSelect from "react-select/creatable";
 import Swal from 'sweetalert2';
 import PageTitle from '../../../Components/PageTitle/PageTitle';
 import useApiConfig from '../../../Hooks/useApiConfig';
 import useSingleUser from '../../../Hooks/useSingleUser';
+import useUniqueProducts from '../../../Hooks/useUniqueProducts';
 
 const PurchaseOrder = () => {
     const baseUrl = useApiConfig();
     const [singleUser] = useSingleUser();
-    const { register, handleSubmit, formState: { errors }, reset } = useForm();
+    const [uniqueProducts] = useUniqueProducts();
+    const { register, handleSubmit, control, formState: { errors }, reset } = useForm();
+
+    const productOptions = Array.from(
+        new Map(uniqueProducts.map((p) => [p.productName, p])).values()
+    ).map((product) => ({
+        label: product.productName,
+        value: product.productName,
+    }));
 
     const addNewPrchaseMutation = useMutation({
         mutationFn: async (data) => {
@@ -111,12 +121,28 @@ const PurchaseOrder = () => {
                             <label className="text-[#6E719A] mb-1 text-sm">
                                 Product Name <span className="text-red-500">*</span>
                             </label>
-                            <input
-                                {...register("name", { required: "Product name is required" })}
-                                placeholder="Enter product name"
-                                className="border-gray-500 bg-white border p-2 text-sm"
+                            <Controller
+                                name="name"
+                                control={control}
+                                rules={{ required: "Product name is required" }}
+                                render={({ field }) => (
+                                    <CreatableSelect
+                                        options={productOptions}
+                                        isClearable
+                                        placeholder="Select or type product name"
+                                        className="text-sm cursor-text"
+                                        onChange={(selected) => field.onChange(selected ? selected.value : "")}
+                                        value={
+                                            field.value
+                                                ? { label: field.value, value: field.value }
+                                                : null
+                                        }
+                                    />
+                                )}
                             />
-                            {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+                            {errors.name && (
+                                <p className="text-red-500 text-sm">{errors.name.message}</p>
+                            )}
                         </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
