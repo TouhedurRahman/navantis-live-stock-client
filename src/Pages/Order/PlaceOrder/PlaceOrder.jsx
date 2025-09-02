@@ -814,16 +814,16 @@ const PlaceOrder = () => {
                                         {/* Actions */}
                                         <div className="flex flex-col sm:flex-row justify-center sm:justify-end items-center mt-3 sm:mt-6 gap-3 px-4 sm:px-6">
                                             <button
-                                                onClick={() => setIsModalOpen(false)}
-                                                className="w-full sm:w-auto bg-gray-500 hover:bg-gray-600 text-white px-4 py-3 rounded-lg text-base transition"
-                                            >
-                                                Cancel
-                                            </button>
-                                            <button
                                                 onClick={confirmProducts}
                                                 className="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-lg text-base transition"
                                             >
                                                 Confirm
+                                            </button>
+                                            <button
+                                                onClick={() => setIsModalOpen(false)}
+                                                className="w-full sm:w-auto bg-gray-500 hover:bg-gray-600 text-white px-4 py-3 rounded-lg text-base transition"
+                                            >
+                                                Cancel
                                             </button>
                                         </div>
                                     </div>
