@@ -5,7 +5,7 @@ import {
 } from 'react-icons/fa';
 import { FaUserDoctor } from "react-icons/fa6";
 import { FcExpired } from 'react-icons/fc';
-import { GiDustCloud, GiReturnArrow, GiStorkDelivery } from 'react-icons/gi';
+import { GiAchievement, GiDustCloud, GiReturnArrow, GiStorkDelivery } from 'react-icons/gi';
 import { IoIosAddCircle } from 'react-icons/io';
 import { MdAccountBalance, MdAssignmentReturned, MdOutlineShoppingBag, MdPayment } from 'react-icons/md';
 import { TbCoinTakaFilled, TbReportAnalytics, TbReportSearch } from 'react-icons/tb';
@@ -114,13 +114,10 @@ const useMenuConfig = () => {
                 { to: '/my-order-report', icon: <FaCartPlus className='me-2' />, label: 'My Report' },
             ],
         },
-        accounts: {
-            icon: <MdAccountBalance className="mr-2" />,
+        achievements: {
+            icon: <GiAchievement className="mr-2" />,
             links: [
-                { to: '/daily-collections', icon: <TbReportAnalytics className='me-2' />, label: 'Daily Collections' },
-                { to: '/due-payments', icon: <TbReportAnalytics className='me-2' />, label: 'Due Payments' },
-                { to: '/mpo-statement', icon: <TbReportAnalytics className='me-2' />, label: 'MPO Statement' },
-                { to: '/inv-sales-summary', icon: <TbReportAnalytics className='me-2' />, label: 'Inv. Sales Summary' },
+                { to: '/territory-achievements', icon: <TbReportAnalytics className='me-2' />, label: 'Territory wise Achievements' },
             ],
         },
         reports: {
@@ -136,6 +133,15 @@ const useMenuConfig = () => {
                 { to: '/cus-inv-sales', icon: <TbReportAnalytics className='me-2' />, label: 'Customer Inv & Sales' },
             ],
         },
+        accounts: {
+            icon: <MdAccountBalance className="mr-2" />,
+            links: [
+                { to: '/daily-collections', icon: <TbReportAnalytics className='me-2' />, label: 'Daily Collections' },
+                { to: '/due-payments', icon: <TbReportAnalytics className='me-2' />, label: 'Due Payments' },
+                { to: '/mpo-statement', icon: <TbReportAnalytics className='me-2' />, label: 'MPO Statement' },
+                { to: '/inv-sales-summary', icon: <TbReportAnalytics className='me-2' />, label: 'Inv. Sales Summary' },
+            ],
+        }
     };
 
     const baseMenuConfig = permissions.reduce((acc, permission) => {
