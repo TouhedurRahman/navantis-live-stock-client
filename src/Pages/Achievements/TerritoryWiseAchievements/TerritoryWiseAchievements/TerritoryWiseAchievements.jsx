@@ -8,12 +8,10 @@ import TerritoryWiseAchievementsReport from "../TerritoryWiseAchievementsReport/
 const TerritoryWiseAchievements = () => {
     const [orders] = useOrders();
 
-    const [year, setYear] = useState('');
-    const [month, setMonth] = useState('');
     const [fromDate, setFromDate] = useState('');
     const [toDate, setToDate] = useState('');
     const [territory, setTerritory] = useState('');
-    const [areaManager, setAreaManager] = useState('');
+    const [parentTerritory, setParentTerritory] = useState('');
 
     const deliveredOrders = orders.filter(order => order.status !== 'pending');
 
@@ -21,94 +19,49 @@ const TerritoryWiseAchievements = () => {
     const years = Array.from({ length: currentYear - 1999 }, (_, i) => currentYear - i);
 
     const filteredOrders = useMemo(() => {
-        return deliveredOrders
-            .map(order => {
-                const orderDate = new Date(order.date);
-                const matchesYear = year ? orderDate.getFullYear() === parseInt(year) : true;
-                const matchesMonth = month ? orderDate.getMonth() + 1 === parseInt(month) : true;
-                const matchesDateRange = fromDate && toDate
-                    ? orderDate >= new Date(fromDate) && orderDate <= new Date(toDate)
-                    : true;
-                const matchesTerritory = territory ? order.territory?.toLowerCase().includes(territory.toLowerCase()) : true;
-                const matchesAreaManager = areaManager ? order.areaManager?.toLowerCase().includes(areaManager.toLowerCase()) : true;
+        return deliveredOrders.filter(order => {
+            const matchesTerritory = territory ? order.territory?.toLowerCase().includes(territory.toLowerCase()) : true;
+            const matchesParentTerritory = parentTerritory ? order.parentTerritory?.toLowerCase().includes(parentTerritory.toLowerCase()) : true;
+            return matchesTerritory && matchesParentTerritory;
+        });
+    }, [deliveredOrders, territory, parentTerritory]);
 
-                return (matchesYear && matchesMonth && matchesDateRange && matchesTerritory && matchesAreaManager)
-            })
-            .filter(Boolean);
-    }, [orders, year, month, fromDate, toDate, territory, areaManager]);
+    const now = new Date();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1)
+        .toISOString()
+        .split("T")[0];
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+        .toISOString()
+        .split("T")[0];
 
-    const findDateRange = (orders) => {
-        if (!orders.length) return { firstDate: null, lastDate: null };
-
-        const sortedDates = orders.map(order => new Date(order.date)).sort((a, b) => a - b);
-        const firstDate = sortedDates[0].toLocaleDateString('en-GB').replace(/\//g, '-');
-        const lastDate = sortedDates[sortedDates.length - 1].toLocaleDateString('en-GB').replace(/\//g, '-');
-
-        return { firstDate, lastDate };
-    };
-
-    const { firstDate, lastDate } = findDateRange(filteredOrders);
+    const firstDate = fromDate ? new Date(fromDate).toLocaleDateString("en-GB").replace(/\//g, "-") : null;
+    const lastDate = toDate ? new Date(toDate).toLocaleDateString("en-GB").replace(/\//g, "-") : null;
 
     const uniqueTerritory = useMemo(() => {
         const territoryMap = new Map();
-
         filteredOrders.forEach(order => {
             if (order.territory) {
                 territoryMap.set(order.territory.trim(), true);
             }
         });
-
         return Array.from(territoryMap.keys());
     }, [filteredOrders]);
 
-    const uniqueOrderedBy = useMemo(() => {
-        const orderByMap = new Map();
-
+    const uniqueParentTerritory = useMemo(() => {
+        const parentTerritoryMap = new Map();
         filteredOrders.forEach(order => {
-            if (order.orderedBy && order.email) {
-                orderByMap.set(order.orderedBy.trim(), order.email.trim());
+            if (order.parentTerritory) {
+                parentTerritoryMap.set(order.parentTerritory.trim(), true);
             }
         });
-
-        return Array.from(orderByMap.entries()).map(([orderedBy, email]) => ({
-            orderedBy,
-            email,
-        }));
-    }, [filteredOrders]);
-
-    const uniqueAreaManager = useMemo(() => {
-        const amMap = new Map();
-        let vacantAdded = false;
-
-        filteredOrders.forEach(order => {
-            if (order.areaManager) {
-                const areaManager = order.areaManager.trim();
-                const amEmail = order.amEmail ? order.amEmail.trim() : null;
-
-                if (areaManager === "Vacant" && !vacantAdded) {
-                    amMap.set(areaManager, null);
-                    vacantAdded = true;
-                } else if (areaManager !== "Vacant") {
-                    amMap.set(areaManager, amEmail);
-                }
-            }
-        });
-
-        return Array.from(amMap.entries()).map(([areaManager, amEmail]) => ({
-            areaManager,
-            amEmail
-        }));
+        return Array.from(parentTerritoryMap.keys());
     }, [filteredOrders]);
 
     const clearFilters = () => {
-        setYear('');
-        setMonth('');
         setFromDate('');
         setToDate('');
-        setProductKey('');
         setTerritory('');
-        setOrderedBy('');
-        setAreaManager('');
+        setParentTerritory('');
     };
 
     const handlePrint = TerritoryWiseAchievementsReport({
@@ -136,56 +89,29 @@ const TerritoryWiseAchievements = () => {
                 <div className='grid grid-cols-1 md:grid-cols-2 items-center gap-4'>
                     {/* Filters Section */}
                     <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 my-6 px-6">
-                        {/* Year Filter */}
-                        <div>
-                            <label className="block font-semibold text-gray-700 mb-1">Year</label>
-                            <select
-                                value={year}
-                                onChange={(e) => setYear(e.target.value)}
-                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
-                            >
-                                <option value="">All Years</option>
-                                {years.map((y) => (
-                                    <option key={y} value={y}>{y}</option>
-                                ))}
-                            </select>
-                        </div>
 
-                        {/* Month Filter */}
-                        <div>
-                            <label className="block font-semibold text-gray-700 mb-1">Month</label>
-                            <select
-                                value={month}
-                                onChange={(e) => setMonth(e.target.value)}
-                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
-                            >
-                                <option value="">All Months</option>
-                                {Array.from({ length: 12 }, (_, i) => (
-                                    <option key={i + 1} value={i + 1}>
-                                        {new Date(0, i).toLocaleString('default', { month: 'long' })}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {/* From Date Filter */}
+                        {/* From Date */}
                         <div>
                             <label className="block font-semibold text-gray-700 mb-1">From Date</label>
                             <input
                                 type="date"
                                 value={fromDate}
                                 onChange={(e) => setFromDate(e.target.value)}
+                                min={firstDay}
+                                max={lastDay}
                                 className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
                             />
                         </div>
 
-                        {/* To Date Filter */}
+                        {/* To Date */}
                         <div>
                             <label className="block font-semibold text-gray-700 mb-1">To Date</label>
                             <input
                                 type="date"
                                 value={toDate}
                                 onChange={(e) => setToDate(e.target.value)}
+                                min={firstDay}
+                                max={lastDay}
                                 className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
                             />
                         </div>
@@ -207,18 +133,18 @@ const TerritoryWiseAchievements = () => {
                             </select>
                         </div>
 
-                        {/* Area Manager Filter */}
+                        {/* Area Filter */}
                         <div className='col-span-1 md:col-span-2'>
-                            <label className="block font-semibold text-gray-700 mb-1">Area Manager</label>
+                            <label className="block font-semibold text-gray-700 mb-1">Area</label>
                             <select
-                                value={areaManager}
-                                onChange={(e) => setAreaManager(e.target.value)}
+                                value={parentTerritory}
+                                onChange={(e) => setParentTerritory(e.target.value)}
                                 className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
                             >
-                                <option value="">Select an Area Manager</option>
-                                {uniqueAreaManager.map(({ areaManager, amEmail }) => (
-                                    <option key={areaManager} value={areaManager}>
-                                        {areaManager} {amEmail && `- ${amEmail}`}
+                                <option value="">Select an Parent Territory</option>
+                                {uniqueParentTerritory.map((pt) => (
+                                    <option key={pt} value={pt}>
+                                        {pt}
                                     </option>
                                 ))}
                             </select>
