@@ -27,19 +27,15 @@ const TerritoryWiseAchievements = () => {
     }, [deliveredOrders, territory, parentTerritory]);
 
     const now = new Date();
-    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1)
-        .toISOString()
-        .split("T")[0];
-    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0)
-        .toISOString()
-        .split("T")[0];
 
-    const firstDate = fromDate
-        ? new Date(fromDate).toLocaleDateString("en-GB").replace(/\//g, "-")
-        : new Date(firstDay).toLocaleDateString("en-GB").replace(/\//g, "-");
-    const lastDate = toDate
-        ? new Date(toDate).toLocaleDateString("en-GB").replace(/\//g, "-")
-        : new Date(lastDay).toLocaleDateString("en-GB").replace(/\//g, "-");
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    const formatDate = (date) =>
+        date.toLocaleDateString("en-GB").replace(/\//g, "-");
+
+    const firstDate = fromDate ? formatDate(new Date(fromDate)) : formatDate(firstDay);
+    const lastDate = toDate ? formatDate(new Date(toDate)) : formatDate(lastDay);
 
     const uniqueTerritory = useMemo(() => {
         const territoryMap = new Map();
