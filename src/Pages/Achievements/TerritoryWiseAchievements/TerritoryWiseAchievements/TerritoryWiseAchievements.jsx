@@ -34,8 +34,12 @@ const TerritoryWiseAchievements = () => {
         .toISOString()
         .split("T")[0];
 
-    const firstDate = fromDate ? new Date(fromDate).toLocaleDateString("en-GB").replace(/\//g, "-") : null;
-    const lastDate = toDate ? new Date(toDate).toLocaleDateString("en-GB").replace(/\//g, "-") : null;
+    const firstDate = fromDate
+        ? new Date(fromDate).toLocaleDateString("en-GB").replace(/\//g, "-")
+        : new Date(firstDay).toLocaleDateString("en-GB").replace(/\//g, "-");
+    const lastDate = toDate
+        ? new Date(toDate).toLocaleDateString("en-GB").replace(/\//g, "-")
+        : new Date(lastDay).toLocaleDateString("en-GB").replace(/\//g, "-");
 
     const uniqueTerritory = useMemo(() => {
         const territoryMap = new Map();
