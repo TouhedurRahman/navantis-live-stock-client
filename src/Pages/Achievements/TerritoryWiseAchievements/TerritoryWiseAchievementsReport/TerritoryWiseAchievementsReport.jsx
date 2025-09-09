@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import useTerritories from "../../../../Hooks/useTerritories";
 
-const TerritoryWiseAchievementsReport = ({ currentMonthsOrders = [], previousMonthsOrders = [], firstDate, lastDate }) => {
+const TerritoryWiseAchievementsReport = ({ currentMonthsOrders = [], previousMonthsOrders = [], lastDayOrders = [], firstDate, lastDate }) => {
     const [currentMosOrders, setCurrentMosOrders] = useState(currentMonthsOrders);
     const [previousMosOrders, setPreviousMosOrders] = useState(previousMonthsOrders);
+    const [todayOrders, setTodayOrders] = useState(lastDayOrders);
     const [territories] = useTerritories();
 
     useEffect(() => {
@@ -13,6 +14,10 @@ const TerritoryWiseAchievementsReport = ({ currentMonthsOrders = [], previousMon
     useEffect(() => {
         setPreviousMosOrders(previousMonthsOrders);
     }, [previousMonthsOrders]);
+
+    useEffect(() => {
+        setTodayOrders(lastDayOrders);
+    }, [lastDayOrders]);
 
     const now = new Date().toLocaleString("en-US", {
         year: "numeric",
@@ -79,6 +84,7 @@ const TerritoryWiseAchievementsReport = ({ currentMonthsOrders = [], previousMon
 
                     const salesCurrent = calculateUnits(territoryName, currentMosOrders);
                     const salesPrev = calculateUnits(territoryName, previousMosOrders);
+                    const salesLastDay = calculateUnits(territoryName, todayOrders);
 
                     if (salesCurrent === 0 && salesPrev === 0) {
                         delete grouped[parent][manager][territoryName];
@@ -96,6 +102,7 @@ const TerritoryWiseAchievementsReport = ({ currentMonthsOrders = [], previousMon
                         salesPrev,
                         achievementPrev,
                         growth,
+                        salesLastDay
                     };
                 });
 
@@ -125,19 +132,21 @@ const TerritoryWiseAchievementsReport = ({ currentMonthsOrders = [], previousMon
                                     <th style="border:1px solid #aaa; padding:5px;">Sales (P Mos)</th>
                                     <th style="border:1px solid #aaa; padding:5px; text-align: right;">Achievement % (P Mos)</th>
                                     <th style="border:1px solid #aaa; padding:5px; text-align: right;">Growth %</th>
+                                    <th style="border:1px solid #aaa; padding:5px; text-align: center;">Today Sales</th>
                                 </tr> -->
                                 <tr>
                                     <th style="border:1px solid #aaa; padding:5px; text-align: left;" rowspan="2">Territory</th>
-                                    <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 13%;" rowspan="2">Total Target</th>
+                                    <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 12%;" rowspan="2">Total Target</th>
                                     <th style="border:1px solid #aaa; padding:5px; text-align:center;" colspan="2">Current Month</th>
                                     <th style="border:1px solid #aaa; padding:5px; text-align:center;" colspan="2">Previous Month</th>
-                                    <th style="border:1px solid #aaa; padding:5px; text-align: right; width: 13%;" rowspan="2">Growth (%)</th>
+                                    <th style="border:1px solid #aaa; padding:5px; text-align: right; width: 12%;" rowspan="2">Growth (%)</th>
+                                    <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 12%;" rowspan="2">Today Sales</th>
                                 </tr>
                                 <tr>
-                                    <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 13%;">Sales</th>
-                                    <th style="border:1px solid #aaa; padding:5px; text-align: right; width: 13%;">Achievement (%)</th>
-                                    <th style="border:1px solid #aaa; padding:5px; width: 13%;">Sales</th>
-                                    <th style="border:1px solid #aaa; padding:5px; text-align: right; width: 13%;">Achievement (%)</th>
+                                    <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 12%;">Sales</th>
+                                    <th style="border:1px solid #aaa; padding:5px; text-align: right; width: 12%;">Achievement (%)</th>
+                                    <th style="border:1px solid #aaa; padding:5px; width: 12%;">Sales</th>
+                                    <th style="border:1px solid #aaa; padding:5px; text-align: right; width: 12%;">Achievement (%)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -151,6 +160,7 @@ const TerritoryWiseAchievementsReport = ({ currentMonthsOrders = [], previousMon
                                             <td style="border:1px solid #ccc; padding:5px; text-align: center;">${data.salesPrev}</td>
                                             <td style="border:1px solid #ccc; padding:5px; text-align: right;">${data.achievementPrev.toFixed(2)}%</td>
                                             <td style="border:1px solid #ccc; padding:5px; text-align: right;">${data.growth.toFixed(2)}%</td>
+                                            <td style="border:1px solid #ccc; padding:5px; text-align: center;">${data.salesLastDay}</td>
                                         </tr>
                                     `).join('')}
                             </tbody>

@@ -61,6 +61,13 @@ const TerritoryWiseAchievements = () => {
         });
     }, [filteredOrders, firstDate, lastDate]);
 
+    const lastDayOrders = useMemo(() => {
+        return filteredOrders.filter(order => {
+            const orderDate = parseDate(order.date);
+            return orderDate.getTime() === lastDate.getTime();
+        });
+    }, [filteredOrders, lastDate]);
+
     const uniqueTerritory = useMemo(() => {
         const territoryMap = new Map();
         filteredOrders.forEach(order => {
@@ -91,6 +98,7 @@ const TerritoryWiseAchievements = () => {
     const handlePrint = TerritoryWiseAchievementsReport({
         currentMonthsOrders,
         previousMonthsOrders,
+        lastDayOrders,
         firstDate: formatDate(firstDate),
         lastDate: formatDate(lastDate)
     });
@@ -98,6 +106,7 @@ const TerritoryWiseAchievements = () => {
     const handleDownloadExcel = TerritoryWiseAchievementsExcel({
         currentMonthsOrders,
         previousMonthsOrders,
+        lastDayOrders,
         firstDate: formatDate(firstDate),
         lastDate: formatDate(lastDate)
     });
