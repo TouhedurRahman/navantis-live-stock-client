@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
 import useTerritories from "../../../../Hooks/useTerritories";
 
-const TerritoryWiseAchievementsReport = ({ filteredOrders = [], firstDate, lastDate }) => {
-    const [orders, setOrders] = useState(filteredOrders);
+const TerritoryWiseAchievementsReport = ({ currentMonthsOrders = [], previousMonthsOrders = [], firstDate, lastDate }) => {
+    const [currentMosOrders, setCurrentMosOrders] = useState(currentMonthsOrders);
+    const [previousMosOrders, setPreviousMosOrders] = useState(previousMonthsOrders);
     const [territories] = useTerritories();
 
     useEffect(() => {
-        setOrders(filteredOrders);
-    }, [filteredOrders]);
+        setCurrentMosOrders(currentMonthsOrders);
+    }, [currentMonthsOrders]);
+
+    useEffect(() => {
+        setPreviousMosOrders(previousMonthsOrders);
+    }, [previousMonthsOrders]);
 
     const now = new Date().toLocaleString("en-US", {
         year: "numeric",
@@ -21,35 +26,10 @@ const TerritoryWiseAchievementsReport = ({ filteredOrders = [], firstDate, lastD
 
     const today = new Date().toLocaleDateString("en-GB").replace(/\//g, "-");
 
-    const shiftOneMonthBack = (dateStr) => {
-        const [year, month, day] = dateStr.split("-").map(Number);
-        let d = new Date(year, month - 1, day);
-        d.setMonth(d.getMonth() - 1);
-
-        const lastDayPrevMonth = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-        if (day > lastDayPrevMonth) {
-            d.setDate(lastDayPrevMonth);
-        }
-        return d;
-    };
-
-    // Get current and previous ranges
-    const currentStart = new Date(firstDate + "T00:00:00").getTime();
-    const currentEnd = new Date(lastDate + "T23:59:59").getTime();
-
-    const prevStartDate = shiftOneMonthBack(firstDate);
-    const prevEndDate = shiftOneMonthBack(lastDate);
-
-    const prevRange = {
-        start: new Date(prevStartDate.setHours(0, 0, 0, 0)).getTime(),
-        end: new Date(prevEndDate.setHours(23, 59, 59, 999)).getTime(),
-    };
-
-    const calculateUnits = (territoryName, startTime, endTime) => {
+    const calculateUnits = (territoryName, orders) => {
         return orders
             .filter(o => {
-                const orderTime = new Date(o.date).getTime();
-                return o.territory === territoryName && orderTime >= startTime && orderTime <= endTime;
+                return o.territory === territoryName;
             })
             .reduce((acc, o) => acc + (o.totalUnit || 0), 0);
     };
@@ -97,8 +77,8 @@ const TerritoryWiseAchievementsReport = ({ filteredOrders = [], firstDate, lastD
                 Object.keys(grouped[parent][manager]).forEach((territoryName) => {
                     const totalTarget = grouped[parent][manager][territoryName].totalTarget || 0;
 
-                    const salesCurrent = calculateUnits(territoryName, currentStart, currentEnd);
-                    const salesPrev = calculateUnits(territoryName, prevRange.start, prevRange.end);
+                    const salesCurrent = calculateUnits(territoryName, currentMosOrders);
+                    const salesPrev = calculateUnits(territoryName, previousMosOrders);
 
                     const achievementCurrent = totalTarget ? (salesCurrent / totalTarget) * 100 : 0;
                     const achievementPrev = totalTarget ? (salesPrev / totalTarget) * 100 : 0;
@@ -118,33 +98,46 @@ const TerritoryWiseAchievementsReport = ({ filteredOrders = [], firstDate, lastD
 
         const tableHTML = Object.entries(grouped)
             .map(([parent, managers]) => `
-                <h3>Area: ${parent}</h3>
+                <h4 style="text-align: center; font-weight: bold; margin-bottom: 3px;">Area: ${parent}</h4>
                 ${Object.entries(managers)
                     .map(([manager, terrs]) => `
-                        <h4>Area Manager: ${manager}</h4>
+                        <h3 style="text-align: center; font-weight: bold; margin-bottom: 6px;">Sr. AM/AM: ${manager}</h3>
                         <table style="width:100%; border-collapse: collapse; margin-bottom: 20px;">
                             <thead>
-                                <tr>
+                                <!-- <tr>
                                     <th style="border:1px solid #aaa; padding:5px;">Territory</th>
                                     <th style="border:1px solid #aaa; padding:5px;">Total Target</th>
-                                    <th style="border:1px solid #aaa; padding:5px;">Sales (This Month)</th>
-                                    <th style="border:1px solid #aaa; padding:5px;">Achievement % (This Month)</th>
-                                    <th style="border:1px solid #aaa; padding:5px;">Sales (Previous Month)</th>
-                                    <th style="border:1px solid #aaa; padding:5px;">Achievement % (Previous Month)</th>
-                                    <th style="border:1px solid #aaa; padding:5px;">Growth %</th>
+                                    <th style="border:1px solid #aaa; padding:5px;">Sales (C Mos)</th>
+                                    <th style="border:1px solid #aaa; padding:5px; text-align: right;">Achievement % (C Mos)</th>
+                                    <th style="border:1px solid #aaa; padding:5px;">Sales (P Mos)</th>
+                                    <th style="border:1px solid #aaa; padding:5px; text-align: right;">Achievement % (P Mos)</th>
+                                    <th style="border:1px solid #aaa; padding:5px; text-align: right;">Growth %</th>
+                                </tr> -->
+                                <tr>
+                                    <th style="border:1px solid #aaa; padding:5px; text-align: left;" rowspan="2">Territory</th>
+                                    <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 13%;" rowspan="2">Total Target</th>
+                                    <th style="border:1px solid #aaa; padding:5px; text-align:center;" colspan="2">Current Month</th>
+                                    <th style="border:1px solid #aaa; padding:5px; text-align:center;" colspan="2">Previous Month</th>
+                                    <th style="border:1px solid #aaa; padding:5px; text-align: right; width: 13%;" rowspan="2">Growth (%)</th>
+                                </tr>
+                                <tr>
+                                    <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 13%;">Sales</th>
+                                    <th style="border:1px solid #aaa; padding:5px; text-align: right; width: 13%;">Achievement (%)</th>
+                                    <th style="border:1px solid #aaa; padding:5px; width: 13%;">Sales</th>
+                                    <th style="border:1px solid #aaa; padding:5px; text-align: right; width: 13%;">Achievement (%)</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 ${Object.entries(terrs)
                             .map(([territoryName, data]) => `
                                         <tr>
-                                            <td style="border:1px solid #ccc; padding:5px;">${territoryName}</td>
-                                            <td style="border:1px solid #ccc; padding:5px;">${data.totalTarget}</td>
-                                            <td style="border:1px solid #ccc; padding:5px;">${data.salesCurrent}</td>
-                                            <td style="border:1px solid #ccc; padding:5px;">${data.achievementCurrent.toFixed(2)}%</td>
-                                            <td style="border:1px solid #ccc; padding:5px;">${data.salesPrev}</td>
-                                            <td style="border:1px solid #ccc; padding:5px;">${data.achievementPrev.toFixed(2)}%</td>
-                                            <td style="border:1px solid #ccc; padding:5px;">${data.growth.toFixed(2)}%</td>
+                                            <td style="border:1px solid #ccc; padding:5px; text-align: left;">${territoryName}</td>
+                                            <td style="border:1px solid #ccc; padding:5px; text-align: center;">${data.totalTarget}</td>
+                                            <td style="border:1px solid #ccc; padding:5px; text-align: center;">${data.salesCurrent}</td>
+                                            <td style="border:1px solid #ccc; padding:5px; text-align: right;">${data.achievementCurrent.toFixed(2)}%</td>
+                                            <td style="border:1px solid #ccc; padding:5px; text-align: center;">${data.salesPrev}</td>
+                                            <td style="border:1px solid #ccc; padding:5px; text-align: right;">${data.achievementPrev.toFixed(2)}%</td>
+                                            <td style="border:1px solid #ccc; padding:5px; text-align: right;">${data.growth.toFixed(2)}%</td>
                                         </tr>
                                     `).join('')}
                             </tbody>

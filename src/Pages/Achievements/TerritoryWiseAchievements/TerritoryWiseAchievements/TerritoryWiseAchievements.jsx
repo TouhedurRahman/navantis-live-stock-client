@@ -15,8 +15,20 @@ const TerritoryWiseAchievements = () => {
 
     const deliveredOrders = orders.filter(order => order.status !== 'pending');
 
-    const currentYear = new Date().getFullYear();
-    const years = Array.from({ length: currentYear - 1999 }, (_, i) => currentYear - i);
+    const parseDate = (dateStr) => {
+        const [year, month, day] = dateStr.split("-").map(Number);
+        return new Date(year, month - 1, day);
+    };
+
+    const now = new Date();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    const formatDate = (date) =>
+        date.toLocaleDateString("en-GB").replace(/\//g, "-");
+
+    const firstDate = fromDate ? parseDate(fromDate) : firstDay;
+    const lastDate = toDate ? parseDate(toDate) : lastDay;
 
     const filteredOrders = useMemo(() => {
         return deliveredOrders.filter(order => {
@@ -26,16 +38,28 @@ const TerritoryWiseAchievements = () => {
         });
     }, [deliveredOrders, territory, parentTerritory]);
 
-    const now = new Date();
+    const currentMonthsOrders = useMemo(() => {
+        return filteredOrders.filter(order => {
+            const orderDate = parseDate(order.date);
+            return orderDate >= firstDate && orderDate <= lastDate;
+        });
+    }, [filteredOrders, firstDate, lastDate]);
 
-    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    const previousMonthsOrders = useMemo(() => {
+        const prevFirstDate = new Date(firstDate);
+        prevFirstDate.setMonth(prevFirstDate.getMonth() - 1);
 
-    const formatDate = (date) =>
-        date.toLocaleDateString("en-GB").replace(/\//g, "-");
+        const prevLastDate = new Date(lastDate);
+        prevLastDate.setMonth(prevLastDate.getMonth() - 1);
 
-    const firstDate = fromDate ? formatDate(new Date(fromDate)) : formatDate(firstDay);
-    const lastDate = toDate ? formatDate(new Date(toDate)) : formatDate(lastDay);
+        if (prevFirstDate.getDate() !== firstDate.getDate()) prevFirstDate.setDate(1);
+        if (prevLastDate.getDate() !== lastDate.getDate()) prevLastDate.setDate(1);
+
+        return filteredOrders.filter(order => {
+            const orderDate = parseDate(order.date);
+            return orderDate >= prevFirstDate && orderDate <= prevLastDate;
+        });
+    }, [filteredOrders, firstDate, lastDate]);
 
     const uniqueTerritory = useMemo(() => {
         const territoryMap = new Map();
@@ -65,15 +89,17 @@ const TerritoryWiseAchievements = () => {
     };
 
     const handlePrint = TerritoryWiseAchievementsReport({
-        filteredOrders,
-        firstDate,
-        lastDate
+        currentMonthsOrders,
+        previousMonthsOrders,
+        firstDate: formatDate(firstDate),
+        lastDate: formatDate(lastDate)
     });
 
     const handleDownloadExcel = TerritoryWiseAchievementsExcel({
-        filteredOrders,
-        firstDate,
-        lastDate
+        currentMonthsOrders,
+        previousMonthsOrders,
+        firstDate: formatDate(firstDate),
+        lastDate: formatDate(lastDate)
     });
 
     return (
@@ -97,8 +123,6 @@ const TerritoryWiseAchievements = () => {
                                 type="date"
                                 value={fromDate}
                                 onChange={(e) => setFromDate(e.target.value)}
-                                min={firstDay}
-                                max={lastDay}
                                 className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
                             />
                         </div>
@@ -110,8 +134,6 @@ const TerritoryWiseAchievements = () => {
                                 type="date"
                                 value={toDate}
                                 onChange={(e) => setToDate(e.target.value)}
-                                min={firstDay}
-                                max={lastDay}
                                 className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
                             />
                         </div>
@@ -141,7 +163,7 @@ const TerritoryWiseAchievements = () => {
                                 onChange={(e) => setParentTerritory(e.target.value)}
                                 className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
                             >
-                                <option value="">Select an Parent Territory</option>
+                                <option value="">Select a Parent Territory</option>
                                 {uniqueParentTerritory.map((pt) => (
                                     <option key={pt} value={pt}>
                                         {pt}
