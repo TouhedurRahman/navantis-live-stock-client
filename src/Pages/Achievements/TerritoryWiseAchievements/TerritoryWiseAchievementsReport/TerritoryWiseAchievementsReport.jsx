@@ -80,6 +80,11 @@ const TerritoryWiseAchievementsReport = ({ currentMonthsOrders = [], previousMon
                     const salesCurrent = calculateUnits(territoryName, currentMosOrders);
                     const salesPrev = calculateUnits(territoryName, previousMosOrders);
 
+                    if (salesCurrent === 0 && salesPrev === 0) {
+                        delete grouped[parent][manager][territoryName];
+                        return;
+                    }
+
                     const achievementCurrent = totalTarget ? (salesCurrent / totalTarget) * 100 : 0;
                     const achievementPrev = totalTarget ? (salesPrev / totalTarget) * 100 : 0;
                     const growth = salesPrev ? ((salesCurrent - salesPrev) / salesPrev) * 100 : 100;
@@ -93,7 +98,15 @@ const TerritoryWiseAchievementsReport = ({ currentMonthsOrders = [], previousMon
                         growth,
                     };
                 });
+
+                if (Object.keys(grouped[parent][manager]).length === 0) {
+                    delete grouped[parent][manager];
+                }
             });
+
+            if (Object.keys(grouped[parent]).length === 0) {
+                delete grouped[parent];
+            }
         });
 
         const tableHTML = Object.entries(grouped)
