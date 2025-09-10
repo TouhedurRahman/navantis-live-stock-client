@@ -24,7 +24,7 @@ const TerritoryWiseAchievements = () => {
                 order.status !== "pending" &&
                 (
                     order.territory === singleUser?.territory ||
-                    order.parentTerritory === singleUser?.parentTerritory ||
+                    order.parentTerritory === singleUser?.territory ||
                     order.email === singleUser?.email ||
                     order.amEmail === singleUser?.email ||
                     order.zmEmail === singleUser?.email
