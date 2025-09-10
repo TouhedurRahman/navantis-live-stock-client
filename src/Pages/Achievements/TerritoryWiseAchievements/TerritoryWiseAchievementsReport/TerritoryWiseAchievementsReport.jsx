@@ -27,9 +27,10 @@ const TerritoryWiseAchievementsReport = ({ currentMonthsOrders = [], previousMon
     const today = new Date().toLocaleDateString("en-GB").replace(/\//g, "-");
 
     const calculateUnits = (territoryName, orders) => {
-        orders.filter(o => o.territory === territoryName)
+        return orders
+            .filter(o => o.territory === territoryName)
             .reduce((acc, o) => acc + (o.totalUnit || 0), 0);
-    }
+    };
 
     const handlePrint = () => {
         const companyHeader = `
@@ -102,7 +103,7 @@ const TerritoryWiseAchievementsReport = ({ currentMonthsOrders = [], previousMon
 
                 const managerTables = Object.entries(managers)
                     .map(([manager, terrs]) => {
-                        const rows = Object.entries(terrs).map(([territoryName, data]) => {
+                        const rows = Object.entries(terrs).map(([territoryName, data], i) => {
                             areaTotals.totalTarget += data.totalTarget;
                             areaTotals.salesCurrent += data.salesCurrent;
                             areaTotals.salesPrev += data.salesPrev;
@@ -110,6 +111,7 @@ const TerritoryWiseAchievementsReport = ({ currentMonthsOrders = [], previousMon
 
                             return `
                                 <tr>
+                                    <td style="border:1px solid #ccc; padding:5px; text-align: center; width: 5%;">${i + 1}</td>
                                     <td style="border:1px solid #ccc; padding:5px; text-align: left;">${territoryName}</td>
                                     <td style="border:1px solid #ccc; padding:5px; text-align: center;">${data.totalTarget}</td>
                                     <td style="border:1px solid #ccc; padding:5px; text-align: center;">${data.salesCurrent}</td>
@@ -126,6 +128,7 @@ const TerritoryWiseAchievementsReport = ({ currentMonthsOrders = [], previousMon
                             <table style="width:100%; border-collapse: collapse; margin-bottom: 20px;">
                                 <thead>
                                     <tr>
+                                        <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 5%;" rowspan="2">Sl. No.</th>
                                         <th style="border:1px solid #aaa; padding:5px; text-align: left;" rowspan="2">Territory</th>
                                         <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 12%;" rowspan="2">Total Target</th>
                                         <th style="border:1px solid #aaa; padding:5px; text-align:center;" colspan="2">Current Month</th>
@@ -155,7 +158,7 @@ const TerritoryWiseAchievementsReport = ({ currentMonthsOrders = [], previousMon
 
                 const areaTotalsRow = `
                     <tr style="font-weight:bold; background:#f2f2f2;">
-                        <td style="border:1px solid #000; padding:5px; text-align:left;">${parent} Total</td>
+                        <td style="border:1px solid #000; padding:5px; text-align:left;" colspan="2">${parent} Total</td>
                         <td style="border:1px solid #000; padding:5px; text-align:center; width: 12%;">${areaTotals.totalTarget}</td>
                         <td style="border:1px solid #000; padding:5px; text-align:center; width: 12%;">${areaTotals.salesCurrent}</td>
                         <td style="border:1px solid #000; padding:5px; text-align:right; width: 12%;">${areaAchievementCurrent.toFixed(2)}%</td>
@@ -181,7 +184,7 @@ const TerritoryWiseAchievementsReport = ({ currentMonthsOrders = [], previousMon
             <table style="width:100%; border-collapse: collapse; margin-top:20px;">
                 <tbody>
                     <tr style="font-weight:bold; background:#d9edf7;">
-                        <td style="border:1px solid #000; padding:5px; text-align:left;">Grand Total</td>
+                        <td style="border:1px solid #000; padding:5px; text-align:left;" colspan="2">Grand Total</td>
                         <td style="border:1px solid #000; padding:5px; text-align:center; width: 12%;">${grandTotals.totalTarget}</td>
                         <td style="border:1px solid #000; padding:5px; text-align:center; width: 12%;">${grandTotals.salesCurrent}</td>
                         <td style="border:1px solid #000; padding:5px; text-align:right; width: 12%;">${grandAchievementCurrent.toFixed(2)}%</td>
