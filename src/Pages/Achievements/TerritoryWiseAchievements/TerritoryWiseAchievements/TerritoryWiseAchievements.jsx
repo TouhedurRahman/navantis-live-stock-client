@@ -22,7 +22,7 @@ const TerritoryWiseAchievements = () => {
 
     const now = new Date();
     const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    const lastDay = new Date();
 
     const formatDate = (date) =>
         date.toLocaleDateString("en-GB").replace(/\//g, "-");
@@ -61,12 +61,15 @@ const TerritoryWiseAchievements = () => {
         });
     }, [filteredOrders, firstDate, lastDate]);
 
-    const lastDayOrders = useMemo(() => {
-        return filteredOrders.filter(order => {
-            const orderDate = parseDate(order.date);
-            return orderDate.getTime() === lastDate.getTime();
-        });
-    }, [filteredOrders, lastDate]);
+    const isSameDate = (d1, d2) =>
+        d1.getFullYear() === d2.getFullYear() &&
+        d1.getMonth() === d2.getMonth() &&
+        d1.getDate() === d2.getDate();
+
+    const lastDayOrders = filteredOrders.filter(order => {
+        const orderDate = parseDate(order.date);
+        return isSameDate(orderDate, lastDate);
+    });
 
     const uniqueTerritory = useMemo(() => {
         const territoryMap = new Map();
