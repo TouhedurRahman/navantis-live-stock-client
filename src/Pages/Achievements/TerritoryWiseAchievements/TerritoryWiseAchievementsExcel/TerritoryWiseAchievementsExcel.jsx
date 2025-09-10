@@ -122,9 +122,13 @@ const TerritoryWiseAchievementsExcel = ({ currentMonthsOrders = [], previousMont
                         }).join('');
 
                         return `
-                            <h3 style="text-align: center; font-weight: bold; margin-bottom: 6px;">Sr. AM/AM: ${manager}</h3>
                             <table style="width:100%; border-collapse: collapse; margin-bottom: 20px;">
                                 <thead>
+                                    <tr style="font-weight:bold;">
+                                        <td colspan="9" style="padding:6px; text-align:center; font-weight:bold;">
+                                            Sr. AM/AM: ${manager}
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 5%;" rowspan="2">Sl. No.</th>
                                         <th style="border:1px solid #aaa; padding:5px; text-align: left;" rowspan="2">Territory</th>
