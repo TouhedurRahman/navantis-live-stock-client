@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import React, { useState } from "react";
 import Swal from "sweetalert2";
+import Loader from "../../../Components/Loader/Loader";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import useApiConfig from "../../../Hooks/useApiConfig";
 import useCustomer from "../../../Hooks/useCustomer";
@@ -12,7 +13,7 @@ import useOrders from "../../../Hooks/useOrders";
 const OrderDelivery = () => {
     const baseUrl = useApiConfig();
 
-    const [orders, , ordersRefetch] = useOrders();
+    const [orders, loading, ordersRefetch] = useOrders();
     const [products, , productsRefetch] = useDepotProducts();
     const [customers] = useCustomer();
     const [returns, , exReturnRefetch] = useExpiredReturnes();
@@ -731,128 +732,150 @@ const OrderDelivery = () => {
 
                 {/* Order List */}
                 <div className="px-6 space-y-4 mb-4">
-                    {pendingOrders.map((order) => (
-                        <div
-                            key={order._id}
-                            className="w-full bg-white/80 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-2xl p-5 shadow-md hover:shadow-xl transition duration-300"
-                        >
-                            {/* Top Row: Pharmacy Name, ID, Territory */}
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                                {/* Pharmacy Name */}
-                                <div className="flex items-center gap-3">
-                                    <div className="bg-blue-500/10 text-blue-600 p-2 rounded-lg">
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                            <path d="M3 21V7a2 2 0 012-2h3V3h8v2h3a2 2 0 012 2v14" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">Customer</p>
-                                        <p className="font-semibold text-base">{order.pharmacy}</p>
-                                    </div>
-                                </div>
+                    {
+                        loading
+                            ?
+                            <>
+                                <Loader />
+                            </>
+                            :
+                            <>
+                                {
+                                    pendingOrders.length !== 0
+                                        ?
+                                        <>
+                                            {pendingOrders.map((order) => (
+                                                <div
+                                                    key={order._id}
+                                                    className="w-full bg-white/80 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-2xl p-5 shadow-md hover:shadow-xl transition duration-300"
+                                                >
+                                                    {/* Top Row: Pharmacy Name, ID, Territory */}
+                                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                                        {/* Pharmacy Name */}
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="bg-blue-500/10 text-blue-600 p-2 rounded-lg">
+                                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                                    <path d="M3 21V7a2 2 0 012-2h3V3h8v2h3a2 2 0 012 2v14" />
+                                                                </svg>
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-xs text-gray-500 dark:text-gray-400">Customer</p>
+                                                                <p className="font-semibold text-base">{order.pharmacy}</p>
+                                                            </div>
+                                                        </div>
 
-                                {/* Customer ID */}
-                                <div className="flex items-center gap-3">
-                                    <div className="bg-indigo-500/10 text-indigo-600 p-2 rounded-lg">
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                            <path d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">Customer ID</p>
-                                        <p className="font-medium">{order.pharmacyId}</p>
-                                    </div>
-                                </div>
+                                                        {/* Customer ID */}
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="bg-indigo-500/10 text-indigo-600 p-2 rounded-lg">
+                                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                                    <path d="M5 13l4 4L19 7" />
+                                                                </svg>
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-xs text-gray-500 dark:text-gray-400">Customer ID</p>
+                                                                <p className="font-medium">{order.pharmacyId}</p>
+                                                            </div>
+                                                        </div>
 
-                                {/* Territory */}
-                                <div className="flex items-center gap-3">
-                                    <div className="bg-purple-500/10 text-purple-600 p-2 rounded-lg">
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                            <path d="M12 2a10 10 0 00-7.546 16.953l-1.69 1.69a1 1 0 001.414 1.414l1.69-1.69A10 10 0 1012 2z" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">Territory</p>
-                                        <p className="font-medium">{order.territory}</p>
-                                    </div>
-                                </div>
-                            </div>
+                                                        {/* Territory */}
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="bg-purple-500/10 text-purple-600 p-2 rounded-lg">
+                                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                                    <path d="M12 2a10 10 0 00-7.546 16.953l-1.69 1.69a1 1 0 001.414 1.414l1.69-1.69A10 10 0 1012 2z" />
+                                                                </svg>
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-xs text-gray-500 dark:text-gray-400">Territory</p>
+                                                                <p className="font-medium">{order.territory}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
-                            {/* Second Row: Address, Payment Mode, Order Date */}
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                                {/* Address */}
-                                <div className="flex items-start gap-3">
-                                    <div className="bg-gray-500/10 text-gray-700 dark:text-gray-300 p-2 rounded-lg">
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                            <path d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5s-3 1.343-3 3 1.343 3 3 3z" />
-                                            <path d="M12 22s8-4.5 8-10a8 8 0 10-16 0c0 5.5 8 10 8 10z" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">Address</p>
-                                        <p className="text-sm">
-                                            {customers.find(c => c.customerId === order.pharmacyId)?.address || 'N/A'}
-                                        </p>
-                                    </div>
-                                </div>
+                                                    {/* Second Row: Address, Payment Mode, Order Date */}
+                                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                                        {/* Address */}
+                                                        <div className="flex items-start gap-3">
+                                                            <div className="bg-gray-500/10 text-gray-700 dark:text-gray-300 p-2 rounded-lg">
+                                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                                    <path d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5s-3 1.343-3 3 1.343 3 3 3z" />
+                                                                    <path d="M12 22s8-4.5 8-10a8 8 0 10-16 0c0 5.5 8 10 8 10z" />
+                                                                </svg>
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-xs text-gray-500 dark:text-gray-400">Address</p>
+                                                                <p className="text-sm">
+                                                                    {customers.find(c => c.customerId === order.pharmacyId)?.address || 'N/A'}
+                                                                </p>
+                                                            </div>
+                                                        </div>
 
-                                {/* Payment Mode */}
-                                <div className="flex items-start gap-3">
-                                    <div className="bg-green-500/10 text-green-600 p-2 rounded-lg">
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                            <path d="M17 9V7a4 4 0 00-8 0v2m-4 0h16v10a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">Payment Mode</p>
-                                        <p className="text-sm">{order.payMode}</p>
-                                    </div>
-                                </div>
+                                                        {/* Payment Mode */}
+                                                        <div className="flex items-start gap-3">
+                                                            <div className="bg-green-500/10 text-green-600 p-2 rounded-lg">
+                                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                                    <path d="M17 9V7a4 4 0 00-8 0v2m-4 0h16v10a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                                                </svg>
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-xs text-gray-500 dark:text-gray-400">Payment Mode</p>
+                                                                <p className="text-sm">{order.payMode}</p>
+                                                            </div>
+                                                        </div>
 
-                                {/* Order Date */}
-                                <div className="flex items-start gap-3">
-                                    <div className="bg-red-500/10 text-red-600 p-2 rounded-lg">
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                            <path d="M8 7V3m8 4V3M3 11h18M5 19h14a2 2 0 002-2V7H3v10a2 2 0 002 2z" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">Order Date</p>
-                                        <p className="text-sm">
-                                            {new Date(order.date).toLocaleDateString('en-GB').replace(/\//g, '-')}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+                                                        {/* Order Date */}
+                                                        <div className="flex items-start gap-3">
+                                                            <div className="bg-red-500/10 text-red-600 p-2 rounded-lg">
+                                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                                    <path d="M8 7V3m8 4V3M3 11h18M5 19h14a2 2 0 002-2V7H3v10a2 2 0 002 2z" />
+                                                                </svg>
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-xs text-gray-500 dark:text-gray-400">Order Date</p>
+                                                                <p className="text-sm">
+                                                                    {new Date(order.date).toLocaleDateString('en-GB').replace(/\//g, '-')}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
-                            {/* Action Buttons */}
-                            <div className="flex flex-col sm:flex-row sm:flex-wrap sm:justify-start items-center gap-3 mt-3">
-                                <button
-                                    onClick={() => setSelectedOrder(order)}
-                                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition"
-                                >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                        <path d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    View Assign Info
-                                </button>
+                                                    {/* Action Buttons */}
+                                                    <div className="flex flex-col sm:flex-row sm:flex-wrap sm:justify-start items-center gap-3 mt-3">
+                                                        <button
+                                                            onClick={() => setSelectedOrder(order)}
+                                                            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition"
+                                                        >
+                                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                                <path d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                            </svg>
+                                                            View Assign Info
+                                                        </button>
 
-                                <button
-                                    onClick={() => {
-                                        setSelectedOrderDetails(order);
-                                        setSelectedProducts(order.products);
-                                        initializeDeliveryQuantities(order.products);
-                                    }}
-                                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold transition"
-                                >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                        <path d="M3 7h18M3 12h18M3 17h18" />
-                                    </svg>
-                                    View Ordered Products
-                                </button>
-                            </div>
-                        </div>
-                    ))}
+                                                        <button
+                                                            onClick={() => {
+                                                                setSelectedOrderDetails(order);
+                                                                setSelectedProducts(order.products);
+                                                                initializeDeliveryQuantities(order.products);
+                                                            }}
+                                                            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold transition"
+                                                        >
+                                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                                <path d="M3 7h18M3 12h18M3 17h18" />
+                                                            </svg>
+                                                            View Ordered Products
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </>
+                                        :
+                                        <>
+                                            <p className="text-gray-600 font-mono font-extrabold text-center mb-6">
+                                                No pending order(s) found.
+                                            </p>
+                                        </>
+                                }
+                            </>
+                    }
                 </div>
             </div>
 
