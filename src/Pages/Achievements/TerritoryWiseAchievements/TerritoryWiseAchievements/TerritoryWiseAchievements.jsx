@@ -2,10 +2,12 @@ import { useMemo, useState } from "react";
 import { FaFileExcel, FaFilePdf } from "react-icons/fa6";
 import PageTitle from "../../../../Components/PageTitle/PageTitle";
 import useOrders from "../../../../Hooks/useOrders";
+import useSingleUser from "../../../../Hooks/useSingleUser";
 import TerritoryWiseAchievementsExcel from "../TerritoryWiseAchievementsExcel/TerritoryWiseAchievementsExcel";
 import TerritoryWiseAchievementsReport from "../TerritoryWiseAchievementsReport/TerritoryWiseAchievementsReport";
 
 const TerritoryWiseAchievements = () => {
+    const [singleUser] = useSingleUser();
     const [orders] = useOrders();
 
     const [fromDate, setFromDate] = useState('');
@@ -13,7 +15,22 @@ const TerritoryWiseAchievements = () => {
     const [territory, setTerritory] = useState('');
     const [parentTerritory, setParentTerritory] = useState('');
 
-    const deliveredOrders = orders.filter(order => order.status !== 'pending');
+    // const deliveredOrders = orders.filter(order => order.status !== 'pending');
+    const deliveredOrders = orders.filter(order => {
+        if (singleUser?.base !== "Field") {
+            return order.status !== "pending";
+        } else {
+            return (
+                order.status !== "pending" &&
+                (
+                    order.territory === singleUser?.territory ||
+                    order.email === singleUser?.email ||
+                    order.amEmail === singleUser?.email ||
+                    order.zmEmail === singleUser?.email
+                )
+            );
+        }
+    });
 
     const parseDate = (dateStr) => {
         const [year, month, day] = dateStr.split("-").map(Number);
