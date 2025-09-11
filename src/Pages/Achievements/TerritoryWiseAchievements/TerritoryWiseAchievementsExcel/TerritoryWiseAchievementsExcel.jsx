@@ -1,9 +1,19 @@
 import { useEffect, useState } from "react";
 import useTerritories from "../../../../Hooks/useTerritories";
 
-const TerritoryWiseAchievementsExcel = ({ currentMonthsOrders = [], previousMonthsOrders = [], lastDayOrders = [], firstDate, lastDate }) => {
+const TerritoryWiseAchievementsExcel = ({
+    currentMonthsOrders = [],
+    previousMonthsOrders = [],
+    twoMonthsAgoOrders = [],
+    twelveMonthsAgoOrders = [],
+    lastDayOrders = [],
+    firstDate,
+    lastDate
+}) => {
     const [currentMosOrders, setCurrentMosOrders] = useState(currentMonthsOrders);
     const [previousMosOrders, setPreviousMosOrders] = useState(previousMonthsOrders);
+    const [twoMosAgoOrders, setTwoMosAgoOrders] = useState(twoMonthsAgoOrders);
+    const [twelveMosAgoOrders, setTwelveMosAgoOrders] = useState(twelveMonthsAgoOrders);
     const [todayOrders, setTodayOrders] = useState(lastDayOrders);
     const [territories] = useTerritories();
 
@@ -14,6 +24,14 @@ const TerritoryWiseAchievementsExcel = ({ currentMonthsOrders = [], previousMont
     useEffect(() => {
         setPreviousMosOrders(previousMonthsOrders);
     }, [previousMonthsOrders]);
+
+    useEffect(() => {
+        setTwoMosAgoOrders(twoMonthsAgoOrders);
+    }, [twoMonthsAgoOrders]);
+
+    useEffect(() => {
+        setTwelveMosAgoOrders(twelveMonthsAgoOrders);
+    }, [twelveMonthsAgoOrders]);
 
     useEffect(() => {
         setTodayOrders(lastDayOrders);
@@ -72,20 +90,49 @@ const TerritoryWiseAchievementsExcel = ({ currentMonthsOrders = [], previousMont
                     const totalTarget = grouped[parent][manager][territoryName].totalTarget || 0;
                     const salesCurrent = calculateUnits(territoryName, currentMosOrders);
                     const salesPrev = calculateUnits(territoryName, previousMosOrders);
+                    const salesPrevTwoMos = calculateUnits(territoryName, twoMosAgoOrders);
+                    const salesLastYear = calculateUnits(territoryName, twelveMosAgoOrders);
                     const salesLastDay = calculateUnits(territoryName, todayOrders);
 
-                    if (salesCurrent === 0 && salesPrev === 0) {
+                    if (
+                        salesCurrent === 0 &&
+                        salesPrev === 0 &&
+                        salesPrevTwoMos === 0 &&
+                        salesLastYear === 0
+                    ) {
                         delete grouped[parent][manager][territoryName];
                         return;
                     }
 
                     const achievementCurrent = totalTarget ? (salesCurrent / totalTarget) * 100 : 0;
                     const achievementPrev = totalTarget ? (salesPrev / totalTarget) * 100 : 0;
+                    const achievementTwoMos = totalTarget ? (salesPrevTwoMos / totalTarget) * 100 : 0;
+                    const achievementLastYear = totalTarget ? (salesLastYear / totalTarget) * 100 : 0;
+
+                    const lastMosGrowth = salesPrevTwoMos ? ((salesPrev - salesPrevTwoMos) / salesPrevTwoMos) * 100 : 100;
                     const growth = salesPrev ? ((salesCurrent - salesPrev) / salesPrev) * 100 : 100;
+                    const lastYearGrowth = salesLastYear ? ((salesCurrent - salesLastYear) / salesLastYear) * 100 : 100;
 
                     grouped[parent][manager][territoryName] = {
-                        totalTarget, salesCurrent, achievementCurrent,
-                        salesPrev, achievementPrev, growth, salesLastDay
+                        totalTarget,
+
+                        salesCurrent,
+                        achievementCurrent,
+
+                        salesPrev,
+                        achievementPrev,
+
+                        salesPrevTwoMos,
+                        achievementTwoMos,
+
+                        salesLastYear,
+                        achievementLastYear,
+
+                        lastMosGrowth,
+                        growth,
+                        lastYearGrowth,
+
+                        salesLastDay
                     };
                 });
                 if (Object.keys(grouped[parent][manager]).length === 0) delete grouped[parent][manager];
@@ -93,11 +140,11 @@ const TerritoryWiseAchievementsExcel = ({ currentMonthsOrders = [], previousMont
             if (Object.keys(grouped[parent]).length === 0) delete grouped[parent];
         });
 
-        let grandTotals = { totalTarget: 0, salesCurrent: 0, salesPrev: 0, salesLastDay: 0 };
+        let grandTotals = { totalTarget: 0, salesCurrent: 0, salesPrev: 0, salesPrevTwoMos: 0, salesLastYear: 0, salesLastDay: 0 };
 
         const tableHTML = Object.entries(grouped)
             .map(([parent, managers]) => {
-                let areaTotals = { totalTarget: 0, salesCurrent: 0, salesPrev: 0, salesLastDay: 0 };
+                let areaTotals = { totalTarget: 0, salesCurrent: 0, salesPrev: 0, salesPrevTwoMos: 0, salesLastYear: 0, salesLastDay: 0 };
 
                 const managerTables = Object.entries(managers)
                     .map(([manager, terrs]) => {
@@ -105,6 +152,8 @@ const TerritoryWiseAchievementsExcel = ({ currentMonthsOrders = [], previousMont
                             areaTotals.totalTarget += data.totalTarget;
                             areaTotals.salesCurrent += data.salesCurrent;
                             areaTotals.salesPrev += data.salesPrev;
+                            areaTotals.salesPrevTwoMos += data.salesPrevTwoMos;
+                            areaTotals.salesLastYear += data.salesLastYear;
                             areaTotals.salesLastDay += data.salesLastDay;
 
                             return `
@@ -112,11 +161,20 @@ const TerritoryWiseAchievementsExcel = ({ currentMonthsOrders = [], previousMont
                                     <td style="border:1px solid #ccc; padding:5px; text-align: center; width: 5%;">${i + 1}</td>
                                     <td style="border:1px solid #ccc; padding:5px; text-align: left;">${territoryName}</td>
                                     <td style="border:1px solid #ccc; padding:5px; text-align: center;">${data.totalTarget}</td>
+
                                     <td style="border:1px solid #ccc; padding:5px; text-align: center;">${data.salesCurrent}</td>
                                     <td style="border:1px solid #ccc; padding:5px; text-align: right;">${data.achievementCurrent.toFixed(2)}%</td>
+
                                     <td style="border:1px solid #ccc; padding:5px; text-align: center;">${data.salesPrev}</td>
                                     <td style="border:1px solid #ccc; padding:5px; text-align: right;">${data.achievementPrev.toFixed(2)}%</td>
+
+                                    <td style="border:1px solid #ccc; padding:5px; text-align: center;">${data.salesPrevTwoMos}</td>
+                                    <td style="border:1px solid #ccc; padding:5px; text-align: right;">${data.achievementTwoMos.toFixed(2)}%</td>
+
+                                    <td style="border:1px solid #ccc; padding:5px; text-align: right;">${data.lastMosGrowth.toFixed(2)}%</td>
                                     <td style="border:1px solid #ccc; padding:5px; text-align: right;">${data.growth.toFixed(2)}%</td>
+                                    <td style="border:1px solid #ccc; padding:5px; text-align: right;">${data.lastYearGrowth.toFixed(2)}%</td>
+
                                     <td style="border:1px solid #ccc; padding:5px; text-align: center;">${data.salesLastDay}</td>
                                 </tr>`;
                         }).join('');
@@ -125,24 +183,31 @@ const TerritoryWiseAchievementsExcel = ({ currentMonthsOrders = [], previousMont
                             <table style="width:100%; border-collapse: collapse; margin-bottom: 20px;">
                                 <thead>
                                     <tr style="font-weight:bold;">
-                                        <td colspan="9" style="padding:6px; text-align:center; font-weight:bold;">
+                                        <td colspan="13" style="padding:6px; text-align:center; font-weight:bold;">
                                             Sr. AM/AM: ${manager}
                                         </td>
                                     </tr>
                                     <tr>
                                         <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 5%;" rowspan="2">Sl. No.</th>
                                         <th style="border:1px solid #aaa; padding:5px; text-align: left;" rowspan="2">Territory</th>
-                                        <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 12%;" rowspan="2">Total Target</th>
+                                        <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 7%"; rowspan="2">Total Target</th>
                                         <th style="border:1px solid #aaa; padding:5px; text-align:center;" colspan="2">Current Month</th>
                                         <th style="border:1px solid #aaa; padding:5px; text-align:center;" colspan="2">Previous Month</th>
-                                        <th style="border:1px solid #aaa; padding:5px; text-align: right; width: 12%;" rowspan="2">Growth</th>
-                                        <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 12%;" rowspan="2">Today Sales</th>
+                                        <th style="border:1px solid #aaa; padding:5px; text-align:center;" colspan="2">Two Months Ago</th>
+                                        <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 7%"; rowspan="2">LM<br />Growth<br />(%)</th>
+                                        <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 7%"; rowspan="2">M<br />Growth<br />(%)</th>
+                                        <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 7%"; rowspan="2">Y<br />Growth<br />(%)</th>
+                                        <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 7%"; rowspan="2">Last Day<br />Sales</th>
                                     </tr>
                                     <tr>
-                                        <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 12%;">Sales</th>
-                                        <th style="border:1px solid #aaa; padding:5px; text-align: right; width: 12%;">Achievement</th>
-                                        <th style="border:1px solid #aaa; padding:5px; width: 12%;">Sales</th>
-                                        <th style="border:1px solid #aaa; padding:5px; text-align: right; width: 12%;">Achievement</th>
+                                        <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 7%";>Sales</th>
+                                        <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 7%";>Achi (%)</th>
+
+                                        <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 7%;">Sales</th>
+                                        <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 7%";>Achi (%)</th>
+
+                                        <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 7%;">Sales</th>
+                                        <th style="border:1px solid #aaa; padding:5px; text-align: center; width: 7%";>Achi (%)</th>
                                     </tr>
                                 </thead>
                                 <tbody>${rows}</tbody>
@@ -152,23 +217,38 @@ const TerritoryWiseAchievementsExcel = ({ currentMonthsOrders = [], previousMont
                 grandTotals.totalTarget += areaTotals.totalTarget;
                 grandTotals.salesCurrent += areaTotals.salesCurrent;
                 grandTotals.salesPrev += areaTotals.salesPrev;
+                grandTotals.salesPrevTwoMos += areaTotals.salesPrevTwoMos;
+                grandTotals.salesLastYear += areaTotals.salesLastYear;
                 grandTotals.salesLastDay += areaTotals.salesLastDay;
 
                 const areaAchievementCurrent = areaTotals.totalTarget ? (areaTotals.salesCurrent / areaTotals.totalTarget) * 100 : 0;
                 const areaAchievementPrev = areaTotals.totalTarget ? (areaTotals.salesPrev / areaTotals.totalTarget) * 100 : 0;
+                const areaAchievementTwoMos = areaTotals.totalTarget ? (areaTotals.salesPrevTwoMos / areaTotals.totalTarget) * 100 : 0;
+                const areaAchievementLastYear = areaTotals.totalTarget ? (areaTotals.salesLastYear / areaTotals.totalTarget) * 100 : 0;
+
+                const areaLastMosGrowth = areaTotals.salesPrevTwoMos ? ((areaTotals.salesPrev - areaTotals.salesPrevTwoMos) / areaTotals.salesPrevTwoMos) * 100 : 100;
                 const areaGrowth = areaTotals.salesPrev ? ((areaTotals.salesCurrent - areaTotals.salesPrev) / areaTotals.salesPrev) * 100 : 100;
+                const areaLastYearGrowth = areaTotals.salesLastYear ? ((areaTotals.salesCurrent - areaTotals.salesLastYear) / areaTotals.salesLastYear) * 100 : 100;
 
                 const areaTotalsRow = `
-                    <tr />
                     <tr style="font-weight:bold; background:#f2f2f2;">
                         <td style="border:1px solid #000; padding:5px; text-align:left;" colspan="2">${parent} Total</td>
-                        <td style="border:1px solid #000; padding:5px; text-align:center; width: 12%;">${areaTotals.totalTarget}</td>
-                        <td style="border:1px solid #000; padding:5px; text-align:center; width: 12%;">${areaTotals.salesCurrent}</td>
-                        <td style="border:1px solid #000; padding:5px; text-align:right; width: 12%;">${areaAchievementCurrent.toFixed(2)}%</td>
-                        <td style="border:1px solid #000; padding:5px; text-align:center; width: 12%;">${areaTotals.salesPrev}</td>
-                        <td style="border:1px solid #000; padding:5px; text-align:right; width: 12%;">${areaAchievementPrev.toFixed(2)}%</td>
-                        <td style="border:1px solid #000; padding:5px; text-align:right; width: 12%;">${areaGrowth.toFixed(2)}%</td>
-                        <td style="border:1px solid #000; padding:5px; text-align:center; width: 12%;">${areaTotals.salesLastDay}</td>
+                        <td style="border:1px solid #000; padding:5px; text-align:center; width: 7%";">${areaTotals.totalTarget}</td>
+
+                        <td style="border:1px solid #000; padding:5px; text-align:center; width: 7%";">${areaTotals.salesCurrent}</td>
+                        <td style="border:1px solid #000; padding:5px; text-align:right; width: 7%";">${areaAchievementCurrent.toFixed(2)}%</td>
+
+                        <td style="border:1px solid #000; padding:5px; text-align:center; width: 7%";">${areaTotals.salesPrev}</td>
+                        <td style="border:1px solid #000; padding:5px; text-align:right; width: 7%";">${areaAchievementPrev.toFixed(2)}%</td>
+
+                        <td style="border:1px solid #000; padding:5px; text-align:center; width: 7%";">${areaTotals.salesPrevTwoMos}</td>
+                        <td style="border:1px solid #000; padding:5px; text-align:right; width: 7%";">${areaAchievementTwoMos.toFixed(2)}%</td>
+
+                        <td style="border:1px solid #000; padding:5px; text-align:right; width: 7%";">${areaLastMosGrowth.toFixed(2)}%</td>
+                        <td style="border:1px solid #000; padding:5px; text-align:right; width: 7%";">${areaGrowth.toFixed(2)}%</td>
+                        <td style="border:1px solid #000; padding:5px; text-align:right; width: 7%";">${areaLastYearGrowth.toFixed(2)}%</td>
+
+                        <td style="border:1px solid #000; padding:5px; text-align:center; width: 7%";">${areaTotals.salesLastDay}</td>
                     </tr>`;
 
                 return `
@@ -181,7 +261,12 @@ const TerritoryWiseAchievementsExcel = ({ currentMonthsOrders = [], previousMont
 
         const grandAchievementCurrent = grandTotals.totalTarget ? (grandTotals.salesCurrent / grandTotals.totalTarget) * 100 : 0;
         const grandAchievementPrev = grandTotals.totalTarget ? (grandTotals.salesPrev / grandTotals.totalTarget) * 100 : 0;
+        const grandAchievementTwoMos = grandTotals.totalTarget ? (grandTotals.salesPrevTwoMos / grandTotals.totalTarget) * 100 : 0;
+        const grandAchievementLastYear = grandTotals.totalTarget ? (grandTotals.salesCurrent / grandTotals.totalTarget) * 100 : 0;
+
+        const grandLastMosGrowth = grandTotals.salesPrevTwoMos ? ((grandTotals.salesPrev - grandTotals.salesPrevTwoMos) / grandTotals.salesPrevTwoMos) * 100 : 100;
         const grandGrowth = grandTotals.salesPrev ? ((grandTotals.salesCurrent - grandTotals.salesPrev) / grandTotals.salesPrev) * 100 : 100;
+        const grandLastYearGrowth = grandTotals.salesLastYear ? ((grandTotals.salesCurrent - grandTotals.salesLastYear) / grandTotals.salesLastYear) * 100 : 100;
 
         const grandTotalRow = `
             <table style="width:100%; border-collapse: collapse; margin-top:20px;">
@@ -189,13 +274,22 @@ const TerritoryWiseAchievementsExcel = ({ currentMonthsOrders = [], previousMont
                     <tr />
                     <tr style="font-weight:bold; background:#d9edf7;">
                         <td style="border:1px solid #000; padding:5px; text-align:left;" colspan="2">Grand Total</td>
-                        <td style="border:1px solid #000; padding:5px; text-align:center; width: 12%;">${grandTotals.totalTarget}</td>
-                        <td style="border:1px solid #000; padding:5px; text-align:center; width: 12%;">${grandTotals.salesCurrent}</td>
-                        <td style="border:1px solid #000; padding:5px; text-align:right; width: 12%;">${grandAchievementCurrent.toFixed(2)}%</td>
-                        <td style="border:1px solid #000; padding:5px; text-align:center; width: 12%;">${grandTotals.salesPrev}</td>
-                        <td style="border:1px solid #000; padding:5px; text-align:right; width: 12%;">${grandAchievementPrev.toFixed(2)}%</td>
-                        <td style="border:1px solid #000; padding:5px; text-align:right; width: 12%;">${grandGrowth.toFixed(2)}%</td>
-                        <td style="border:1px solid #000; padding:5px; text-align:center; width: 12%;">${grandTotals.salesLastDay}</td>
+                        <td style="border:1px solid #000; padding:5px; text-align:center; width: 7%";">${grandTotals.totalTarget}</td>
+
+                        <td style="border:1px solid #000; padding:5px; text-align:center; width: 7%";">${grandTotals.salesCurrent}</td>
+                        <td style="border:1px solid #000; padding:5px; text-align:right; width: 7%";">${grandAchievementCurrent.toFixed(2)}%</td>
+
+                        <td style="border:1px solid #000; padding:5px; text-align:center; width: 7%";">${grandTotals.salesPrev}</td>
+                        <td style="border:1px solid #000; padding:5px; text-align:right; width: 7%";">${grandAchievementPrev.toFixed(2)}%</td>
+
+                        <td style="border:1px solid #000; padding:5px; text-align:center; width: 7%";">${grandTotals.salesPrevTwoMos}</td>
+                        <td style="border:1px solid #000; padding:5px; text-align:right; width: 7%";">${grandAchievementTwoMos.toFixed(2)}%</td>
+
+                        <td style="border:1px solid #000; padding:5px; text-align:right; width: 7%";">${grandLastMosGrowth.toFixed(2)}%</td>
+                        <td style="border:1px solid #000; padding:5px; text-align:right; width: 7%";">${grandGrowth.toFixed(2)}%</td>
+                        <td style="border:1px solid #000; padding:5px; text-align:right; width: 7%";">${grandLastYearGrowth.toFixed(2)}%</td>
+
+                        <td style="border:1px solid #000; padding:5px; text-align:center; width: 7%";">${grandTotals.salesLastDay}</td>
                     </tr>
                 </tbody>
             </table>`;
