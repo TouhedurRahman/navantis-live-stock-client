@@ -171,11 +171,11 @@ const TerritoryWiseAchievements = () => {
     return (
         <>
             <div>
-                <PageTitle from={"Reports"} to={"Products summary"} />
+                <PageTitle from={"Achievements"} to={"Territory wise achievement"} />
             </div>
             <div className="bg-white pb-1">
                 <div>
-                    <h1 className="px-6 py-3 font-bold">Products summary reports</h1>
+                    <h1 className="px-6 py-3 font-bold">Territory wise achievement reports</h1>
                     <hr className='text-center border border-gray-500 mb-5' />
                 </div>
                 <div className='grid grid-cols-1 md:grid-cols-2 items-center gap-4'>
