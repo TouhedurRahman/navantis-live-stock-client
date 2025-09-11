@@ -79,6 +79,38 @@ const TerritoryWiseAchievements = () => {
         });
     }, [filteredOrders, firstDate, lastDate]);
 
+    const twoMonthsAgoOrders = useMemo(() => {
+        const prevFirstDate = new Date(firstDate);
+        prevFirstDate.setMonth(prevFirstDate.getMonth() - 2);
+
+        const prevLastDate = new Date(lastDate);
+        prevLastDate.setMonth(prevLastDate.getMonth() - 2);
+
+        if (prevFirstDate.getDate() !== firstDate.getDate()) prevFirstDate.setDate(1);
+        if (prevLastDate.getDate() !== lastDate.getDate()) prevLastDate.setDate(1);
+
+        return filteredOrders.filter(order => {
+            const orderDate = parseDate(order.date);
+            return orderDate >= prevFirstDate && orderDate <= prevLastDate;
+        });
+    }, [filteredOrders, firstDate, lastDate]);
+
+    const twelveMonthsAgoOrders = useMemo(() => {
+        const prevFirstDate = new Date(firstDate);
+        prevFirstDate.setMonth(prevFirstDate.getMonth() - 12);
+
+        const prevLastDate = new Date(lastDate);
+        prevLastDate.setMonth(prevLastDate.getMonth() - 12);
+
+        if (prevFirstDate.getDate() !== firstDate.getDate()) prevFirstDate.setDate(1);
+        if (prevLastDate.getDate() !== lastDate.getDate()) prevLastDate.setDate(1);
+
+        return filteredOrders.filter(order => {
+            const orderDate = parseDate(order.date);
+            return orderDate >= prevFirstDate && orderDate <= prevLastDate;
+        });
+    }, [filteredOrders, firstDate, lastDate]);
+
     const isSameDate = (d1, d2) =>
         d1.getFullYear() === d2.getFullYear() &&
         d1.getMonth() === d2.getMonth() &&
@@ -119,6 +151,8 @@ const TerritoryWiseAchievements = () => {
     const handlePrint = TerritoryWiseAchievementsReport({
         currentMonthsOrders,
         previousMonthsOrders,
+        twoMonthsAgoOrders,
+        twelveMonthsAgoOrders,
         lastDayOrders,
         firstDate: formatDate(firstDate),
         lastDate: formatDate(lastDate)
@@ -127,6 +161,8 @@ const TerritoryWiseAchievements = () => {
     const handleDownloadExcel = TerritoryWiseAchievementsExcel({
         currentMonthsOrders,
         previousMonthsOrders,
+        twoMonthsAgoOrders,
+        twelveMonthsAgoOrders,
         lastDayOrders,
         firstDate: formatDate(firstDate),
         lastDate: formatDate(lastDate)
