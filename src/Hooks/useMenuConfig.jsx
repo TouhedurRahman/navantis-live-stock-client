@@ -118,6 +118,7 @@ const useMenuConfig = () => {
             icon: <GiAchievement className="mr-2" />,
             links: [
                 { to: '/territory-achievements', icon: <TbReportAnalytics className='me-2' />, label: 'Territory wise Achievements' },
+                { to: '/product-achievements', icon: <TbReportAnalytics className='me-2' />, label: 'Product wise Achievements' },
             ],
         },
         reports: {
