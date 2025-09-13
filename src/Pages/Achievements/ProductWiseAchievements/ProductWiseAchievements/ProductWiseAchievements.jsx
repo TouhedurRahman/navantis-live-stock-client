@@ -194,8 +194,8 @@ const ProductWiseAchievements = () => {
     const handlePrint = ProductWiseAchievementsReport({
         currentMonthsOrders,
         previousMonthsOrders,
-        twoMonthsAgoOrders,
-        twelveMonthsAgoOrders,
+        /* twoMonthsAgoOrders,
+        twelveMonthsAgoOrders, */
         lastDayOrders,
         firstDate: formatDate(firstDate),
         lastDate: formatDate(lastDate)
@@ -204,8 +204,8 @@ const ProductWiseAchievements = () => {
     const handleDownloadExcel = ProductWiseAchievementsExcel({
         currentMonthsOrders,
         previousMonthsOrders,
-        twoMonthsAgoOrders,
-        twelveMonthsAgoOrders,
+        /* twoMonthsAgoOrders,
+        twelveMonthsAgoOrders, */
         lastDayOrders,
         firstDate: formatDate(firstDate),
         lastDate: formatDate(lastDate)
