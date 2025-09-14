@@ -65,7 +65,7 @@ const ProductWiseAchievementsExcel = ({
                     <p style="margin: 5px 0; font-size: 10px; text-align: center;">Hotline: +880 1322-852183</p>
                 </div>
                 <div style="text-align: left; margin-bottom: 20px;">
-                    <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>Product wise Achievements</u></h3>
+                    <h3 style="margin: 0; font-size: 18px; font-weight: bold; text-align: center;"><u>Product wise Target VS Sales</u></h3>
                     <p style="margin: 5px 0; font-size: 14px; text-align: center;">
                         ${(firstDate !== lastDate)
                 ? `Date from <b>${firstDate}</b> to <b>${lastDate}</b>`
@@ -205,7 +205,7 @@ const ProductWiseAchievementsExcel = ({
 
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
-        link.download = `Product wise Achievements Date from ${firstDate} to ${lastDate}.xls`;
+        link.download = `Product wise Target VS Sales Date from ${firstDate} to ${lastDate}.xls`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
