@@ -259,7 +259,7 @@ const OrderInvoice = ({ order }) => {
 
                     <span class="font-bold">Phone Number</span>
                     <span class="font-bold">:</span>
-                    <span>+880 ${customer.mobile.slice(-10, -6)}-${orderedBy.mobile.slice(-6)}</span>
+                    <span>+880 ${orderedBy.mobile.slice(-10, -6)}-${orderedBy.mobile.slice(-6)}</span>
                 `
                 :
                 ""
