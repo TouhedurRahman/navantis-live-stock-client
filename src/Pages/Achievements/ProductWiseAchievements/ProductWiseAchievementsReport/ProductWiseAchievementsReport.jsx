@@ -109,15 +109,16 @@ const ProductWiseAchievementsReport = ({
                     <table style="width:100%; border-collapse: collapse; margin-bottom:20px;">
                         <thead>
                             <tr style="background:#eee;">
+                                <th style="border:1px solid #aaa; padding:4px; text-align:center;">Sl. No.</th>
                                 <th style="border:1px solid #aaa; padding:4px;">Product Name</th>
-                                <th style="border:1px solid #aaa; padding:4px;">Pack Size</th>
-                                <th style="border:1px solid #aaa; padding:4px; text-align:center;">Target</th>
-                                <th style="border:1px solid #aaa; padding:4px; text-align:center;">Current Sales</th>
-                                <th style="border:1px solid #aaa; padding:4px; text-align:center;">Achievement %</th>
-                                <th style="border:1px solid #aaa; padding:4px; text-align:center;">Previous Sales</th>
-                                <th style="border:1px solid #aaa; padding:4px; text-align:center;">Previous Achievement %</th>
-                                <th style="border:1px solid #aaa; padding:4px; text-align:center;">Growth %</th>
-                                <th style="border:1px solid #aaa; padding:4px; text-align:center;">Last Day Sales</th>
+                                <th style="border:1px solid #aaa; padding:4px; text-align:center; width: 10%;">Pack Size</th>
+                                <th style="border:1px solid #aaa; padding:4px; text-align:center; width: 10%;">Target</th>
+                                <th style="border:1px solid #aaa; padding:4px; text-align:center; width: 10%;">Sales</th>
+                                <th style="border:1px solid #aaa; padding:4px; text-align:right; width: 10%;">Achievement</th>
+                                <!-- <th style="border:1px solid #aaa; padding:4px; text-align:center; width: 10%;">Previous Sales</th> -->
+                                <!-- <th style="border:1px solid #aaa; padding:4px; text-align:center; width: 10%;">Previous Achievement %</th> -->
+                                <th style="border:1px solid #aaa; padding:4px; text-align:right; width: 10%;">Growth</th>
+                                <!-- <th style="border:1px solid #aaa; padding:4px; text-align:center; width: 10%;">Last Day Sales</th> -->
                             </tr>
                         </thead>
                         <tbody>
@@ -131,7 +132,7 @@ const ProductWiseAchievementsReport = ({
                     ])
                 ];
 
-                allProducts.forEach(key => {
+                allProducts.forEach((key, idx) => {
                     const [name, netWeight] = key.split("|");
                     const curr = currentSales.find(p => p.name === name && p.netWeight === netWeight) || { sales: 0 };
                     const prev = previousSales.find(p => p.name === name && p.netWeight === netWeight) || { sales: 0 };
@@ -145,15 +146,16 @@ const ProductWiseAchievementsReport = ({
 
                     reportHTML += `
                         <tr>
+                            <td style="border:1px solid #ccc; padding:4px; text-align:center;">${idx + 1}</td>
                             <td style="border:1px solid #ccc; padding:4px;">${name}</td>
-                            <td style="border:1px solid #ccc; padding:4px;">${netWeight}</td>
+                            <td style="border:1px solid #ccc; padding:4px; text-align:center;">${netWeight}</td>
                             <td style="border:1px solid #ccc; padding:4px; text-align:center;">${target}</td>
                             <td style="border:1px solid #ccc; padding:4px; text-align:center;">${curr.sales}</td>
-                            <td style="border:1px solid #ccc; padding:4px; text-align:center;">${achievement}%</td>
-                            <td style="border:1px solid #ccc; padding:4px; text-align:center;">${prev.sales}</td>
-                            <td style="border:1px solid #ccc; padding:4px; text-align:center;">${prevAchievement}%</td>
-                            <td style="border:1px solid #ccc; padding:4px; text-align:center;">${growth}%</td>
-                            <td style="border:1px solid #ccc; padding:4px; text-align:center;">${lastDay.sales}</td>
+                            <td style="border:1px solid #ccc; padding:4px; text-align:right;">${achievement}%</td>
+                            <!-- <td style="border:1px solid #ccc; padding:4px; text-align:center;">${prev.sales}</td> -->
+                            <!-- <td style="border:1px solid #ccc; padding:4px; text-align:center;">${prevAchievement}%</td> -->
+                            <td style="border:1px solid #ccc; padding:4px; text-align:right;">${growth}%</td>
+                            <!-- <td style="border:1px solid #ccc; padding:4px; text-align:center;">${lastDay.sales}</td> -->
                         </tr>
                     `;
                 });
