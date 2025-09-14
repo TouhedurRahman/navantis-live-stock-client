@@ -116,7 +116,7 @@ const ProductWiseAchievementsReport = ({
                                 <th style="border:1px solid #aaa; padding:4px; text-align:center; width: 10%;">Sales</th>
                                 <th style="border:1px solid #aaa; padding:4px; text-align:right; width: 10%;">Achievement</th>
                                 <!-- <th style="border:1px solid #aaa; padding:4px; text-align:center; width: 10%;">Previous Sales</th> -->
-                                <!-- <th style="border:1px solid #aaa; padding:4px; text-align:center; width: 10%;">Previous Achievement %</th> -->
+                                <!-- <th style="border:1px solid #aaa; padding:4px; text-align:right; width: 10%;">Previous Achievement</th> -->
                                 <th style="border:1px solid #aaa; padding:4px; text-align:right; width: 10%;">Growth</th>
                                 <!-- <th style="border:1px solid #aaa; padding:4px; text-align:center; width: 10%;">Last Day Sales</th> -->
                             </tr>
@@ -132,6 +132,8 @@ const ProductWiseAchievementsReport = ({
                     ])
                 ];
 
+                let totalTarget = 0, totalCurr = 0, totalPrev = 0, totalLastDay = 0;
+
                 allProducts.forEach((key, idx) => {
                     const [name, netWeight] = key.split("|");
                     const curr = currentSales.find(p => p.name === name && p.netWeight === netWeight) || { sales: 0 };
@@ -144,6 +146,11 @@ const ProductWiseAchievementsReport = ({
                     const prevAchievement = target ? ((prev.sales / target) * 100).toFixed(2) : 0;
                     const growth = prev.sales ? (((curr.sales - prev.sales) / prev.sales) * 100).toFixed(2) : curr.sales ? 100 : 0;
 
+                    totalTarget += target;
+                    totalCurr += curr.sales;
+                    totalPrev += prev.sales;
+                    totalLastDay += lastDay.sales;
+
                     reportHTML += `
                         <tr>
                             <td style="border:1px solid #ccc; padding:4px; text-align:center;">${idx + 1}</td>
@@ -153,12 +160,29 @@ const ProductWiseAchievementsReport = ({
                             <td style="border:1px solid #ccc; padding:4px; text-align:center;">${curr.sales}</td>
                             <td style="border:1px solid #ccc; padding:4px; text-align:right;">${achievement}%</td>
                             <!-- <td style="border:1px solid #ccc; padding:4px; text-align:center;">${prev.sales}</td> -->
-                            <!-- <td style="border:1px solid #ccc; padding:4px; text-align:center;">${prevAchievement}%</td> -->
+                            <!-- <td style="border:1px solid #ccc; padding:4px; text-align:right;">${prevAchievement}</td> -->
                             <td style="border:1px solid #ccc; padding:4px; text-align:right;">${growth}%</td>
                             <!-- <td style="border:1px solid #ccc; padding:4px; text-align:center;">${lastDay.sales}</td> -->
                         </tr>
                     `;
                 });
+
+                /* const totalAchievement = totalTarget ? ((totalCurr / totalTarget) * 100).toFixed(2) : 0;
+                const totalPrevAchievement = totalTarget ? ((totalPrev / totalTarget) * 100).toFixed(2) : 0;
+                const totalGrowth = totalPrev ? (((totalCurr - totalPrev) / totalPrev) * 100).toFixed(2) : totalCurr ? 100 : 0;
+
+                reportHTML += `
+                    <tr style="background:#f2f2f2; font-weight:bold;">
+                        <td colspan="3" style="border:1px solid #ccc; padding:4px; text-align:right;">Total</td>
+                        <td style="border:1px solid #ccc; padding:4px; text-align:center;">${totalTarget}</td>
+                        <td style="border:1px solid #ccc; padding:4px; text-align:center;">${totalCurr}</td>
+                        <td style="border:1px solid #ccc; padding:4px; text-align:right;">${totalAchievement}%</td>
+                        <td style="border:1px solid #ccc; padding:4px; text-align:center;">${totalPrev}</td>
+                        <td style="border:1px solid #ccc; padding:4px; text-align:right;">${totalPrevAchievement}%</td>
+                        <td style="border:1px solid #ccc; padding:4px; text-align:right;">${totalGrowth}%</td>
+                        <td style="border:1px solid #ccc; padding:4px; text-align:center;">${totalLastDay}</td>
+                    </tr>
+                `; */
 
                 reportHTML += `</tbody></table>`;
             });
