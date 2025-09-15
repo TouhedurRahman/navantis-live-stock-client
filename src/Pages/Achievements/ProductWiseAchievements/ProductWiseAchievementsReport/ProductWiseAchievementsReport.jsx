@@ -5,6 +5,7 @@ const ProductWiseAchievementsReport = ({
     currentMonthsOrders = [],
     previousMonthsOrders = [],
     lastDayOrders = [],
+    productKey,
     firstDate,
     lastDate
 }) => {
@@ -25,6 +26,8 @@ const ProductWiseAchievementsReport = ({
     useEffect(() => {
         setTodayOrders(lastDayOrders);
     }, [lastDayOrders]);
+
+    const productWiseFiltered = productKey === '' ? false : true;
 
     const now = new Date().toLocaleString("en-US", {
         year: "numeric", month: "long", day: "numeric",
@@ -127,7 +130,7 @@ const ProductWiseAchievementsReport = ({
                 const targetProducts = (t.target || []).map(p => `${p.productName}|${p.netWeight}`);
                 let allProducts = [
                     ...new Set([
-                        ...targetProducts,
+                        ...(productWiseFiltered ? [] : targetProducts),
                         ...currentSales.map(p => `${p.name}|${p.netWeight}`),
                         ...previousSales.map(p => `${p.name}|${p.netWeight}`),
                         ...lastDaySales.map(p => `${p.name}|${p.netWeight}`),

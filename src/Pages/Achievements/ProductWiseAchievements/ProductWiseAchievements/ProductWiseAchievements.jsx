@@ -197,6 +197,7 @@ const ProductWiseAchievements = () => {
         /* twoMonthsAgoOrders,
         twelveMonthsAgoOrders, */
         lastDayOrders,
+        productKey,
         firstDate: formatDate(firstDate),
         lastDate: formatDate(lastDate)
     });
@@ -207,6 +208,7 @@ const ProductWiseAchievements = () => {
         /* twoMonthsAgoOrders,
         twelveMonthsAgoOrders, */
         lastDayOrders,
+        productKey,
         firstDate: formatDate(firstDate),
         lastDate: formatDate(lastDate)
     });
