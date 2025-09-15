@@ -125,13 +125,28 @@ const ProductWiseAchievementsExcel = ({
                         <tbody>
                 `;
 
-                const allProducts = [
+                const targetProducts = (t.target || []).map(p => `${p.productName}|${p.netWeight}`);
+                let allProducts = [
                     ...new Set([
+                        ...targetProducts,
                         ...currentSales.map(p => `${p.name}|${p.netWeight}`),
                         ...previousSales.map(p => `${p.name}|${p.netWeight}`),
                         ...lastDaySales.map(p => `${p.name}|${p.netWeight}`),
                     ])
                 ];
+
+                allProducts = allProducts.sort((a, b) => {
+                    const [nameA, netA] = a.split("|");
+                    const [nameB, netB] = b.split("|");
+
+                    if (nameA.toLowerCase() !== nameB.toLowerCase()) {
+                        return nameA.localeCompare(nameB);
+                    }
+
+                    const numA = parseFloat(netA) || 0;
+                    const numB = parseFloat(netB) || 0;
+                    return numA - numB;
+                });
 
                 let totalTarget = 0, totalCurr = 0, totalPrev = 0, totalLastDay = 0;
 
@@ -143,9 +158,9 @@ const ProductWiseAchievementsExcel = ({
 
                     const target = getTerritoryTarget(territoryName, name, netWeight);
 
-                    const achievement = target ? ((curr.sales / target) * 100).toFixed(2) : 0;
-                    const prevAchievement = target ? ((prev.sales / target) * 100).toFixed(2) : 0;
-                    const growth = prev.sales ? (((curr.sales - prev.sales) / prev.sales) * 100).toFixed(2) : curr.sales ? 100 : 0;
+                    const achievement = target ? ((curr.sales / target) * 100).toFixed(2) : "0.00";
+                    const prevAchievement = target ? ((prev.sales / target) * 100).toFixed(2) : "0.00";
+                    const growth = prev.sales ? (((curr.sales - prev.sales) / prev.sales) * 100).toFixed(2) : curr.sales ? 100 : "0.00";
 
                     totalTarget += target;
                     totalCurr += curr.sales;
