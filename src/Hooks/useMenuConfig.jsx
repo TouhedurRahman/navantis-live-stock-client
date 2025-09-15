@@ -111,7 +111,6 @@ const useMenuConfig = () => {
                 !['Sr. Area Manager', 'Area Manager'].includes(singleUser?.designation) &&
                 { to: '/place-order', icon: <FaCartPlus className='me-2' />, label: 'Place Order' },
                 { to: '/my-order', icon: <FaCartPlus className='me-2' />, label: 'My Order' },
-                { to: '/my-order-report', icon: <FaCartPlus className='me-2' />, label: 'My Report' },
             ],
         },
         achievements: {
@@ -142,7 +141,14 @@ const useMenuConfig = () => {
                 { to: '/mpo-statement', icon: <TbReportAnalytics className='me-2' />, label: 'MPO Statement' },
                 { to: '/inv-sales-summary', icon: <TbReportAnalytics className='me-2' />, label: 'Inv. Sales Summary' },
             ],
-        }
+        },
+        salesReport: {
+            icon: <TbReportSearch className="mr-2" />,
+            links: [
+                { to: '/my-product-summary', icon: <TbReportAnalytics className='me-2' />, label: 'Product Summary' },
+                { to: '/my-product-achievements', icon: <TbReportAnalytics className='me-2' />, label: 'Product wise Target VS Sales' },
+            ],
+        },
     };
 
     const baseMenuConfig = permissions.reduce((acc, permission) => {

@@ -21,7 +21,8 @@ const permissionsList = [
     "institute",
     "doctorRequisition",
     "customer",
-    "order"
+    "order",
+    "salesReport"
 ];
 
 const UpdateAccessModal = ({ user, refetch, onClose }) => {

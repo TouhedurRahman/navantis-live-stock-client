@@ -306,10 +306,6 @@ const router = createBrowserRouter([
                 path: "/my-order",
                 element: <MyOrder />
             },
-            {
-                path: "/my-order-report",
-                element: <MyOrderReport />
-            },
             /********** Profile **********/
             {
                 path: '/profile',
@@ -355,6 +351,15 @@ const router = createBrowserRouter([
             {
                 path: '/cus-inv-sales',
                 element: <CusInvSales />
+            },
+            /********** Field Sales Reports & Summary **********/
+            {
+                path: "/my-product-summary",
+                element: <MyOrderReport />
+            },
+            {
+                path: "/my-product-achievements",
+                element: <ProductWiseAchievements />
             },
             /********** Achievements **********/
             {
