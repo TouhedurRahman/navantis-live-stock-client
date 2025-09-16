@@ -4,6 +4,7 @@ import DailyCollections from "../../Pages/Accounts/DailyCollections/DailyCollect
 import DueList from "../../Pages/Accounts/DueList/DueList/DueList";
 import InvoiceSalesSummary from "../../Pages/Accounts/InvoiceSalesSummary/InvoiceSalesSummary/InvoiceSalesSummary";
 import MPOStatement from "../../Pages/Accounts/MPOStatement/MPOStatement/MPOStatement";
+import FieldTerritoryWiseAchievements from "../../Pages/Achievements/FieldTerritoryWiseAchievements/FieldTerritoryWiseAchievements/FieldTerritoryWiseAchievements";
 import ProductWiseAchievements from "../../Pages/Achievements/ProductWiseAchievements/ProductWiseAchievements/ProductWiseAchievements";
 import TerritoryWiseAchievements from "../../Pages/Achievements/TerritoryWiseAchievements/TerritoryWiseAchievements/TerritoryWiseAchievements";
 import AdminDamagedExpiredList from "../../Pages/Admin/AdminDamagedExpiredList/AdminDamagedExpiredList";
@@ -356,6 +357,10 @@ const router = createBrowserRouter([
             {
                 path: "/my-product-summary",
                 element: <MyOrderReport />
+            },
+            {
+                path: "/my-territory-achievements",
+                element: <FieldTerritoryWiseAchievements />
             },
             {
                 path: "/my-product-achievements",

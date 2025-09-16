@@ -116,7 +116,7 @@ const useMenuConfig = () => {
         achievements: {
             icon: <GiAchievement className="mr-2" />,
             links: [
-                { to: '/territory-achievements', icon: <TbReportAnalytics className='me-2' />, label: 'Territory wise Achievements' },
+                { to: '/territory-achievements', icon: <TbReportAnalytics className='me-2' />, label: 'Target, Sales Acievement & Growth' },
                 { to: '/product-achievements', icon: <TbReportAnalytics className='me-2' />, label: 'Product wise Target VS Sales' },
             ],
         },
@@ -146,6 +146,7 @@ const useMenuConfig = () => {
             icon: <TbReportSearch className="mr-2" />,
             links: [
                 { to: '/my-product-summary', icon: <TbReportAnalytics className='me-2' />, label: 'Product Summary' },
+                { to: '/my-territory-achievements', icon: <TbReportAnalytics className='me-2' />, label: 'Target, Sales Acievement & Growth' },
                 { to: '/my-product-achievements', icon: <TbReportAnalytics className='me-2' />, label: 'Product wise Target VS Sales' },
             ],
         },
