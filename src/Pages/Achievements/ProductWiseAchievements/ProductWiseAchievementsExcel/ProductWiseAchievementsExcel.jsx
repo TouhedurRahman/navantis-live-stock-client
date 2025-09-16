@@ -91,6 +91,13 @@ const ProductWiseAchievementsExcel = ({
         });
 
         Object.entries(groupedByParent).forEach(([parentArea, areaTerritories]) => {
+            const validTerritories = areaTerritories.filter(t => {
+                const currentSales = calculateProductSales(t.territory, currentMosOrders);
+                const previousSales = calculateProductSales(t.territory, previousMosOrders);
+                return currentSales.length > 0 || previousSales.length > 0;
+            });
+
+            if (validTerritories.length === 0) return;
 
             const areaManager = areaTerritories[0]?.areaManager || "Unknown Manager";
             reportHTML += `
@@ -99,7 +106,7 @@ const ProductWiseAchievementsExcel = ({
                 <h4 style="text-align: center; font-weight: bold; margin: 0;">Sr. AM/AM: ${areaManager}</h4>
             `;
 
-            areaTerritories.forEach(t => {
+            validTerritories.forEach(t => {
                 const territoryName = t.territory;
 
                 const currentSales = calculateProductSales(territoryName, currentMosOrders);
