@@ -58,35 +58,21 @@ const NetSales = () => {
     }, [returns, fromDate, toDate]);
 
     const findDateRange = (orders, returns) => {
-        if (!orders.length && !returns.length) return { firstDate: null, lastDate: null };
+        const allDates = [
+            ...orders.map(o => new Date(o.date)),
+            ...returns.map(r => new Date(r.date))
+        ].filter(d => !isNaN(d));
 
-        const deliveryDates = orders
-            .map(order => new Date(order.date))
-            .filter(date => !isNaN(date));
+        if (!allDates.length) return { firstDate: null, lastDate: null };
 
-        const returnDates = returns
-            .map(order => new Date(order.date))
-            .filter(date => !isNaN(date));
-
-        const firstDateObj = deliveryDates.length ? deliveryDates.sort((a, b) => a - b)[0] : null;
-
-        const latestDeliveryDate = deliveryDates.length ? deliveryDates.sort((a, b) => a - b).at(-1) : null;
-        const latestReturnDate = returnDates.length ? returnDates.sort((a, b) => a - b).at(-1) : null;
-
-        let lastDateObj;
-        if (latestDeliveryDate && latestReturnDate) {
-            lastDateObj = latestDeliveryDate > latestReturnDate ? latestDeliveryDate : latestReturnDate;
-        } else {
-            lastDateObj = latestDeliveryDate || latestReturnDate;
-        }
-
-        const firstDate = firstDateObj ? firstDateObj.toLocaleDateString('en-GB').replace(/\//g, '-') : null;
-        const lastDate = lastDateObj ? lastDateObj.toLocaleDateString('en-GB').replace(/\//g, '-') : null;
+        const sortedDates = allDates.sort((a, b) => a - b);
+        const firstDate = sortedDates[0].toLocaleDateString('en-GB').replace(/\//g, '-');
+        const lastDate = sortedDates[sortedDates.length - 1].toLocaleDateString('en-GB').replace(/\//g, '-');
 
         return { firstDate, lastDate };
     };
 
-    const { firstDate, lastDate } = findDateRange(filteredOrders, returns);
+    const { firstDate, lastDate } = findDateRange(filteredOrders, orderReturns);
 
     const uniqueTerritory = useMemo(() => {
         const territoryMap = new Map();
@@ -248,7 +234,7 @@ const NetSales = () => {
                                             type="date"
                                             value={fromDate}
                                             onChange={(e) => setFromDate(e.target.value)}
-                                            className="border border-gray-300 rounded w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
+                                            className="border border-gray-300 rounded w-full px-3 py-2 focus:outline-none bg-white cursor-pointer"
                                         />
                                     </div>
 
@@ -259,7 +245,7 @@ const NetSales = () => {
                                             type="date"
                                             value={toDate}
                                             onChange={(e) => setToDate(e.target.value)}
-                                            className="border border-gray-300 rounded w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
+                                            className="border border-gray-300 rounded w-full px-3 py-2 focus:outline-none bg-white cursor-pointer"
                                         />
                                     </div>
 
