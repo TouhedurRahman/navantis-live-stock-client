@@ -219,6 +219,7 @@ const NetSales = () => {
                                             value={year ? { value: year, label: year } : null}
                                             onChange={(e) => setYear(e?.value || '')}
                                             options={[{ value: '', label: "All Years" }, ...years.map(y => ({ value: y, label: y }))]}
+                                            placeholder="Year"
                                             isClearable
                                             isSearchable
                                         />
@@ -234,6 +235,7 @@ const NetSales = () => {
                                                 value: i + 1,
                                                 label: new Date(0, i).toLocaleString('default', { month: 'long' })
                                             }))]}
+                                            placeholder="Month"
                                             isClearable
                                             isSearchable
                                         />
@@ -268,6 +270,7 @@ const NetSales = () => {
                                             value={territory ? { value: territory, label: territory } : null}
                                             onChange={(e) => setTerritory(e?.value || '')}
                                             options={[{ value: '', label: "Select a territory" }, ...uniqueTerritory.map(t => ({ value: t, label: t }))]}
+                                            placeholder="Search or Select a Territory"
                                             isClearable
                                             isSearchable
                                         />
@@ -283,6 +286,7 @@ const NetSales = () => {
                                                 value: orderedBy,
                                                 label: `${orderedBy} - ${email}`
                                             }))]}
+                                            placeholder="Search or Select a Person"
                                             isClearable
                                             isSearchable
                                         />
@@ -298,6 +302,7 @@ const NetSales = () => {
                                                 value: am.areaManager,
                                                 label: am.amEmail ? `${am.areaManager} - ${am.amEmail}` : am.areaManager
                                             }))]}
+                                            placeholder="Search or Select an Area Manager"
                                             isClearable
                                             isSearchable
                                         />
@@ -327,6 +332,7 @@ const NetSales = () => {
                                                     address: customerInfo?.address || 'No Address'
                                                 };
                                             })}
+                                            placeholder="Search or Select a Customer"
                                             isClearable
                                             isSearchable
                                             formatOptionLabel={(option, { context }) => {
