@@ -344,6 +344,7 @@ const NetSales = () => {
                                             options={[
                                                 { value: "Net Sales", label: "Net Sales" },
                                                 ...(orderedBy ? [{ value: "MPO wise Net Sales", label: "MPO wise Net Sales" }] : []),
+                                                ...(territory ? [{ value: "Territory wise Net Sales", label: "Territory wise Net Sales" }] : []),
                                                 ...(areaManager ? [{ value: "Area Manager wise Net Sales", label: "Area Manager wise Net Sales" }] : []),
                                                 ...(customer ? [{ value: "Customer wise Net Sales", label: "Customer wise Net Sales" }] : [])
                                             ]}
