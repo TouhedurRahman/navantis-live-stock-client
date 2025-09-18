@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import { FaFileExcel, FaFilePdf } from "react-icons/fa6";
+import Select from "react-select";
+import Loader from "../../../Components/Loader/Loader";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import useCustomer from "../../../Hooks/useCustomer";
 import useExpiredReturnes from "../../../Hooks/useExpiredReturnes";
@@ -7,7 +9,7 @@ import ExpireReturnsExcel from "../../../Reports/ExpireReturnsExcel";
 import ExpireReturnsReport from "../../../Reports/ExpireReturnsReport";
 
 const ExpireReturns = () => {
-    const [exReturns] = useExpiredReturnes();
+    const [exReturns, exReturnsLoading] = useExpiredReturnes();
     const [customers] = useCustomer();
 
     const [year, setYear] = useState('');
@@ -100,20 +102,6 @@ const ExpireReturns = () => {
         });
 
         return Array.from(territoryMap.keys());
-    }, [filteredExReturns]);
-
-    const uniqueReturnedBy = useMemo(() => {
-        const orderByMap = new Map();
-
-        filteredExReturns.forEach(exReturn => {
-            if (exReturn.returnedBy) {
-                orderByMap.set(exReturn.returnedBy.trim());
-            }
-        });
-
-        return Array.from(orderByMap.entries()).map(([returnedBy]) => ({
-            returnedBy
-        }));
     }, [filteredExReturns]);
 
     const uniqueAreaManager = useMemo(() => {
@@ -211,236 +199,237 @@ const ExpireReturns = () => {
                     <h1 className="px-6 py-3 font-bold">Expire returns report</h1>
                     <hr className='text-center border border-gray-500 mb-5' />
                 </div>
-                <div className='grid grid-cols-1 md:grid-cols-2 items-center gap-4'>
-                    {/* Filters Section */}
-                    <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 my-6 px-6">
-                        {/* Year Filter */}
-                        <div>
-                            <label className="block font-semibold text-gray-700 mb-1">Year</label>
-                            <select
-                                value={year}
-                                onChange={(e) => setYear(e.target.value)}
-                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
-                            >
-                                <option value="">All Years</option>
-                                {years.map((y) => (
-                                    <option key={y} value={y}>{y}</option>
-                                ))}
-                            </select>
-                        </div>
+                {
+                    exReturnsLoading
+                        ?
+                        <>
+                            <Loader />
+                        </>
+                        :
+                        <>
+                            <div className='grid grid-cols-1 md:grid-cols-2 items-center gap-4'>
+                                {/* Filters Section */}
+                                <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 my-6 px-6">
+                                    {/* Year Filter */}
+                                    <div>
+                                        <label className="block font-semibold text-gray-700 mb-1">Year</label>
+                                        <Select
+                                            value={year ? { value: year, label: year } : null}
+                                            onChange={(e) => setYear(e?.value || '')}
+                                            options={[{ value: '', label: "All Years" }, ...years.map(y => ({ value: y, label: y }))]}
+                                            placeholder="Year"
+                                            isClearable
+                                            isSearchable
+                                        />
+                                    </div>
 
-                        {/* Month Filter */}
-                        <div>
-                            <label className="block font-semibold text-gray-700 mb-1">Month</label>
-                            <select
-                                value={month}
-                                onChange={(e) => setMonth(e.target.value)}
-                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
-                            >
-                                <option value="">All Months</option>
-                                {Array.from({ length: 12 }, (_, i) => (
-                                    <option key={i + 1} value={i + 1}>
-                                        {new Date(0, i).toLocaleString('default', { month: 'long' })}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                                    {/* Month Filter */}
+                                    <div>
+                                        <label className="block font-semibold text-gray-700 mb-1">Month</label>
+                                        <Select
+                                            value={month ? { value: month, label: new Date(0, month - 1).toLocaleString('default', { month: 'long' }) } : null}
+                                            onChange={(e) => setMonth(e?.value || '')}
+                                            options={[{ value: '', label: "All Months" }, ...Array.from({ length: 12 }, (_, i) => ({
+                                                value: i + 1,
+                                                label: new Date(0, i).toLocaleString('default', { month: 'long' })
+                                            }))]}
+                                            placeholder="Month"
+                                            isClearable
+                                            isSearchable
+                                        />
+                                    </div>
 
-                        {/* From Date Filter */}
-                        <div>
-                            <label className="block font-semibold text-gray-700 mb-1">From Date</label>
-                            <input
-                                type="date"
-                                value={fromDate}
-                                onChange={(e) => setFromDate(e.target.value)}
-                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
-                            />
-                        </div>
+                                    {/* From Date Filter */}
+                                    <div>
+                                        <label className="block font-semibold text-gray-700 mb-1">From Date</label>
+                                        <input
+                                            type="date"
+                                            value={fromDate}
+                                            onChange={(e) => setFromDate(e.target.value)}
+                                            className="border border-gray-300 rounded w-full px-3 py-2 focus:outline-none bg-white cursor-pointer"
+                                        />
+                                    </div>
 
-                        {/* To Date Filter */}
-                        <div>
-                            <label className="block font-semibold text-gray-700 mb-1">To Date</label>
-                            <input
-                                type="date"
-                                value={toDate}
-                                onChange={(e) => setToDate(e.target.value)}
-                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
-                            />
-                        </div>
+                                    {/* To Date Filter */}
+                                    <div>
+                                        <label className="block font-semibold text-gray-700 mb-1">To Date</label>
+                                        <input
+                                            type="date"
+                                            value={toDate}
+                                            onChange={(e) => setToDate(e.target.value)}
+                                            className="border border-gray-300 rounded w-full px-3 py-2 focus:outline-none bg-white cursor-pointer"
+                                        />
+                                    </div>
 
-                        {/* Status filter */}
-                        <div className='col-span-1 md:col-span-2'>
-                            <label className="block font-semibold text-gray-700 mb-1">Status</label>
-                            <select
-                                value={exRetStatus}
-                                onChange={(e) => setExRetStatus(e.target.value)}
-                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
-                            >
-                                <option value="adjusted">Adjusted</option>
-                                < option value="approved">Approved</option>
-                            </select>
-                        </div>
+                                    {/* Status filter */}
+                                    <div className='col-span-1 md:col-span-2'>
+                                        <label className="block font-semibold text-gray-700 mb-1">Status</label>
+                                        <select
+                                            value={exRetStatus}
+                                            onChange={(e) => setExRetStatus(e.target.value)}
+                                            className="border border-gray-300 rounded w-full px-3 py-2 focus:outline-none bg-white cursor-pointer"
+                                        >
+                                            <option value="adjusted">Adjusted</option>
+                                            < option value="approved">Approved</option>
+                                        </select>
+                                    </div>
 
-                        {/* Product Filter */}
-                        <div className='col-span-1 md:col-span-2'>
-                            <label className="block font-semibold text-gray-700 mb-1">Product</label>
-                            <select
-                                value={productKey}
-                                onChange={(e) => setProductKey(e.target.value)}
-                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
-                            >
-                                <option value="">Select a Product</option>
-                                {uniqueProducts.map((p) => {
-                                    const name = p.name?.trim().toLowerCase() || '';
-                                    const weight = p.netWeight?.trim().toLowerCase() || '';
-                                    const key = `${name}|${weight}`;
+                                    {/* Product Filter */}
+                                    <div className='col-span-1 md:col-span-2'>
+                                        <label className="block font-semibold text-gray-700 mb-1">Product</label>
+                                        <Select
+                                            value={
+                                                productKey
+                                                    ? {
+                                                        value: productKey,
+                                                        label: (() => {
+                                                            const p = uniqueProducts.find(
+                                                                p =>
+                                                                    `${p.name}|${p.netWeight}`.toLowerCase() ===
+                                                                    productKey.toLowerCase()
+                                                            );
+                                                            return p ? `${p.name} - ${p.netWeight}` : '';
+                                                        })()
+                                                    }
+                                                    : null
+                                            }
+                                            onChange={(selected) => setProductKey(selected?.value || '')}
+                                            options={[
+                                                { value: '', label: 'Select a Product' },
+                                                ...uniqueProducts.map(p => ({
+                                                    value: `${p.name}|${p.netWeight}`,
+                                                    label: `${p.name} - ${p.netWeight}`
+                                                }))
+                                            ]}
+                                            placeholder="Search or Select a Product"
+                                            isClearable
+                                            isSearchable
+                                        />
+                                    </div>
 
-                                    return (
-                                        <option key={key} value={key}>
-                                            {p.name} - {p.netWeight}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                        </div>
+                                    {/* Territory Filter */}
+                                    <div className='col-span-1 md:col-span-2'>
+                                        <label className="block font-semibold text-gray-700 mb-1">Territory</label>
+                                        <Select
+                                            value={territory ? { value: territory, label: territory } : null}
+                                            onChange={(e) => setTerritory(e?.value || '')}
+                                            options={[{ value: '', label: "Select a Territory" }, ...uniqueTerritory.map(t => ({ value: t, label: t }))]}
+                                            placeholder="Search or Select a Territory"
+                                            isClearable
+                                            isSearchable
+                                        />
+                                    </div>
 
-                        {/* Territory Filter */}
-                        <div className='col-span-1 md:col-span-2'>
-                            <label className="block font-semibold text-gray-700 mb-1">Territory</label>
-                            <select
-                                value={territory}
-                                onChange={(e) => setTerritory(e.target.value)}
-                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
-                            >
-                                <option value="">Select a territory</option>
-                                {uniqueTerritory.map((territory) => (
-                                    <option key={territory} value={territory}>
-                                        {territory}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                                    {/* Area Manager Filter */}
+                                    <div className='col-span-1 md:col-span-2'>
+                                        <label className="block font-semibold text-gray-700 mb-1">Area Manager</label>
+                                        <Select
+                                            value={areaManager ? { value: areaManager, label: areaManager } : null}
+                                            onChange={(e) => setAreaManager(e?.value || '')}
+                                            options={[{ value: '', label: "Select an Area Manager" }, ...uniqueAreaManager.map(am => ({
+                                                value: am.areaManager,
+                                                label: am.amEmail ? `${am.areaManager} - ${am.amEmail}` : am.areaManager
+                                            }))]}
+                                            placeholder="Search or Select an Area Manager"
+                                            isClearable
+                                            isSearchable
+                                        />
+                                    </div>
 
-                        {/* Ordered By Filter */}
-                        <div className='col-span-1 md:col-span-2'>
-                            <label className="block font-semibold text-gray-700 mb-1">Ordered By</label>
-                            <select
-                                value={returnedBy}
-                                onChange={(e) => setReturnedBy(e.target.value)}
-                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
-                            >
-                                <option value="">Select a person</option>
-                                {uniqueReturnedBy.map(({ returnedBy }) => (
-                                    <option key={returnedBy} value={returnedBy}>
-                                        {returnedBy}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                                    {/* Customer Filter */}
+                                    <div className='col-span-1 md:col-span-2'>
+                                        <label className="block font-semibold text-gray-700 mb-1">Customer</label>
+                                        <Select
+                                            value={
+                                                customer
+                                                    ? (() => {
+                                                        const selected = uniquePharmacies.find(p => p.pharmacyId === customer);
+                                                        return {
+                                                            value: customer,
+                                                            label: `${selected?.pharmacy || ''} - ${customer}`
+                                                        };
+                                                    })()
+                                                    : null
+                                            }
+                                            onChange={(e) => setCustomer(e?.value || '')}
+                                            options={uniquePharmacies.map(c => {
+                                                const customerInfo = customers.find(cus => cus.customerId === c.pharmacyId);
+                                                return {
+                                                    value: c.pharmacyId,
+                                                    label: `${c.pharmacy} - ${c.pharmacyId}`,
+                                                    address: customerInfo?.address || 'No Address'
+                                                };
+                                            })}
+                                            placeholder="Search or Select a Customer"
+                                            isClearable
+                                            isSearchable
+                                            formatOptionLabel={(option, { context }) => {
+                                                if (context === "menu") {
+                                                    return (
+                                                        <div>
+                                                            <div className="font-medium">{option.label}</div>
+                                                            <div className="text-sm text-gray-500">{option.address}</div>
+                                                        </div>
+                                                    );
+                                                }
+                                                return option.label;
+                                            }}
+                                        />
+                                    </div>
 
-                        {/* Area Manager Filter */}
-                        <div className='col-span-1 md:col-span-2'>
-                            <label className="block font-semibold text-gray-700 mb-1">Area Manager</label>
-                            <select
-                                value={areaManager}
-                                onChange={(e) => setAreaManager(e.target.value)}
-                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
-                            >
-                                <option value="">Select an Area Manager</option>
-                                {uniqueAreaManager.map(({ areaManager, amEmail }) => (
-                                    <option key={areaManager} value={areaManager}>
-                                        {areaManager} {amEmail && `- ${amEmail}`}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                                    {/* Report Filter */}
+                                    <div className='col-span-1 md:col-span-2'>
+                                        <label className="block font-semibold text-gray-700 mb-1">Report Type</label>
+                                        <Select
+                                            value={reportType ? { value: reportType, label: reportType } : null}
+                                            onChange={(e) => setReportType(e?.value || 'Expire Returns')}
+                                            options={[
+                                                { value: "Expire Returns", label: "Expire Returns" },
+                                                ...(productKey ? [{ value: "Product wise Expire Returns", label: "Product wise Expire Returns" }] : []),
+                                                ...(returnedBy ? [{ value: "MPO wise Expire Returns", label: "MPO wise Expire Returns" }] : []),
+                                                ...(territory ? [{ value: "Territory wise Expire Returns", label: "Territory wise Expire Returns" }] : []),
+                                                ...(areaManager ? [{ value: "Area Manager wise Expire Returns", label: "Area Manager wise Expire Returns" }] : []),
+                                                ...(customer ? [{ value: "Customer wise Expire Returns", label: "Customer wise Expire Returns" }] : [])
+                                            ]}
+                                            isClearable
+                                            isSearchable
+                                        />
+                                    </div>
 
-                        {/* Customer Filter */}
-                        <div className='col-span-1 md:col-span-2'>
-                            <label className="block font-semibold text-gray-700 mb-1">Customer</label>
-                            <select
-                                value={customer}
-                                onChange={(e) => setCustomer(e.target.value)}
-                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
-                            >
-                                <option value="">Select a Customer</option>
-                                {uniquePharmacies.map(({ pharmacy, pharmacyId }) => (
-                                    <option key={pharmacyId} value={pharmacyId}>
-                                        {pharmacy} - {pharmacyId}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                                    {/* Clear Filters Button */}
+                                    <button
+                                        onClick={clearFilters}
+                                        className="col-span-1 md:col-span-2 mt-4 bg-blue-500 text-white rounded-lg px-4 py-2 shadow-sm hover:bg-blue-600 transition-colors"
+                                    >
+                                        Clear Filters
+                                    </button>
+                                </div>
 
-                        {/* Report Filter */}
-                        <div className='col-span-1 md:col-span-2'>
-                            <label className="block font-semibold text-gray-700 mb-1">Report Type</label>
-                            <select
-                                value={reportType}
-                                onChange={(e) => setReportType(e.target.value)}
-                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
-                            >
-                                <option value="Expire Returns">Expire Returns</option>
-                                {
-                                    productKey !== ''
-                                    &&
-                                    < option value="Product wise Expire Returns">Product wise Expire Returns</option>
-                                }
-                                {
-                                    territory !== ''
-                                    &&
-                                    < option value="Territory wise Expire Returns">Territory wise Expire Returns</option>
-                                }
-                                {
-                                    returnedBy !== ''
-                                    &&
-                                    < option value="MPO wise Expire Returns">MPO wise Expire Returns</option>
-                                }
-                                {
-                                    areaManager !== ''
-                                    &&
-                                    < option value="Area Manager wise Expire Returns">Area Manager wise Expire Returns</option>
-                                }
-                                {
-                                    customer !== ''
-                                    &&
-                                    <option value="Customer wise Expire Returns">Customer wise Expire Returns</option>
-                                }
-                            </select>
-                        </div>
+                                {/* button section */}
+                                <div className="w-full flex flex-col gap-4 px-6 mt-4">
+                                    {/* print pdf button */}
+                                    <button
+                                        onClick={handlePrint}
+                                        className="bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:scale-105 transition-all"
+                                    >
+                                        <span className='flex justify-center items-center'>
+                                            <FaFilePdf className='mr-2' /> Print PDF
+                                        </span>
+                                    </button>
 
-                        {/* Clear Filters Button */}
-                        <button
-                            onClick={clearFilters}
-                            className="col-span-1 md:col-span-2 mt-4 bg-blue-500 text-white rounded-lg px-4 py-2 shadow-sm hover:bg-blue-600 transition-colors"
-                        >
-                            Clear Filters
-                        </button>
-                    </div>
-
-                    {/* button section */}
-                    <div className="w-full flex flex-col gap-4 px-6 mt-4">
-                        {/* print pdf button */}
-                        <button
-                            onClick={handlePrint}
-                            className="bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:scale-105 transition-all"
-                        >
-                            <span className='flex justify-center items-center'>
-                                <FaFilePdf className='mr-2' /> Print PDF
-                            </span>
-                        </button>
-
-                        {/* download excel file button */}
-                        <button
-                            onClick={handleDownloadExcel}
-                            className="bg-gradient-to-r from-red-500 to-red-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:scale-105 transition-all"
-                        >
-                            <span className='flex justify-center items-center'>
-                                <FaFileExcel className='mr-2' /> Download Excel
-                            </span>
-                        </button>
-                    </div>
-                </div >
+                                    {/* download excel file button */}
+                                    <button
+                                        onClick={handleDownloadExcel}
+                                        className="bg-gradient-to-r from-red-500 to-red-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:scale-105 transition-all"
+                                    >
+                                        <span className='flex justify-center items-center'>
+                                            <FaFileExcel className='mr-2' /> Download Excel
+                                        </span>
+                                    </button>
+                                </div>
+                            </div >
+                        </>
+                }
             </div >
         </>
     );
