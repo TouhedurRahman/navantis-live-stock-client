@@ -321,7 +321,7 @@ const ProductSummary = () => {
                                         <Select
                                             value={territory ? { value: territory, label: territory } : null}
                                             onChange={(e) => setTerritory(e?.value || '')}
-                                            options={[{ value: '', label: "Select a territory" }, ...uniqueTerritory.map(t => ({ value: t, label: t }))]}
+                                            options={[{ value: '', label: "Select a Territory" }, ...uniqueTerritory.map(t => ({ value: t, label: t }))]}
                                             placeholder="Search or Select a Territory"
                                             isClearable
                                             isSearchable
