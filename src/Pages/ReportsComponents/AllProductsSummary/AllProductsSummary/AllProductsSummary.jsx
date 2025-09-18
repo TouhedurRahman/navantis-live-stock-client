@@ -406,7 +406,7 @@ const AllProductsSummary = () => {
                                         <label className="block font-semibold text-gray-700 mb-1">Report Type</label>
                                         <Select
                                             value={reportType ? { value: reportType, label: reportType } : null}
-                                            onChange={(e) => setReportType(e?.value || 'Products Summary')}
+                                            onChange={(e) => setReportType(e?.value || "Products Summary All")}
                                             options={[
                                                 { value: "Products Summary All", label: "Products Summary All" },
                                                 ...(productKey ? [{ value: "Product wise Products Summary All", label: "Product wise Products Summary All" }] : []),
