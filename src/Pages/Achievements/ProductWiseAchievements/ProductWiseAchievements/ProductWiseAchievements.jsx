@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import { FaFileExcel, FaFilePdf } from "react-icons/fa6";
+import Select from "react-select";
+import Loader from "../../../../Components/Loader/Loader";
 import PageTitle from "../../../../Components/PageTitle/PageTitle";
 import useOrders from "../../../../Hooks/useOrders";
 import useSingleUser from "../../../../Hooks/useSingleUser";
@@ -8,7 +10,7 @@ import ProductWiseAchievementsReport from "../ProductWiseAchievementsReport/Prod
 
 const ProductWiseAchievements = () => {
     const [singleUser] = useSingleUser();
-    const [orders] = useOrders();
+    const [orders, ordersLoading] = useOrders();
 
     const [fromDate, setFromDate] = useState('');
     const [toDate, setToDate] = useState('');
@@ -223,121 +225,132 @@ const ProductWiseAchievements = () => {
                     <h1 className="px-6 py-3 font-bold">Product wise achievements report</h1>
                     <hr className='text-center border border-gray-500 mb-5' />
                 </div>
-                <div className='grid grid-cols-1 md:grid-cols-2 items-center gap-4'>
-                    {/* Filters Section */}
-                    <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 my-6 px-6">
+                {
+                    ordersLoading
+                        ?
+                        <>
+                            <Loader />
+                        </>
+                        :
+                        <>
+                            <div className='grid grid-cols-1 md:grid-cols-2 items-center gap-4'>
+                                {/* Filters Section */}
+                                <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 my-6 px-6">
+                                    {/* From Date Filter */}
+                                    <div>
+                                        <label className="block font-semibold text-gray-700 mb-1">From Date</label>
+                                        <input
+                                            type="date"
+                                            value={fromDate}
+                                            onChange={(e) => setFromDate(e.target.value)}
+                                            className="border border-gray-300 rounded w-full px-3 py-2 focus:outline-none bg-white cursor-pointer"
+                                        />
+                                    </div>
 
-                        {/* From Date */}
-                        <div>
-                            <label className="block font-semibold text-gray-700 mb-1">From Date</label>
-                            <input
-                                type="date"
-                                value={fromDate}
-                                onChange={(e) => setFromDate(e.target.value)}
-                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
-                            />
-                        </div>
+                                    {/* To Date Filter */}
+                                    <div>
+                                        <label className="block font-semibold text-gray-700 mb-1">To Date</label>
+                                        <input
+                                            type="date"
+                                            value={toDate}
+                                            onChange={(e) => setToDate(e.target.value)}
+                                            className="border border-gray-300 rounded w-full px-3 py-2 focus:outline-none bg-white cursor-pointer"
+                                        />
+                                    </div>
 
-                        {/* To Date */}
-                        <div>
-                            <label className="block font-semibold text-gray-700 mb-1">To Date</label>
-                            <input
-                                type="date"
-                                value={toDate}
-                                onChange={(e) => setToDate(e.target.value)}
-                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
-                            />
-                        </div>
+                                    {/* Product Filter */}
+                                    <div className='col-span-1 md:col-span-2'>
+                                        <label className="block font-semibold text-gray-700 mb-1">Product</label>
+                                        <Select
+                                            value={
+                                                productKey
+                                                    ? {
+                                                        value: productKey,
+                                                        label: (() => {
+                                                            const p = uniqueProducts.find(
+                                                                p =>
+                                                                    `${p.name}|${p.netWeight}`.toLowerCase() ===
+                                                                    productKey.toLowerCase()
+                                                            );
+                                                            return p ? `${p.name} - ${p.netWeight}` : '';
+                                                        })()
+                                                    }
+                                                    : null
+                                            }
+                                            onChange={(selected) => setProductKey(selected?.value || '')}
+                                            options={[
+                                                { value: '', label: 'Select a Product' },
+                                                ...uniqueProducts.map(p => ({
+                                                    value: `${p.name}|${p.netWeight}`,
+                                                    label: `${p.name} - ${p.netWeight}`
+                                                }))
+                                            ]}
+                                            placeholder="Search or Select a Product"
+                                            isClearable
+                                            isSearchable
+                                        />
+                                    </div>
 
-                        {/* Product Filter */}
-                        <div className='col-span-1 md:col-span-2'>
-                            <label className="block font-semibold text-gray-700 mb-1">Product</label>
-                            <select
-                                value={productKey}
-                                onChange={(e) => setProductKey(e.target.value)}
-                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
-                            >
-                                <option value="">Select a Product</option>
-                                {uniqueProducts.map((p) => {
-                                    const name = p.name?.trim().toLowerCase() || '';
-                                    const weight = p.netWeight?.trim().toLowerCase() || '';
-                                    const key = `${name}|${weight}`;
+                                    {/* Territory Filter */}
+                                    <div className='col-span-1 md:col-span-2'>
+                                        <label className="block font-semibold text-gray-700 mb-1">Territory</label>
+                                        <Select
+                                            value={territory ? { value: territory, label: territory } : null}
+                                            onChange={(e) => setTerritory(e?.value || '')}
+                                            options={[{ value: '', label: "Select a Territory" }, ...uniqueTerritory.map(t => ({ value: t, label: t }))]}
+                                            placeholder="Search or Select a Territory"
+                                            isClearable
+                                            isSearchable
+                                        />
+                                    </div>
 
-                                    return (
-                                        <option key={key} value={key}>
-                                            {p.name} - {p.netWeight}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                        </div>
+                                    {/* Area Filter */}
+                                    <div className='col-span-1 md:col-span-2'>
+                                        <label className="block font-semibold text-gray-700 mb-1">Area</label>
+                                        <Select
+                                            value={parentTerritory ? { value: parentTerritory, label: parentTerritory } : null}
+                                            onChange={(e) => setParentTerritory(e?.value || '')}
+                                            options={[{ value: '', label: "Select an Area" }, ...uniqueParentTerritory.map(pt => ({ value: pt, label: pt }))]}
+                                            placeholder="Search or Select an Area"
+                                            isClearable
+                                            isSearchable
+                                        />
+                                    </div>
 
-                        {/* Territory Filter */}
-                        <div className='col-span-1 md:col-span-2'>
-                            <label className="block font-semibold text-gray-700 mb-1">Territory</label>
-                            <select
-                                value={territory}
-                                onChange={(e) => setTerritory(e.target.value)}
-                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
-                            >
-                                <option value="">Select a territory</option>
-                                {uniqueTerritory.map((territory) => (
-                                    <option key={territory} value={territory}>
-                                        {territory}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                                    {/* Clear Filters Button */}
+                                    <button
+                                        onClick={clearFilters}
+                                        className="col-span-1 md:col-span-2 mt-4 bg-blue-500 text-white rounded-lg px-4 py-2 shadow-sm hover:bg-blue-600 transition-colors"
+                                    >
+                                        Clear Filters
+                                    </button>
+                                </div>
 
-                        {/* Area Filter */}
-                        <div className='col-span-1 md:col-span-2'>
-                            <label className="block font-semibold text-gray-700 mb-1">Area</label>
-                            <select
-                                value={parentTerritory}
-                                onChange={(e) => setParentTerritory(e.target.value)}
-                                className="border border-gray-300 rounded-lg w-full px-3 py-2 focus:outline-none bg-white shadow-sm cursor-pointer"
-                            >
-                                <option value="">Select a Parent Territory</option>
-                                {uniqueParentTerritory.map((pt) => (
-                                    <option key={pt} value={pt}>
-                                        {pt}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                                {/* button section */}
+                                <div className="w-full flex flex-col gap-4 px-6 mt-4">
+                                    {/* print pdf button */}
+                                    <button
+                                        onClick={handlePrint}
+                                        className="bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:scale-105 transition-all"
+                                    >
+                                        <span className='flex justify-center items-center'>
+                                            <FaFilePdf className='mr-2' /> Print PDF
+                                        </span>
+                                    </button>
 
-                        {/* Clear Filters Button */}
-                        <button
-                            onClick={clearFilters}
-                            className="col-span-1 md:col-span-2 mt-4 bg-blue-500 text-white rounded-lg px-4 py-2 shadow-sm hover:bg-blue-600 transition-colors"
-                        >
-                            Clear Filters
-                        </button>
-                    </div>
-
-                    {/* button section */}
-                    <div className="w-full flex flex-col gap-4 px-6 mt-4">
-                        {/* print pdf button */}
-                        <button
-                            onClick={handlePrint}
-                            className="bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:scale-105 transition-all"
-                        >
-                            <span className='flex justify-center items-center'>
-                                <FaFilePdf className='mr-2' /> Print PDF
-                            </span>
-                        </button>
-
-                        {/* download excel file button */}
-                        <button
-                            onClick={handleDownloadExcel}
-                            className="bg-gradient-to-r from-red-500 to-red-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:scale-105 transition-all"
-                        >
-                            <span className='flex justify-center items-center'>
-                                <FaFileExcel className='mr-2' /> Download Excel
-                            </span>
-                        </button>
-                    </div>
-                </div >
+                                    {/* download excel file button */}
+                                    <button
+                                        onClick={handleDownloadExcel}
+                                        className="bg-gradient-to-r from-red-500 to-red-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:scale-105 transition-all"
+                                    >
+                                        <span className='flex justify-center items-center'>
+                                            <FaFileExcel className='mr-2' /> Download Excel
+                                        </span>
+                                    </button>
+                                </div>
+                            </div >
+                        </>
+                }
             </div >
         </>
     );
