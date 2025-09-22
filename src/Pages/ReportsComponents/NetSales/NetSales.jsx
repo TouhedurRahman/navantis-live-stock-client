@@ -49,13 +49,18 @@ const NetSales = () => {
     const orderReturns = useMemo(() => {
         return returns.filter(ret => {
             const returnDate = new Date(ret.date);
+            const matchesYear = year ? returnDate.getFullYear() === parseInt(year) : true;
+            const matchesMonth = month ? returnDate.getMonth() + 1 === parseInt(month) : true;
             const matchesDateRange = fromDate && toDate
                 ? returnDate >= new Date(fromDate) && returnDate <= new Date(toDate)
                 : true;
+            const matchesTerritory = territory ? ret.territory?.toLowerCase().includes(territory.toLowerCase()) : true;
+            const matchesAreaManager = areaManager ? ret.areaManager?.toLowerCase().includes(areaManager.toLowerCase()) : true;
+            const matchesCustomer = customer ? ret.pharmacyId?.toLowerCase().includes(customer.toLowerCase()) : true;
 
-            return matchesDateRange;
+            return matchesYear && matchesMonth && matchesDateRange && matchesTerritory && matchesAreaManager && matchesCustomer;
         })
-    }, [returns, fromDate, toDate]);
+    }, [returns, year, month, fromDate, toDate, territory, areaManager, customer]);
 
     const findDateRange = (orders, returns) => {
         const allDates = [
