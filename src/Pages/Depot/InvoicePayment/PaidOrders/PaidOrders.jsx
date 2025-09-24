@@ -123,7 +123,7 @@ const PaidOrders = () => {
 
                                         {/* Pagination */}
                                         {
-                                            totalPages > 1 && (
+                                            totalPages > 0 && (
                                                 <div className="flex justify-center items-center gap-1 mt-4 flex-wrap">
                                                     {/* Prev */}
                                                     <button
