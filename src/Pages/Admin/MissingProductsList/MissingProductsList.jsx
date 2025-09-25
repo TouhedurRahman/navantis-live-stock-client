@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs';
+import { BsArrowLeftSquareFill, BsArrowRightSquareFill } from "react-icons/bs";
 import { ImSearch } from 'react-icons/im';
 import { MdPrint } from 'react-icons/md';
 import Loader from "../../../Components/Loader/Loader";
@@ -443,41 +443,71 @@ const MissingProductsList = () => {
                                     </table>
                                 </div>
 
-                                {/* Pagination Controls */}
-                                <div className="flex justify-center items-center mb-10">
-                                    <div
-                                        className={`mx-1 px-3 py-1 rounded-lg flex justify-center items-center ${currentPage === 1 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
-                                        onClick={currentPage !== 1 ? () => changePage(currentPage - 1) : null}
-                                        aria-disabled={currentPage === 1}
-                                    >
-                                        <span className='flex justify-between items-center text-black'>
-                                            <BsArrowLeftCircleFill className='h-6 w-6' />
-                                        </span>
-                                    </div>
-                                    <div className='flex justify-center items-center'>
-                                        {
-                                            Array.from({ length: totalPages }, (_, index) => (
-                                                <button
-                                                    key={index}
-                                                    className={`mx-1 flex justify-center items-center w-6 h-6 border border-black rounded-full ${currentPage === index + 1 ? 'bg-[#3B82F6] text-white font-mono font-extrabold border-2 border-green-900' : ''
-                                                        }`}
-                                                    onClick={() => changePage(index + 1)}
-                                                >
-                                                    {index + 1}
-                                                </button>
-                                            ))
-                                        }
-                                    </div>
-                                    <div
-                                        className={`mx-1 px-3 py-1 rounded-[4px] flex justify-center items-center ${currentPage === totalPages ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
-                                        onClick={currentPage !== totalPages ? () => changePage(currentPage + 1) : null}
-                                        aria-disabled={currentPage === totalPages}
-                                    >
-                                        <span className='flex justify-between items-center text-black'>
-                                            <BsArrowRightCircleFill className='h-6 w-6' />
-                                        </span>
-                                    </div>
-                                </div>
+                                {/* Pagination */}
+                                {
+                                    totalPages > 0 && (
+                                        <div className="flex justify-center items-center gap-1 mt-4 flex-wrap">
+                                            {/* Prev */}
+                                            <button
+                                                disabled={currentPage === 1}
+                                                onClick={() => changePage(currentPage - 1)}
+                                                className="disabled:opacity-50 hover:text-blue-700 transition-all"
+                                            >
+                                                <BsArrowLeftSquareFill className='w-6 h-6' />
+                                            </button>
+
+                                            {/* Pages with dots */}
+                                            {
+                                                Array.from({ length: totalPages }, (_, i) => i + 1)
+                                                    .filter(page =>
+                                                        page === 1 ||
+                                                        page === totalPages ||
+                                                        Math.abs(currentPage - page) <= 1
+                                                    )
+                                                    .reduce((acc, page, index, array) => {
+                                                        if (index > 0 && page - array[index - 1] > 1) {
+                                                            acc.push('...');
+                                                        }
+                                                        acc.push(page);
+                                                        return acc;
+                                                    }, [])
+                                                    .map((page, index) => (
+                                                        <button
+                                                            key={index}
+                                                            disabled={page === '...'}
+                                                            onClick={() => page !== '...' && changePage(page)}
+                                                            className={`
+                                                                    mx-1 
+                                                                    h-6 
+                                                                    flex items-center justify-center 
+                                                                    text-xs font-bold border
+                                                                    ${currentPage === page
+                                                                    ? 'bg-[#3B82F6] text-white border-green-900'
+                                                                    : 'border-gray-400 hover:bg-blue-100'
+                                                                }
+                                                                ${page === '...'
+                                                                    ? 'cursor-default text-gray-500 border-none'
+                                                                    : ''
+                                                                }
+                                                                ${String(page).length === 1 ? 'w-6 px-2 rounded-md' : 'px-2 rounded-md'}
+                                                            `}
+                                                        >
+                                                            {page}
+                                                        </button>
+                                                    ))
+                                            }
+
+                                            {/* Next */}
+                                            <button
+                                                disabled={currentPage === totalPages}
+                                                onClick={() => changePage(currentPage + 1)}
+                                                className="disabled:opacity-50 hover:text-blue-700 transition-all"
+                                            >
+                                                <BsArrowRightSquareFill className='w-6 h-6' />
+                                            </button>
+                                        </div>
+                                    )
+                                }
                             </div>
                         </>
                 }
