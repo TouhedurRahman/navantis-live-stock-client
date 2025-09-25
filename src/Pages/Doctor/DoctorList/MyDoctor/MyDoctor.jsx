@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AiFillPrinter } from "react-icons/ai";
-import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from "react-icons/bs";
+import { BsArrowLeftSquareFill, BsArrowRightSquareFill } from "react-icons/bs";
 import { ImSearch } from "react-icons/im";
 import { useLocation, useNavigate } from "react-router-dom";
 import useApiConfig from "../../../../Hooks/useApiConfig";
@@ -322,15 +322,15 @@ const MyDoctor = () => {
 
                                                     {/* Pagination */}
                                                     {
-                                                        totalPages > 1 && (
-                                                            <div className="flex justify-center items-center gap-2 mt-4 flex-wrap">
+                                                        totalPages > 0 && (
+                                                            <div className="flex justify-center items-center gap-1 mt-4 flex-wrap">
                                                                 {/* Prev */}
                                                                 <button
                                                                     disabled={currentPage === 1}
                                                                     onClick={() => changePage(currentPage - 1)}
                                                                     className="disabled:opacity-50 hover:text-blue-700 transition-all"
                                                                 >
-                                                                    <BsArrowLeftCircleFill className='h-6 w-6' />
+                                                                    <BsArrowLeftSquareFill className='w-6 h-6' />
                                                                 </button>
 
                                                                 {/* Pages with dots */}
@@ -354,8 +354,20 @@ const MyDoctor = () => {
                                                                                 disabled={page === '...'}
                                                                                 onClick={() => page !== '...' && changePage(page)}
                                                                                 className={`
-                                                                                mx-1 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border ${currentPage === page ? 'bg-[#3B82F6] text-white border-green-900' : 'border-gray-400 hover:bg-blue-100'} ${page === '...' ? 'cursor-default text-gray-500 border-none' : ''}
-                                                                            `}
+                                                                                    mx-1 
+                                                                                    h-6 
+                                                                                    flex items-center justify-center 
+                                                                                    text-xs font-bold border
+                                                                                    ${currentPage === page
+                                                                                        ? 'bg-[#3B82F6] text-white border-green-900'
+                                                                                        : 'border-gray-400 hover:bg-blue-100'
+                                                                                    }
+                                                                                    ${page === '...'
+                                                                                        ? 'cursor-default text-gray-500 border-none'
+                                                                                        : ''
+                                                                                    }
+                                                                                    ${String(page).length === 1 ? 'w-6 px-2 rounded-md' : 'px-2 rounded-md'}
+                                                                                `}
                                                                             >
                                                                                 {page}
                                                                             </button>
@@ -368,7 +380,7 @@ const MyDoctor = () => {
                                                                     onClick={() => changePage(currentPage + 1)}
                                                                     className="disabled:opacity-50 hover:text-blue-700 transition-all"
                                                                 >
-                                                                    <BsArrowRightCircleFill className='h-6 w-6' />
+                                                                    <BsArrowRightSquareFill className='w-6 h-6' />
                                                                 </button>
                                                             </div>
                                                         )
