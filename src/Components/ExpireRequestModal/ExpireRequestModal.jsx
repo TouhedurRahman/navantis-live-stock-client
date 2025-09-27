@@ -1,8 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from "react-hook-form";
 import { FaTimes } from 'react-icons/fa';
+import Select from "react-select";
 import Swal from 'sweetalert2';
 import useApiConfig from '../../Hooks/useApiConfig';
 import useCustomer from '../../Hooks/useCustomer';
@@ -19,6 +20,7 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
         handleSubmit,
         reset,
         watch,
+        control,
         formState: { errors },
     } = useForm();
 
@@ -310,42 +312,84 @@ const ExpireRequestModal = ({ isOpen, onClose }) => {
                                 </div>
                             </div>
 
+                            {/* Returned By */}
                             <div>
                                 <label className="block mb-1 font-semibold">
-                                    Rerturn By <span className="text-red-500">*</span>
+                                    Returned By <span className="text-red-500">*</span>
                                 </label>
-                                <select
-                                    {...register('returnedBy', { required: 'Ordered by is required' })}
-                                    onChange={handleOrderedByChange}
-                                    className="w-full px-3 py-2 border"
-                                >
-                                    <option value="">Select an ordered by</option>
-                                    {orderedByList.map(name => (
-                                        <option key={name} value={name}>
-                                            {name}
-                                        </option>
-                                    ))}
-                                </select>
-                                {errors.orderedBy && <p className="text-red-500 text-sm">{errors.orderedBy.message}</p>}
+                                <Controller
+                                    name="returnedBy"
+                                    control={control}
+                                    rules={{ required: "Returned by is required" }}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            value={field.value ? { value: field.value, label: field.value } : null}
+                                            onChange={(selected) => {
+                                                field.onChange(selected?.value || "");
+                                                handleOrderedByChange({ target: { value: selected?.value || "" } });
+                                            }}
+                                            options={orderedByList.map((name) => ({
+                                                value: name,
+                                                label: name,
+                                            }))}
+                                            placeholder="Search or Select a person"
+                                            isClearable
+                                            isSearchable
+                                        />
+                                    )}
+                                />
+                                {errors.returnedBy && (
+                                    <p className="text-red-500 text-sm">{errors.returnedBy.message}</p>
+                                )}
                             </div>
 
+                            {/* Pharmacy */}
                             <div>
                                 <label className="block mb-1 font-semibold">
-                                    Pharmacy <span className="text-red-500">*</span>
+                                    Customer <span className="text-red-500">*</span>
                                 </label>
-                                <select
-                                    {...register('pharmacy', { required: 'Pharmacy is required' })}
-                                    className="w-full px-3 py-2 border"
-                                >
-                                    <option value="">Select a pharmacy</option>
-                                    {filteredPharmacies.map(pharmacy => (
-                                        <option key={pharmacy._id} value={pharmacy._id}>
-                                            {pharmacy.name} - {pharmacy.customerId}
-                                        </option>
-                                    ))}
-                                </select>
-                                {errors.orderedBy && <p className="text-red-500 text-sm">{errors.orderedBy.message}</p>}
+                                <Controller
+                                    name="pharmacy"
+                                    control={control}
+                                    rules={{ required: "Pharmacy is required" }}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            value={
+                                                filteredPharmacies.find((p) => p._id === field.value)
+                                                    ? {
+                                                        value: field.value,
+                                                        label: `${filteredPharmacies.find((p) => p._id === field.value)?.name} - ${filteredPharmacies.find((p) => p._id === field.value)?.customerId
+                                                            }`,
+                                                    }
+                                                    : null
+                                            }
+                                            onChange={(selected) => field.onChange(selected?.value || "")}
+                                            options={filteredPharmacies.map((pharmacy) => ({
+                                                value: pharmacy._id,
+                                                label: `${pharmacy.name} - ${pharmacy.customerId}`,
+                                                address: pharmacy.address,
+                                            }))}
+                                            placeholder="Search or Select a pharmacy"
+                                            isClearable
+                                            isSearchable
+                                            formatOptionLabel={(option) => (
+                                                <div>
+                                                    <div className="font-medium">{option.label}</div>
+                                                    {option.address && (
+                                                        <div className="text-gray-500 text-sm">{option.address}</div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        />
+                                    )}
+                                />
+                                {errors.pharmacy && (
+                                    <p className="text-red-500 text-sm">{errors.pharmacy.message}</p>
+                                )}
                             </div>
+
                             <div className='hidden'>
                                 <div>
                                     <label className="block mb-1 font-semibold">Area Manager</label>
