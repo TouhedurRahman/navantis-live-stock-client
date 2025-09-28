@@ -82,15 +82,20 @@ const DepotProductsList = () => {
                 />
             </div>
             <div className="bg-white pb-1">
-                <div>
-                    <div className="flex justify-between items-center">
-                        <h1 className="px-6 py-3 font-bold">Depot products list</h1>
-                        <div className="px-6 space-x-3">
+                <div className="w-full">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
+                        {/* Title */}
+                        <h1 className="px-4 md:px-6 py-3 font-bold text-center md:text-left">
+                            Depot products list
+                        </h1>
+
+                        {/* Buttons */}
+                        <div className="flex flex-col sm:flex-col md:flex-row justify-center md:justify-end items-center gap-3 px-4 md:px-6 pb-3 md:pb-0 w-full md:w-auto">
                             {/* depot Request */}
                             <button
                                 onClick={() => setRequestModalOpen(true)}
                                 title="Request product from warehouse"
-                                className="text-white font-bold py-2 px-6 transition-all transform shadow-md focus:outline-none bg-indigo-500 hover:bg-indigo-700 hover:scale-105 hover:shadow-lg rounded-sm"
+                                className="w-full md:w-auto text-white font-bold py-2 px-6 transition-all transform shadow-md focus:outline-none bg-indigo-500 hover:bg-indigo-700 hover:scale-105 hover:shadow-lg rounded-sm"
                             >
                                 Request Products
                             </button>
@@ -99,7 +104,7 @@ const DepotProductsList = () => {
                             <button
                                 onClick={() => setReturnModalOpen(true)}
                                 title="Return products"
-                                className="text-white font-bold py-2 px-6 transition-all transform shadow-md focus:outline-none bg-amber-500 hover:bg-amber-700 hover:scale-105 hover:shadow-lg rounded-sm"
+                                className="w-full md:w-auto text-white font-bold py-2 px-6 transition-all transform shadow-md focus:outline-none bg-amber-500 hover:bg-amber-700 hover:scale-105 hover:shadow-lg rounded-sm"
                             >
                                 Return Product
                             </button>
@@ -108,7 +113,7 @@ const DepotProductsList = () => {
                             <button
                                 onClick={() => setExpireRequestModalOpen(true)}
                                 title="Return expire products"
-                                className="text-white font-bold py-2 px-6 transition-all transform shadow-md focus:outline-none bg-red-500 hover:bg-red-700 hover:scale-105 hover:shadow-lg rounded-sm"
+                                className="w-full md:w-auto text-white font-bold py-2 px-6 transition-all transform shadow-md focus:outline-none bg-red-500 hover:bg-red-700 hover:scale-105 hover:shadow-lg rounded-sm"
                             >
                                 Expire Return
                             </button>
