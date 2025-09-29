@@ -3,6 +3,7 @@ import { FaFileExcel, FaFilePdf } from "react-icons/fa6";
 import Select from "react-select";
 import Loader from "../../../../Components/Loader/Loader";
 import PageTitle from "../../../../Components/PageTitle/PageTitle";
+import useAllUsers from "../../../../Hooks/useAllUsers";
 import useOrders from "../../../../Hooks/useOrders";
 import useSingleUser from "../../../../Hooks/useSingleUser";
 import ProductWiseAchievementsExcel from "../ProductWiseAchievementsExcel/ProductWiseAchievementsExcel";
@@ -11,12 +12,24 @@ import ProductWiseAchievementsReport from "../ProductWiseAchievementsReport/Prod
 const ProductWiseAchievements = () => {
     const [singleUser] = useSingleUser();
     const [orders, ordersLoading] = useOrders();
+    const [users] = useAllUsers();
 
     const [fromDate, setFromDate] = useState('');
     const [toDate, setToDate] = useState('');
     const [productKey, setProductKey] = useState('');
     const [territory, setTerritory] = useState('');
     const [parentTerritory, setParentTerritory] = useState('');
+
+    const territories = useMemo(() => {
+        if (!singleUser || !users) return [];
+
+        let t = singleUser?.territory ? [singleUser.territory] : [];
+
+        const childUsers = users.filter(u => u.parentId === singleUser._id);
+        const childTerritories = childUsers.map(u => u.territory);
+
+        return [...new Set([...t, ...childTerritories])];
+    }, [singleUser, users]);
 
     // const deliveredOrders = orders.filter(order => order.status !== 'pending');
     const deliveredOrders = orders.filter(order => {
@@ -27,10 +40,7 @@ const ProductWiseAchievements = () => {
                 order.status !== "pending" &&
                 (
                     order.territory === singleUser?.territory ||
-                    order.parentTerritory === singleUser?.territory ||
-                    order.email === singleUser?.email ||
-                    order.amEmail === singleUser?.email ||
-                    order.zmEmail === singleUser?.email
+                    territories.includes(order.territory)
                 )
             );
         }
