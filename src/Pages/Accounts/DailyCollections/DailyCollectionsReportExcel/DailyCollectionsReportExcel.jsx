@@ -160,7 +160,16 @@ const DailyCollectionsReportExcel = ({ reportType, filteredOrders = [], firstDat
 
                         return `
                             <div style="margin-bottom: 20px;">
-                                <p style="margin: 5px 0; font-weight: bold; font-size: 12px;">MPO/SCC/ASE: ${mpoName} | Territory: ${mpoTerritory}</p>
+                            ${!["Doctor"].includes(mpoTerritory)
+                                ? mpoTerritory === "Institute"
+                                    ? `<p style="margin: 5px 0; font-weight: bold; font-size: 12px;">
+                                                Institute: ${mpoName}
+                                        </p>`
+                                    : `<p style="margin: 5px 0; font-weight: bold; font-size: 12px;">
+                                                MPO/SCC/ASE: ${mpoName} | Territory: ${mpoTerritory}
+                                        </p>`
+                                : ""
+                            }
                                 <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
                                     <thead>
                                         <tr>
