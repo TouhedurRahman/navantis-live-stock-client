@@ -108,7 +108,7 @@ const useMenuConfig = () => {
         order: {
             icon: <MdOutlineShoppingBag className="mr-2" />,
             links: [
-                !['Sr. Area Manager', 'Area Manager'].includes(singleUser?.designation) &&
+                !['Zonal Manager', 'Sr. Area Manager', 'Area Manager'].includes(singleUser?.designation) &&
                 { to: '/place-order', icon: <FaCartPlus className='me-2' />, label: 'Place Order' },
                 { to: '/my-order', icon: <FaCartPlus className='me-2' />, label: 'My Order' },
             ],
@@ -146,7 +146,9 @@ const useMenuConfig = () => {
             icon: <TbReportSearch className="mr-2" />,
             links: [
                 { to: '/my-product-summary', icon: <TbReportAnalytics className='me-2' />, label: 'Product Summary' },
+                !['Zonal Manager', 'Sr. Area Manager', 'Area Manager'].includes(singleUser?.designation) &&
                 { to: '/my-territory-achievements', icon: <TbReportAnalytics className='me-2' />, label: 'Target, Sales Acievement & Growth' },
+                !['Zonal Manager', 'Sr. Area Manager', 'Area Manager'].includes(singleUser?.designation) &&
                 { to: '/my-product-achievements', icon: <TbReportAnalytics className='me-2' />, label: 'Product wise Target VS Sales' },
             ],
         },
