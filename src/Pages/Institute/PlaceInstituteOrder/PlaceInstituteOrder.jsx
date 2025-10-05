@@ -108,7 +108,7 @@ const PlaceInstituteOrder = () => {
 
         const newOrder = {
             email: "info@navantispharma.com",
-            orderedBy: data.name,
+            orderedBy: selectedPharmacy?.name,
             areaManager: "Institute",
             amEmail: null,
             zonalManager: "Institute",
