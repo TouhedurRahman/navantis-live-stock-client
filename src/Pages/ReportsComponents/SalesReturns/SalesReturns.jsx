@@ -3,12 +3,16 @@ import { FaFileExcel, FaFilePdf } from "react-icons/fa6";
 import Select from "react-select";
 import Loader from "../../../Components/Loader/Loader";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
+import useAllUsers from "../../../Hooks/useAllUsers";
 import useCustomer from "../../../Hooks/useCustomer";
 import useReturns from "../../../Hooks/useReturns";
+import useSingleUser from "../../../Hooks/useSingleUser";
 import SalesReturnsReport from "../../../Reports/SalesReturnsReport";
 import SalesReturnsReportExcel from "../../../Reports/SalesReturnsReportExcel";
 
 const SalesReturns = () => {
+    const [singleUser] = useSingleUser();
+    const [users] = useAllUsers();
     const [salesReturns, returnsLoading] = useReturns();
     const [customers] = useCustomer();
 
@@ -26,8 +30,34 @@ const SalesReturns = () => {
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: currentYear - 1999 }, (_, i) => currentYear - i);
 
+    const territories = useMemo(() => {
+        if (!singleUser || !users) return [];
+
+        let t = singleUser?.territory ? [singleUser.territory] : [];
+
+        const childUsers = users.filter(u => u.parentId === singleUser._id);
+        const childTerritories = childUsers.map(u => u.territory);
+
+        return [...new Set([...t, ...childTerritories])];
+    }, [singleUser, users]);
+
+    const usersSalesReturns = salesReturns.filter(salesRet => {
+        if (singleUser?.base !== "Field" && singleUser?.designation !== "Zonal Manager") {
+            return true;
+        } else if (singleUser?.designation === "Zonal Manager") {
+            return (
+                !["Doctor", "Institute"].includes(salesRet?.territory)
+            )
+        } else {
+            return (
+                salesRet.territory === singleUser?.territory ||
+                territories.includes(salesRet.territory)
+            );
+        }
+    });
+
     const filteredReturns = useMemo(() => {
-        return salesReturns
+        return usersSalesReturns
             .map(salesReturn => {
                 const orderDate = new Date(salesReturn.date);
                 const matchesYear = year ? orderDate.getFullYear() === parseInt(year) : true;
@@ -62,7 +92,7 @@ const SalesReturns = () => {
                 };
             })
             .filter(Boolean);
-    }, [salesReturns, year, month, fromDate, toDate, productKey, territory, orderedBy, areaManager, customer]);
+    }, [usersSalesReturns, year, month, fromDate, toDate, productKey, territory, orderedBy, areaManager, customer]);
 
     const findDateRange = (returns) => {
         if (!returns.length) return { firstDate: null, lastDate: null };
