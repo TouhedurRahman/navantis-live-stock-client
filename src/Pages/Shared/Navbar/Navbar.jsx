@@ -112,18 +112,22 @@ const Navbar = () => {
                                 className={`pl-4 mt-1 overflow-hidden transition-all duration-300 ease-in-out
                       ${showDropdown[menu] && isSidebarOpen ? 'opacity-100' : 'max-h-0 opacity-0'}`}
                             >
-                                {links.map(({ to, icon, label }) => (
-                                    <Link to={to} key={to} className="block">
-                                        <div
-                                            className="flex items-center gap-3 px-4 py-1.5 rounded-md cursor-pointer 
-                            text-white hover:bg-yellow-400 hover:text-black 
-                            transition-all duration-300 transform hover:translate-x-1"
-                                        >
-                                            <span className="text-base">{icon}</span>
-                                            <span className="text-sm">{label}</span>
-                                        </div>
-                                    </Link>
-                                ))}
+                                {
+                                    links
+                                        .filter(Boolean)
+                                        .map(({ to, icon, label }) => (
+                                            <Link to={to} key={to} className="block">
+                                                <div
+                                                    className="flex items-center gap-3 px-4 py-1.5 rounded-md cursor-pointer 
+                                                    text-white hover:bg-yellow-400 hover:text-black 
+                                                    transition-all duration-300 transform hover:translate-x-1"
+                                                >
+                                                    <span className="text-base">{icon}</span>
+                                                    <span className="text-sm">{label}</span>
+                                                </div>
+                                            </Link>
+                                        ))
+                                }
                             </div>
                         </div>
                     ))}
