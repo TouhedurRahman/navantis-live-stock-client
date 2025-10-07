@@ -146,6 +146,13 @@ const useMenuConfig = () => {
             icon: <TbReportSearch className="mr-2" />,
             links: [
                 { to: '/my-product-summary', icon: <TbReportAnalytics className='me-2' />, label: 'Product Summary' },
+                ['Zonal Manager', 'Sr. Area Manager', 'Area Manager'].includes(singleUser?.designation) &&
+                { to: '/sales-returns', icon: <TbReportAnalytics className='me-2' />, label: 'Sales Returns' },
+                { to: '/due-payments', icon: <TbReportAnalytics className='me-2' />, label: 'Due Payments' },
+                ['Zonal Manager', 'Sr. Area Manager', 'Area Manager'].includes(singleUser?.designation) &&
+                { to: '/mpo-statement', icon: <TbReportAnalytics className='me-2' />, label: 'MPO Statement' },
+                ['Zonal Manager', 'Sr. Area Manager', 'Area Manager'].includes(singleUser?.designation) &&
+                { to: '/inv-sales-summary', icon: <TbReportAnalytics className='me-2' />, label: 'Inv. Sales Summary' },
                 !['Zonal Manager', 'Sr. Area Manager', 'Area Manager'].includes(singleUser?.designation) &&
                 { to: '/my-territory-achievements', icon: <TbReportAnalytics className='me-2' />, label: 'Target, Sales Acievement & Growth' },
                 !['Zonal Manager', 'Sr. Area Manager', 'Area Manager'].includes(singleUser?.designation) &&

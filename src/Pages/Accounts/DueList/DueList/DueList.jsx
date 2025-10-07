@@ -3,12 +3,16 @@ import { FaFileExcel, FaFilePdf } from "react-icons/fa6";
 import Select from "react-select";
 import Loader from "../../../../Components/Loader/Loader";
 import PageTitle from "../../../../Components/PageTitle/PageTitle";
+import useAllUsers from "../../../../Hooks/useAllUsers";
 import useCustomer from "../../../../Hooks/useCustomer";
 import useOrders from "../../../../Hooks/useOrders";
+import useSingleUser from "../../../../Hooks/useSingleUser";
 import DueListReport from "../DueListReport/DueListReport";
 import DueListReportExcel from "../DueListReportExcel/DueListReportExcel";
 
 const DueList = () => {
+    const [singleUser] = useSingleUser();
+    const [users] = useAllUsers();
     const [orders, ordersLoading] = useOrders();
     const [customers] = useCustomer();
 
@@ -22,7 +26,36 @@ const DueList = () => {
     const [customer, setCustomer] = useState('');
     const [reportType, setReportType] = useState('Due Payments');
 
-    const deliveredOrders = orders.filter(order => order.status !== 'pending');
+    const territories = useMemo(() => {
+        if (!singleUser || !users) return [];
+
+        let t = singleUser?.territory ? [singleUser.territory] : [];
+
+        const childUsers = users.filter(u => u.parentId === singleUser._id);
+        const childTerritories = childUsers.map(u => u.territory);
+
+        return [...new Set([...t, ...childTerritories])];
+    }, [singleUser, users]);
+
+    // const deliveredOrders = orders.filter(order => order.status !== 'pending');
+    const deliveredOrders = orders.filter(order => {
+        if (singleUser?.base !== "Field" && singleUser?.designation !== "Zonal Manager") {
+            return order.status !== "pending";
+        } else if (singleUser?.designation === "Zonal Manager") {
+            return (
+                order.status !== "pending" &&
+                !["Doctor", "Institute"].includes(order?.territory)
+            )
+        } else {
+            return (
+                order.status !== "pending" &&
+                (
+                    order.territory === singleUser?.territory ||
+                    territories.includes(order.territory)
+                )
+            );
+        }
+    });
 
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: currentYear - 1999 }, (_, i) => currentYear - i);
