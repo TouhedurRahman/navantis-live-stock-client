@@ -96,7 +96,7 @@ const TerritoryWiseAchievementsReport = ({
                     const salesLastYear = calculateUnits(territoryName, twelveMosAgoOrders);
                     const salesLastDay = calculateUnits(territoryName, todayOrders);
 
-                    if (
+                    /* if (
                         salesCurrent === 0 &&
                         salesPrev === 0 &&
                         salesPrevTwoMos === 0 &&
@@ -104,7 +104,7 @@ const TerritoryWiseAchievementsReport = ({
                     ) {
                         delete grouped[parent][manager][territoryName];
                         return;
-                    }
+                    } */
 
                     const achievementCurrent = totalTarget ? (salesCurrent / totalTarget) * 100 : 0;
                     const achievementPrev = totalTarget ? (salesPrev / totalTarget) * 100 : 0;
