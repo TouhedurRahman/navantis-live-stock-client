@@ -48,7 +48,8 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
     const hasGrandParent = customer.grandParentId !== undefined && customer.grandParentId !== null;
 
     const statusType =
-        JSON.stringify(customer.payMode) === JSON.stringify(["Cash", "STC"]) ||
+        JSON.stringify(customer.payMode) === JSON.stringify(["Cash"]) ||
+            JSON.stringify(customer.payMode) === JSON.stringify(["Cash", "STC"]) ||
             JSON.stringify(customer.payMode) === JSON.stringify(["Credit"]) ||
             JSON.stringify(customer.payMode) === JSON.stringify(["SpIC"])
             ? customer.status === "pending"
