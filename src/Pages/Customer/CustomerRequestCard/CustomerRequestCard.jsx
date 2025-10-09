@@ -251,7 +251,7 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
                                                     { label: "Name", value: customer.name },
                                                     { label: "Area", value: customer.parentTerritory },
                                                     { label: "Territory", value: customer.territory },
-                                                    { label: "Market Point", value: customer.marketPoint },
+                                                    { label: "Market Point", value: customer.marketPoint || "N/A" },
                                                     { label: "Address", value: customer.address },
                                                     { label: "Trade License", value: customer.tradeLicense || "N/A" },
                                                     { label: "Drug License", value: customer.drugLicense || "N/A" },
