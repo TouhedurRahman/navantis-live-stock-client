@@ -6,13 +6,27 @@ import { FaEye, FaTimes } from "react-icons/fa";
 import Swal from "sweetalert2";
 import useApiConfig from "../../../Hooks/useApiConfig";
 import useAuth from "../../../Hooks/useAuth";
+import useOrders from "../../../Hooks/useOrders";
 import useSingleUser from "../../../Hooks/useSingleUser";
 
 const CustomerRequestCard = ({ idx, customer, refetch }) => {
     const { user } = useAuth();
+    const [orders] = useOrders();
     const baseUrl = useApiConfig();
     const [singleUser] = useSingleUser();
     const [isModalOpen, setModalOpen] = useState(false);
+
+    const customerTotalSales = orders.filter(
+        order =>
+            order.pharmacyId === customer.customerId &&
+            !["pending", "returned"].includes(order.status)
+    );
+
+    const customerTotalInvoices = customerTotalSales.length;
+    const customerTotalUnits = customerTotalSales.reduce(
+        (sum, order) => sum + (order.totalUnit || 0),
+        0
+    );
 
     /* const statusType = JSON.stringify(customer.payMode) === JSON.stringify(["Cash", "STC"])
         ? customer.status === "pending"
@@ -206,7 +220,7 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
                                                     Total Invoices
                                                 </h3>
                                                 <p className="text-xl font-bold mt-1 text-gray-900">
-                                                    {customer.totalInvoices || 0}
+                                                    {customerTotalInvoices?.toLocaleString("en-IN") || 0}
                                                 </p>
                                             </div>
                                             <div className="text-gray-500">
@@ -221,7 +235,7 @@ const CustomerRequestCard = ({ idx, customer, refetch }) => {
                                                     Sales Unit
                                                 </h3>
                                                 <p className="text-xl font-bold mt-1 text-gray-900">
-                                                    {customer.salesUnit?.toLocaleString("en-IN") || 0}
+                                                    {customerTotalUnits?.toLocaleString("en-IN") || 0}
                                                 </p>
                                             </div>
                                             <div className="text-gray-500">
