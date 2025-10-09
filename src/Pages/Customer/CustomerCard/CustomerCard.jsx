@@ -38,7 +38,7 @@ const CustomerCard = ({ idx, customer, refetch }) => {
     const customerTotalSales = orders.filter(
         order =>
             order.pharmacyId === customer.customerId &&
-            !["pending", "returned"].includes(order.status)
+            !["pending"].includes(order.status)
     );
 
     const customerTotalInvoices = customerTotalSales.length;
