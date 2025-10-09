@@ -114,7 +114,7 @@ const OrderInvoiceCard = ({ idx, order, refetch }) => {
                     <div className="flex justify-center items-center space-x-4 text-md">
                         <button
                             onClick={() => setShowModal(true)}
-                            title="Assign Delivery Man and Print Invoice"
+                            title="Assign Delivery Man"
                             className="p-2 rounded-[5px] hover:bg-green-100 focus:outline-none"
                         >
                             <MdPrint className="text-green-500" />
