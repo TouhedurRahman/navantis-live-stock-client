@@ -40,10 +40,8 @@ const TerritoriesTarget = ({ territoriesList = [], loading, refetch }) => {
             {loading ? (
                 <Loader />
             ) : (
-                <div className="px-6">
-                    {/* === Controls: Search + Per Page === */}
+                <div>
                     <div className="mb-5 flex flex-col-reverse md:flex-row justify-center md:justify-between items-center">
-                        {/* Per page selector */}
                         <div className="mt-5 md:mt-0 flex items-center">
                             <label htmlFor="territoriesPerPage">Show</label>
                             <select
@@ -77,8 +75,6 @@ const TerritoriesTarget = ({ territoriesList = [], loading, refetch }) => {
                             </div>
                         </div>
                     </div>
-
-                    {/* === Table === */}
                     <div className="overflow-x-auto mb-3">
                         <table className="table w-full border-collapse">
                             <thead className="bg-gray-100">
