@@ -68,7 +68,7 @@ const AreasTarget = ({ territories = [], loading }) => {
         const productMap = {};
 
         area.products.forEach((p) => {
-            const key = `${p.productName}-${p.netWeight || ""}`;
+            const key = `${p.productName}-${p.netWeight}`;
             if (!productMap[key]) {
                 productMap[key] = {
                     productName: p.productName,
