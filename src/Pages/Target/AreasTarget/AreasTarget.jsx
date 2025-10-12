@@ -12,6 +12,8 @@ const AreasTarget = ({ territories = [], loading }) => {
     const [selectedProducts, setSelectedProducts] = useState([]);
     const [modalOpen, setModalOpen] = useState(false);
     const [modalTitle, setModalTitle] = useState("");
+    const [modalAm, setModalAm] = useState("");
+    const [modalZm, setModalZm] = useState("");
 
     const areaTerritories = useMemo(
         () => territories.filter(t => t.territory !== t.parentTerritory),
@@ -83,6 +85,8 @@ const AreasTarget = ({ territories = [], loading }) => {
 
         setSelectedProducts(Object.values(productMap));
         setModalTitle(area.parentTerritory);
+        setModalAm(area.areaManager);
+        setModalZm(area.zonalManager);
         setModalOpen(true);
     };
 
@@ -90,6 +94,8 @@ const AreasTarget = ({ territories = [], loading }) => {
         setModalOpen(false);
         setSelectedProducts([]);
         setModalTitle("");
+        setModalAm("");
+        setModalZm("");
     };
 
     return (
@@ -237,10 +243,13 @@ const AreasTarget = ({ territories = [], loading }) => {
                                                 <div className="flex-1 text-center">
                                                     <h2 className="leading-tight">
                                                         <span className="block text-[12px] uppercase tracking-wide text-gray-500 font-medium">
-                                                            Product Targets For
+                                                            Products Target For
                                                         </span>
                                                         <span className="block text-xl font-semibold text-gray-800 mt-1">
                                                             {modalTitle}
+                                                        </span>
+                                                        <span className="block text-sm text-gray-800 mt-1">
+                                                            <span className="font-semibold">Sr. AM/AM: </span>{modalAm} | <span className="font-semibold">ZM: </span>{modalZm}
                                                         </span>
                                                     </h2>
                                                     <p className="mt-1 text-sm text-gray-600 flex justify-center items-center gap-4">
