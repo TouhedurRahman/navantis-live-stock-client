@@ -40,44 +40,6 @@ const SetTarget = () => {
         }
     };
 
-    /* const fieldUsers = users?.filter(user => user.base === "Field") || [];
-
-    const managerDesignations = [
-        "Zonal Manager",
-        "Sr. Area Manager",
-        "Area Manager",
-    ];
-
-    const managers = fieldUsers.filter(user =>
-        managerDesignations.includes(user.designation)
-    );
-
-    const nonManagers = fieldUsers.filter(user =>
-        !managerDesignations.includes(user.designation)
-    );
-
-    const renderContent = () => {
-        switch (activeTab) {
-            case "non-managers":
-                return <FieldEmployees
-                    users={nonManagers}
-                    loading={loading}
-                    refetch={refetch}
-                    managerDesignations={managerDesignations}
-                />;
-            case "managers":
-                return <FieldEmployees
-                    users={managers}
-                    loading={loading}
-                    refetch={refetch}
-                    managerDesignations={managerDesignations}
-                    managers={managers}
-                />;
-            default:
-                return null;
-        }
-    }; */
-
     return (
         <>
             <div>
@@ -104,21 +66,6 @@ const SetTarget = () => {
                             </button>
                         ))}
                     </div>
-                    {/* <div className="flex flex-wrap justify-start items-center space-x-4">
-                        {[
-                            { label: "Non Managers", value: "non-managers", color: "bg-blue-500", hover: "hover:bg-blue-700" },
-                            { label: "Managers", value: "managers", color: "bg-red-500", hover: "hover:bg-red-700" }
-                        ].map((button) => (
-                            <button
-                                key={button.value}
-                                className={`text-white font-bold py-2 px-6 transition-all transform shadow-md focus:ring-4 focus:outline-none ${button.color} ${button.hover} ${activeTab === button.value ? "scale-105 shadow-lg ring-2 ring-gray-300 border-2 border-black rounded-sm" : ""
-                                    }`}
-                                onClick={() => setActiveTab(button.value)}
-                            >
-                                {button.label}
-                            </button>
-                        ))}
-                    </div> */}
                 </div>
 
                 <div className="p-6">

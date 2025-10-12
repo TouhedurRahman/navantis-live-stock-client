@@ -270,7 +270,7 @@ const AreasTarget = ({ territories = [], loading }) => {
                                             </div>
 
                                             {/* Products Table */}
-                                            <table className="w-full text-sm mt-4">
+                                            <table className="w-full text-sm mt-2">
                                                 <thead>
                                                     <tr className="border-b">
                                                         <th className="text-left py-1">Product Name</th>

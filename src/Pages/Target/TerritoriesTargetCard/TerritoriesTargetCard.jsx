@@ -136,7 +136,7 @@ const TerritoriesTargetCard = ({ idx, territory, refetch }) => {
                                 </svg>
                             </button>
                         </div>
-                        <table className="w-full text-sm">
+                        <table className="w-full text-sm mt-2">
                             <thead>
                                 <tr className="border-b">
                                     <th className="text-left py-1">Product Name</th>
