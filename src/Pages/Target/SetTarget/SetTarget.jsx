@@ -32,7 +32,7 @@ const SetTarget = () => {
                 />
             case "areas":
                 return <AreasTarget
-                    areasList={listOfAreas}
+                    territories={territories}
                     loading={loading}
                 />
             default:
