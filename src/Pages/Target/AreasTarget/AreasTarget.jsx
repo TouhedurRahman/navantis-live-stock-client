@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { BsArrowLeftSquareFill, BsArrowRightSquareFill } from "react-icons/bs";
-import { FaEye } from "react-icons/fa";
+import { FaBullseye, FaEye } from "react-icons/fa";
 import { ImSearch } from "react-icons/im";
 import Loader from "../../../Components/Loader/Loader";
 
@@ -72,11 +72,12 @@ const AreasTarget = ({ territories = [], loading }) => {
             if (!productMap[key]) {
                 productMap[key] = {
                     productName: p.productName,
+                    productCode: p.productCode,
                     netWeight: p.netWeight,
-                    total: p.targetQuantity || p.target || 0,
+                    total: p.targetQuantity || 0,
                 };
             } else {
-                productMap[key].total += p.targetQuantity || p.target || 0;
+                productMap[key].total += p.targetQuantity || 0;
             }
         });
 
@@ -226,32 +227,92 @@ const AreasTarget = ({ territories = [], loading }) => {
                                 </div>
                             )}
 
-                            {/* Modal rendering */}
-                            {modalOpen && (
-                                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                                    <div className="bg-white w-11/12 md:w-1/2 p-5 rounded-lg relative shadow-lg">
-                                        <button
-                                            onClick={closeModal}
-                                            className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 font-bold text-xl"
-                                        >
-                                            &times;
-                                        </button>
-                                        <h2 className="text-xl font-bold mb-3">Products for {modalTitle}</h2>
-                                        {selectedProducts.length > 0 ? (
-                                            <ul className="max-h-64 overflow-y-auto">
-                                                {selectedProducts.map((p, i) => (
-                                                    <li key={i} className="border-b py-1 flex justify-between">
-                                                        <span>{p.productName} {p.netWeight ? `(${p.netWeight})` : ""}</span>
-                                                        <span className="font-semibold">{p.total}</span>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        ) : (
-                                            <p>No products found.</p>
-                                        )}
+                            {/* Modal */}
+                            {
+                                modalOpen && (
+                                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                                        <div className="bg-white rounded-xl p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto shadow-lg">
+                                            {/* Modal Header */}
+                                            <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-6 py-4 rounded-t-xl">
+                                                <div className="flex-1 text-center">
+                                                    <h2 className="leading-tight">
+                                                        <span className="block text-[12px] uppercase tracking-wide text-gray-500 font-medium">
+                                                            Product Targets For
+                                                        </span>
+                                                        <span className="block text-xl font-semibold text-gray-800 mt-1">
+                                                            {modalTitle}
+                                                        </span>
+                                                    </h2>
+                                                    <p className="mt-1 text-sm text-gray-600 flex justify-center items-center gap-4">
+                                                        <span className="flex justify-center items-center gap-1">
+                                                            <FaBullseye className="text-yellow-600" />
+                                                            <span>
+                                                                <span className="font-medium">Total</span> {selectedProducts.reduce((sum, p) => sum + (p.total || 0), 0)}
+                                                            </span>
+                                                        </span>
+                                                    </p>
+                                                </div>
+                                                <button
+                                                    onClick={closeModal}
+                                                    className="text-gray-400 hover:text-red-500 transition duration-300 ease-in-out"
+                                                    aria-label="Close"
+                                                >
+                                                    <svg
+                                                        className="w-5 h-5"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="2"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+
+                                            {/* Products Table */}
+                                            <table className="w-full text-sm mt-4">
+                                                <thead>
+                                                    <tr className="border-b">
+                                                        <th className="text-left py-1">Product Name</th>
+                                                        <th className="text-left py-1 text-center">Net Weight</th>
+                                                        <th className="text-center py-1">Target Quantity</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {selectedProducts.length > 0 ? (
+                                                        selectedProducts.map((product, idx) => (
+                                                            <tr key={idx} className="border-t">
+                                                                <td className="text-left py-1">
+                                                                    <div className="font-semibold">{product.productName}</div>
+                                                                    <div className="text-gray-500 text-xs">{product.productCode}</div>
+                                                                </td>
+                                                                <td className="py-1 text-center">{product.netWeight}</td>
+                                                                <td className="py-1 text-center font-semibold">{product.total}</td>
+                                                            </tr>
+                                                        ))
+                                                    ) : (
+                                                        <tr>
+                                                            <td colSpan={3} className="text-center py-4 text-gray-500">
+                                                                No products found.
+                                                            </td>
+                                                        </tr>
+                                                    )}
+                                                </tbody>
+                                            </table>
+
+                                            {/* Modal Footer */}
+                                            <div className="mt-4 flex justify-center items-center gap-2">
+                                                <button
+                                                    onClick={closeModal}
+                                                    className="px-4 py-2 rounded bg-red-500 hover:bg-red-700 text-white font-bold"
+                                                >
+                                                    Close
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            )}
+                                )
+                            }
                         </div>
                     </>
             }
