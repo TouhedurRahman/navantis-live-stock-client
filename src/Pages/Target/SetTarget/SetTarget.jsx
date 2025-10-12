@@ -88,13 +88,13 @@ const SetTarget = () => {
 
                     {/* Target Summary */}
                     <div className="w-full md:w-96">
-                        <div className="flex flex-row items-center justify-between bg-gray-100 p-2 rounded-lg shadow-sm border border-gray-300">
+                        <div className="flex flex-col sm:flex-row items-center justify-between bg-gray-100 p-2 rounded-lg shadow-sm border border-gray-300 gap-3 sm:gap-0">
                             {/* Total Target */}
                             <div className="flex items-center space-x-3">
                                 <div className="bg-yellow-400 text-white p-2 rounded-full shadow flex items-center justify-center">
                                     <span className="text-sm">🎯</span>
                                 </div>
-                                <div className="text-center">
+                                <div className="text-center sm:text-left">
                                     <p className="text-xs text-gray-600 uppercase tracking-wide">Total Target</p>
                                     <p className="font-bold text-sm text-gray-800">
                                         {listOfTerritories.reduce((sum, t) => sum + (t.totalTarget || 0), 0)}
@@ -104,7 +104,9 @@ const SetTarget = () => {
 
                             {/* View Button */}
                             <div className="flex items-center space-x-3">
-                                <p className="text-xs text-center text-gray-600 uppercase tracking-wide">Product wise<br />Target</p>
+                                <p className="text-xs text-center text-gray-600 uppercase tracking-wide">
+                                    Product wise<br />Target
+                                </p>
                                 <button
                                     className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition-colors flex items-center justify-center"
                                     onClick={() => setModalOpen(true)}
