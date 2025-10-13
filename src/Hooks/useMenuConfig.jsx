@@ -118,6 +118,7 @@ const useMenuConfig = () => {
             links: [
                 { to: '/territory-achievements', icon: <TbReportAnalytics className='me-2' />, label: 'Target, Sales Acievement & Growth' },
                 { to: '/product-achievements', icon: <TbReportAnalytics className='me-2' />, label: 'Product wise Target VS Sales' },
+                { to: '/all-products-achievement', icon: <TbReportAnalytics className='me-2' />, label: 'All Products Target VS Sales' },
             ],
         },
         reports: {

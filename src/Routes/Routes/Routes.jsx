@@ -4,6 +4,7 @@ import DailyCollections from "../../Pages/Accounts/DailyCollections/DailyCollect
 import DueList from "../../Pages/Accounts/DueList/DueList/DueList";
 import InvoiceSalesSummary from "../../Pages/Accounts/InvoiceSalesSummary/InvoiceSalesSummary/InvoiceSalesSummary";
 import MPOStatement from "../../Pages/Accounts/MPOStatement/MPOStatement/MPOStatement";
+import AllProductsAchievement from "../../Pages/Achievements/AllProductsAchievement/AllProductsAchievement/AllProductsAchievement";
 import FieldTerritoryWiseAchievements from "../../Pages/Achievements/FieldTerritoryWiseAchievements/FieldTerritoryWiseAchievements/FieldTerritoryWiseAchievements";
 import ProductWiseAchievements from "../../Pages/Achievements/ProductWiseAchievements/ProductWiseAchievements/ProductWiseAchievements";
 import TerritoryWiseAchievements from "../../Pages/Achievements/TerritoryWiseAchievements/TerritoryWiseAchievements/TerritoryWiseAchievements";
@@ -374,6 +375,10 @@ const router = createBrowserRouter([
             {
                 path: '/product-achievements',
                 element: <ProductWiseAchievements />
+            },
+            {
+                path: '/all-products-achievement',
+                element: <AllProductsAchievement />
             },
         ],
     },
