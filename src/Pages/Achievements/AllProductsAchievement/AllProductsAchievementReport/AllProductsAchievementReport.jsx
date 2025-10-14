@@ -53,10 +53,11 @@ const AllProductsAchievementReport = ({
             order.products?.forEach(p => {
                 const name = p.name?.trim() || "";
                 const netWeight = p.netWeight?.trim() || "";
+                const productCode = p.productCode;
                 const key = `${name}|${netWeight}`;
                 const qty = p.quantity || 0;
                 if (!productMap.has(key)) {
-                    productMap.set(key, { name, netWeight, sales: 0 });
+                    productMap.set(key, { name, netWeight, productCode, sales: 0 });
                 }
                 productMap.get(key).sales += qty;
             });
@@ -71,7 +72,7 @@ const AllProductsAchievementReport = ({
             products.forEach(p => {
                 const key = `${p.name}|${p.netWeight}`;
                 if (!mergedMap.has(key)) {
-                    mergedMap.set(key, { name: p.name, netWeight: p.netWeight, current: 0, previous: 0, twoMonthsAgo: 0, twelveMonthsAgo: 0, lastDay: 0, target: 0 });
+                    mergedMap.set(key, { name: p.name, netWeight: p.netWeight, productCode: p.productCode, current: 0, previous: 0, twoMonthsAgo: 0, twelveMonthsAgo: 0, lastDay: 0, target: 0 });
                 }
                 mergedMap.get(key)[type] += p.sales || 0;
             });
@@ -87,7 +88,7 @@ const AllProductsAchievementReport = ({
             t.target?.forEach(p => {
                 const key = `${p.productName}|${p.netWeight}`;
                 if (!mergedMap.has(key)) {
-                    mergedMap.set(key, { name: p.productName, netWeight: p.netWeight, current: 0, previous: 0, twoMonthsAgo: 0, twelveMonthsAgo: 0, lastDay: 0, target: 0 });
+                    mergedMap.set(key, { name: p.productName, netWeight: p.netWeight, productCode: p.productCode, current: 0, previous: 0, twoMonthsAgo: 0, twelveMonthsAgo: 0, lastDay: 0, target: 0 });
                 }
                 mergedMap.get(key).target += p.targetQuantity || 0;
             });
@@ -121,6 +122,18 @@ const AllProductsAchievementReport = ({
         `;
 
         const allProducts = mergeAllProducts();
+
+        allProducts.sort((a, b) => {
+            const nameA = a.name.toLowerCase();
+            const nameB = b.name.toLowerCase();
+            if (nameA !== nameB)
+                return nameA.localeCompare(nameB);
+
+            const numA = parseFloat(a.netWeight) || 0;
+            const numB = parseFloat(b.netWeight) || 0;
+            return numA - numB;
+        });
+
         let reportHTML = `
             <table style="width:100%; border-collapse:collapse;">
                 <thead>
