@@ -71,25 +71,23 @@ const AllProductsAchievementReport = ({
             products.forEach(p => {
                 const key = `${p.name}|${p.netWeight}`;
                 if (!mergedMap.has(key)) {
-                    mergedMap.set(key, { name: p.name, netWeight: p.netWeight, current: 0, previous: 0, lastDay: 0, target: 0 });
+                    mergedMap.set(key, { name: p.name, netWeight: p.netWeight, current: 0, previous: 0, twoMonthsAgo: 0, twelveMonthsAgo: 0, lastDay: 0, target: 0 });
                 }
                 mergedMap.get(key)[type] += p.sales || 0;
             });
         };
 
-        const currentSales = calculateAllProductsSales(currentMosOrders);
-        const previousSales = calculateAllProductsSales(previousMosOrders);
-        const lastDaySales = calculateAllProductsSales(todayOrders);
-
-        addProducts(currentSales, "current");
-        addProducts(previousSales, "previous");
-        addProducts(lastDaySales, "lastDay");
+        addProducts(calculateAllProductsSales(currentMosOrders), "current");
+        addProducts(calculateAllProductsSales(previousMosOrders), "previous");
+        addProducts(calculateAllProductsSales(twoMosAgoOrders), "twoMonthsAgo");
+        addProducts(calculateAllProductsSales(twelveMosAgoOrders), "twelveMonthsAgo");
+        addProducts(calculateAllProductsSales(todayOrders), "lastDay");
 
         territories.forEach(t => {
             t.target?.forEach(p => {
                 const key = `${p.productName}|${p.netWeight}`;
                 if (!mergedMap.has(key)) {
-                    mergedMap.set(key, { name: p.productName, netWeight: p.netWeight, current: 0, previous: 0, lastDay: 0, target: 0 });
+                    mergedMap.set(key, { name: p.productName, netWeight: p.netWeight, current: 0, previous: 0, twoMonthsAgo: 0, twelveMonthsAgo: 0, lastDay: 0, target: 0 });
                 }
                 mergedMap.get(key).target += p.targetQuantity || 0;
             });
@@ -126,32 +124,48 @@ const AllProductsAchievementReport = ({
         let reportHTML = `
             <table style="width:100%; border-collapse:collapse;">
                 <thead>
-                    <tr style="background:#eee;">
-                        <th style="border:1px solid #aaa; padding:4px;">Sl. No.</th>
-                        <th style="border:1px solid #aaa; padding:4px;">Product Name</th>
-                        <th style="border:1px solid #aaa; padding:4px;">Pack Size</th>
-                        <th style="border:1px solid #aaa; padding:4px;">Target</th>
-                        <th style="border:1px solid #aaa; padding:4px;">Sales</th>
-                        <th style="border:1px solid #aaa; padding:4px;">Achievement</th>
-                        <th style="border:1px solid #aaa; padding:4px;">Previous Sales</th>
-                        <th style="border:1px solid #aaa; padding:4px;">Previous Achievement</th>
-                        <th style="border:1px solid #aaa; padding:4px;">Growth</th>
-                        <th style="border:1px solid #aaa; padding:4px;">Last Day Sales</th>
+                    <tr>
+                        <th style="border:1px solid #aaa; padding:5px; text-align: center; width:5%;" rowspan="2">Sl. No.</th>
+                        <th style="border:1px solid #aaa; padding:5px; text-align: left;" rowspan="2">Product Name</th>
+                        <th style="border:1px solid #aaa; padding:5px; text-align: left;" rowspan="2">Pack Size</th>
+                        <th style="border:1px solid #aaa; padding:5px; text-align: center; width:7%;" rowspan="2">Total Target</th>
+                        <th style="border:1px solid #aaa; padding:5px; text-align:center;" colspan="2">Current Month</th>
+                        <th style="border:1px solid #aaa; padding:5px; text-align:center;" colspan="2">Previous Month</th>
+                        <th style="border:1px solid #aaa; padding:5px; text-align:center;" colspan="2">Two Months Ago</th>
+                        <th style="border:1px solid #aaa; padding:5px; text-align:center;" rowspan="2">LM<br/>Growth<br/>(%)</th>
+                        <th style="border:1px solid #aaa; padding:5px; text-align:center;" rowspan="2">M<br/>Growth<br/>(%)</th>
+                        <th style="border:1px solid #aaa; padding:5px; text-align:center;" rowspan="2">Y<br/>Growth<br/>(%)</th>
+                        <th style="border:1px solid #aaa; padding:5px; text-align:center;" rowspan="2">Last Day<br/>Sales</th>
+                    </tr>
+                    <tr>
+                        <th style="border:1px solid #aaa; padding:5px; text-align:center;">Sales</th>
+                        <th style="border:1px solid #aaa; padding:5px; text-align:center;">Achi (%)</th>
+                        <th style="border:1px solid #aaa; padding:5px; text-align:center;">Sales</th>
+                        <th style="border:1px solid #aaa; padding:5px; text-align:center;">Achi (%)</th>
+                        <th style="border:1px solid #aaa; padding:5px; text-align:center;">Sales</th>
+                        <th style="border:1px solid #aaa; padding:5px; text-align:center;">Achi (%)</th>
                     </tr>
                 </thead>
                 <tbody>
         `;
 
-        let totalTarget = 0, totalCurr = 0, totalPrev = 0, totalLastDay = 0;
+        let totalTarget = 0, totalCurrent = 0, totalPrevious = 0, totalTwoMonthsAgo = 0, totalTwelveMonthsAgo = 0, totalLastDay = 0;
 
         allProducts.forEach((p, idx) => {
-            const achievement = p.target ? ((p.current / p.target) * 100).toFixed(2) : "0.00";
-            const prevAchievement = p.target ? ((p.previous / p.target) * 100).toFixed(2) : "0.00";
-            const growth = p.previous ? (((p.current - p.previous) / p.previous) * 100).toFixed(2) : p.current ? 100 : "0.00";
+            const currentAchi = p.target ? ((p.current / p.target) * 100).toFixed(2) : "0.00";
+            const prevAchi = p.target ? ((p.previous / p.target) * 100).toFixed(2) : "0.00";
+            const twoAgoAchi = p.target ? ((p.twoMonthsAgo / p.target) * 100).toFixed(2) : "0.00";
+            const twelveAgoAchi = p.target ? ((p.twelveMonthsAgo / p.target) * 100) : "0.00";
+
+            const lmGrowth = p.twoMonthsAgo ? (((p.previous - p.twoMonthsAgo) / p.twoMonthsAgo) * 100).toFixed(2) : "100";
+            const mGrowth = p.previous ? (((p.current - p.previous) / p.previous) * 100).toFixed(2) : "100";
+            const yGrowth = p.totalTwelveMonthsAgo ? (((p.current - p.totalTwelveMonthsAgo) / p.totalTwelveMonthsAgo) * 100).toFixed(2) : "100";
 
             totalTarget += p.target;
-            totalCurr += p.current;
-            totalPrev += p.previous;
+            totalCurrent += p.current;
+            totalPrevious += p.previous;
+            totalTwoMonthsAgo += p.twoMonthsAgo;
+            totalTwelveMonthsAgo += p.twelveMonthsAgo;
             totalLastDay += p.lastDay;
 
             reportHTML += `
@@ -161,32 +175,18 @@ const AllProductsAchievementReport = ({
                     <td style="border:1px solid #ccc; padding:4px; text-align:center;">${p.netWeight}</td>
                     <td style="border:1px solid #ccc; padding:4px; text-align:center;">${p.target}</td>
                     <td style="border:1px solid #ccc; padding:4px; text-align:center;">${p.current}</td>
-                    <td style="border:1px solid #ccc; padding:4px; text-align:right;">${achievement}%</td>
+                    <td style="border:1px solid #ccc; padding:4px; text-align:right;">${currentAchi}%</td>
                     <td style="border:1px solid #ccc; padding:4px; text-align:center;">${p.previous}</td>
-                    <td style="border:1px solid #ccc; padding:4px; text-align:right;">${prevAchievement}%</td>
-                    <td style="border:1px solid #ccc; padding:4px; text-align:right;">${growth}%</td>
+                    <td style="border:1px solid #ccc; padding:4px; text-align:right;">${prevAchi}%</td>
+                    <td style="border:1px solid #ccc; padding:4px; text-align:center;">${p.twoMonthsAgo}</td>
+                    <td style="border:1px solid #ccc; padding:4px; text-align:right;">${twoAgoAchi}%</td>
+                    <td style="border:1px solid #ccc; padding:4px; text-align:right;">${lmGrowth}%</td>
+                    <td style="border:1px solid #ccc; padding:4px; text-align:right;">${mGrowth}%</td>
+                    <td style="border:1px solid #ccc; padding:4px; text-align:right;">${yGrowth}%</td>
                     <td style="border:1px solid #ccc; padding:4px; text-align:center;">${p.lastDay}</td>
                 </tr>
             `;
         });
-
-        // Total row
-        const totalAchievement = totalTarget ? ((totalCurr / totalTarget) * 100).toFixed(2) : 0;
-        const totalPrevAchievement = totalTarget ? ((totalPrev / totalTarget) * 100).toFixed(2) : 0;
-        const totalGrowth = totalPrev ? (((totalCurr - totalPrev) / totalPrev) * 100).toFixed(2) : totalCurr ? 100 : 0;
-
-        reportHTML += `
-            <tr style="background:#f2f2f2; font-weight:bold;">
-                <td colspan="3" style="border:1px solid #ccc; padding:4px; text-align:right;">Total</td>
-                <td style="border:1px solid #ccc; padding:4px; text-align:center;">${totalTarget}</td>
-                <td style="border:1px solid #ccc; padding:4px; text-align:center;">${totalCurr}</td>
-                <td style="border:1px solid #ccc; padding:4px; text-align:right;">${totalAchievement}%</td>
-                <td style="border:1px solid #ccc; padding:4px; text-align:center;">${totalPrev}</td>
-                <td style="border:1px solid #ccc; padding:4px; text-align:right;">${totalPrevAchievement}%</td>
-                <td style="border:1px solid #ccc; padding:4px; text-align:right;">${totalGrowth}%</td>
-                <td style="border:1px solid #ccc; padding:4px; text-align:center;">${totalLastDay}</td>
-            </tr>
-        `;
 
         reportHTML += `</tbody></table>`;
 
