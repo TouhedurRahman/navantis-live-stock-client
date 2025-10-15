@@ -38,8 +38,6 @@ const AllProductsAchievementReport = ({
         setTodayOrders(lastDayOrders);
     }, [lastDayOrders]);
 
-    const productWiseFiltered = productKey === '' ? false : true;
-
     const now = new Date().toLocaleString("en-US", {
         year: "numeric", month: "long", day: "numeric",
         hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true,
@@ -171,7 +169,7 @@ const AllProductsAchievementReport = ({
                     <tr>
                         <th style="border:1px solid #aaa; padding:5px; text-align: center; width:5%;" rowspan="2">Sl. No.</th>
                         <th style="border:1px solid #aaa; padding:5px; text-align: left;" rowspan="2">Product Name</th>
-                        <th style="border:1px solid #aaa; padding:5px; text-align: left;" rowspan="2">Pack Size</th>
+                        <th style="border:1px solid #aaa; padding:5px; text-align: center;" rowspan="2">Pack Size</th>
                         <th style="border:1px solid #aaa; padding:5px; text-align: center; width:7%;" rowspan="2">Total Target</th>
                         <th style="border:1px solid #aaa; padding:5px; text-align:center;" colspan="2">Current Month</th>
                         <th style="border:1px solid #aaa; padding:5px; text-align:center;" colspan="2">Previous Month</th>
