@@ -34,7 +34,10 @@ const AllProductsAchievement = () => {
     // const deliveredOrders = orders.filter(order => order.status !== 'pending');
     const deliveredOrders = orders.filter(order => {
         if (singleUser?.base !== "Field") {
-            return order.status !== "pending";
+            return (
+                order.status !== "pending" &&
+                !["Doctor", "Institute"].includes(order.territory)
+            )
         } else {
             return (
                 order.status !== "pending" &&

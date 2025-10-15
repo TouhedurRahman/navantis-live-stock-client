@@ -72,7 +72,17 @@ const AllProductsAchievementReport = ({
             products.forEach(p => {
                 const key = `${p.name}|${p.netWeight}`;
                 if (!mergedMap.has(key)) {
-                    mergedMap.set(key, { name: p.name, netWeight: p.netWeight, productCode: p.productCode, current: 0, previous: 0, twoMonthsAgo: 0, twelveMonthsAgo: 0, lastDay: 0, target: 0 });
+                    mergedMap.set(key, {
+                        name: p.name,
+                        netWeight: p.netWeight,
+                        productCode: p.productCode,
+                        current: 0,
+                        previous: 0,
+                        twoMonthsAgo: 0,
+                        twelveMonthsAgo: 0,
+                        lastDay: 0,
+                        target: 0
+                    });
                 }
                 mergedMap.get(key)[type] += p.sales || 0;
             });
@@ -88,7 +98,17 @@ const AllProductsAchievementReport = ({
             t.target?.forEach(p => {
                 const key = `${p.productName}|${p.netWeight}`;
                 if (!mergedMap.has(key)) {
-                    mergedMap.set(key, { name: p.productName, netWeight: p.netWeight, productCode: p.productCode, current: 0, previous: 0, twoMonthsAgo: 0, twelveMonthsAgo: 0, lastDay: 0, target: 0 });
+                    mergedMap.set(key, {
+                        name: p.productName,
+                        netWeight: p.netWeight,
+                        productCode: p.productCode,
+                        current: 0,
+                        previous: 0,
+                        twoMonthsAgo: 0,
+                        twelveMonthsAgo: 0,
+                        lastDay: 0,
+                        target: 0
+                    });
                 }
                 mergedMap.get(key).target += p.targetQuantity || 0;
             });
@@ -121,18 +141,29 @@ const AllProductsAchievementReport = ({
             </div>
         `;
 
-        const allProducts = mergeAllProducts();
+        let allProducts = mergeAllProducts();
+
+        if (productKey) {
+            const [filterName, filterWeight] = productKey.toLowerCase().split('|').map(s => s.trim());
+            allProducts = allProducts.filter(p =>
+                p.name?.toLowerCase() === filterName &&
+                p.netWeight?.toLowerCase() === filterWeight
+            );
+        }
 
         allProducts.sort((a, b) => {
             const nameA = a.name.toLowerCase();
             const nameB = b.name.toLowerCase();
-            if (nameA !== nameB)
-                return nameA.localeCompare(nameB);
+
+            if (nameA !== nameB) return nameA.localeCompare(nameB);
 
             const numA = parseFloat(a.netWeight) || 0;
             const numB = parseFloat(b.netWeight) || 0;
             return numA - numB;
         });
+
+        let totalTarget = 0, totalCurrent = 0, totalPrevious = 0,
+            totalTwoMonthsAgo = 0, totalTwelveMonthsAgo = 0, totalLastDay = 0;
 
         let reportHTML = `
             <table style="width:100%; border-collapse:collapse;">
@@ -152,27 +183,24 @@ const AllProductsAchievementReport = ({
                     </tr>
                     <tr>
                         <th style="border:1px solid #aaa; padding:5px; text-align:center;">Sales</th>
-                        <th style="border:1px solid #aaa; padding:5px; text-align:center;">Achi (%)</th>
+                        <th style="border:1px solid #aaa; padding:5px; text-align:center;">Achi(%)</th>
                         <th style="border:1px solid #aaa; padding:5px; text-align:center;">Sales</th>
-                        <th style="border:1px solid #aaa; padding:5px; text-align:center;">Achi (%)</th>
+                        <th style="border:1px solid #aaa; padding:5px; text-align:center;">Achi(%)</th>
                         <th style="border:1px solid #aaa; padding:5px; text-align:center;">Sales</th>
-                        <th style="border:1px solid #aaa; padding:5px; text-align:center;">Achi (%)</th>
+                        <th style="border:1px solid #aaa; padding:5px; text-align:center;">Achi(%)</th>
                     </tr>
                 </thead>
                 <tbody>
         `;
 
-        let totalTarget = 0, totalCurrent = 0, totalPrevious = 0, totalTwoMonthsAgo = 0, totalTwelveMonthsAgo = 0, totalLastDay = 0;
-
         allProducts.forEach((p, idx) => {
             const currentAchi = p.target ? ((p.current / p.target) * 100).toFixed(2) : "0.00";
             const prevAchi = p.target ? ((p.previous / p.target) * 100).toFixed(2) : "0.00";
             const twoAgoAchi = p.target ? ((p.twoMonthsAgo / p.target) * 100).toFixed(2) : "0.00";
-            const twelveAgoAchi = p.target ? ((p.twelveMonthsAgo / p.target) * 100) : "0.00";
 
             const lmGrowth = p.twoMonthsAgo ? (((p.previous - p.twoMonthsAgo) / p.twoMonthsAgo) * 100).toFixed(2) : "100";
             const mGrowth = p.previous ? (((p.current - p.previous) / p.previous) * 100).toFixed(2) : "100";
-            const yGrowth = p.totalTwelveMonthsAgo ? (((p.current - p.totalTwelveMonthsAgo) / p.totalTwelveMonthsAgo) * 100).toFixed(2) : "100";
+            const yGrowth = p.twelveMonthsAgo ? (((p.current - p.twelveMonthsAgo) / p.twelveMonthsAgo) * 100).toFixed(2) : "100";
 
             totalTarget += p.target;
             totalCurrent += p.current;
@@ -200,6 +228,31 @@ const AllProductsAchievementReport = ({
                 </tr>
             `;
         });
+
+        const totalCurrentAchi = totalTarget ? ((totalCurrent / totalTarget) * 100).toFixed(2) : "0.00";
+        const totalPrevAchi = totalTarget ? ((totalPrevious / totalTarget) * 100).toFixed(2) : "0.00";
+        const totalTwoAgoAchi = totalTarget ? ((totalTwoMonthsAgo / totalTarget) * 100).toFixed(2) : "0.00";
+
+        const totalLmGrowth = totalTwoMonthsAgo ? (((totalPrevious - totalTwoMonthsAgo) / totalTwoMonthsAgo) * 100).toFixed(2) : "100";
+        const totalMGrowth = totalPrevious ? (((totalCurrent - totalPrevious) / totalPrevious) * 100).toFixed(2) : "100";
+        const totalYGrowth = totalTwelveMonthsAgo ? (((totalCurrent - totalTwelveMonthsAgo) / totalTwelveMonthsAgo) * 100).toFixed(2) : "100";
+
+        reportHTML += `
+            <tr style="font-weight:bold; background-color:#f2f2f2;">
+                <td colspan="3" style="border:1px solid #aaa; padding:5px; text-align:center;">Total</td>
+                <td style="border:1px solid #aaa; padding:5px; text-align:center;">${totalTarget}</td>
+                <td style="border:1px solid #aaa; padding:5px; text-align:center;">${totalCurrent}</td>
+                <td style="border:1px solid #aaa; padding:5px; text-align:right;">${totalCurrentAchi}%</td>
+                <td style="border:1px solid #aaa; padding:5px; text-align:center;">${totalPrevious}</td>
+                <td style="border:1px solid #aaa; padding:5px; text-align:right;">${totalPrevAchi}%</td>
+                <td style="border:1px solid #aaa; padding:5px; text-align:center;">${totalTwoMonthsAgo}</td>
+                <td style="border:1px solid #aaa; padding:5px; text-align:right;">${totalTwoAgoAchi}%</td>
+                <td style="border:1px solid #aaa; padding:5px; text-align:right;">${totalLmGrowth}%</td>
+                <td style="border:1px solid #aaa; padding:5px; text-align:right;">${totalMGrowth}%</td>
+                <td style="border:1px solid #aaa; padding:5px; text-align:right;">${totalYGrowth}%</td>
+                <td style="border:1px solid #aaa; padding:5px; text-align:center;">${totalLastDay}</td>
+            </tr>
+        `;
 
         reportHTML += `</tbody></table>`;
 
