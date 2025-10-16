@@ -239,11 +239,21 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
             due: Number(Number(due).toFixed(2))
         };
 
+        const totalReturnedPrice = productsReturned.reduce((sum, product) => sum + product.totalPrice, 0);
+
+        if (totalReturnedPrice > selectedOrder.due) {
+            Swal.fire({
+                icon: "error",
+                title: "Return Exceeds Due!",
+                text: `The total return value (৳${totalReturnedPrice.toFixed(2)}/-) cannot exceed the customer's due amount (৳${selectedOrder.due.toFixed(2)}/-).`,
+                showConfirmButton: true
+            });
+            return;
+        }
+
         const uniqueRerurnedProducts = new Set(productsReturned.map(product => product.name));
         const totalReturnedProduct = uniqueRerurnedProducts.size;
-
         const totalReturnedUnit = productsReturned.reduce((sum, product) => sum + product.quantity, 0);
-        const totalReturnedPrice = productsReturned.reduce((sum, product) => sum + product.totalPrice, 0);
 
         const returnedProducts = {
             email: selectedOrder.email,
@@ -260,7 +270,7 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
             totalUnit: totalReturnedUnit,
             totalPrice: totalReturnedPrice,
             date: getTodayDate()
-        }
+        };
 
         try {
             const mutations = [
@@ -270,20 +280,15 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
                 addReturnedProductsMutation.mutateAsync(returnedProducts)
             ];
 
-            /* if (updatedOrder.totalUnit === 0) {
-                mutations.push(deleteOrderMutation.mutateAsync(updatedOrder));
-            } */
-
             await Promise.all(mutations);
 
             onClose();
 
             Swal.fire({
                 title: "Success!",
-                text: "Products Return successfull",
+                text: "Products returned successfully",
                 icon: "success",
                 showConfirmButton: false,
-                confirmButtonColor: "#3B82F6",
                 timer: 1500
             });
 
@@ -291,10 +296,9 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
         } catch (error) {
             Swal.fire({
                 title: "Error!",
-                text: "Faild. Please try again.",
+                text: "Failed. Please try again.",
                 icon: "error",
                 showConfirmButton: false,
-                confirmButtonColor: "#d33",
                 timer: 1500
             });
         }
