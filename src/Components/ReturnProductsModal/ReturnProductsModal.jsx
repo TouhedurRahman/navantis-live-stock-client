@@ -339,60 +339,75 @@ const ReturnProductsModal = ({ isOpen, onClose }) => {
                 </div>
 
                 {/* Products List */}
-                {selectedOrder && (
-                    <div className="overflow-y-auto max-h-64">
-                        <div>
-                            <p className="text-xl text-center font-mono font-medium text-gray-600">{selectedOrder.pharmacy}</p>
-                            <p className="text-sm text-center text-gray-600 mt-1">
-                                <span className="font-medium">Cus. ID: </span> {selectedOrder.pharmacyId}
-                                <span className="mx-2 text-gray-400">|</span>
-                                <span className="font-medium">Territory: </span> {selectedOrder.territory}
-                            </p>
-                            <p className="text-sm text-center font-medium mt-4 mb-2">Ordered Products <span className="text-[10px] text-gray-400">(Total Products: {selectedOrder.totalProduct} | Total Unit: {selectedOrder.totalUnit})</span></p>
-                        </div>
+                {selectedOrder
+                    &&
+                    <>
+                        {
+                            selectedOrder.status === "paid"
+                                ?
+                                <>
+                                    <p className="text-center text-gray-600 font-mono font-extrabold">
+                                        ✨ Already Paid <br />❌ Return Not Allowed
+                                    </p>
+                                </>
+                                :
+                                <>
+                                    <div className="overflow-y-auto max-h-64">
+                                        <div>
+                                            <p className="text-xl text-center font-mono font-medium text-gray-600">{selectedOrder.pharmacy}</p>
+                                            <p className="text-sm text-center text-gray-600 mt-1">
+                                                <span className="font-medium">Cus. ID: </span> {selectedOrder.pharmacyId}
+                                                <span className="mx-2 text-gray-400">|</span>
+                                                <span className="font-medium">Territory: </span> {selectedOrder.territory}
+                                            </p>
+                                            <p className="text-sm text-center font-medium mt-4 mb-2">Ordered Products <span className="text-[10px] text-gray-400">(Total Products: {selectedOrder.totalProduct} | Total Unit: {selectedOrder.totalUnit})</span></p>
+                                        </div>
 
-                        {selectedOrder.products.map((product) => (
-                            <div
-                                key={`${product.productCode}-${product.batch}`}
-                                className="bg-white text-center shadow-md rounded-lg p-4 mb-4 border border-gray-200 transition hover:shadow-lg"
-                            >
-                                <p className="text-lg font-semibold text-gray-800">
-                                    {product.name} <span className="text-gray-500">({product.netWeight})</span>
-                                </p>
-                                <p className="text-sm text-gray-600 mt-1">
-                                    <span className="font-medium">Batch:</span> {product.batch}
-                                    <span className="mx-2 text-gray-400">|</span>
-                                    <span className="font-medium">Expire:</span> {product.expire}
-                                </p>
-                                <p className="text-sm text-gray-600 mt-1">
-                                    <span className="font-medium">Quantity:</span> {product.quantity}
-                                </p>
-                                <label className="flex justify-around items-center mt-3 text-gray-700 font-medium space-x-2">
-                                    <span className="w-1/2 flex justify-end items-center">
-                                        Return Quantity
-                                    </span>
-                                    <span className="w-1/2 flex justify-start items-center">
-                                        <input
-                                            type="number"
-                                            min="0"
-                                            max={product.quantity}
-                                            value={returnData[`${product.productCode}-${product.batch}`] || 0}
-                                            onChange={(e) => handleReturnChange(product.productCode, product.batch, parseInt(e.target.value) || 0)}
-                                            className="w-1/2 h-7 text-center mt-1 px-3 py-2 border rounded-md transition"
-                                            onWheel={(e) => e.target.blur()}
-                                        />
-                                    </span>
-                                </label>
-                            </div>
-                        ))}
-                        <button
-                            className="w-full px-4 py-2 my-1 text-white bg-green-500 rounded-md hover:bg-green-600"
-                            onClick={handleReturnSubmit}
-                        >
-                            Process Return
-                        </button>
-                    </div>
-                )}
+                                        {selectedOrder.products.map((product) => (
+                                            <div
+                                                key={`${product.productCode}-${product.batch}`}
+                                                className="bg-white text-center shadow-md rounded-lg p-4 mb-4 border border-gray-200 transition hover:shadow-lg"
+                                            >
+                                                <p className="text-lg font-semibold text-gray-800">
+                                                    {product.name} <span className="text-gray-500">({product.netWeight})</span>
+                                                </p>
+                                                <p className="text-sm text-gray-600 mt-1">
+                                                    <span className="font-medium">Batch:</span> {product.batch}
+                                                    <span className="mx-2 text-gray-400">|</span>
+                                                    <span className="font-medium">Expire:</span> {product.expire}
+                                                </p>
+                                                <p className="text-sm text-gray-600 mt-1">
+                                                    <span className="font-medium">Quantity:</span> {product.quantity}
+                                                </p>
+                                                <label className="flex justify-around items-center mt-3 text-gray-700 font-medium space-x-2">
+                                                    <span className="w-1/2 flex justify-end items-center">
+                                                        Return Quantity
+                                                    </span>
+                                                    <span className="w-1/2 flex justify-start items-center">
+                                                        <input
+                                                            type="number"
+                                                            min="0"
+                                                            max={product.quantity}
+                                                            value={returnData[`${product.productCode}-${product.batch}`] || 0}
+                                                            onChange={(e) => handleReturnChange(product.productCode, product.batch, parseInt(e.target.value) || 0)}
+                                                            className="w-1/2 h-7 text-center mt-1 px-3 py-2 border rounded-md transition"
+                                                            onWheel={(e) => e.target.blur()}
+                                                        />
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        ))}
+                                        <button
+                                            className="w-full px-4 py-2 my-1 text-white bg-green-500 rounded-md hover:bg-green-600"
+                                            onClick={handleReturnSubmit}
+                                        >
+                                            Process Return
+                                        </button>
+                                    </div>
+                                </>
+                        }
+                    </>
+                }
 
                 {/* Footer */}
                 <div className="flex justify-end gap-2 mt-4">
