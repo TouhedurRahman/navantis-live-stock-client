@@ -8,6 +8,7 @@ import AllProductsAchievement from "../../Pages/Achievements/AllProductsAchievem
 import FieldTerritoryWiseAchievements from "../../Pages/Achievements/FieldTerritoryWiseAchievements/FieldTerritoryWiseAchievements/FieldTerritoryWiseAchievements";
 import ProductWiseAchievements from "../../Pages/Achievements/ProductWiseAchievements/ProductWiseAchievements/ProductWiseAchievements";
 import TerritoryWiseAchievements from "../../Pages/Achievements/TerritoryWiseAchievements/TerritoryWiseAchievements/TerritoryWiseAchievements";
+import AdminCustomerUpdate from "../../Pages/Admin/AdminCustomerUpdate/AdminCustomerUpdate/AdminCustomerUpdate";
 import AdminDamagedExpiredList from "../../Pages/Admin/AdminDamagedExpiredList/AdminDamagedExpiredList";
 import Customer from "../../Pages/Admin/Customer/Customer";
 import DamageRequest from "../../Pages/Admin/DamageRequest/DamageRequest";
@@ -195,6 +196,10 @@ const router = createBrowserRouter([
             {
                 path: "/customer-admin",
                 element: <Customer />
+            },
+            {
+                path: "/admin-customer-update",
+                element: <AdminCustomerUpdate />
             },
             {
                 path: "/add-product-warehouse",

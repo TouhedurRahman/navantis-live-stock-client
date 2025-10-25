@@ -7,7 +7,7 @@ import { FaUserDoctor } from "react-icons/fa6";
 import { FcExpired } from 'react-icons/fc';
 import { GiAchievement, GiDustCloud, GiReturnArrow, GiStorkDelivery } from 'react-icons/gi';
 import { IoIosAddCircle } from 'react-icons/io';
-import { MdAccountBalance, MdAssignmentReturned, MdOutlineShoppingBag, MdPayment } from 'react-icons/md';
+import { MdAccountBalance, MdAssignmentReturned, MdLocalPharmacy, MdOutlineShoppingBag, MdPayment } from 'react-icons/md';
 import { TbCoinTakaFilled, TbReportAnalytics, TbReportSearch } from 'react-icons/tb';
 import { VscGitPullRequestGoToChanges } from 'react-icons/vsc';
 import useSingleUser from './useSingleUser';
@@ -39,6 +39,7 @@ const useMenuConfig = () => {
                 { to: '/expired-returns', icon: <GiReturnArrow className='me-2' />, label: 'Expired Returns' },
                 { to: '/doctor-admin', icon: <FaUserDoctor className='me-2' />, label: 'Doctor' },
                 { to: '/customer-admin', icon: <AiFillMedicineBox className='me-2' />, label: 'Customer' },
+                { to: '/admin-customer-update', icon: <MdLocalPharmacy className='me-2' />, label: 'Update Customer' },
             ],
         },
         warehouse: {
