@@ -28,7 +28,13 @@ const AdminCustomerUpdate = () => {
             setFormData(found);
         } else {
             setSelectedCustomer(null);
-            alert("Customer not found!");
+            Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Customer not found!",
+                showConfirmButton: true
+            });
+            setSearchId("");
         }
     };
 
@@ -115,16 +121,18 @@ const AdminCustomerUpdate = () => {
             Swal.fire({
                 position: "center",
                 icon: "success",
-                title: "Customer successfully updated.",
-                showConfirmButton: false,
-                timer: 1500
+                title: "Success",
+                html: `Customer  Updated! <br /> Cus. ID <strong>${selectedCustomer.customerId}</strong>`,
+                showConfirmButton: true
             });
 
             refetchCustomers();
             refetchOrders();
             refetchReturns();
+            setSelectedCustomer(null);
+            setSearchId("");
         } catch (error) {
-            console.error("Update Error:", error.response?.data || error.message);
+            // console.error("Update Error:", error.response?.data || error.message);
             Swal.fire({
                 position: "center",
                 icon: "error",
