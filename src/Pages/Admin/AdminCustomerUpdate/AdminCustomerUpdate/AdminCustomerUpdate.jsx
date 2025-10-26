@@ -240,7 +240,7 @@ const AdminCustomerUpdate = () => {
                                         name="marketPoint"
                                         value={formData.marketPoint || ""}
                                         onChange={handleChange}
-                                        className="border border-gray-300 focus:border-[#3B82F6] focus:ring-[#3B82F6]/30 outline-none transition-all px-3 py-2 w-full rounded-md bg-white shadow-sm"
+                                        className="border border-gray-300 focus:border-[#3B82F6] focus:ring-[#3B82F6]/30 outline-none transition-all px-3 py-2 w-full rounded-md bg-white shadow-sm cursor-pointer"
                                         required
                                     >
                                         <option value="">Select a Market Point</option>
