@@ -145,45 +145,75 @@ const AdminCustomerUpdate = () => {
                         <div className="bg-gray-50 p-4 rounded-lg border">
                             <h2 className="font-semibold text-lg mb-2">Customer Info</h2>
                             <div className="grid grid-cols-2 gap-3">
+                                {/* First line: Customer Name & Market Point */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-600">Customer Name</label>
+                                    <label className="block text-sm font-medium text-gray-600">
+                                        Customer Name<span className="text-red-500">*</span>
+                                    </label>
                                     <input
                                         type="text"
                                         name="name"
                                         value={formData.name || ""}
                                         onChange={handleChange}
                                         className="border px-2 py-1 w-full rounded"
+                                        required
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-600">Email</label>
-                                    <input
-                                        type="email"
-                                        name="email"
-                                        value={formData.email || ""}
+                                    <label className="block text-sm font-medium text-gray-600">
+                                        Market Point
+                                    </label>
+                                    <select
+                                        name="marketPoint"
+                                        value={formData.marketPoint || ""}
                                         onChange={handleChange}
-                                        className="border px-2 py-1 w-full rounded"
-                                    />
+                                        className="border px-2 py-1 w-full rounded bg-white"
+                                    >
+                                        <option value="">Select Market Point</option>
+                                        <option value="Gulshan">Gulshan</option>
+                                        <option value="Banani">Banani</option>
+                                        <option value="Dhanmondi">Dhanmondi</option>
+                                        <option value="Uttara">Uttara</option>
+                                    </select>
                                 </div>
 
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-600">Phone</label>
-                                    <input
-                                        type="text"
-                                        name="mobile"
-                                        value={formData.mobile || ""}
-                                        onChange={handleChange}
-                                        className="border px-2 py-1 w-full rounded"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-600">Address</label>
+                                {/* Second line: Address */}
+                                <div className="col-span-2">
+                                    <label className="block text-sm font-medium text-gray-600">
+                                        Address
+                                    </label>
                                     <input
                                         type="text"
                                         name="address"
                                         value={formData.address || ""}
+                                        onChange={handleChange}
+                                        className="border px-2 py-1 w-full rounded"
+                                    />
+                                </div>
+
+                                {/* Third line: Trade License & Drug License */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-600">
+                                        Trade License
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="tradeLicense"
+                                        value={formData.tradeLicense || ""}
+                                        onChange={handleChange}
+                                        className="border px-2 py-1 w-full rounded"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-600">
+                                        Drug License
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="drugLicense"
+                                        value={formData.drugLicense || ""}
                                         onChange={handleChange}
                                         className="border px-2 py-1 w-full rounded"
                                     />
