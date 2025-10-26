@@ -6,6 +6,7 @@ import useApiConfig from "../../../../Hooks/useApiConfig";
 import useCustomer from "../../../../Hooks/useCustomer";
 import useOrders from "../../../../Hooks/useOrders";
 import useReturns from "../../../../Hooks/useReturns";
+import useTerritories from "../../../../Hooks/useTerritories";
 
 const AdminCustomerUpdate = () => {
     const baseUrl = useApiConfig();
@@ -13,6 +14,7 @@ const AdminCustomerUpdate = () => {
     const [customers, , refetchCustomers] = useCustomer();
     const [orders, , refetchOrders] = useOrders();
     const [returns, , refetchReturns] = useReturns();
+    const [territories] = useTerritories();
 
     const [searchId, setSearchId] = useState("");
     const [selectedCustomer, setSelectedCustomer] = useState(null);
@@ -28,6 +30,10 @@ const AdminCustomerUpdate = () => {
             alert("Customer not found!");
         }
     };
+
+    const selectedMarketPoints = selectedCustomer
+        ? (territories.find(t => t.territory === selectedCustomer?.territory)?.marketPoints || [])
+        : [];
 
     const customerOrders = useMemo(() => {
         return orders.filter((order) => order.pharmacyId === selectedCustomer?.customerId);
@@ -55,7 +61,17 @@ const AdminCustomerUpdate = () => {
             return Swal.fire({
                 position: "center",
                 icon: "error",
-                title: "Customer name is required",
+                title: "Customer Name is required",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+
+        if ((!formData.marketPoint || formData.marketPoint.trim() === "")) {
+            return Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Market Point is required",
                 showConfirmButton: false,
                 timer: 1500
             });
@@ -65,7 +81,7 @@ const AdminCustomerUpdate = () => {
             return Swal.fire({
                 position: "center",
                 icon: "error",
-                title: "Customer address is required",
+                title: "Address is required",
                 showConfirmButton: false,
                 timer: 1500
             });
@@ -168,7 +184,7 @@ const AdminCustomerUpdate = () => {
                                 {/* First line: Customer Name & Market Point */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-600">
-                                        Customer Name<span className="text-red-500">*</span>
+                                        Customer Name <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -182,26 +198,28 @@ const AdminCustomerUpdate = () => {
 
                                 <div>
                                     <label className="block text-sm font-medium text-gray-600">
-                                        Market Point
+                                        Market Point <span className="text-red-500">*</span>
                                     </label>
                                     <select
                                         name="marketPoint"
                                         value={formData.marketPoint || ""}
                                         onChange={handleChange}
                                         className="border px-2 py-1 w-full rounded bg-white"
+                                        required
                                     >
-                                        <option value="">Select Market Point</option>
-                                        <option value="Gulshan">Gulshan</option>
-                                        <option value="Banani">Banani</option>
-                                        <option value="Dhanmondi">Dhanmondi</option>
-                                        <option value="Uttara">Uttara</option>
+                                        <option value="">Select a Market Point</option>
+                                        {selectedMarketPoints.map((point, index) => (
+                                            <option key={index} value={point}>
+                                                {point}
+                                            </option>
+                                        ))}
                                     </select>
                                 </div>
 
                                 {/* Second line: Address */}
                                 <div className="col-span-2">
                                     <label className="block text-sm font-medium text-gray-600">
-                                        Address<span className="text-red-500">*</span>
+                                        Address <span className="text-red-500">*</span>
                                     </label>
                                     <textarea
                                         name="address"
