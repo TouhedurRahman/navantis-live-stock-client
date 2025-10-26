@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useMemo, useState } from "react";
+import { FaSearch, FaShoppingCart, FaUndoAlt } from "react-icons/fa";
 import Swal from "sweetalert2";
 import PageTitle from "../../../../Components/PageTitle/PageTitle";
 import useApiConfig from "../../../../Hooks/useApiConfig";
@@ -140,50 +141,77 @@ const AdminCustomerUpdate = () => {
 
             <div className="bg-white pb-5">
                 <div>
-                    <h1 className="px-6 py-3 font-bold text-lg">Admin Customer Update</h1>
+                    <h1 className="px-6 py-3 font-bold">Admin Customer Update</h1>
                     <hr className="border border-gray-500 mb-5" />
                 </div>
 
-                {/*Search Section */}
-                <div className="px-6 flex items-center space-x-2 mb-5">
+                {/* Search Section */}
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 px-4 md:px-6 mb-6">
                     <input
                         type="text"
-                        placeholder="Enter Customer ID (e.g. 500013)"
+                        placeholder="Enter Customer ID"
                         value={searchId}
                         onChange={(e) => setSearchId(e.target.value)}
-                        className="border px-3 py-2 rounded-md w-64"
+                        className="w-full sm:w-64 px-4 py-2 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:border-[#3B82F6] transition-all text-center"
                     />
                     <button
                         onClick={handleSearch}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md"
+                        className="flex items-center justify-center bg-[#3B82F6] hover:bg-yellow-400 text-white hover:text-black font-semibold px-5 py-2 rounded-lg shadow-md transition-all duration-300"
                     >
-                        Search
+                        <FaSearch className="mr-1" /> Search
                     </button>
                 </div>
 
                 {selectedCustomer && (
-                    <div className="px-6 space-y-4">
-                        {/* Order Summary */}
-                        <div className="bg-gray-50 p-4 rounded-lg border">
-                            <h2 className="font-semibold text-lg mb-2">Order Summary</h2>
-                            <p><strong>Total Orders:</strong> {totalOrders}</p>
-                            <p><strong>Total Units Sold:</strong> {totalUnits}</p>
-                        </div>
+                    <div className="px-4 md:px-6 space-y-5">
+                        {/* Order & Return Summary in row on large screens */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Order Summary */}
+                            <div className="bg-white border border-gray-200 p-6 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300">
+                                <div className="flex justify-center items-center gap-3 mb-4 border-b pb-2">
+                                    <FaShoppingCart className="text-[#E69B3D] text-2xl" />
+                                    <h2 className="font-bold text-lg text-gray-800">Order Summary</h2>
+                                </div>
 
-                        {/* Return Summary */}
-                        <div className="bg-gray-50 p-4 rounded-lg border">
-                            <h2 className="font-semibold text-lg mb-2">Return Summary</h2>
-                            <p><strong>Total Returned Invoices:</strong> {totalReturns}</p>
-                            <p><strong>Total Returned Units:</strong> {totalReturnUnits}</p>
+                                <div className="flex justify-between text-gray-700 text-sm md:text-base">
+                                    <div>
+                                        <p className="font-semibold text-gray-800">Total Orders</p>
+                                        <p className="text-gray-600">{totalOrders}</p>
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="font-semibold text-gray-800">Total Units Sold</p>
+                                        <p className="text-gray-600">{totalUnits}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Return Summary */}
+                            <div className="bg-white border border-gray-200 p-6 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300">
+                                <div className="flex justify-center items-center gap-3 mb-4 border-b pb-2">
+                                    <FaUndoAlt className="text-[#E69B3D] text-2xl" />
+                                    <h2 className="font-bold text-lg text-gray-800">Return Summary</h2>
+                                </div>
+
+                                <div className="flex justify-between text-gray-700 text-sm md:text-base">
+                                    <div>
+                                        <p className="font-semibold text-gray-800">Returned Invoices</p>
+                                        <p className="text-gray-600">{totalReturns}</p>
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="font-semibold text-gray-800">Returned Units</p>
+                                        <p className="text-gray-600">{totalReturnUnits}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         {/* Customer Info */}
-                        <div className="bg-gray-50 p-4 rounded-lg border">
-                            <h2 className="font-semibold text-lg mb-2">Customer Info</h2>
-                            <div className="grid grid-cols-2 gap-3">
+                        <div className="bg-white border border-gray-200 p-4 md:p-5 rounded-xl shadow-sm hover:shadow-md transition-all">
+                            <h2 className="font-semibold text-lg text-gray-800 mb-4 border-b pb-1 text-center">Update Customer</h2>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 {/* First line: Customer Name & Market Point */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-600">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Customer Name <span className="text-red-500">*</span>
                                     </label>
                                     <input
@@ -191,20 +219,20 @@ const AdminCustomerUpdate = () => {
                                         name="name"
                                         value={formData.name || ""}
                                         onChange={handleChange}
-                                        className="border px-2 py-1 w-full rounded"
+                                        className="border border-gray-300 focus:border-[#3B82F6] focus:ring-[#3B82F6]/30 outline-none transition-all px-3 py-2 w-full rounded-md shadow-sm"
                                         required
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-600">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Market Point <span className="text-red-500">*</span>
                                     </label>
                                     <select
                                         name="marketPoint"
                                         value={formData.marketPoint || ""}
                                         onChange={handleChange}
-                                        className="border px-2 py-1 w-full rounded bg-white"
+                                        className="border border-gray-300 focus:border-[#3B82F6] focus:ring-[#3B82F6]/30 outline-none transition-all px-3 py-2 w-full rounded-md bg-white shadow-sm"
                                         required
                                     >
                                         <option value="">Select a Market Point</option>
@@ -217,22 +245,22 @@ const AdminCustomerUpdate = () => {
                                 </div>
 
                                 {/* Second line: Address */}
-                                <div className="col-span-2">
-                                    <label className="block text-sm font-medium text-gray-600">
+                                <div className="sm:col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Address <span className="text-red-500">*</span>
                                     </label>
                                     <textarea
                                         name="address"
                                         value={formData.address || ""}
                                         onChange={handleChange}
-                                        className="border px-2 py-1 w-full rounded"
+                                        className="border border-gray-300 focus:border-[#3B82F6] focus:ring-[#3B82F6]/30 outline-none transition-all px-3 py-2 w-full rounded-md shadow-sm"
                                         rows="3"
                                     ></textarea>
                                 </div>
 
                                 {/* Third line: Trade License & Drug License */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-600">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Trade License
                                     </label>
                                     <input
@@ -240,12 +268,12 @@ const AdminCustomerUpdate = () => {
                                         name="tradeLicense"
                                         value={formData.tradeLicense || ""}
                                         onChange={handleChange}
-                                        className="border px-2 py-1 w-full rounded"
+                                        className="border border-gray-300 focus:border-[#3B82F6] focus:ring-[#3B82F6]/30 outline-none transition-all px-3 py-2 w-full rounded-md shadow-sm"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-600">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Drug License
                                     </label>
                                     <input
@@ -253,21 +281,26 @@ const AdminCustomerUpdate = () => {
                                         name="drugLicense"
                                         value={formData.drugLicense || ""}
                                         onChange={handleChange}
-                                        className="border px-2 py-1 w-full rounded"
+                                        className="border border-gray-300 focus:border-[#3B82F6] focus:ring-[#3B82F6]/30 outline-none transition-all px-3 py-2 w-full rounded-md shadow-sm"
                                     />
                                 </div>
                             </div>
                         </div>
 
                         {/* Update Button */}
-                        <div className="text-right">
+                        <div className="text-center">
                             <button
                                 onClick={handleUpdate}
-                                className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-md font-medium"
+                                disabled={!formData.name?.trim()}
+                                className={`${formData.name?.trim()
+                                    ? "bg-green-600 hover:bg-green-500 cursor-pointer"
+                                    : "bg-gray-300 cursor-not-allowed"
+                                    } text-white font-medium px-6 py-2 rounded-md shadow-md transition-all duration-300`}
                             >
-                                Update Customer
+                                Submit
                             </button>
                         </div>
+
                     </div>
                 )}
             </div>
