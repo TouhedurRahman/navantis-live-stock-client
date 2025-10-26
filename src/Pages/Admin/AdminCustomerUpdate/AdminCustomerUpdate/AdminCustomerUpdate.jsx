@@ -51,6 +51,26 @@ const AdminCustomerUpdate = () => {
     const handleUpdate = async () => {
         if (!selectedCustomer) return;
 
+        if ((!formData.name || formData.name.trim() === "")) {
+            return Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Customer name is required",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+
+        if ((!formData.address || formData.address.trim() === "")) {
+            return Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Customer address is required",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+
         try {
             const nameChanged = formData.name !== selectedCustomer.name;
             const { _id, ...updatedCustomer } = formData;
@@ -181,15 +201,15 @@ const AdminCustomerUpdate = () => {
                                 {/* Second line: Address */}
                                 <div className="col-span-2">
                                     <label className="block text-sm font-medium text-gray-600">
-                                        Address
+                                        Address<span className="text-red-500">*</span>
                                     </label>
-                                    <input
-                                        type="text"
+                                    <textarea
                                         name="address"
                                         value={formData.address || ""}
                                         onChange={handleChange}
                                         className="border px-2 py-1 w-full rounded"
-                                    />
+                                        rows="3"
+                                    ></textarea>
                                 </div>
 
                                 {/* Third line: Trade License & Drug License */}
