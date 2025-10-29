@@ -3,6 +3,7 @@ import useAllUsers from "../../../Hooks/useAllUsers";
 import useOrders from "../../../Hooks/useOrders";
 import useSingleUser from "../../../Hooks/useSingleUser";
 import useTerritories from "../../../Hooks/useTerritories";
+import ProductWiseTvsSChart from "../DashboardComponents/ProductWiseTvsSChart/ProductWiseTvsSChart";
 import TopValuesCard from "../DashboardComponents/TopValuesCard/TopValuesCard";
 
 const FieldEmployees = () => {
@@ -47,6 +48,13 @@ const FieldEmployees = () => {
                 userTerritories={userTerritories}
                 orders={deliveredOrders}
             />
+            <div className="w-[60%]">
+                <ProductWiseTvsSChart
+                    territories={territories}
+                    userTerritories={userTerritories}
+                    orders={deliveredOrders}
+                />
+            </div>
         </div>
     );
 };
