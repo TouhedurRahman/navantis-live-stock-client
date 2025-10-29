@@ -1,7 +1,7 @@
 import { ToastContainer } from 'react-toastify';
 import AccessDenied from '../../Components/AccessDenied/AccessDenied';
 import Loader from '../../Components/Loader/Loader';
-// import NonVerified from '../../Components/NonVerified/NonVerified';
+import NonVerified from '../../Components/NonVerified/NonVerified';
 import useAuth from '../../Hooks/useAuth';
 import useSingleUser from '../../Hooks/useSingleUser';
 import Navbar from '../../Pages/Shared/Navbar/Navbar';
@@ -18,9 +18,9 @@ const Main = () => {
         return <Login />;
     }
 
-    /* if (!user.emailVerified) {
+    if (!user.emailVerified) {
         return <NonVerified />;
-    } */
+    }
 
     return (
         <div className="font-nunito">
