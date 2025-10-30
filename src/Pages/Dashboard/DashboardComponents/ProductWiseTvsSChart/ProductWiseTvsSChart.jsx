@@ -82,7 +82,7 @@ const ProductWiseTvsSChart = ({ territories = [], userTerritories = [], orders =
     const monthName = new Date().toLocaleString("default", { month: "long", year: "numeric" });
 
     return (
-        <div className="bg-white rounded-xl shadow-md mx-6 p-5 mt-6 relative border border-gray-300">
+        <div className="bg-white rounded-xl shadow-md p-3 relative border border-gray-300">
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
                 <h2 className="text-base font-semibold text-gray-700">
@@ -126,7 +126,7 @@ const ProductWiseTvsSChart = ({ territories = [], userTerritories = [], orders =
                         <ResponsiveContainer width="100%" height={360}>
                             <BarChart
                                 data={chartData}
-                                margin={{ top: 10, right: 30, left: 10, bottom: 40 }}
+                                margin={{ top: 10, right: 30, left: 10, bottom: 0 }}
                             >
                                 <CartesianGrid stroke="#ddd" strokeDasharray="3 3" />
                                 <XAxis

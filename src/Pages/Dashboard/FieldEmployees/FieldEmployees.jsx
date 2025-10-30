@@ -5,6 +5,7 @@ import useSingleUser from "../../../Hooks/useSingleUser";
 import useTerritories from "../../../Hooks/useTerritories";
 import ProductWiseTvsSChart from "../DashboardComponents/ProductWiseTvsSChart/ProductWiseTvsSChart";
 import TopValuesCard from "../DashboardComponents/TopValuesCard/TopValuesCard";
+import LastSixMosSalesGrowth from "../LastSixMosSalesGrowth/LastSixMosSalesGrowth";
 
 const FieldEmployees = () => {
     const [users] = useAllUsers();
@@ -48,12 +49,21 @@ const FieldEmployees = () => {
                 userTerritories={userTerritories}
                 orders={deliveredOrders}
             />
-            <div className="w-[60%]">
-                <ProductWiseTvsSChart
-                    territories={territories}
-                    userTerritories={userTerritories}
-                    orders={deliveredOrders}
-                />
+            <div className="flex flex-col md:flex-row justify-between items-start gap-6 m-6">
+                <div className="w-full md:w-[70%]">
+                    <ProductWiseTvsSChart
+                        territories={territories}
+                        userTerritories={userTerritories}
+                        orders={deliveredOrders}
+                    />
+                </div>
+                <div className="w-full md:w-[30%]">
+                    <LastSixMosSalesGrowth
+                        territories={territories}
+                        userTerritories={userTerritories}
+                        orders={deliveredOrders}
+                    />
+                </div>
             </div>
         </div>
     );
