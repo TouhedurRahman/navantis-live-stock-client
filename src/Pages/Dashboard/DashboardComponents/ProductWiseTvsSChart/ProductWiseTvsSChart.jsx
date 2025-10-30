@@ -86,7 +86,8 @@ const ProductWiseTvsSChart = ({ territories = [], userTerritories = [], orders =
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
                 <h2 className="text-base font-semibold text-gray-700">
-                    Product Wise Target vs Sales - <span className="text-gray-500">{monthName}</span>
+                    Product Wise Target vs Sales <br />
+                    <span className="text-sm font-normal text-gray-500">{monthName}</span>
                 </h2>
                 <div className="flex gap-4 text-sm text-gray-700">
                     <span className="flex items-center gap-1">
@@ -123,7 +124,7 @@ const ProductWiseTvsSChart = ({ territories = [], userTerritories = [], orders =
                     className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
                 >
                     <div style={{ width: chartWidth, minWidth: "900px" }}>
-                        <ResponsiveContainer width="100%" height={360}>
+                        <ResponsiveContainer width="100%" height={340}>
                             <BarChart
                                 data={chartData}
                                 margin={{ top: 10, right: 30, left: 10, bottom: 0 }}

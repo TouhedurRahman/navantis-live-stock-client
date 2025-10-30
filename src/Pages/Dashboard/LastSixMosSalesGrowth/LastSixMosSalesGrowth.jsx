@@ -66,9 +66,9 @@ const LastSixMosSalesGrowth = ({ territories = [], userTerritories = [], orders 
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                    <h2 className="text-lg font-semibold text-gray-700">
+                    <h2 className="text-base font-semibold text-gray-700">
                         Sales Growth Over Time <br />
-                        <span className="text-sm font-normal text-gray-500 ml-1">(Last 6 Months)</span>
+                        <span className="text-sm font-normal text-gray-500">(Last 6 Months)</span>
                     </h2>
                 </div>
                 <div className="flex gap-4 text-sm text-gray-600">
@@ -82,7 +82,7 @@ const LastSixMosSalesGrowth = ({ territories = [], userTerritories = [], orders 
             </div>
 
             {/* Chart */}
-            <div className="w-full h-[320px]">
+            <div className="w-full h-[200px]">
                 <ResponsiveContainer>
                     <LineChart
                         data={chartData}

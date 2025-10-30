@@ -49,7 +49,7 @@ const FieldEmployees = () => {
                 userTerritories={userTerritories}
                 orders={deliveredOrders}
             />
-            <div className="flex flex-col md:flex-row justify-between items-start gap-6 m-6">
+            <div className="flex flex-col md:flex-row justify-between items-start gap-4 m-6">
                 <div className="w-full md:w-[70%]">
                     <ProductWiseTvsSChart
                         territories={territories}
